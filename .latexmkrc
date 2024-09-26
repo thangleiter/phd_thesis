@@ -1,5 +1,5 @@
 $out_dir = "./out";
-$aux_dir = "./out";
+$aux_dir = "./out";  # needs to be set; setting to auxil errors
 $bibtex = 'bibtex %O %B';
 $biber = 'biber %O %B';
 $preview_continuous_mode = 1;
