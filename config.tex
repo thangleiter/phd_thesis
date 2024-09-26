@@ -16,8 +16,8 @@
 % äöüßáéçèê∂åëæƒÏ€ then change the encoding setting in your editor, not the line below. If your editor
 % does not support utf8 use another editor!
 % ****************************************************************************************************
-\PassOptionsToPackage{utf8}{inputenc}
-	\usepackage{inputenc}
+%\PassOptionsToPackage{utf8}{inputenc}
+%	\usepackage{inputenc}
 
 % ****************************************************************************************************
 % 1. Configure classicthesis for your needs here, e.g., remove "drafting" below 
@@ -40,18 +40,18 @@
 % ****************************************************************************************************
 % 2. Personal data and user ad-hoc commands
 % ****************************************************************************************************
-\newcommand{\myTitle}{A Classic Thesis Style\xspace}
-\newcommand{\mySubtitle}{An Homage to The Elements of Typographic Style\xspace}
-\newcommand{\myDegree}{Doktor-Ingenieur (Dr.-Ing.)\xspace}
-\newcommand{\myName}{André Miede\xspace}
-\newcommand{\myProf}{Put name here\xspace}
-\newcommand{\myOtherProf}{Put name here\xspace}
+\newcommand{\myTitle}{My Ph.~D. Thesis\xspace}
+\newcommand{\mySubtitle}{A Work in Progress\xspace}
+\newcommand{\myDegree}{Master of Science (M.Sc.)\xspace}
+\newcommand{\myName}{Tobias Hangleiter\xspace}
+\newcommand{\myProf}{Hendrik Bluhm\xspace}
+\newcommand{\myOtherProf}{David P. DiVincenzo\xspace}
 \newcommand{\mySupervisor}{Put name here\xspace}
 \newcommand{\myFaculty}{Put data here\xspace}
-\newcommand{\myDepartment}{Put data here\xspace}
-\newcommand{\myUni}{Put data here\xspace}
-\newcommand{\myLocation}{Saarbrücken\xspace}
-\newcommand{\myTime}{September 2015\xspace}
+\newcommand{\myDepartment}{II. Institute of Physics\xspace}
+\newcommand{\myUni}{RWTH Aachen University\xspace}
+\newcommand{\myLocation}{Aachen\xspace}
+\newcommand{\myTime}{September 2025\xspace}
 \newcommand{\myVersion}{version 4.2\xspace}
 
 % ********************************************************************
@@ -76,7 +76,10 @@
 %\PassOptionsToPackage{ngerman,american}{babel}   % change this to your language(s)
 % Spanish languages need extra options in order to work with this template
 %\PassOptionsToPackage{spanish,es-lcroman}{babel}
-	\usepackage{babel}                  
+%	\usepackage{babel}
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=american]{english}
+\setotherlanguages{german}
 
 \usepackage{csquotes}
 \PassOptionsToPackage{%
@@ -99,8 +102,8 @@
 % ******************************************************************** 
 % General useful packages
 % ******************************************************************** 
-\PassOptionsToPackage{T1}{fontenc} % T2A for cyrillics
-    \usepackage{fontenc}     
+%\PassOptionsToPackage{T1}{fontenc} % T2A for cyrillics
+%    \usepackage{fontenc}
 \usepackage{textcomp} % fix warning with missing font shapes
 \usepackage{scrhack} % fix warnings when using KOMA with listings package          
 \usepackage{xspace} % to get the spacing after macros right  
@@ -165,12 +168,12 @@
 % ********************************************************************
 % Using PDFLaTeX
 % ********************************************************************
-\PassOptionsToPackage{pdftex,hyperfootnotes=false,pdfpagelabels}{hyperref}
+\PassOptionsToPackage{hyperfootnotes=false,pdfpagelabels}{hyperref}
     \usepackage{hyperref}  % backref linktocpage pagebackref
 \pdfcompresslevel=9
-\pdfadjustspacing=1 
-\PassOptionsToPackage{pdftex}{graphicx}
-    \usepackage{graphicx} 
+%\pdfadjustspacing=1
+%\PassOptionsToPackage{pdftex}{graphicx}
+    \usepackage{graphicx}
  
 
 % ********************************************************************
