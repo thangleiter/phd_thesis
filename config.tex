@@ -25,7 +25,7 @@
 % ****************************************************************************************************
 \PassOptionsToPackage{eulerchapternumbers,listings,drafting,%
 					 pdfspacing,floatperchapter,%linedheaders,%
-					 subfig,beramono,eulermath,parts}{classicthesis}                                        
+					 subfig,eulermath,parts}{classicthesis}
 % ********************************************************************
 % Available options for classicthesis.sty 
 % (see ClassicThesis.pdf for more information):
@@ -109,7 +109,7 @@
 \usepackage{scrhack} % fix warnings when using KOMA with listings package          
 \usepackage{xspace} % to get the spacing after macros right  
 \usepackage{mparhack} % get marginpar right
-\usepackage{fixltx2e} % fixes some LaTeX stuff --> since 2015 in the LaTeX kernel (see below)
+%\usepackage{fixltx2e} % fixes some LaTeX stuff --> since 2015 in the LaTeX kernel (see below)
 %\usepackage[latest]{latexrelease} % will be used once available in more distributions (ISSUE #107)
 \PassOptionsToPackage{printonlyused,smaller}{acronym} 
     \usepackage{acronym} % nice macros for handling all acronyms in the thesis
@@ -278,4 +278,14 @@
 %\usepackage[urw-garamond]{mathdesign} <-- no osf support :-(
 %\usepackage[default,osfigures]{opensans} % scale=0.95 
 %\usepackage[sfdefault]{FiraSans}
+
+% Load fontspec at the end to avoid issues with LuaLaTeX
+\usepackage{fontspec}
+\setmainfont{texgyrepagella}[
+    Extension = .otf,
+    UprightFont = *-regular,
+    BoldFont = *-bold,
+    ItalicFont = *-italic,
+    BoldItalicFont = *-bolditalic,
+]
 % ****************************************************************************************************
