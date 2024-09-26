@@ -41,7 +41,9 @@
 % Bibliographies
 %*******************************************************
 \addbibresource{Bibliography.bib}
-\addbibresource[label=ownpubs]{AMiede_Publications.bib}
+%\addbibresource[label=ownpubs]{AMiede_Publications.bib}
+\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
+\addbibresource[location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_phd_thesis.biblatex&useJournalAbbreviation=true}
 
 %********************************************************************
 % Hyphenation
@@ -54,7 +56,6 @@
 \begin{document}
 \frenchspacing
 \raggedbottom
-%\selectlanguage{american} % american ngerman
 %\renewcommand*{\bibname}{new name}
 %\setbibpreamble{}
 \pagenumbering{roman}
@@ -62,7 +63,7 @@
 %********************************************************************
 % Frontmatter
 %*******************************************************
-%\include{FrontBackmatter/DirtyTitlepage}
+\include{FrontBackmatter/DirtyTitlepage}
 \include{FrontBackmatter/Titlepage}
 \include{FrontBackmatter/Titleback}
 \cleardoublepage\include{FrontBackmatter/Dedication}

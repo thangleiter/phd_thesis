@@ -24,7 +24,7 @@
 % in order to deactivate the time-stamp on the pages
 % ****************************************************************************************************
 \PassOptionsToPackage{eulerchapternumbers,listings,drafting,%
-					 pdfspacing,%floatperchapter,%linedheaders,%
+					 pdfspacing,floatperchapter,%linedheaders,%
 					 subfig,beramono,eulermath,parts}{classicthesis}                                        
 % ********************************************************************
 % Available options for classicthesis.sty 
@@ -83,8 +83,9 @@
 
 \usepackage{csquotes}
 \PassOptionsToPackage{%
-    %backend=biber, %instead of bibtex
-	backend=bibtex8,bibencoding=ascii,%
+    backend=biber, %instead of bibtex
+    %backend=bibtex8,%
+    %bibencoding=ascii,%
 	language=auto,%
 	style=numeric-comp,%
     %style=authoryear-comp, % Author 1999, 2010
