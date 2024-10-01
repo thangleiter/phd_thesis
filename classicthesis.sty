@@ -161,10 +161,11 @@
      \RequirePackage{fontspec}
      \ifthenelse{\boolean{ct@palatino}}% default
        {
-         \setmainfont[Ligatures=TeX,Numbers=OldStyle]{TeX Gyre Pagella} % Palatino clone
+         % TH: for some reason, cannot use human-readable font name (TeX Gyre Pagella) here
+         \setmainfont[Ligatures=TeX,Numbers=OldStyle]{texgyrepagella} % Palatino clone
          \linespread{1.05} % a bit more for Palatino
          \RequirePackage{unicode-math}
-         \setmathfont{TeX Gyre Pagella Math}
+         \setmathfont{texgyrepagella-math}
        }{\relax} % use class' default font
      \ifthenelse{\boolean{ct@beramono}}%
        {\setmonofont[Scale=0.85]{DejaVu Sans Mono}} % like Bera; Scale=MatchLowercase
