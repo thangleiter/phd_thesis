@@ -1,4 +1,19 @@
 # Kaobook
+## Kaobook diffs
+- `kaorefs.sty`
+   Old:
+   ```latex
+   \RequirePackage{hyperref}
+   \RequirePackage{varioref}
+   %\RequirePackage{cleveref} % Don't use cleveref! It breaks everything
+   ```
+   New:
+   ```latex
+   \RequirePackage{varioref}
+   \RequirePackage{hyperref}
+   \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
+   ```
+   See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
 
 ## TeXLive Integration
 
