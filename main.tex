@@ -68,14 +68,10 @@
 % Load the package for hyperreferences
 \usepackage{kaorefs}
 
-\graphicspath{{examples/documentation/images/}{images/}} % Paths in which to look for images
-
-\makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
+\graphicspath{{images/}} % Paths in which to look for images
 
 \makeglossaries % Make LaTeX produce the files required to compile the glossary
 \input{tex/glossary} % Include the glossary definitions
-
-\makenomenclature % Make LaTeX produce the files required to compile the nomenclature
 
 % Reset sidenote counter at chapters
 %\counterwithin*{sidenote}{chapter}
@@ -175,9 +171,6 @@
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
-\input{chapters/preface.tex}
-\index{preface}
-
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
 %----------------------------------------------------------------------------------------
@@ -195,16 +188,16 @@
 
 \tableofcontents % Output the table of contents
 
-\listoffigures % Output the list of figures
+%\listoffigures % Output the list of figures
 
 % Comment both of the following lines to have the LOF and the LOT on 
 % different pages
 \let\cleardoublepage\bigskip
 \let\clearpage\bigskip
 
-\listoftables % Output the list of tables
+%\listoftables % Output the list of tables
 
-\listoflstlistings % Output the list of listings
+%\listoflstlistings % Output the list of listings
 
 \endgroup
 
@@ -215,23 +208,14 @@
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
-\input{chapters/introduction.tex}
-
 \pagelayout{wide} % No margins
 \addpart{Class Options, Commands and Environments}
 \pagelayout{margin} % Restore margins
-
-\input{chapters/options.tex}
-\input{chapters/textnotes.tex}
-\input{chapters/figsntabs.tex}
-\input{chapters/references.tex}
 
 \pagelayout{wide} % No margins
 \addpart{Design and Additional Features}
 \pagelayout{margin} % Restore margins
 
-\input{chapters/layout.tex}
-\input{chapters/mathematics.tex}
 \input{chapters/filter_functions.tex}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
@@ -239,8 +223,6 @@
 \pagelayout{wide} % No margins
 \addpart{Appendix}
 \pagelayout{margin} % Restore margins
-
-\input{chapters/appendix.tex}
 
 \pagelayout{wide}
 \setchapterstyle{kao}
@@ -262,51 +244,6 @@
 \printbibliography[heading=bibintoc, title=Bibliography, prenote=bibnote] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
 
 %----------------------------------------------------------------------------------------
-%	NOMENCLATURE
-%----------------------------------------------------------------------------------------
-
-% The nomenclature needs to be compiled on the command line with 'makeindex main.nlo -s nomencl.ist -o main.nls' from the template directory
-
-\nomenclature{$c$}{Speed of light in a vacuum inertial frame}
-\nomenclature{$h$}{Planck constant}
-
-\renewcommand{\nomname}{Notation} % Rename the default 'Nomenclature'
-\renewcommand{\nompreamble}{The next list describes several symbols that will be later used within the body of the document.} % Prepend this text to the nomenclature
-
-\printnomenclature % Output the nomenclature
-
-%----------------------------------------------------------------------------------------
-%	GREEK ALPHABET
-% 	Originally from https://gitlab.com/jim.hefferon/linear-algebra
-%----------------------------------------------------------------------------------------
-
-\vspace{1cm}
-
-{\usekomafont{chapter}Greek Letters with Pronunciations} \\[2ex]
-\begin{center}
-	\newcommand{\pronounced}[1]{\hspace*{.2em}\small\textit{#1}}
-	\begin{tabular}{l l @{\hspace*{3em}} l l}
-		\toprule
-		Character & Name & Character & Name \\ 
-		\midrule
-		$\alpha$ & alpha \pronounced{AL-fuh} & $\nu$ & nu \pronounced{NEW} \\
-		$\beta$ & beta \pronounced{BAY-tuh} & $\xi$, $\Xi$ & xi \pronounced{KSIGH} \\ 
-		$\gamma$, $\Gamma$ & gamma \pronounced{GAM-muh} & o & omicron \pronounced{OM-uh-CRON} \\
-		$\delta$, $\Delta$ & delta \pronounced{DEL-tuh} & $\pi$, $\Pi$ & pi \pronounced{PIE} \\
-		$\epsilon$ & epsilon \pronounced{EP-suh-lon} & $\rho$ & rho \pronounced{ROW} \\
-		$\zeta$ & zeta \pronounced{ZAY-tuh} & $\sigma$, $\Sigma$ & sigma \pronounced{SIG-muh} \\
-		$\eta$ & eta \pronounced{AY-tuh} & $\tau$ & tau \pronounced{TOW (as in cow)} \\
-		$\theta$, $\Theta$ & theta \pronounced{THAY-tuh} & $\upsilon$, $\Upsilon$ & upsilon \pronounced{OOP-suh-LON} \\
-		$\iota$ & iota \pronounced{eye-OH-tuh} & $\phi$, $\Phi$ & phi \pronounced{FEE, or FI (as in hi)} \\
-		$\kappa$ & kappa \pronounced{KAP-uh} & $\chi$ & chi \pronounced{KI (as in hi)} \\
-		$\lambda$, $\Lambda$ & lambda \pronounced{LAM-duh} & $\psi$, $\Psi$ & psi \pronounced{SIGH, or PSIGH} \\
-		$\mu$ & mu \pronounced{MEW} & $\omega$, $\Omega$ & omega \pronounced{oh-MAY-guh} \\
-		\bottomrule
-	\end{tabular} \\[1.5ex]
-	Capitals shown are the ones that differ from Roman capitals.
-\end{center}
-
-%----------------------------------------------------------------------------------------
 %	GLOSSARY
 %----------------------------------------------------------------------------------------
 
@@ -320,8 +257,6 @@
 %----------------------------------------------------------------------------------------
 
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
-
-\printindex % Output the index
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER
