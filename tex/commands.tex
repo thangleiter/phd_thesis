@@ -1,0 +1,138 @@
+%\newcommand{\todo}[1]{\textcolor{red}{\textbf{TODO: }} \emph{\color{red}#1}}
+\newcommand{\ie}[0]{i.\,e.}
+\newcommand{\Ie}[0]{I.\,e.}
+\newcommand{\eg}[0]{e.\,g.}
+\newcommand{\Eg}[0]{E.\,g.}
+\newcommand{\viz}[0]{viz.\ }
+\newcommand{\wrt}[0]{w.r.t.\ }
+\newcommand{\cf}[0]{c.f.\ }
+\newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\mr}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\e}[0]{\ensuremath{\mr{e}\xspace}}
+\renewcommand{\i}[0]{\ensuremath{\mr{i}\xspace}}
+\newcommand{\eps}[0]{\ensuremath{\epsilon}\xspace}
+\newcommand{\citer}[1]{Ref.~\citenum{#1}}
+\newcommand{\citerr}[2]{Refs.~\citenum{#1} and \citenum{#2}}
+\newcommand{\citerrr}[3]{Refs.~\citenum{#1}, \citenum{#2}, and \citenum{#3}}
+\newcommand{\python}{Python\xspace}
+\newcommand{\filterfunctions}{\texttt{filter\_functions}\xspace}
+\newcommand{\qupulse}{\texttt{qupulse}\xspace}
+\newcommand{\qopt}{\texttt{qopt}\xspace}
+\newcommand{\numpy}{\texttt{NumPy}\xspace}
+\newcommand{\scipy}{\texttt{SciPy}\xspace}
+\newcommand{\matplotlib}{\texttt{matplotlib}\xspace}
+\newcommand{\qutip}{\texttt{QuTiP}\xspace}
+\newcommand{\sparse}{\texttt{sparse}\xspace}
+\newcommand{\opteinsum}{\texttt{opt\_einsum}\xspace}
+\newcommand{\jupyter}{\texttt{Jupyter}\xspace}
+\newcommand{\pulsesequence}{\texttt{PulseSequence}\xspace}
+\newcommand{\pulsesequences}{\texttt{PulseSequence}s\xspace}
+\newcommand{\qobj}{\texttt{Qobj}\xspace}
+\newcommand{\slowprocessor}{AMD FX\texttrademark-6300 processor with six logical cores\xspace}
+%\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i7-6850K six-core processor\xspace}
+\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i9-9900K eight-core processor\xspace}
+
+\newcommand{\del}[0]{\ensuremath{\partial}}
+\newcommand{\placeholder}[0]{\:\cdot\:}
+\newcommand{\st}[0]{$\mathrm{S\mbox{-}T_0}$\xspace}
+\newcommand{\diam}[0]{\ensuremath{\eta}\xspace}
+\newcommand{\plvec}[0]{\ensuremath{\vec{\sigma}}\xspace}
+\newcommand{\idop}[0]{\ensuremath{\mathbb{1}}\xspace}
+\newcommand{\la}[0]{\ensuremath{\leftarrow}\xspace}
+\newcommand{\x}[1]{\ensuremath{X_{\pi/2}^{(#1)}}\xspace}
+\newcommand{\y}[1]{\ensuremath{Y_{\pi/2}^{(#1)}}\xspace}
+\newcommand{\T}[0]{\ensuremath{\intercal}\xspace}
+\newcommand{\vc}[1]{\ensuremath{\vec{#1}}\xspace}
+\newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}\xspace}
+
+\newcommand{\fid}[0]{\ensuremath{\mathcal{F}}\xspace}
+\newcommand{\avgfid}[0]{\ensuremath{\fid_\mr{avg}}\xspace}
+\newcommand{\entfid}[0]{\ensuremath{\fid_\mr{e}}\xspace}
+\newcommand{\infid}[0]{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\leak}[0]{\ensuremath{L}\xspace}
+\newcommand{\basis}[0]{\ensuremath{\mc{C}}\xspace}
+\newcommand{\avginfid}[0]{\ensuremath{\infid_\mr{avg}}\xspace}
+\newcommand{\entinfid}[0]{\ensuremath{\infid_\mr{e}}\xspace}
+\newcommand{\oneoverf}{\ensuremath{\flatfrac{1}{f}}\xspace}
+\newcommand{\bvec}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\pbvec}[1]{\ensuremath{\mathbf{#1}}'}
+\newcommand{\vecsig}[0]{\ensuremath{\bm{\sigma}}\xspace}
+\newcommand{\px}[0]{\ensuremath{\sigma_x}\xspace}
+\newcommand{\py}[0]{\ensuremath{\sigma_y}\xspace}
+\newcommand{\pz}[0]{\ensuremath{\sigma_z}\xspace}
+%\newcommand{\eye}[0]{\ensuremath{\openone}\xspace}
+\newcommand{\eye}[0]{\ensuremath{\mathds{1}}\xspace}
+\newcommand{\sts}[0]{\ensuremath{\mathrm{S\mbox{-}T_0}}\xspace}
+\newcommand{\kets}[0]{\mbox{\ensuremath{\ket{\mr{S}}}}\xspace}
+\newcommand{\kett}[0]{\mbox{\ensuremath{\ket{\mr{T_0}}}}\xspace}
+\newcommand{\kettp}[0]{\mbox{\ensuremath{\ket{\mr{T_+}}}}\xspace}
+\newcommand{\kettm}[0]{\mbox{\ensuremath{\ket{\mr{T_-}}}}\xspace}
+\newcommand{\ketud}[0]{\mbox{\ensuremath{\ket{\uparrow\downarrow}}}\xspace}
+\newcommand{\ketdu}[0]{\mbox{\ensuremath{\ket{\downarrow\uparrow}}}\xspace}
+\newcommand{\ketuu}[0]{\mbox{\ensuremath{\ket{\uparrow\uparrow}}}\xspace}
+\newcommand{\ketdd}[0]{\mbox{\ensuremath{\ket{\downarrow\downarrow}}}\xspace}
+\newcommand{\ketuudd}[0]{\mbox{\ensuremath{\ket{\uparrow\uparrow\downarrow\downarrow}}}\xspace}
+\newcommand{\ketdduu}[0]{\mbox{\ensuremath{\ket{\downarrow\downarrow\uparrow\uparrow}}}\xspace}
+\newcommand{\ketudud}[0]{\mbox{\ensuremath{\ket{\uparrow\downarrow\uparrow\downarrow}}}\xspace}
+\newcommand{\ketdudu}[0]{\mbox{\ensuremath{\ket{\downarrow\uparrow\downarrow\uparrow}}}\xspace}
+\newcommand{\ketuddu}[0]{\mbox{\ensuremath{\ket{\uparrow\downarrow\downarrow\uparrow}}}\xspace}
+\newcommand{\ketduud}[0]{\mbox{\ensuremath{\ket{\downarrow\uparrow\uparrow\downarrow}}}\xspace}
+\newcommand{\brauudd}[0]{\mbox{\ensuremath{\bra{\uparrow\uparrow\downarrow\downarrow}}}\xspace}
+\newcommand{\bradduu}[0]{\mbox{\ensuremath{\bra{\downarrow\downarrow\uparrow\uparrow}}}\xspace}
+\newcommand{\braudud}[0]{\mbox{\ensuremath{\bra{\uparrow\downarrow\uparrow\downarrow}}}\xspace}
+\newcommand{\bradudu}[0]{\mbox{\ensuremath{\bra{\downarrow\uparrow\downarrow\uparrow}}}\xspace}
+\newcommand{\brauddu}[0]{\mbox{\ensuremath{\bra{\uparrow\downarrow\downarrow\uparrow}}}\xspace}
+\newcommand{\braduud}[0]{\mbox{\ensuremath{\bra{\downarrow\uparrow\uparrow\downarrow}}}\xspace}
+\newcommand{\kpsi}[0]{\mbox{\ensuremath{\ket{\psi}}}\xspace}
+\newcommand{\kphi}[0]{\mbox{\ensuremath{\ket{\phi}}}\xspace}
+\newcommand{\bpsi}[0]{\mbox{\ensuremath{\bra{\psi}}}\xspace}
+\newcommand{\bphi}[0]{\mbox{\ensuremath{\bra{\phi}}}\xspace}
+\newcommand{\dotHS}[2]{\ensuremath{\expval{#1,#2}}\xspace}
+\newcommand{\Hspace}{\ensuremath{\mathscr{H}}\xspace}
+\newcommand{\Lspace}{\ensuremath{\mathscr{L}}\xspace}
+\newcommand{\ad}{\ensuremath{^\dagger}\xspace}
+\newcommand{\transpose}{\ensuremath{^\intercal}\xspace}
+\newcommand{\gth}[1]{\ensuremath{^{(#1)}}\xspace}
+
+\newcommand{\Li}{\ensuremath{\mathcal{L}}\xspace}
+\newcommand{\Lc}{\ensuremath{\mathcal{L}_\mr{c}}\xspace}
+\newcommand{\Ln}{\ensuremath{\mathcal{L}_\mr{n}}\xspace}
+\newcommand{\Lnt}{\ensuremath{\tilde{\mathcal{L}}_\mr{n}}\xspace}
+\newcommand{\Lnb}{\ensuremath{\bar{\mathcal{L}}_\mr{n}}\xspace}
+\newcommand{\Hc}{\ensuremath{H_\mr{c}}\xspace}
+\newcommand{\Hn}{\ensuremath{H_\mr{n}}\xspace}
+\newcommand{\Hnt}{\ensuremath{\tilde{H}_\mr{n}}\xspace}
+\newcommand{\Hnb}{\ensuremath{\bar{H}_\mr{n}}\xspace}
+\newcommand{\Ue}{\ensuremath{\tilde{U}}\xspace}
+\newcommand{\Uc}{\ensuremath{U_\mr{c}}\xspace}
+\newcommand{\Pe}{\ensuremath{\tilde{\mathcal{U}}}\xspace}
+\newcommand{\Rc}{\ensuremath{\tilde{\mathcal{B}}}\xspace}
+\newcommand{\Ba}{\ensuremath{B_\alpha}\xspace}  % noise operators
+\newcommand{\Bat}{\ensuremath{\tilde{B}_\alpha}\xspace}  % interaction picture noise operators
+\newcommand{\Bab}{\ensuremath{\bar{B}_\alpha}\xspace}  % interaction picture noise operators
+\newcommand{\Qc}{\ensuremath{\mathcal{Q}}\xspace}
+%--------------------- Superoperator formalism
+\newcommand{\FF}[0]{\ensuremath{\mc{F}(\omega;\tau)}\xspace}
+\newcommand{\decayamps}[0]{\ensuremath{\Gamma}\xspace}
+\newcommand{\freqshifts}[0]{\ensuremath{\Delta}\xspace}
+\newcommand{\cumulantfun}[0]{\ensuremath{\mc{K}}\xspace}
+\newcommand{\ctrlmat}[0]{\ensuremath{\tilde{\mc{B}}}\xspace}
+\newcommand{\liouvP}[0]{\ensuremath{\mc{P}}\xspace}
+\newcommand{\liouvQ}[0]{\ensuremath{\mc{Q}}\xspace}
+\newcommand{\liouvU}[0]{\ensuremath{\mc{U}}\xspace}
+\newcommand{\liouvUc}[0]{\ensuremath{\mc{U}_\mr{c}}\xspace}
+\newcommand{\liouvUe}[0]{\ensuremath{\mc{\tilde{U}}}\xspace}
+\newcommand{\liouvUec}[0]{\ensuremath{\tilde{\mc{U}}^{(1)}}\xspace}
+\newcommand{\qp}[0]{\ensuremath{\mc{E}}\xspace}
+\newcommand{\dbra}[1]{\mbox{\ensuremath{\left\langle\!\bra{#1}\right.}}\xspace}
+\newcommand{\dket}[1]{\mbox{\ensuremath{\left.\ket{#1}\!\right\rangle}}\xspace}
+\newcommand{\dbraket}[2]{\mbox{\ensuremath{\left\langle\!\braket{#1}{#2}\!\right\rangle}}\xspace}
+\newcommand{\dip}[2]{\dbraket{#1}{#2}}
+\newcommand{\ddyad}[2]{\mbox{\ensuremath{\dket{#1}\!\dbra{#2}}}\xspace}
+\newcommand{\dketbra}[2]{\ddyad{#1}{#2}}
+\newcommand{\dop}[2]{\ddyad{#1}{#2}}
+\newcommand{\dexpval}[2]{\mbox{\ensuremath{\left\langle\!\!\expval{#1}{#2}\!\right\rangle}}\xspace}
+\newcommand{\dev}[2]{\dexpval{#1}{#2}}
+\newcommand{\dmatrixel}[3]{\mbox{\ensuremath{\left\langle\!\!\matrixel{#1}{#2}{#3}\!\right\rangle}}\xspace}
+\newcommand{\dmel}[3]{\dmatrixel{#1}{#2}{#3}}
+

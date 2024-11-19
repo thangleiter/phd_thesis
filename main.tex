@@ -55,9 +55,15 @@
 % Load the bibliography package
 \usepackage{kaobiblio}
 \addbibresource{main.bib} % Bibliography file
+\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
+\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
 
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
+
+\input{tex/packages}
+\input{tex/commands}
+\input{tex/colors}
 
 % Load the package for hyperreferences
 \usepackage{kaorefs}
@@ -67,7 +73,7 @@
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
 \makeglossaries % Make LaTeX produce the files required to compile the glossary
-\input{glossary.tex} % Include the glossary definitions
+\input{tex/glossary} % Include the glossary definitions
 
 \makenomenclature % Make LaTeX produce the files required to compile the nomenclature
 
@@ -226,6 +232,7 @@
 
 \input{chapters/layout.tex}
 \input{chapters/mathematics.tex}
+\input{chapters/filter_functions.tex}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
