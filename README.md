@@ -25,6 +25,9 @@
 ## Fonts
 Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
 
+.. warning::
+	One of those variables breaks `kpsewhich` finding files in `TEXMFHOME`!
+
 ## TeXLive Integration
 
 Normally, when you write a book with this template, you need that the
