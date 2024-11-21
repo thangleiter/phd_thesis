@@ -5,13 +5,17 @@ $aux_dir = "./out"; # needs to be set; setting to auxil errors (win)
 set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error -shell-escape %O %S');
 $pdf_mode = 4;  # 5: xetex, 4: luatex
 
+$preview_continuous_mode = 1;
+$pdf_previewer = '"C:\Users\Tobias\AppData\Local\SumatraPDF\SumatraPDF.exe" -reuse-instance';# -fullscreen';
+
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');
+
+$clean_ext .= " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm";
 
 # Compile the glossary and acronyms list (package 'glossaries')
 add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
 add_cus_dep( 'glo', 'gls', 0, 'makeglossaries' );
-$clean_ext .= " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm";
 sub makeglossaries {
    my ($base_name, $path) = fileparse( $_[0] );
    pushd $path;
@@ -21,7 +25,7 @@ sub makeglossaries {
 }
 
 # Compile the nomenclature (package 'nomencl')
-# add_cus_dep( 'nlo', 'nls', 0, 'makenlo2nls' );
-# sub makenlo2nls {
-#     system( "makeindex -s nomencl.ist -o \"$_[0].nls\" \"$_[0].nlo\"" );
-# }
+add_cus_dep( 'nlo', 'nls', 0, 'makenlo2nls' );
+sub makenlo2nls {
+    system( "makeindex -s nomencl.ist -o \"$_[0].nls\" \"$_[0].nlo\"" );
+}

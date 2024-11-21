@@ -1,19 +1,29 @@
 # Kaobook
 ## Kaobook diffs
 - `kaorefs.sty`
-   Old:
-   ```latex
-   \RequirePackage{hyperref}
-   \RequirePackage{varioref}
-   %\RequirePackage{cleveref} % Don't use cleveref! It breaks everything
-   ```
-   New:
-   ```latex
-   \RequirePackage{varioref}
-   \RequirePackage{hyperref}
-   \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
-   ```
-   See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
+   - `cleveref`
+     Old:
+	 ```latex
+	 \RequirePackage{hyperref}
+	 \RequirePackage{varioref}
+	 %\RequirePackage{cleveref} % Don't use cleveref! It breaks everything
+	 ```
+	 New:
+	 ```latex
+	 \RequirePackage{varioref}
+	 \RequirePackage{hyperref}
+	 \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
+	 ```
+	 See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
+   
+   - Commented out the line
+     ```latex
+     \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
+     ```
+     because `\refeq` is already defined somewhere else.
+
+## Fonts
+Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
 
 ## TeXLive Integration
 
