@@ -1,3 +1,25 @@
+# XeTeX
+ 
+## `luaotfload-tool`
+- Apply patch https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be
+
+# Tectonic
+- Apply patches to tectonic:
+  ```rs
+   diff --git a/src/bin/tectonic/v2cli/commands/watch.rs b/src/bin/tectonic/v2cli/commands/watch.rs
+   index 749b2150..ad31ccc3 100644
+   --- a/src/bin/tectonic/v2cli/commands/watch.rs
+   +++ b/src/bin/tectonic/v2cli/commands/watch.rs
+   @@ -139,6 +139,7 @@ impl WatchCommand {
+                           action.list_jobs().for_each(|(_, job)| {
+                              job.stop();
+                           });
+   +                        action.quit();
+                           return action;
+                        }
+  ```
+- Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
+
 # Kaobook
 ## Kaobook diffs
 - `kaorefs.sty`
