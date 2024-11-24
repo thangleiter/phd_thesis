@@ -1,0 +1,3 @@
+[submodule "lib/kaobook"]
+	path = lib/kaobook
+	url = git@git.rwth-aachen.de:tobias.hangleiter/kaobook
