@@ -9,7 +9,7 @@
       <compiler-arguments />
       <envs />
       <before-run-command />
-      <main-file>$PROJECT_DIR$/main.tex</main-file>
+      <main-file />
       <output-path>$PROJECT_DIR$/out</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
       <compile-twice>false</compile-twice>
