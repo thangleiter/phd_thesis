@@ -9,11 +9,11 @@ Now, suppose that
     \label{eq:psd:monochromatic}
     S_{\omega_i}(\omega) = \sigma_i^2 \delta(\omega - \omega_i), %\todo{check normalization}
 \end{align}
-that is, the \gls{psd} of a monochromatic sinusoid of frequency $\omega_i$ and \gls{rms} $\sigma_i^2$\footnote{
+that is, the \gls{psd} of a monochromatic sinusoid of frequency $\omega_i$ and \gls{rms} $\sigma_i^2$\marginnote{
     \Cref{eq:psd:monochromatic} discretizes $S(\omega)$ by sampling it at points $\omega_i$, \ie,
-    \begin{align}
+    \begin{align*}
         S(\omega) = \lim_{n\to\infty}\sum_{i=1}^n S_{\omega_i}(\omega).
-    \end{align}
+    \end{align*}
 }. %\todo{marginnote?}
 Then \cref{eq:filter_function:definition} becomes
 \begin{equation}
@@ -37,7 +37,7 @@ Since (in-)coherent quantum operations are represented by (anti-)symmetric matri
     \label{eq:filter_function:incoherent}
     \begin{split}
         \mc{F}_\Gamma(\omega;\tau) =& \frac{1}{2}\left(\FF + \FF\transpose\right) \\
-                                   =& \frac{\pi}{\sigma_i^2}\left(\log\liouvUe_\omega(\tau) + \log\liouvUe_\omega(\tau)\transpose\right),
+                                   =& \frac{\pi}{\sigma_i^2}\left(\log\liouvUe_{\omega_i}(\tau) + \log\liouvUe_{\omega_i}(\tau)\transpose\right),
     \end{split}
 \end{equation}
 and
@@ -45,19 +45,43 @@ and
     \label{eq:filter_function:coherent}
     \begin{split}
         \mc{F}_\Delta(\omega;\tau) =& \frac{1}{2}\left(\FF - \FF\transpose\right) \\
-                                   =& \frac{\pi}{\sigma_i^2}\left(\log\liouvUe_\omega(\tau) - \log\liouvUe_\omega(\tau)\transpose\right),
+                                   =& \frac{\pi}{\sigma_i^2}\left(\log\liouvUe_{\omega_i}(\tau) - \log\liouvUe_{\omega_i}(\tau)\transpose\right),
     \end{split}
 \end{equation}
 respectively.
-
-
-
 From a \gls{mc} point of view, \liouvUe is given by
 \begin{align}
-    \expval{\liouvUe}(\tau) = \liouvQ\transpose \expval{\liouvU(\tau)},
+    \liouvUe \equiv \expval{\liouvUe_{\omega_i}}(\tau) = \liouvQ\transpose \expval{\liouvU_{\omega_i}(\tau)},
 \end{align}
-where $\liouvU(\tau)$ is the solution of the Schrödinger equation for a single realization of the noise.
+where $\liouvU_{\omega_i}(\tau)$ is the solution of the Schrödinger equation for a single realization of the noise and $\expval{\cdot}$ denotes the ensemble average\marginnote{
+    For $N$ realizations of the stochastic process underlying $b(t)$, the ensemble average of a quantity $A(t)$ that is a function of $b(t)$ is given by
+    \begin{align*}
+        \expval{A}(t) = \frac{1}{N}\sum_{i=1}^N A_i(t)
+    \end{align*}
+    where $i$ enumerates the realizations of the stochastic process.
+}.
 Solving \cref{eq:filter_function:definition} for \FF, we find
-\begin{align}
-    \FF = \int\frac{\dd{\omega'}}{2\pi} \delta(\omega-\omega') \log\expval{\liouvUe(\tau)}
-\end{align}
+\begin{equation}
+    \begin{split}
+        \FF =& \int\frac{\dd{\omega'}}{2\pi} \delta(\omega-\omega') \log\expval{\liouvUe_{\omega_i}(\tau)} \\
+            =& \liouvQ\transpose + \int\frac{\dd{\omega'}}{2\pi} \delta(\omega-\omega') \log\expval{\liouvU_{\omega_i}(\tau)}.
+    \end{split}
+\end{equation}
+So what does a single noise realization of \cref{eq:psd:monochromatic} in the time domain look like?
+It's a sinusoid with amplitude $A_i \sim \mathcal{N}(0, \sigma_i^2)$, frequency $\omega_i$, and phase $\phi \sim \mathcal{U}(0, 2\pi)$,
+\begin{equation}
+    b(t) = A\sin(\omega_i t + \phi).
+\end{equation}
+We can compute the expectation value of $\liouvU_{\omega_i}(t)$ over $A_i$ and $\phi$ by integrating over the probability distributions\marginnote{
+    We write the expectation value of an observable $A$ with respect to a random variable $X$ with the probability density function $\rho_X$ as $\mathbb{E}_X[A]$.
+},
+\begin{equation}
+    \label{eq:monte_carlo:propagator:average}
+    \mathbb{E}_{\sigma_i,\phi}[\liouvU](t) = \int\dd{x}\rho_{\sigma_i}(x)\int_0^{2\pi}\dd{\phi}\liouvU[x, \phi].
+\end{equation}\marginnote{
+    The probability density function of the zero-mean normal distribution is
+    \begin{equation*}
+        \rho_{\sigma_i}(x) = \frac{1}{\sqrt{2\pi\sigma_i^2}}\exp\left(\frac{x^2}{2\sigma_i^2}\right).
+    \end{equation*}
+}
+In practice, \cref{eq:monte_carlo:propagator:average} will be evaluated numerically by dividing the integration intervals into sub-intervals of equal size and weighing the integrand with the probability density, approximated to be constant on the sub-interval.
