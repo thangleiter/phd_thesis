@@ -118,12 +118,21 @@
 
 % Comment both of the following lines to have the LOF and the LOT on 
 % different pages
-\let\cleardoublepage\bigskip
-\let\clearpage\bigskip
+% \let\cleardoublepage\bigskip
+% \let\clearpage\bigskip
 
 \listoftables % Output the list of tables
 
 \listoflstlistings % Output the list of listings
+
+
+\let\cleardoublepage\bigskip
+\let\clearpage\bigskip
+\input{tex/publications.tex}
+
+\let\cleardoublepage\bigskip
+\let\clearpage\bigskip
+\input{tex/software.tex}
 
 \endgroup
 
@@ -134,8 +143,8 @@
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
+% TODO: Abstract!
 % \input{chapters/introduction.tex}
-
 
 %\pagelayout{wide} % No margins
 %\addpart{Class Options, Commands and Environments}
