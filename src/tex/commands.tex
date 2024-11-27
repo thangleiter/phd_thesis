@@ -9,6 +9,12 @@
 \newcommand{\e}[0]{\ensuremath{\mr{e}\xspace}}
 \renewcommand{\i}[0]{\ensuremath{\mr{i}\xspace}}
 \newcommand{\eps}[0]{\ensuremath{\epsilon}\xspace}
+
+\DeclareCiteCommand{\citenum}
+  {}
+  {\printfield{labelnumber}}
+  {}
+  {}
 \newcommand{\citer}[1]{Ref.~\citenum{#1}}
 \newcommand{\citerr}[2]{Refs.~\citenum{#1} and \citenum{#2}}
 \newcommand{\citerrr}[3]{Refs.~\citenum{#1}, \citenum{#2}, and \citenum{#3}}
@@ -42,10 +48,10 @@
 \newcommand{\vc}[1]{\ensuremath{\vec{#1}}\xspace}
 \newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}\xspace}
 
-\newcommand{\fid}[0]{\ensuremath{\mathcal{F}}\xspace}
+\newcommand{\fid}[0]{\ensuremath{F}\xspace}
 \newcommand{\avgfid}[0]{\ensuremath{\fid_\mr{avg}}\xspace}
 \newcommand{\entfid}[0]{\ensuremath{\fid_\mr{e}}\xspace}
-\newcommand{\infid}[0]{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\infid}[0]{\ensuremath{I}\xspace}
 \newcommand{\leak}[0]{\ensuremath{L}\xspace}
 \newcommand{\basis}[0]{\ensuremath{\mc{C}}\xspace}
 \newcommand{\avginfid}[0]{\ensuremath{\infid_\mr{avg}}\xspace}
