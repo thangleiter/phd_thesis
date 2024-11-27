@@ -94,6 +94,9 @@
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
+% \input{chapters/preface.tex}
+% \index{preface}
+
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
 %----------------------------------------------------------------------------------------
@@ -111,16 +114,16 @@
 
 \tableofcontents % Output the table of contents
 
-%\listoffigures % Output the list of figures
+\listoffigures % Output the list of figures
 
 % Comment both of the following lines to have the LOF and the LOT on 
 % different pages
 \let\cleardoublepage\bigskip
 \let\clearpage\bigskip
 
-%\listoftables % Output the list of tables
+\listoftables % Output the list of tables
 
-%\listoflstlistings % Output the list of listings
+\listoflstlistings % Output the list of listings
 
 \endgroup
 
@@ -130,6 +133,25 @@
 
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
+
+% \input{chapters/introduction.tex}
+
+
+%\pagelayout{wide} % No margins
+%\addpart{Class Options, Commands and Environments}
+%\pagelayout{margin} % Restore margins
+%
+% \input{chapters/options.tex}
+% \input{chapters/textnotes.tex}
+% \input{chapters/figsntabs.tex}
+% \input{chapters/references.tex}
+% 
+% \pagelayout{wide} % No margins
+% \addpart{Design and Additional Features}
+% \pagelayout{margin} % Restore margins
+% 
+% \input{chapters/layout.tex}
+% \input{chapters/mathematics.tex}
 
 \pagelayout{wide} % No margins
 \addpart{A Filter-Function Formalism For Quantum Operations}
@@ -142,6 +164,13 @@
 \pagelayout{wide} % No margins
 \addpart{Appendix}
 \pagelayout{margin} % Restore margins
+
+% \input{chapters/appendix.tex}
+
+\pagelayout{wide}
+\setchapterstyle{kao}
+\chapter{Test}
+\blindtext
 
 %----------------------------------------------------------------------------------------
 
@@ -163,8 +192,8 @@
 
 % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
-\setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+% \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
+% \printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
 %----------------------------------------------------------------------------------------
 %	INDEX
