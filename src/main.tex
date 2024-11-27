@@ -1,3 +1,8 @@
+\input{tex/preamble}
+\input{tex/packages}
+\input{tex/commands}
+\input{tex/colors}
+
 \begin{document}
 
 %----------------------------------------------------------------------------------------
@@ -7,7 +12,7 @@
 \titlehead{The \texttt{kaobook} class}
 \subject{Use this document as a template}
 
-\title[Example and documentation of the {\normalfont\texttt{kaobook}} class]{Example and documentation \\ of the {\normalfont\texttt{kaobook}} class}
+\title[My PHD Thesis]{My PHD Thesis}
 \subtitle{Customise this page according to your needs}
 
 \author[Tobias Hangleiter]{Tobias Hangleiter\thanks{A \LaTeX\ lover/hater}}
@@ -127,11 +132,7 @@
 \setchapterstyle{kao} % Choose the default chapter heading style
 
 \pagelayout{wide} % No margins
-\addpart{Class Options, Commands and Environments}
-\pagelayout{margin} % Restore margins
-
-\pagelayout{wide} % No margins
-\addpart{Design and Additional Features}
+\addpart{A Filter-Function Formalism For Quantum Operations}
 \pagelayout{margin} % Restore margins
 
 \input{chs/filter_functions.tex}
@@ -141,11 +142,6 @@
 \pagelayout{wide} % No margins
 \addpart{Appendix}
 \pagelayout{margin} % Restore margins
-
-\pagelayout{wide}
-\setchapterstyle{kao}
-\chapter{Test}
-\blindtext
 
 %----------------------------------------------------------------------------------------
 
@@ -175,6 +171,8 @@
 %----------------------------------------------------------------------------------------
 
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
+
+% \printindex % Output the index
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER

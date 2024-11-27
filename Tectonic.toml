@@ -74,10 +74,10 @@ synctex = true
 #
 # Finally, you may include an "inline" document as follows:
 inputs = [
-  "preamble.tex",
-  "tex/packages.tex",
-  "tex/commands.tex",
-  "tex/colors.tex",
+#  "tex/preamble.tex",
+#  "tex/packages.tex",
+#  "tex/commands.tex",
+#  "tex/colors.tex",
   "main.tex",
 ]
 # This will insert "\documentclass[a4paper]{article}" before main.tex
