@@ -11,9 +11,7 @@
     <option name="INTERPRETER_OPTIONS" value="-noprofile" />
     <option name="EXECUTE_IN_TERMINAL" value="false" />
     <option name="EXECUTE_SCRIPT_FILE" value="true" />
-    <envs>
-      <env name="TECTONIC_PATH" value="C:\Users\tobias\Code\tectonic\target\release\" />
-    </envs>
+    <envs />
     <method v="2" />
   </configuration>
 </component>
