@@ -1,82 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% kaobook
-% LaTeX Class
-% Version 0.9.8 (2021/08/23)
-%
-% This template originates from:
-% https://www.LaTeXTemplates.com
-%
-% For the latest template development version and to make contributions:
-% https://github.com/fmarotta/kaobook
-%
-% Authors:
-% Federico Marotta (federicomarotta@mail.com)
-% Based on the doctoral thesis of Ken Arroyo Ohori (https://3d.bk.tudelft.nl/ken/en)
-% and on the Tufte-LaTeX class.
-% Modified for LaTeX Templates by Vel (vel@latextemplates.com)
-%
-% License:
-% LPPL (see included MANIFEST.md file)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%----------------------------------------------------------------------------------------
-%	EXAMPLE AND DOCUMENTATION OF THE KAOBOOK CLASS
-%----------------------------------------------------------------------------------------
-
-\documentclass[
-    a4paper, % Page size
-    fontsize=10pt, % Base font size
-    twoside=false, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
-	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
-	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
-	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
-	fontmethod=modern, % Can also use "modern" with XeLaTeX or LuaTex; "tex" is the default for PdfLaTex, and "modern" is the default for those two.
-]{kaobook}
-
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
-
-% Choose the language
-\ifxetexorluatex
-	\usepackage{polyglossia}
-	\setmainlanguage[variant=american]{english}
-\else
-	\usepackage[english]{babel} % Load characters and hyphenation
-\fi
-\usepackage[english=american]{csquotes}	% English quotes
-
-% Load packages for testing
-\usepackage{blindtext} % Print text without any meaning for testing purposes
-%\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
-%\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
-
-% Load the bibliography package
-\usepackage{kaobiblio}
-\addbibresource{main.bib} % Bibliography file
-\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
-\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
-
-% Load mathematical packages for theorems and related environments
-\usepackage[framed=true]{kaotheorems}
-
+% mainfile: main.tex
+\input{tex/preamble}
 \input{tex/packages}
 \input{tex/commands}
 \input{tex/colors}
-
-% Load the package for hyperreferences
-\usepackage{kaorefs}
-
-\graphicspath{{img/}} % Paths in which to look for images
-
-\makeglossaries % Make LaTeX produce the files required to compile the glossary
-\input{tex/glossary} % Include the glossary definitions
-
-% Reset sidenote counter at chapters
-%\counterwithin*{sidenote}{chapter}
-
-%----------------------------------------------------------------------------------------
 
 \begin{document}
 
@@ -87,14 +13,12 @@
 \titlehead{The \texttt{kaobook} class}
 \subject{Use this document as a template}
 
-\title[Example and documentation of the {\normalfont\texttt{kaobook}} class]{Example and documentation \\ of the {\normalfont\texttt{kaobook}} class}
+\title[My PhD Thesis]{My PhD Thesis}
 \subtitle{Customise this page according to your needs}
 
-\author[Federico Marotta]{Federico Marotta\thanks{A \LaTeX\ lover}}
+\author[Tobias Hangleiter]{Tobias Hangleiter\thanks{A \LaTeX\ lover/hater}}
 
 \date{\today}
-
-\publishers{An Awesome Publisher}
 
 %----------------------------------------------------------------------------------------
 
@@ -171,6 +95,9 @@
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
+% \input{chapters/preface.tex}
+% \index{preface}
+
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
 %----------------------------------------------------------------------------------------
@@ -188,16 +115,25 @@
 
 \tableofcontents % Output the table of contents
 
-%\listoffigures % Output the list of figures
+\listoffigures % Output the list of figures
 
 % Comment both of the following lines to have the LOF and the LOT on 
 % different pages
+% \let\cleardoublepage\bigskip
+% \let\clearpage\bigskip
+
+\listoftables % Output the list of tables
+
+\listoflstlistings % Output the list of listings
+
+
 \let\cleardoublepage\bigskip
 \let\clearpage\bigskip
+\input{tex/publications.tex}
 
-%\listoftables % Output the list of tables
-
-%\listoflstlistings % Output the list of listings
+\let\cleardoublepage\bigskip
+\let\clearpage\bigskip
+\input{tex/software.tex}
 
 \endgroup
 
@@ -208,12 +144,27 @@
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
-\pagelayout{wide} % No margins
-\addpart{Class Options, Commands and Environments}
-\pagelayout{margin} % Restore margins
+% TODO: Abstract!
+% \input{chapters/introduction.tex}
+
+%\pagelayout{wide} % No margins
+%\addpart{Class Options, Commands and Environments}
+%\pagelayout{margin} % Restore margins
+%
+% \input{chapters/options.tex}
+% \input{chapters/textnotes.tex}
+% \input{chapters/figsntabs.tex}
+% \input{chapters/references.tex}
+% 
+% \pagelayout{wide} % No margins
+% \addpart{Design and Additional Features}
+% \pagelayout{margin} % Restore margins
+% 
+% \input{chapters/layout.tex}
+% \input{chapters/mathematics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{Design and Additional Features}
+\addpart{A Filter-Function Formalism For Quantum Operations}
 \pagelayout{margin} % Restore margins
 
 \input{chs/filter_functions.tex}
@@ -223,6 +174,8 @@
 \pagelayout{wide} % No margins
 \addpart{Appendix}
 \pagelayout{margin} % Restore margins
+
+% \input{chapters/appendix.tex}
 
 \pagelayout{wide}
 \setchapterstyle{kao}
@@ -249,14 +202,16 @@
 
 % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
-\setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+% \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
+% \printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
 %----------------------------------------------------------------------------------------
 %	INDEX
 %----------------------------------------------------------------------------------------
 
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
+
+% \printindex % Output the index
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER

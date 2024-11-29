@@ -3,10 +3,10 @@ $aux_dir = "./out"; # needs to be set; setting to auxil errors (win)
 
 # Output a pdf
 set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error -shell-escape %O %S');
-$pdf_mode = 4;  # 5: xetex, 4: luatex
+$pdf_mode = 4;  # 5: xetex, 4: luatex, 1: pdflatex
 
 $preview_continuous_mode = 1;
-$pdf_previewer = '"C:\Users\Tobias\AppData\Local\SumatraPDF\SumatraPDF.exe" -reuse-instance';# -fullscreen';
+$pdf_previewer = "evince";
 
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');
