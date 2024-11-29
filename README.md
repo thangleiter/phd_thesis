@@ -37,12 +37,12 @@
 	 \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
 	 ```
 	 See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
-   
+
    - Commented out the line
      ```latex
      \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
      ```
-     because `\refeq` is already defined somewhere else.
+     because `\refeq` is already defined by `mathtools`.
 
 ## Fonts
 Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
@@ -51,6 +51,9 @@ Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/
 	One of those variables breaks `kpsewhich` finding files in `TEXMFHOME`!
 
 ## TeXLive Integration
+
+.. important::
+    Delete the `build/` directories in the `examples/` subdirectories. Otherwise latexmk breaks!
 
 Normally, when you write a book with this template, you need that the
 `kaobook.cls` and the `styles` directory be in the same directory as the
