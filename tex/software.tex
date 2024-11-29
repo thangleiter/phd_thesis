@@ -9,9 +9,8 @@ on this thesis.
 \begin{refsection}[ownsoft]
     \small
     \nocite{*} % is local to to the enclosing refsection
-    % { % https://planeta.github.io/latex/maxbibnames-for-different-bibliographies/
-    %   \expandafter\def\csname blx@maxbibnames\endcsname{99}%
-    %   \printbibliography[heading=none]
-    % }
-    \printbibliography[heading=none]
+    { % https://planeta.github.io/latex/maxbibnames-for-different-bibliographies/
+      \expandafter\def\csname blx@maxbibnames\endcsname{99}%
+      \printbibliography[heading=none]
+    }
 \end{refsection}
