@@ -1,5 +1,5 @@
-$out_dir = "./out";
-$aux_dir = "./out"; # needs to be set; setting to auxil errors (win)
+$out_dir = "./build";
+$aux_dir = "./build"; # needs to be set; setting to auxil errors (win)
 
 # Output a pdf
 set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error -shell-escape %O %S');

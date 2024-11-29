@@ -1,16 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="latexmk clean" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+  <configuration default="false" name="latexmk clean linux" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
     <texify>
       <compiler>LATEXMK</compiler>
       <compiler-path />
       <sumatra-path />
       <pdf-viewer>NONE</pdf-viewer>
       <viewer-command />
-      <compiler-arguments>-C</compiler-arguments>
+      <compiler-arguments>-C -r linux.latexmkrc</compiler-arguments>
       <envs />
       <before-run-command />
-      <main-file>$PROJECT_DIR$/main.tex</main-file>
-      <output-path>$PROJECT_DIR$/out</output-path>
+      <main-file />
+      <output-path>$PROJECT_DIR$/build</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
       <compile-twice>false</compile-twice>
       <output-format>DEFAULT</output-format>
