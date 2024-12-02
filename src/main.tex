@@ -114,25 +114,24 @@
 
 \tableofcontents % Output the table of contents
 
-\listoffigures % Output the list of figures
+%\listoffigures % Output the list of figures
 
 % Comment both of the following lines to have the LOF and the LOT on 
 % different pages
-% \let\cleardoublepage\bigskip
-% \let\clearpage\bigskip
+% \cleardoublepage\bigskip
+% \clearpage\bigskip
 
-\listoftables % Output the list of tables
+%\listoftables % Output the list of tables
 
-\listoflstlistings % Output the list of listings
+%\listoflstlistings % Output the list of listings
 
+\cleardoublepage\bigskip
+\clearpage\bigskip
+\input{tex/publications}
 
-\let\cleardoublepage\bigskip
-\let\clearpage\bigskip
-\input{tex/publications.tex}
-
-\let\cleardoublepage\bigskip
-\let\clearpage\bigskip
-\input{tex/software.tex}
+\cleardoublepage\bigskip
+\clearpage\bigskip
+\input{tex/software}
 
 \endgroup
 
@@ -163,10 +162,24 @@
 % \input{chapters/mathematics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{A Filter-Function Formalism For Quantum Operations}
+\addpart{A \python Welch's-method Spectrometer}\label{part:spectrometer}
 \pagelayout{margin} % Restore margins
 
-\input{chs/filter_functions.tex}
+\pagelayout{wide} % No margins
+\addpart{Improvements and Characterization of a Millikelvin Confocal Microscope}\label{part:setup}
+\pagelayout{margin} % Restore margins
+
+\pagelayout{wide} % No margins
+\addpart{Electrostatic Trapping of Excitons in Semiconductor Membranes}\label{part:measurements}
+\pagelayout{margin} % Restore margins
+
+\pagelayout{wide} % No margins
+\addpart{A Filter-Function Formalism For Quantum Operations}\label{part:filter_functions}
+\pagelayout{margin} % Restore margins
+
+\input{chs/filter_functions/introduction}
+\input{chs/filter_functions/validation}
+%\input{chs/filter_functions/prr.tex}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
@@ -201,8 +214,8 @@
 
 % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
-% \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-% \printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+\setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
+\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
 %----------------------------------------------------------------------------------------
 %	INDEX
