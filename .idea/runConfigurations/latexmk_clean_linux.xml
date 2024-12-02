@@ -6,10 +6,10 @@
       <sumatra-path />
       <pdf-viewer>NONE</pdf-viewer>
       <viewer-command />
-      <compiler-arguments>-C -r linux.latexmkrc</compiler-arguments>
+      <compiler-arguments>-C -r $PROJECT_DIR$/linux.latexmkrc</compiler-arguments>
       <envs />
       <before-run-command />
-      <main-file />
+      <main-file>$PROJECT_DIR$/main.tex</main-file>
       <output-path>$PROJECT_DIR$/build</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
       <compile-twice>false</compile-twice>
