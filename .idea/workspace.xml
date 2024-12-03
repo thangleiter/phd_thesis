@@ -5,7 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/validation.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.bib" beforeDir="false" afterPath="$PROJECT_DIR$/main.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tex/packages.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/packages.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tex/preamble.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/preamble.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows.latexmkrc" beforeDir="false" afterPath="$PROJECT_DIR$/windows.latexmkrc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +22,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="kaobook" />
+                    <option name="lastUsedInstant" value="1733247449" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="kaobook_tectonic" />
+                    <option name="lastUsedInstant" value="1733247437" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
   </component>
   <component name="LatexErrorTreeViewConfiguration">
     <option name="showKeywordWarnings">
@@ -44,7 +76,7 @@
     "LaTeX.latexmk windows.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Cherry-picking in kaobook",
+    "git-widget-placeholder": "kaobook",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -57,11 +89,23 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\phd_thesis" />
       <recent name="D:\phd_thesis\img" />
       <recent name="$PROJECT_DIR$/chs/filter_functions" />
     </key>
   </component>
-  <component name="RunManager" selected="LaTeX.latexmk windows">
+  <component name="RunManager" selected="LaTeX.latexmk clean windows">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="thesis" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="thesis" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="LaTeX.latexmk linux" />
       <item itemvalue="LaTeX.latexmk windows" />
@@ -96,5 +140,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

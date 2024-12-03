@@ -52,12 +52,11 @@
 %\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
 %\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
 
-% Load the bibliography package
 \PassOptionsToPackage{
 	natbib=true,
 	datamodel=software,
 }{biblatex}
-
+% Load the bibliography package
 \usepackage[addspace=false]{kaobiblio}
 
 \usepackage{software-biblatex}
@@ -69,9 +68,9 @@
 	license=true
 }
 
-% \addbibresource{main.bib} % Bibliography file
-% \addbibresource{ownpubs.bib}
-% \addbibresource{ownsoft.bib}
+%\addbibresource{main.bib} % Bibliography file
+%\addbibresource{ownpubs.bib}
+%\addbibresource{ownsoft.bib}
 \addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
 \addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
 \addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
