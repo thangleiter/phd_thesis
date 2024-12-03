@@ -4,23 +4,13 @@
 - Apply patch https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be
 
 # Tectonic
-- Apply patches to tectonic:
-  ```rs
-   diff --git a/src/bin/tectonic/v2cli/commands/watch.rs b/src/bin/tectonic/v2cli/commands/watch.rs
-   index 749b2150..ad31ccc3 100644
-   --- a/src/bin/tectonic/v2cli/commands/watch.rs
-   +++ b/src/bin/tectonic/v2cli/commands/watch.rs
-   @@ -139,6 +139,7 @@ impl WatchCommand {
-                           action.list_jobs().for_each(|(_, job)| {
-                              job.stop();
-                           });
-   +                        action.quit();
-                           return action;
-                        }
-  ```
+- Build from source using `cargo install --path .`
+  - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic`
 - Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
 
 # Kaobook
+- Clone from source at `git@git.rwth-aachen.de:tobias.hangleiter/kaobook`
+- Branches `lualatex` or `tectonic`
 ## Kaobook diffs
 - `kaorefs.sty`
    - `cleveref`
@@ -47,13 +37,21 @@
 ## Fonts
 Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
 
-.. warning::
-	One of those variables breaks `kpsewhich` finding files in `TEXMFHOME`!
+---
+**IMPORTANT**
+
+One of those variables breaks `kpsewhich` finding files in `TEXMFHOME`!
+
+---
 
 ## TeXLive Integration
 
-.. important::
-    Delete the `build/` directories in the `examples/` subdirectories. Otherwise latexmk breaks!
+---
+**IMPORTANT**
+
+Delete the `build/` directories in the `examples/` subdirectories. Otherwise latexmk breaks!
+
+---
 
 Normally, when you write a book with this template, you need that the
 `kaobook.cls` and the `styles` directory be in the same directory as the
