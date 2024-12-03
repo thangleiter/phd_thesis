@@ -6,7 +6,6 @@ set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error -shell-escape
 $pdf_mode = 4;  # 5: xetex, 4: luatex, 1: pdflatex
 
 $preview_continuous_mode = 1;
-$pdf_previewer = "evince";
 
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');

@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/validation.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/monalisa.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/seaside.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows.latexmkrc" beforeDir="false" afterPath="$PROJECT_DIR$/windows.latexmkrc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,32 +36,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;LaTeX.latexmk clean linux.executor&quot;: &quot;Run&quot;,
-    &quot;LaTeX.latexmk linux.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;kaobook&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "LaTeX.latexmk clean linux.executor": "Run",
+    "LaTeX.latexmk clean windows.executor": "Run",
+    "LaTeX.latexmk linux.executor": "Run",
+    "LaTeX.latexmk windows.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "kaobook",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\phd_thesis\img" />
       <recent name="$PROJECT_DIR$/chs/filter_functions" />
     </key>
   </component>
-  <component name="RunManager" selected="LaTeX.latexmk clean linux">
+  <component name="RunManager" selected="LaTeX.latexmk windows">
     <list>
       <item itemvalue="LaTeX.latexmk linux" />
+      <item itemvalue="LaTeX.latexmk windows" />
       <item itemvalue="LaTeX.latexmk clean linux" />
+      <item itemvalue="LaTeX.latexmk clean windows" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -80,6 +89,7 @@
       <workItem from="1732890172503" duration="6254000" />
       <workItem from="1733056332584" duration="6667000" />
       <workItem from="1733167595549" duration="1819000" />
+      <workItem from="1733226213480" duration="533000" />
     </task>
     <servers />
   </component>
