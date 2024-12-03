@@ -31,7 +31,7 @@ where $V\gth{g}$ is the unitary matrix of eigenvectors of $H(t)$ during time seg
 \begin{equation}
     \ev{\avgfid} = \ev{\frac{d\entfid + 1}{d+1}} = \ev{\frac{\abs{\tr(Q\adjoint U(\tau))}^2 + d}{d(d+1)}}.
 \end{equation}
-Here, $Q\equiv\Uc(t=\tau)$ is the noise-free propagator at time $\tau$ of completion of the circuit and $\ev{\cdot}$ denotes the ensemble average over $N$ Monte Carlo realizations of \cref{suppeq:mc_propagator}, \ie $\ev{A}=\frac{1}{N}\sum_{i=1}^N A_i$. The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigma_{\avgfid} / \sqrt{N}$ with $\sigma_{\avgfid}$ the standard deviation over the Monte Carlo traces.
+Here, $Q\equiv\Uc(t=\tau)$ is the noise-free propagator at time $\tau$ of completion of the circuit and $\ev{\cdot}$ denotes the ensemble average over $N$ Monte Carlo realizations of \cref{suppeq:mc_propagator}, \ie, $\ev{A}=\frac{1}{N}\sum_{i=1}^N A_i$. The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigma_{\avgfid} / \sqrt{N}$ with $\sigma_{\avgfid}$ the standard deviation over the Monte Carlo traces.
 
 \chapter{Reconstruction by frequency-comb time-domain simulation}\label{ch:filter_functions:validation}
 For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouvUe resulting from the quantum system's evolution under the noise fully characterized by its one-sided \gls{psd} $S(\omega)$, we define the \gls{ff} \FF by
