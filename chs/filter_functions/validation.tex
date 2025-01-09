@@ -3,7 +3,7 @@
 \section{Validation of QFT fidelities}
 In this section, we perform Lindblad master equation and Monte Carlo simulations to verify the fidelities predicted for the QFT circuit in the main text. We focus on noise exclusively on the third qubit, entering through the noise operator $B_\alpha\equiv\sigma_y^{(3)}$. 
 
-To validate the fidelity for white noise, we use a Lindblad master equation \cite{Lindblad1976,Gorini1976} in superoperator form. We represent linear maps $\mc{A}: \rho\rightarrow\mc{A}(\rho)$ by matrices in the Pauli transfer matrix representation as (see \citer{Hangleiter2021} for more details)
+To validate the fidelity for white noise, we use a Lindblad master equation~\cite{Lindblad1976,Gorini1976} in superoperator form. We represent linear maps $\mc{A}: \rho\rightarrow\mc{A}(\rho)$ by matrices in the Pauli transfer matrix representation as (see \citer{Hangleiter2021} for more details)
 \begin{equation}
     \mc{A}_{ij} \coloneqq \tr(\sigma_i\mc{A}(\sigma_j))
 \end{equation}
@@ -40,10 +40,10 @@ For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouv
     \liouvUe(\tau) = \exp\left\{-\int\frac{\dd{\omega}}{2\pi}\FF S(\omega)\right\}.
 \end{align}
 Now, suppose that
-\begin{align}
+\begin{equation}
     \label{eq:psd:monochromatic}
-    S_{\omega_i}(\omega) = \sigma_i^2 \delta(\omega - \omega_i), %\todo{check normalization}
-\end{align}
+    S(\omega) = \sigma_i^2 \delta(\omega - \omega_i) \eqqcolon S_{\omega_i}(\omega),
+\end{equation} \todo{find factor $2\pi$}
 that is, the \gls{psd} of a monochromatic sinusoid of frequency $\omega_i$ and \gls{rms} $\sigma_i^2$\marginnote{
     \Cref{eq:psd:monochromatic} discretizes $S(\omega)$ by sampling it at points $\omega_i$, \ie,
     \begin{align*}
@@ -84,6 +84,8 @@ and
     \end{split}
 \end{equation}
 respectively.
+This allows us to analyze in detail deviations of the closed-form expression obtained by means of the cumulant expansion \todo{ref}, from the exact filter functions given by \cref{eq:filter_function:monte_carlo:coherent,eq:filter_function:monte_carlo:incoherent}.
+
 From a \gls{mc} point of view, \liouvUe is given by
 \begin{align}
     \liouvUe(\tau) \equiv \expval{\liouvUe_{\omega_i}(\tau)} = \liouvQ\transpose \expval{\liouvU_{\omega_i}(\tau)},
@@ -94,6 +96,7 @@ where $\liouvU_{\omega_i}(\tau)$ is the solution of the Schrödinger equation fo
         \expval{A}(t) = \frac{1}{N}\sum_{i=1}^N A_i(t)
     \end{align*}
     where $i$ enumerates the realizations of the stochastic process.
+    The relative error of this average scales as $N^{-\flatfrac{1}{2}}$.
 }.
 Inserting into \cref{eq:filter_function:monochromatic}, we find
 \begin{equation}
@@ -106,7 +109,22 @@ Inserting into \cref{eq:filter_function:monochromatic}, we find
 If we evaluate \cref{eq:filter_function:monte_carlo} for a set of frequencies $\lbrace\omega_i\rbrace_i$ sampling the true spectrum $S(\omega)$ sufficiently well, we thus obtain the exact filter function \FF (within the accuracy of \gls{mc}), allowing us to compare the accuracy of the formalism developed in\todo{ref}.
 
 So what does a single noise realization of \cref{eq:psd:monochromatic} in the time domain look like? \todo{tikz sketch?}
-It's a sinusoid with amplitude $A_i \sim \mathcal{N}(0, \sigma_i^2)$, frequency $\omega_i$, and phase $\phi \sim U(0, 2\pi)$,
+It's a sinusoid with amplitude $A_i \sim \text{Rice}(0, \sigma_i^2)$\marginnote{
+    $\text{Rice}(\nu, \sigma)$ is the Rice distribution with probability density function
+    \begin{equation*}
+        \rho(x) = \frac{x}{\sigma^2}\exp{-\frac{x^2 + \nu^2}{2\sigma^2}}I_0\left(\frac{x\nu}{\sigma^2}\right)
+    \end{equation*}
+    with $I_0(z)$ the modified Bessel function of the first kind with order zero \cite{RiceDistributionWiki}.
+    It describes the probability distribution of the distance from the origin of a point drawn from a bivariate normal distribution with mean $\nu$ and standard deviation $\sigma$.
+}, frequency $\omega_i$, and phase $\phi \sim U(0, 2\pi)$\marginnote{
+    The probability density function of the uniform distribution $U(a, b)$ is
+    \begin{equation*}
+        \rho(y) = \begin{cases}
+        (b - a)^{-1}    & \qif* a\leq y < b, \\
+        0               & \qelse*
+        \end{cases}
+    \end{equation*}
+},
 \begin{equation}
     b(t) = A_i\sin(\omega_i t + \phi).
 \end{equation}
@@ -117,19 +135,6 @@ Instead of taking the random sampling approach of \gls{mc}, we can also compute 
     \label{eq:monte_carlo:propagator:average}
     \mathbb{E}_{A_i,\phi}[\liouvU] = \int\dd{x}\rho_{A_i}(x)\int\dd{y}\rho_{\phi}(y)\liouvU[x, y],
 \end{equation}
-\marginnote{
-    The probability density function of the zero-mean normal distribution $\mc{N}(\mu, \sigma^2)$ is
-    \begin{equation*}
-        \rho(x) = \frac{1}{\sqrt{2\pi\sigma_i^2}}\exp\left\{\frac{(x-\mu)^2}{2\sigma^2}\right\}.
-    \end{equation*}
-    The probability density function of the uniform distribution $U(a, b)$ is
-    \begin{equation*}
-        \rho(y) = \begin{cases}
-            (b - a)^{-1}    & \qif* a\leq y < b, \\
-            0               & \qelse*
-        \end{cases}
-    \end{equation*}
-}
 where we wrote $\liouvU[x, y]$ for the Liouville representation of the \gls{mc} propagator for single $x$ and $y$ drawn from their respective distributions.
-Whether we choose the \gls{mc} method or direct integration, in practice \cref{eq:monte_carlo:propagator:average} will be evaluated numerically, either by drawing random samples from the distributions $\mc{N}(0, \sigma_i^2)$ and $U(0,2\pi)$ or discretizing \cref{eq:monte_carlo:propagator:average}.
+Whether we choose the \gls{mc} method or direct integration, in practice \cref{eq:monte_carlo:propagator:average} will be evaluated numerically, either by drawing random samples from the distributions $\text{Rice}(0, \sigma_i)$ and $U(0,2\pi)$ or by discretizing \cref{eq:monte_carlo:propagator:average}.
 
