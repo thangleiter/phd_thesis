@@ -10,7 +10,6 @@
       <change beforePath="$PROJECT_DIR$/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/validation.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.bib" beforeDir="false" afterPath="$PROJECT_DIR$/main.bib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.tex" beforeDir="false" afterPath="$PROJECT_DIR$/main.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/packages.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/packages.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +92,7 @@
       <recent name="$PROJECT_DIR$/chs/filter_functions" />
     </key>
   </component>
-  <component name="RunManager" selected="LaTeX.latexmk windows">
+  <component name="RunManager" selected="LaTeX.latexmk clean windows">
     <list>
       <item itemvalue="LaTeX.latexmk linux" />
       <item itemvalue="LaTeX.latexmk windows" />
@@ -129,7 +128,8 @@
       <workItem from="1733918148369" duration="6805000" />
       <workItem from="1734440319526" duration="95000" />
       <workItem from="1734440424506" duration="9876000" />
-      <workItem from="1736436075468" duration="5079000" />
+      <workItem from="1736436075468" duration="6742000" />
+      <workItem from="1736497877331" duration="11366000" />
     </task>
     <servers />
   </component>
