@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/validation.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.bib" beforeDir="false" afterPath="$PROJECT_DIR$/main.bib" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +91,7 @@
       <recent name="$PROJECT_DIR$/chs/filter_functions" />
     </key>
   </component>
-  <component name="RunManager" selected="LaTeX.latexmk linux">
+  <component name="RunManager" selected="LaTeX.latexmk windows">
     <list>
       <item itemvalue="LaTeX.latexmk linux" />
       <item itemvalue="LaTeX.latexmk windows" />
@@ -101,8 +102,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
       </set>
     </attachedChunks>
   </component>
@@ -128,6 +129,11 @@
       <workItem from="1734440424506" duration="9876000" />
       <workItem from="1736436075468" duration="6742000" />
       <workItem from="1736497877331" duration="11366000" />
+      <workItem from="1736843626082" duration="2996000" />
+      <workItem from="1737390867447" duration="608000" />
+      <workItem from="1737393219768" duration="2994000" />
+      <workItem from="1738166057763" duration="1478000" />
+      <workItem from="1738172096119" duration="9348000" />
     </task>
     <servers />
   </component>
