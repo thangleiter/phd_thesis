@@ -1,7 +1,8 @@
 Write-Host "Activating environment"
 # We run without a profile to keep shell startup time at a minimum. The conda hook still needs to be invoked.
-(& "$env:localappdata\miniforge3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | Invoke-Expression
-conda activate tectonic
+(& $Env:MAMBA_EXE 'shell' 'hook' -s 'powershell' -r $Env:MAMBA_ROOT_PREFIX) | Out-String | Invoke-Expression
+Write-Host "foobar"
+mamba activate tectonic
 
 Write-Host "Building document"
 & "tectonic.exe" -X build --keep-intermediates

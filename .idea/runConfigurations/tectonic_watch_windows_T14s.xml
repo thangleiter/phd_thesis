@@ -8,10 +8,13 @@
     <option name="SCRIPT_WORKING_DIRECTORY" value="C:/Users/tobias/Documents/Uni/Physik/Promotion/thesis" />
     <option name="INDEPENDENT_INTERPRETER_PATH" value="false" />
     <option name="INTERPRETER_PATH" value="C:/Program Files/PowerShell/7/pwsh.exe" />
-    <option name="INTERPRETER_OPTIONS" value="-noprofile" />
+    <option name="INTERPRETER_OPTIONS" value="" />
     <option name="EXECUTE_IN_TERMINAL" value="false" />
     <option name="EXECUTE_SCRIPT_FILE" value="true" />
-    <envs />
+    <envs>
+      <env name="MAMBA_ROOT_PREFIX" value="C:\Users\tobias\AppData\Local\miniforge3" />
+      <env name="MAMBA_EXE" value="C:\Users\tobias\AppData\Local\miniforge3\Library\bin\mamba.exe" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>
