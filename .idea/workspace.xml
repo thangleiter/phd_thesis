@@ -7,8 +7,7 @@
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/validation.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.bib" beforeDir="false" afterPath="$PROJECT_DIR$/main.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chs/filter_functions/introduction.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/introduction.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +58,9 @@
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2pWlWYx7ye08qhDz4rGTp8ZkWoW" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -80,7 +82,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -91,7 +93,7 @@
       <recent name="$PROJECT_DIR$/chs/filter_functions" />
     </key>
   </component>
-  <component name="RunManager" selected="LaTeX.latexmk windows">
+  <component name="RunManager" selected="LaTeX.latexmk clean linux">
     <list>
       <item itemvalue="LaTeX.latexmk linux" />
       <item itemvalue="LaTeX.latexmk windows" />
@@ -102,8 +104,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
@@ -134,6 +136,9 @@
       <workItem from="1737393219768" duration="2994000" />
       <workItem from="1738166057763" duration="1478000" />
       <workItem from="1738172096119" duration="9348000" />
+      <workItem from="1742569116896" duration="3043000" />
+      <workItem from="1742650171082" duration="187000" />
+      <workItem from="1742661260440" duration="3003000" />
     </task>
     <servers />
   </component>
