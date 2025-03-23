@@ -1,12 +1,21 @@
 # To Do's
 ## Content
- - [ ]
+- [ ]
 ## Layout
- - [ ] Tune the bibliography style
+- [ ] Tune the bibliography style
 ## `latexmk`
- - [ ]
+- [ ]
 ## `tectonic`
- - [ ] The bibliography font is off
+- [ ] The bibliography font is off
+
+# Repository layout
+- The TeX style is included as a git submodule at `lib/kaobook`. 
+- There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
+  To switch between branches, run 
+  ```
+  git switch [kaobook/kaobook_tectonic]
+  git submodule update
+  ```
 
 # XeTeX
  
