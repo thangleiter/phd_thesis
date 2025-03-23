@@ -11,10 +11,9 @@
 # Repository layout
 - The TeX style is included as a git submodule at `lib/kaobook`. 
 - There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
-  To switch between branches, run 
+  To automatically switch to the correct submodule branch when switching branches in the main repository, run 
   ```
-  git switch [kaobook/kaobook_tectonic]
-  git submodule update
+  git config core.hooksPath .githooks
   ```
 
 # XeTeX
