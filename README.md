@@ -1,3 +1,13 @@
+# To Do's
+## Content
+ - [ ]
+## Layout
+ - [ ] Tune the bibliography style
+## `latexmk`
+ - [ ]
+## `tectonic`
+ - [ ] The bibliography font is off
+
 # XeTeX
  
 ## `luaotfload-tool`
@@ -7,6 +17,7 @@
 - Build from source using `cargo install --path .`
   - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic`
 - Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
+- Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
 
 # Kaobook
 - Clone from source at `git@git.rwth-aachen.de:tobias.hangleiter/kaobook`

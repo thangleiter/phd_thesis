@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/tectonic_build_manjaro_T14s.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/tectonic_build_manjaro_T14s.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/tectonic_watch_manjaro_T14s.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/tectonic_watch_manjaro_T14s.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/default/default.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/default/default.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/build_linux.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/watch_linux.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tex/preamble.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/preamble.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,7 +175,7 @@
       <workItem from="1742650171082" duration="187000" />
       <workItem from="1742661260440" duration="3765000" />
       <workItem from="1742725942429" duration="1435000" />
-      <workItem from="1742727414565" duration="2979000" />
+      <workItem from="1742727414565" duration="3539000" />
     </task>
     <servers />
   </component>
