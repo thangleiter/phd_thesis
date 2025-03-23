@@ -1,38 +1,4 @@
 % mainfile: main.tex
-\chapter{Monte Carlo and Lindblad master equation simulations}
-\section{Validation of QFT fidelities}
-In this section, we perform Lindblad master equation and Monte Carlo simulations to verify the fidelities predicted for the QFT circuit in the main text. We focus on noise exclusively on the third qubit, entering through the noise operator $B_\alpha\equiv\sigma_y^{(3)}$. 
-
-To validate the fidelity for white noise, we use a Lindblad master equation \cite{Lindblad1976,Gorini1976} in superoperator form. We represent linear maps $\mc{A}: \rho\rightarrow\mc{A}(\rho)$ by matrices in the Pauli transfer matrix representation as (see \citer{Hangleiter2021} for more details)
-\begin{equation}
-    \mc{A}_{ij} \coloneqq \tr(\sigma_i\mc{A}(\sigma_j))
-\end{equation}
-and operators as column vectors (\ie generalized Bloch vectors) as
-\begin{equation}
-    \rho_i \coloneqq \tr(\sigma_i\rho),
-\end{equation}
-allowing us to write the Lindblad equation
-\begin{equation}
-    \dv{t}\rho(t) = -\i\comm{H(t)}{\rho(t)} + \sum_\alpha \gamma_\alpha\left(L_\alpha\rho(t) L_\alpha\adjoint - \frac{1}{2}\acomm{L_\alpha\adjoint L_\alpha}{\rho(t)}\right)
-\end{equation}
-as a linear differential equation in matrix form,
-\begin{equation}\label{suppeq:lindlbad:liouville}
-    \dv{t}\rho_i(t) = \sum_j\left(-\i\mc{H}_{ij}(t)+ \sum_\alpha \gamma_\alpha \mc{D}_{\alpha, ij}\right)\rho_j(t).
-\end{equation}
-Here, $\mc{H}_{ij}(t) = \tr(\sigma_i\comm{H(t)}{\sigma_j})$ and $\mc{D}_{\alpha, ij} = \tr(\sigma_i L_\alpha\sigma_j L_\alpha\adjoint - \frac{1}{2}\sigma_i \acomm{L_\alpha\adjoint L_\alpha}{\sigma_j})$. By setting $L_\alpha\equiv\sigma_y^{(3)}$ as well as $\gamma_\alpha\equiv\flatfrac{S_0}{2}$ with $S_0$ the amplitude of the one-sided noise power spectral density (PSD) so that $S(\omega) = S_0$, we can compare the fidelity obtained from the filter functions to that from the explicit simulation of \cref{suppeq:lindlbad:liouville}. The latter is computed as $\avgfid = \flatfrac{\tr(\mc{Q}\adjoint\mc{U})}{d^2}$, where $\mc{Q}$ is the superpropagator due to the Hamiltonian evolution alone (\ie the ideal evolution without noise).
-
-For the Monte Carlo simulation, we explicitly generate time traces of $b_Q(t)$ (\cf \cref{suppeq:noise_hamiltonian}) by drawing pseudo-random variables from a distribution whose PSD is $S(f) = S_0/f$. To do this, we draw complex, normally distributed samples in frequency space (\ie white noise), scale it with the square root of the PSD, and finally perform the inverse Fourier transform. We choose an oversampling factor of 16, so that the time discretization of the simulation is $\Delta t_\mr{MC} = \flatfrac{\Delta t}{16} = \SI{62.5}{\pico\second}$ ($\Delta t = \SI{1}{\nano\second}$ is the time step of the pulses used in the FF simulation), leading to a highest resolvable frequency of $f_\mr{max} = \SI{16}{\giga\hertz}$. Conversely, we increase the frequency resolution by sampling a time trace longer by a given factor, giving frequencies below $f_\mr{min}$ (\SI{16}{\kilo\hertz} for pink, \SI{0}{\hertz} for white noise) weight zero, and truncating it to the number of time steps in the algorithm times the oversampling factor. This yields a time trace with frequencies $f\in [f_\mr{min}, f_\mr{max}]$ and a given resolution (we choose $\Delta f = \SI{160}{\hertz}$). 
-
-We then proceed to diagonalize the Hamiltonian $H(t) = H_c(t) + H_n(t)$ and compute the propagator for one noise realization as
-\begin{equation}\label{suppeq:mc_propagator}
-    U(t) = \prod_g V\gth{g}\exp\lbrace -\i\Omega\gth{g}\Delta t_\mr{MC}\rbrace V^{(g)\dagger},
-\end{equation}
-where $V\gth{g}$ is the unitary matrix of eigenvectors of $H(t)$ during time segment $g$ and $\Omega\gth{g}$ the diagonal matrix of eigenvalues. Finally, we obtain an estimate for the average gate fidelity \avgfid from the entanglement fidelity \entfid as
-\begin{equation}
-    \ev{\avgfid} = \ev{\frac{d\entfid + 1}{d+1}} = \ev{\frac{\abs{\tr(Q\adjoint U(\tau))}^2 + d}{d(d+1)}}.
-\end{equation}
-Here, $Q\equiv\Uc(t=\tau)$ is the noise-free propagator at time $\tau$ of completion of the circuit and $\ev{\cdot}$ denotes the ensemble average over $N$ Monte Carlo realizations of \cref{suppeq:mc_propagator}, \ie $\ev{A}=\frac{1}{N}\sum_{i=1}^N A_i$. The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigma_{\avgfid} / \sqrt{N}$ with $\sigma_{\avgfid}$ the standard deviation over the Monte Carlo traces.
-
 \chapter{Reconstruction by frequency-comb time-domain simulation}\label{ch:filter_functions:validation}
 For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouvUe resulting from the quantum system's evolution under the noise fully characterized by its one-sided \gls{psd} $S(\omega)$, we define the \gls{ff} \FF by
 \begin{align}
@@ -40,31 +6,31 @@ For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouv
     \liouvUe(\tau) = \exp\left\{-\int\frac{\dd{\omega}}{2\pi}\FF S(\omega)\right\}.
 \end{align}
 Now, suppose that
-\begin{align}
+\begin{equation}
     \label{eq:psd:monochromatic}
-    S_{\omega_i}(\omega) = 2\pi\sigma_i^2 \delta(\omega - \omega_i), %\todo{check normalization}
-\end{align}
-that is, the \gls{psd} of a monochromatic sinusoid of frequency $\omega_i$ and \gls{rms} $\sigma_i^2$\marginnote{
+    S(\omega) = 2\pi\sigma_i^2 \delta(\omega - \omega_i) \eqqcolon S_i(\omega),
+\end{equation}
+that is, the \gls{psd} of a monochromatic sinusoid of frequency $\omega_i$ and \gls{rms} $\sigma_i$\marginnote{
     \Cref{eq:psd:monochromatic} discretizes $S(\omega)$ by sampling it at points $\omega_i$, \ie,
     \begin{align*}
-        S(\omega) \sim \lim_{n\to\infty}\sum_{i=1}^n S_{\omega_i}(\omega).
+        S(\omega) \sim \lim_{n\to\infty}\sum_{i=1}^n S_i(\omega).
     \end{align*}
 }.
 Then \cref{eq:filter_function:definition} becomes
 \begin{equation}
     \label{eq:filter_function:monochromatic}
     \begin{split}
-        \liouvUe_{\omega_i}(\tau) =& \exp\left\lbrace -2\pi\sigma_i^2\int\frac{\dd{\omega}}{2\pi}\FF\delta(\omega - \omega_i)\right\rbrace \\
+        \liouvUe_i(\tau) =& \exp\left\lbrace -2\pi\sigma_i^2\int\frac{\dd{\omega}}{2\pi}\FF\delta(\omega - \omega_i)\right\rbrace \\
                                   =& \exp\left\lbrace -\sigma_i^2\mc{F}(\omega_i;\tau)\right\rbrace,
     \end{split}
 \end{equation}
-where $\liouvUe_{\omega_i}(\tau)$ is the noisy quantum operation generated by monochromatic noise with \gls{psd} $S_{\omega_i}(\omega)$ according to \cref{eq:psd:monochromatic}.
+where $\liouvUe_i(\tau)$ is the noisy quantum operation generated by monochromatic noise with \gls{psd} $S_i(\omega)$ according to \cref{eq:psd:monochromatic}.
 It is now easy to invert \cref{eq:filter_function:monochromatic}, and we obtain
 \begin{align}
     \label{eq:filter_function:monochromatic:solved}
-    \mc{F}(\omega_i; \tau) = -\sigma_i^{-2}\log\liouvUe_{\omega_i}(\tau).
+    \mc{F}(\omega_i; \tau) = -\sigma_i^{-2}\log\liouvUe_i(\tau).
 \end{align}
-Because we represent quantum operations as matrices in Liouville space, \cref{eq:filter_function:monochromatic:solved} is easy to implement on a computer; to sample the exact \gls{ff} at the set of discrete frequencies $\lbrace\omega_i\rbrace_i$ we simply need to compute $\liouvUe_{\omega_i}(\tau)$  using a time-domain simulation method of our choice and take the logarithm!\sidenote{A similar approach was pursued by \citeauthor{Geck2021} in her PhD thesis to compare gate fidelities~\cite{Geck2021}.}
+Because we represent quantum operations as matrices in Liouville space, \cref{eq:filter_function:monochromatic:solved} is easy to implement on a computer; to sample the exact \gls{ff} at the set of discrete frequencies $\lbrace\omega_i\rbrace_i$ we simply need to compute $\liouvUe_i(\tau)$  using a time-domain simulation method of our choice and take the logarithm!\sidenote{A similar approach was pursued by \citeauthor{Geck2021} in her PhD thesis to compare gate fidelities~\cite{Geck2021}.}
 
 Indeed, we can go a step further and split apart the coherent and incoherent contributions to the noisy evolution.
 Since (in-)coherent quantum operations are represented by (anti-)symmetric matrices in Liouville space, we may define the incoherent and coherent \glspl{ff} by
@@ -72,7 +38,7 @@ Since (in-)coherent quantum operations are represented by (anti-)symmetric matri
     \label{eq:filter_function:monte_carlo:incoherent}
     \begin{split}
         \mc{F}_\Gamma(\omega_i;\tau) =& \frac{1}{2}\left(\mc{F}(\omega_i;\tau) + \mc{F}(\omega_i;\tau)\transpose\right) \\
-                                     =& \frac{1}{2\sigma_i^2}\left(\log\liouvUe_{\omega_i}(\tau) + \log\liouvUe_{\omega_i}(\tau)\transpose\right),
+                                     =& \frac{1}{2\sigma_i^2}\left(\log\liouvUe_i(\tau) + \log\liouvUe_i(\tau)\transpose\right),
     \end{split}
 \end{equation}
 and
@@ -80,55 +46,62 @@ and
     \label{eq:filter_function:monte_carlo:coherent}
     \begin{split}
         \mc{F}_\Delta(\omega_i;\tau) =& \frac{1}{2}\left(\mc{F}(\omega_i;\tau) - \mc{F}(\omega_i;\tau)\transpose\right) \\
-                                     =& \frac{1}{2\sigma_i^2}\left(\log\liouvUe_{\omega_i}(\tau) - \log\liouvUe_{\omega_i}(\tau)\transpose\right),
+                                     =& \frac{1}{2\sigma_i^2}\left(\log\liouvUe_i(\tau) - \log\liouvUe_i(\tau)\transpose\right),
     \end{split}
 \end{equation}
 respectively.
-From a \gls{mc} point of view, \liouvUe is given by
+This allows us to analyze in detail deviations of the closed-form expression obtained by means of the cumulant expansion \todo{ref}, from the exact filter functions given by \cref{eq:filter_function:monte_carlo:coherent,eq:filter_function:monte_carlo:incoherent}.
+In the following, I will lay out explicitly how these can be computed in the time domain.
+
+To begin with, observe that from a \gls{mc} point of view, \liouvUe is given by
 \begin{align}
-    \liouvUe(\tau) \equiv \expval{\liouvUe_{\omega_i}(\tau)} = \liouvQ\transpose \expval{\liouvU_{\omega_i}(\tau)},
+    \liouvUe(\tau) \equiv \expval{\liouvUe_i(\tau)} = \liouvQ\transpose \expval{\liouvU_i(\tau)},
 \end{align}
-where $\liouvU_{\omega_i}(\tau)$ is the solution of the Schrödinger equation for a single realization of the noise and $\expval{\placeholder}$ denotes the ensemble average\marginnote{
+where $\liouvU_i(\tau)$ is the solution of the Schrödinger equation for a single realization of the noise and $\expval{\placeholder}$ denotes the ensemble average\marginnote{
     For $N$ realizations of the stochastic process underlying $b(t)$, the ensemble average of a quantity $A(t)$ that is a function of $b(t)$ is given by
     \begin{align*}
         \expval{A}(t) = \frac{1}{N}\sum_{i=1}^N A_i(t)
     \end{align*}
     where $i$ enumerates the realizations of the stochastic process.
+    The relative error of this average scales as $N^{-\flatfrac{1}{2}}$.
 }.
 Inserting into \cref{eq:filter_function:monochromatic}, we find
 \begin{equation}
     \label{eq:filter_function:monte_carlo}
     \begin{split}
-        \mc{F}(\omega_i; \tau) =& \sigma_i^{-2}\log\expval{\liouvUe_{\omega_i}(\tau)} \\
-                               =& \sigma_i^{-2}\log\liouvQ\transpose\expval{\liouvU_{\omega_i}(\tau)}.
+        \mc{F}(\omega_i; \tau) =& \sigma_i^{-2}\log\expval{\liouvUe_i(\tau)} \\
+                               =& \sigma_i^{-2}\log\liouvQ\transpose\expval{\liouvU_i(\tau)}.
     \end{split}
 \end{equation}
 If we evaluate \cref{eq:filter_function:monte_carlo} for a set of frequencies $\lbrace\omega_i\rbrace_i$ sampling the true spectrum $S(\omega)$ sufficiently well, we thus obtain the exact filter function \FF (within the accuracy of \gls{mc}), allowing us to compare the accuracy of the formalism developed in\todo{ref}.
 
 So what does a single noise realization of \cref{eq:psd:monochromatic} in the time domain look like? \todo{tikz sketch?}
-It's a sinusoid with amplitude $A_i \sim \mathcal{N}(0, \sigma_i^2)$, frequency $\omega_i$, and phase $\phi \sim U(0, 2\pi)$,
-\begin{equation}
+It's a sinusoid with amplitude $A_i \sim \text{Rayleigh}(\sigma_i)$,\sidenote{
+    $\text{Rayleigh}(\sigma)$ is the Rayleigh distribution with probability density function \cite{RayleighDistributionWiki}
+    \begin{equation*}
+        \rho(x) = \frac{x}{\sigma^2}\exp{-\frac{x^2}{2\sigma^2}}.
+    \end{equation*}
+    It describes the probability distribution of the distance from the origin of a point drawn from a bivariate normal distribution with mean $0$ and standard deviation $\sigma$.
+}
+frequency $\omega_i$, and phase $\phi \sim U(0, 2\pi)$,\sidenote{
+    The probability density function of the uniform distribution $U(a, b)$ is
+    \begin{equation*}
+        \rho(y) = \begin{cases}
+        (b - a)^{-1}    & \qif* a\leq y < b, \\
+        0               & \qelse*
+        \end{cases}
+    \end{equation*}
+}
+\begin{equation}\label{eq:monte_carlo:noise_trace}
     b(t) = A_i\sin(\omega_i t + \phi).
 \end{equation}
-Instead of taking the random sampling approach of \gls{mc}, we can also compute the expectation value of $\liouvU_{\omega_i}(t)$ over $A_i$ and $\phi$ by integrating over the probability density functions\marginnote{
+Instead of taking the random sampling approach of \gls{mc}, we can also compute the expectation value of $\liouvU_i(t)$ over $A_i$ and $\phi$ by integrating over the probability density functions,\sidenote{
     We write the expectation value of an observable $A$ with respect to a random variable $X$ with the probability density function $\rho_X$ as $\mathbb{E}_X[A]$.
-},
+}
 \begin{equation}
     \label{eq:monte_carlo:propagator:average}
     \mathbb{E}_{A_i,\phi}[\liouvU] = \int\dd{x}\rho_{A_i}(x)\int\dd{y}\rho_{\phi}(y)\liouvU[x, y],
 \end{equation}
-\marginnote{
-    The probability density function of the zero-mean normal distribution $\mc{N}(\mu, \sigma^2)$ is
-    \begin{equation*}
-        \rho(x) = \frac{1}{\sqrt{2\pi\sigma_i^2}}\exp\left\{\frac{(x-\mu)^2}{2\sigma^2}\right\}.
-    \end{equation*}
-    The probability density function of the uniform distribution $U(a, b)$ is
-    \begin{equation*}
-        \rho(y) = \begin{cases}
-            (b - a)^{-1}    & \qif* a\leq y < b, \\
-            0               & \qelse*
-        \end{cases}
-    \end{equation*}
-}
 where we wrote $\liouvU[x, y]$ for the Liouville representation of the \gls{mc} propagator for single $x$ and $y$ drawn from their respective distributions.
-Whether we choose the \gls{mc} method or direct integration, in practice \cref{eq:monte_carlo:propagator:average} will be evaluated numerically, either by drawing random samples from the distributions $\mc{N}(0, \sigma_i^2)$ and $U(0,2\pi)$ or discretizing \cref{eq:monte_carlo:propagator:average}.
+Whether we choose the \gls{mc} method or direct integration, in practice \cref{eq:monte_carlo:propagator:average} will be evaluated numerically, either by drawing random samples from the distributions $\text{Rice}(0, \sigma_i)$ and $U(0,2\pi)$ or by discretizing \cref{eq:monte_carlo:propagator:average}.
+

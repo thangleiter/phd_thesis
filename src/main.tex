@@ -127,11 +127,11 @@
 
 \cleardoublepage\bigskip
 \clearpage\bigskip
-\input{tex/publications}
+\include{tex/publications}
 
 \cleardoublepage\bigskip
 \clearpage\bigskip
-\input{tex/software}
+\include{tex/software}
 
 \endgroup
 
@@ -143,30 +143,33 @@
 \setchapterstyle{kao} % Choose the default chapter heading style
 
 % TODO: Abstract!
-% \input{chapters/introduction.tex}
+% \include{chapters/introduction.tex}
 
 %\pagelayout{wide} % No margins
 %\addpart{Class Options, Commands and Environments}
 %\pagelayout{margin} % Restore margins
 %
-% \input{chapters/options.tex}
-% \input{chapters/textnotes.tex}
-% \input{chapters/figsntabs.tex}
-% \input{chapters/references.tex}
+% \include{chapters/options.tex}
+% \include{chapters/textnotes.tex}
+% \include{chapters/figsntabs.tex}
+% \include{chapters/references.tex}
 % 
 % \pagelayout{wide} % No margins
 % \addpart{Design and Additional Features}
 % \pagelayout{margin} % Restore margins
 % 
-% \input{chapters/layout.tex}
-% \input{chapters/mathematics.tex}
+% \include{chapters/layout.tex}
+% \include{chapters/mathematics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{A \python Welch's-method Spectrometer}\label{part:spectrometer}
+\addpart{A flexible \python tool for Fourier-transform noise spectroscopy}\label{part:spectrometer}
 \pagelayout{margin} % Restore margins
 
+\include{chs/spectrometer/introduction}
+\include{chs/spectrometer/theory}
+
 \pagelayout{wide} % No margins
-\addpart{Improvements and Characterization of a Millikelvin Confocal Microscope}\label{part:setup}
+\addpart{Characterization and Improvements of a Millikelvin Confocal Microscope}\label{part:setup}
 \pagelayout{margin} % Restore margins
 
 \pagelayout{wide} % No margins
@@ -177,22 +180,18 @@
 \addpart{A Filter-Function Formalism For Quantum Operations}\label{part:filter_functions}
 \pagelayout{margin} % Restore margins
 
-\input{chs/filter_functions/introduction}
-\input{chs/filter_functions/validation}
-%\input{chs/filter_functions/prr.tex}
+\include{chs/filter_functions/introduction}
+\include{chs/filter_functions/time_domain_methods}
+\include{chs/filter_functions/validation}
+%\include{chs/filter_functions/prr.tex}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
 \pagelayout{wide} % No margins
-\addpart{Appendix}
+\addpart{Appendix}\label{part:appendix}
 \pagelayout{margin} % Restore margins
 
-% \input{chapters/appendix.tex}
-
-\pagelayout{wide}
-\setchapterstyle{kao}
-\chapter{Test}
-\blindtext
+\include{chs/appendices/filter_functions}
 
 %----------------------------------------------------------------------------------------
 
@@ -205,8 +204,12 @@
 
 % The bibliography needs to be compiled with biber using your LaTeX editor, or on the command line with 'biber main' from the template directory
 
-\defbibnote{bibnote}{Here are the references in citation order.\par\bigskip} % Prepend this text to the bibliography
-\printbibliography[heading=bibintoc, title=Bibliography, prenote=bibnote] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
+%\defbibnote{bibnote}{Here are the references in citation order.\par\bigskip} % Prepend this text to the bibliography
+\printbibliography[
+	heading=bibintoc,%
+	title=Bibliography,
+	%prenote=bibnote
+] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
 
 %----------------------------------------------------------------------------------------
 %	GLOSSARY
@@ -235,7 +238,7 @@
 %\thispagestyle{empty}
 %\null%
 %\clearpage
-%\includepdf{cover-back.pdf}
+%\inputpdf{cover-back.pdf}
 
 %----------------------------------------------------------------------------------------
 
