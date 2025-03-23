@@ -9,8 +9,8 @@
 - Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
 
 # Kaobook
-- Clone from source at `git@git.rwth-aachen.de:tobias.hangleiter/kaobook`
-- Branches `lualatex` or `tectonic`
+- Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
+
 ## Kaobook diffs
 - `kaorefs.sty`
    - `cleveref`
