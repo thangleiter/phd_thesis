@@ -2,28 +2,16 @@
 # Universal post-checkout launcher - save as .githooks/post-checkout
 # This script detects the platform and launches the appropriate version
 
-# Get the directory of this script
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PYTHON_SCRIPT="$SCRIPT_DIR/post-checkout.py"
+# Get the previous and current branch names
+previous_ref=$1
+current_ref=$2
+is_branch_checkout=$3
 
-# Detect platform and execute accordingly
-case "$(uname -s)" in
-  CYGWIN*|MINGW*|MSYS*)
-    # Windows via Git Bash
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "$MAMBA_EXE run -n base python" "$PYTHON_SCRIPT" "$@"
-    if [ $? -ne 0 ]; then
-      echo "Failed to run post-checkout hook."
-    fi
-    ;;
-  *)
-    # Unix-like systems
-    if command -v python3 >/dev/null 2>&1; then
-      python3 "$PYTHON_SCRIPT" "$@"
-    elif command -v python >/dev/null 2>&1; then
-      python "$PYTHON_SCRIPT" "$@"
-    else
-      echo "Python not found. Please ensure Python is installed and in your PATH."
-      exit 1
-    fi
-    ;;
-esac
+# Only run for branch checkouts (not file checkouts)
+if [ "$is_branch_checkout" = "1" ]; then
+    echo "Switched branches, updating submodules..."
+    git submodule update 
+fi
+
+exit $?
+
