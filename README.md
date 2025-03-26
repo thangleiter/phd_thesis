@@ -1,3 +1,13 @@
+# Repository layout
+- The most recent version of the compiled document is located at `build/default/default.pdf`
+- Reviews should be placed in `reviews/` :)
+- The TeX style is included as a git submodule at `lib/kaobook`. 
+- There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
+  To automatically switch to the correct submodule branch when switching branches in the main repository, run 
+  ```
+  git config core.hooksPath .githooks
+  ```
+
 # To Do's
 ## Content
 - [ ]
@@ -7,14 +17,6 @@
 - [ ]
 ## `tectonic`
 - [ ] The bibliography font is off
-
-# Repository layout
-- The TeX style is included as a git submodule at `lib/kaobook`. 
-- There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
-  To automatically switch to the correct submodule branch when switching branches in the main repository, run 
-  ```
-  git config core.hooksPath .githooks
-  ```
 
 # XeTeX
  
