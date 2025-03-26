@@ -3,6 +3,7 @@
 - [ ]
 ## Layout
 - [ ] Tune the bibliography style
+- [ ] Chapters instead of parts?
 ## `latexmk`
 - [ ]
 ## `tectonic`

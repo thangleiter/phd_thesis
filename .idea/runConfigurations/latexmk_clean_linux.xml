@@ -8,13 +8,14 @@
       <viewer-command />
       <compiler-arguments>-C -r $PROJECT_DIR$/linux.latexmkrc</compiler-arguments>
       <envs />
+      <expand-macros-in-environment-variables>false</expand-macros-in-environment-variables>
       <before-run-command />
       <main-file>$PROJECT_DIR$/main.tex</main-file>
       <output-path>$PROJECT_DIR$/build</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
       <compile-twice>false</compile-twice>
       <output-format>DEFAULT</output-format>
-      <latex-distribution>TEXLIVE</latex-distribution>
+      <latex-distribution>PROJECT_SDK</latex-distribution>
       <has-been-run>true</has-been-run>
       <bib-run-config>[]</bib-run-config>
       <makeindex-run-config>[]</makeindex-run-config>
