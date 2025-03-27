@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/default/default.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/default/default.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/kaobook" beforeDir="false" afterPath="$PROJECT_DIR$/lib/kaobook" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/kaobook/kaorefs.sty" beforeDir="false" afterPath="$PROJECT_DIR$/lib/kaobook/kaorefs.sty" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/img/tikz/boxcar_fourier.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/img/tikz/boxcar_fourier.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tex/colors.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/colors.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tex/packages.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/packages.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,12 +32,8 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="kaobook_tectonic" />
-                    <option name="lastUsedInstant" value="1742724912" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="kaobook" />
-                    <option name="lastUsedInstant" value="1733247449" />
+                    <option name="branchName" value="tectonic" />
+                    <option name="lastUsedInstant" value="1743065495" />
                   </RecentBranch>
                 </list>
               </option>
@@ -66,49 +67,51 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "LaTeX.latexmk clean linux.executor": "Run",
-    "LaTeX.latexmk clean windows.executor": "Run",
-    "LaTeX.latexmk linux.executor": "Run",
-    "LaTeX.latexmk windows.executor": "Run",
-    "LaTeX.tectonic.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Shell Script.Unnamed.executor": "Run",
-    "Shell Script.tectonic build manjaro@T14s.executor": "Run",
-    "Shell Script.tectonic watch manjaro@T14s.executor": "Run",
-    "git-widget-placeholder": "kaobook__tectonic",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.LaTeX",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;LaTeX.latexmk clean linux.executor&quot;: &quot;Run&quot;,
+    &quot;LaTeX.latexmk clean windows.executor&quot;: &quot;Run&quot;,
+    &quot;LaTeX.latexmk linux.executor&quot;: &quot;Run&quot;,
+    &quot;LaTeX.latexmk windows.executor&quot;: &quot;Run&quot;,
+    &quot;LaTeX.tectonic.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Shell Script.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.tectonic build AG-BLUHM-51.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.tectonic build manjaro@T14s.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.tectonic watch AG-BLUHM-51.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.tectonic watch manjaro@T14s.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;tectonic&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\phd_thesis\src\img" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/chs/filter_functions" />
       <recent name="$PROJECT_DIR$/src/chs" />
       <recent name="D:\phd_thesis" />
-      <recent name="D:\phd_thesis\img" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.tectonic build manjaro@T14s">
+  <component name="RunManager" selected="Shell Script.tectonic watch AG-BLUHM-51">
     <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify>
         <compiler>PDFLATEX</compiler>
         <compiler-path />
         <sumatra-path />
-        <pdf-viewer>EVINCE</pdf-viewer>
+        <pdf-viewer>NONE</pdf-viewer>
         <viewer-command />
         <compiler-arguments />
         <envs />
@@ -139,8 +142,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
-        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
@@ -176,6 +179,7 @@
       <workItem from="1742661260440" duration="3765000" />
       <workItem from="1742725942429" duration="1435000" />
       <workItem from="1742727414565" duration="3539000" />
+      <workItem from="1743076389120" duration="1842000" />
     </task>
     <servers />
   </component>

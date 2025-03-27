@@ -1,19 +1,39 @@
 \begin{tikzpicture}
+    \tikzset{font = \footnotesize}
     \begin{axis} [
+            axis lines=middle,
+            %line width = 1 pt,
+            scale only axis, % Ensures the axis region is exactly \marginparwidth wide
+            width=0.8\marginparwidth,
+            height=3cm,
             domain=-11*pi:11*pi,
             samples=200,
-            xlabel={$\omega_n$},
-            ylabel={$\hat{w}_n$},
             xmin=-12*pi, xmax=12*pi,
             ymin=-0.25, ymax=1.25,
             xtick={-10*pi, 0, 10*pi},
             xticklabels={$\flatfrac{-10\pi}{T}$, $0$, $\flatfrac{10\pi}{T}$},
             ytick={0, 1},
             yticklabels={$$, $T$},
-            axis lines=middle,
-            width=\marginparwidth,
-            height=4cm,
+            every tick/.style={
+                black,
+                thick
+            },
+            xlabel={$\omega_n$},
+            ylabel={$\hat{w}_n$},
+            x label style={at={(axis cs:12*pi,0)}, anchor=west, xshift=2pt},
+            y label style={at={(current axis.north)}, anchor=south},
         ]
-        \addplot [RWTHmagenta100, very thick] {2*sin(deg(x/2))/x};
+
+        \addplot [RWTHmagenta100, very thick] {2*sin(x/2 r)/x};
+
+        %\foreach \x in {-6,-5,-4,-3,-2,-1,1,2,3,4,5,6} {
+        %    % Calculate y = sin(x)/x with special treatment at x=0.
+        %    \tikzmath{\y = sin(\x/2 r)/\x;}
+        %    % Draw a vertical line from (x,0) up to (x,y) in the axis coordinate system.
+        %    \draw[RWTHgreen50, thick] (axis cs:\x,0) -- (axis cs:\x,\y)
+        %        node [draw=RWTHgreen100, circle, fill=RWTHgreen50, inner sep=2pt, pos=0]  {};
+        %}
     \end{axis}
 \end{tikzpicture}
+
+
