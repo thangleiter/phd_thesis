@@ -30,7 +30,9 @@ To see how the \gls{psd} may be estimated from time-series data, consider a cont
 }
 \todo{sketch of auto-correlation function?}
 signal in the time domain $x(t)\in\mathbb{C}$ that is observed for some time $T$.
-We define the windowed Fourier transform of $x(t)$ and its inverse by
+We define the windowed Fourier transform of $x(t)$ and its inverse by\sidenote{
+    In this chapter we will always denote the Fourier transform of some quantity $\xi$ using the same symbol with a hat, $\hat{\xi}$.
+}
 \begin{align}
     \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{\i\omega t} \label{eq:windowed_ft}\\
        \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{-\i\omega t}, \label{eq:windowed_ft:inverse}
@@ -93,19 +95,20 @@ Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized ver
     x_n \qc n\in\lbrace 0, 1, \dotsc, N - 1\rbrace
 \end{align}
 defined at times $t_n = n\Delta t$ with $T = N\Delta t$ and where $\Delta t = \fs\inverse$ is the sampling interval (the inverse of the sampling frequency \fs).
-Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{i}$ and write
+Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{\nu}$ and write
 \begin{align}\label{eq:psd:bartlett}
-    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{i}}^2 \\
-        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{i}
+    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{\nu}}^2 \\
+        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{\nu}
 \end{align}
-where $\hat{x}_n\gth{i}$ is the discrete Fourier transform of $x_n\gth{i}$, we defined the \emph{periodogram} of $x_n\gth{i}$ by
+where $\hat{x}_n\gth{\nu}$ is the discrete Fourier transform of $x_n\gth{\nu}$, we defined the \emph{periodogram} of $x_n\gth{\nu}$ by
 \begin{align}\label{eq:periodogram}
-    S_n\gth{i} = \abs{\hat{x}_n\gth{i}}^2,
+    S_n\gth{\nu} = \abs{\hat{x}_n\gth{\nu}}^2,
 \end{align}
 and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.\sidenote{
     We blithely disregard integer algebra issues occuring here for conciseness and leave it as an exercise for the reader to figure out what the exact bounds of the set of $\omega_n$ are.
 }
 \Cref{eq:psd:bartlett} is known as Bartlett's method~\cite{Bartlett1948} for spectrum estimation.\sidenote{
+    \label{sidenote:continuum_limit}
     By taking the limit $M\to\infty$ one recovers the true \gls{psd}, \[\lim_{M\to\infty}S_n = S(\omega_n).\]
     The continuum limit is as always obtained by sending $\Delta t\to 0, N\to\infty, N\Delta t=\text{const}$.
 }
@@ -119,35 +122,41 @@ In turn, the number of samples $N$ determines the frequency resolution $\Delta f
 \begin{align}\label{eq:f_min}
     \fmin = \Delta f = \frac{1}{T} = \frac{1}{N\Delta t} = \frac{\fs}{N}.
 \end{align}
-Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{i}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
+Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{\nu}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
 
 In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
 It becomes clear, then, that the Bartlett average (\cref{eq:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\Delta t$.
 
 An improvement in data efficiency can be obtained using Welch's method~\cite{Welch1967}.
-To see how, we first need to discuss spectral windows.
+To see how, we first need to discuss spectral windowing.
 
 \section{Window functions}\label{sec:speck:theory:windows}
-Partitioning a signal $x_n$ into $M$ sections $x_n\gth{i}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
-    This window is also known as boxcar window.
+Partitioning a signal $x_n$ into $M$ sections $x_n\gth{\nu}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
+    This window is also known as the boxcar window.
 }
 \begin{align}\label{eq:window:boxcar}
-    w_n\gth{i}(t) =
+    w_n\gth{\nu} =
     \begin{cases}
-        1\qif (i - 1) N \leq n < i N\qand \\
+        1\qif (\nu - 1) N \leq n < \nu N\qand \\
         0\qelse
     \end{cases}
 \end{align}
-so that $x_n\gth{i} = x_n w_n\gth{i}$.
-Now recall that multiplication and convolution are Fourier pairs, that is,
+so that $x_n\gth{\nu} = x_n w_n\gth{\nu}$.
+Now recall that multiplication and convolution are duals under the Fourier transform, implying that
 \begin{align}\label{eq:window:ft_pairs}
-    x_n w_n\gth{i} = \hat{x}_n \ast \hat{w}_n\gth{i}.
+    \hat{x}_n\gth{\nu} = \hat{x}_n \ast \hat{w}_n\gth{\nu}.
 \end{align}
 where the Fourier representation of the rectangular window
-\begin{align}\label{eq:window:boxcar:fourier}
-    \hat{w}_n = T\sinc\left(\frac{\omega T}{2}\right).
+\begin{align}
+    \hat{w}_n\gth{\nu} &= \e^{\i(\nu - \flatfrac{1}{2})\omega_n T}\hat{w}_n, \label{eq:window:boxcar:fourier}\\
+             \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:window:boxcar:fourier:unshifted}
 \end{align}
-\begin{marginfigure}
+\Cref{fig:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
+We can hence understand the Fourier spectrum of $x_n\gth{\nu}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{\nu}$.
+However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cref{eq:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\Delta f$ of discrete signals introduces a finite bandwidth of the probe as well as so-called \emph{side-lobes}.
+These effects induce what is known as \emph{spectral leakage}~\cite{Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
+
+\begin{marginfigure}[-2cm]
     \input{img/tikz/boxcar_fourier}
     \caption{The Fourier representation of the rectangular window in continuous time.}
     \label{fig:boxcar_fourier}
