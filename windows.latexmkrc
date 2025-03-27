@@ -10,7 +10,7 @@ $preview_continuous_mode = 1;
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');
 
-$clean_ext .= " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy";
+$clean_ext .= " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy synctex synctex(busy)";
 
 # Compile the glossary and acronyms list (package 'glossaries')
 add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
