@@ -1,39 +1,158 @@
 % mainfile: main.tex
-\chapter{Theory of noise estimation}\label{ch:speck:theory}
+\chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
 There exists a multitude of methods for estimating noise properties.
 \todo{lay out some others}
 
 If the noisy process $x(t)$\sidenote{
-    We discuss only classical noise here, meaning $x(t)$ commutes with itself at all times. For descriptions of and spectroscopy protocols for quantum noise, refer to \citerr{Clerk2010}{Paz-Silva2017}, for example.
+    We discuss only classical noise here, meaning $x(t)$ commutes with itself at all times. For descriptions of and spectroscopy protocols for quantum noise refer to \citerr{Clerk2010}{Paz-Silva2017}, for example.
 }
-has Gaussian statistics, meaning that the amplitude at a given frequency follows a normal distribution with some mean $\mu$ and variance $\sigma^2$, it can be fully described by the \gls{psd} $S(\omega)$.\sidenote{
-    As we will see below, a further necessary condition for this is that the process $x(t)$ is \emph{wide-sense stationary}, which means that the autocorrelation function $\ev{x(t)^\ast x(t')} = \ev{x(t)^\ast x(t + \tau)}$ with $\tau = t' - t$. That is, it is a function of only the time lag $\tau$ and not the absolute point in time. For simplicity, we therefore set $t\equiv 0$ below.
-}\todo{maybe a classical signal processing ref?}
-Given the windowed Fourier transform of the process $x(t)$,\sidenote{
-    The windowing arises naturally when observing the process $x(t)$ for a finite amount of time $T$ as one would do in an experiment. Mathematicians might at this point argue the integrability of $x(t)$, but as we deal with physical processes and have no shame, we do not.
+has Gaussian statistics, meaning that the value at a given point in time follows a normal distribution with some mean $\mu$ and variance $\sigma^2$ over multiple realizations of the process, it can be fully described by the \gls{psd} $S(\omega)$.\sidenote{
+    The term \emph{power spectrum} is often used interchangably. I will do so as well, but emphasize at this point that in digital signal processing in particular, the \emph{spectrum} is a different quantity from the \emph{spectral density}.
 }
-\begin{align}\label{eq:windowed_ft}
-    \hat{x}(\omega) = \frac{1}{\sqrt{T}}\int_{-\flatfrac{T}{2}}^{+\flatfrac{T}{2}}\dd{t}\e^{\i\omega t}x(t)
-\end{align}
-one defines the \gls{psd} as the ensemble average~\cite{Clerk2010}
-\begin{align}\label{eq:psd:definition}
-    S(\omega) = \lim_{T\rightarrow\infty}\ev{\hat{x}(\omega)^\ast\hat{x}(\omega)}.
-\end{align}
-Using \cref{eq:windowed_ft}, the argument of the limit in \cref{eq:psd:definition} becomes
-\begin{align}\label{eq:wiener_khinchin_theorem}
-    S(\omega) &= \lim_{T\rightarrow\infty}\frac{1}{T}\int_0^T\dd{t}\int_0^T\dd{t'}\e^{\i\omega(t'-t)}\ev{x(t)^\ast x(t')} \\
-              &= \lim_{T\rightarrow\infty}\frac{1}{T}\int_0^T\dd{t}\int_{-t}^{T - t}\dd{\tau}\e^{\i\omega\tau}\ev{x(t)^\ast x(t + \tau)} \\
-              &= \lim_{T\rightarrow\infty}\frac{1}{T}\int_0^T\dd{t}\int_{-t}^{T - t}\dd{\tau}\e^{\i\omega\tau}\ev{x(t - \flatfrac{\tau}{2})^\ast x(t + \flatfrac{\tau}{2})}.
-\end{align}
-%    S(\omega) = \int\dd{\tau}\e^{\i\omega\tau}\ev{x(t)^\ast x(t')}
-If the observation time $T$ is much longer than the characteristic correlation time $\tau_\mr{c}$ of $x(t)$ over which the auto-correlation function $\ev{x(0)x(\tau)}$ decays,
-
+\todo{maybe a classical signal processing ref?}
 For the purpose of noise estimation, the assumption of Gaussianity is a rather weak one as the noise typically arises from a large ensemble of individual fluctuators and is therefore well approximated by a Gaussian distribution by the central limit theorem.\sidenote{
-    As an example, consider electronic devices, where voltage noise arises from a large number of defects and other charge traps in oxides being populated and depopulated at certain rates $\gamma$. The ensemble average over these so-called \glspl{tlf} then yields the well-known \oneoverf-like noise spectra.
+    As an example, consider electronic devices, where voltage noise arises from a large number of defects and other charge traps in oxides being populated and depopulated at certain rates $\gamma$. The ensemble average over these so-called \glspl{tlf} then yields the well-known \oneoverf-like noise spectra (at least for a large density~\cite{Mehmandoost2024}).
 }
-Even if the process $x(t)$ is not perfectly Gaussian, non-Gaussian contributions can be seed as higher-order contributions if viewed from the perspective of perturbation theory, and therefore the \gls{psd} still captures a large part of the statistical properties.
+\todo{flesh out this sidenote?}
+Even if the process $x(t)$ is not perfectly Gaussian, non-Gaussian contributions can be seen as higher-order contributions if viewed from the perspective of perturbation theory, and therefore the \gls{psd} still captures a significant part of the statistical properties.
 For this reason, the \gls{psd} is the central quantity of interest in noise spectroscopy and I will discuss some of its properties in the following.
 
-For real signals $x(t) \in\mathbb{R}$, $S(\omega)$ is an even function and one therefore distinguishes the \emph{two-sided} \gls{psd} $S^{(2)}(\omega)$ from the \emph{one-sided} \gls{psd} $S^{(1)}(\omega) = 2 S^{(2)}(\omega)$ defined only over $\mathbb{R}^+$.
-Complex signals $x(t)\in\mathbb{C}$ such as those generated by Lock-in amplifiers after demodulation in turn have an even real and an odd imaginary part.
-\todo{for,for,for}
+For real signals $x(t) \in\mathbb{R}$, $S(\omega)$ is an even function and one therefore distinguishes the \emph{two-sided} \gls{psd} $S^{(2)}(\omega)$ defined over $\mathbb{R}$ from the \emph{one-sided} \gls{psd} $S^{(1)}(\omega) = 2 S^{(2)}(\omega)$ defined only over $\mathbb{R}^+$.
+Complex signals $x(t)\in\mathbb{C}$ such as those generated by Lock-in amplifiers after demodulation in turn have asymmetric, two-sided \glspl{psd}.
+\todo{flesh out}
+
+\section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
+To see how the \gls{psd} may be estimated from time-series data, consider a continuous wide-sense stationary\sidenote{
+    For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the auto-correlation function $C(t, t') = \ev{x(t)^\ast x(t^\prime)}$ is given by $\ev{x(t)^\ast x(t + \tau)} = \ev{x(0)^\ast x(\tau)}$ with $\tau = t^\prime - t$.
+    That is, it is a function of only the time lag $\tau$ and not the absolute point in time.
+    For Gaussian processes as discussed here, this also implies stationarity~\cite{Koopmans1995}.
+    The property further implies that $C(\tau)$ is an even function.
+}
+\todo{sketch of auto-correlation function?}
+signal in the time domain $x(t)\in\mathbb{C}$ that is observed for some time $T$.
+We define the windowed Fourier transform of $x(t)$ and its inverse by
+\begin{align}
+    \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{\i\omega t} \label{eq:windowed_ft}\\
+       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{-\i\omega t}, \label{eq:windowed_ft:inverse}
+\end{align}
+\ie, we assume that outside of the window of observation $x(t)$ is zero.
+The auto-correlation function of $x(t)$ is given by
+\begin{align}
+    C(\tau) &= \expval{x(t)^\ast x(t + \tau)} \label{eq:autocorrelation}\\
+            &= \lim_{T\to\infty} \frac{1}{T}\int_0^T\dd{t} x(t)^{\ast} x(t + \tau),
+\end{align}
+where $\expval{\placeholder}$ is the ensemble average over multiple realizations of the process and the last equality holds true for ergodic processes.
+Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:windowed_ft}) and reordering the integrals, we get\sidenote{
+    Mathematicians might at this point argue the integrability of $x(t)$, but as we deal with physical processes with finite bandwidth (and have no shame), we do not.
+}
+\begin{align}
+    C(\tau) &= \lim_{T\to\infty}\frac{1}{T}\int_0^T\dd{t}
+                \intinf\ddf{\omega}\hat{x}_T(\omega)^{\ast}\e^{\i\omega t}
+                \intinf\ddf{\omega^\prime}\hat{x}_T(\omega^\prime)\e^{-\i\omega^\prime (t + \tau)}  \\
+            &= \lim_{T\to\infty}\frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
+                \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)\e^{-\i\omega^\prime\tau}
+                \int_0^T\dd{t}\e^{\i t (\omega - \omega^\prime)} \label{eq:autocorrelation:fourier}
+\end{align}
+The innermost integral approaches a $\delta$-function for large $T$,\sidenote{
+    Note that, because $x(t)$ is wide-sense stationary, we may shift the limits of integration $\int_{0}^{T}\to\int_{-\flatfrac{T}{2}}^{+\flatfrac{T}{2}}$.
+}
+allowing us to further simplify this under the limit as
+\begin{align}
+    C(\tau) &= \lim_{T\to\infty} \frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
+                \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)
+                \e^{-\i\omega^\prime\tau}\delta(\omega - \omega^\prime)\\
+            &= \lim_{T\to\infty}\frac{1}{T}
+                \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{-\i\omega\tau} \\
+            &= \intinf\ddf{\omega} S(\omega) \e^{-\i\omega\tau} \label{eq:wiener_khinchin}
+\end{align}
+with the \gls{psd}
+\begin{align}
+    S(\omega) &= \lim_{T\to\infty}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 \label{eq:psd:definition}\\
+              &= \intinf\dd{\tau} C(\tau)\e^{\i\omega\tau}
+\end{align}
+\Cref{eq:wiener_khinchin} is the Wiener-Khinchin theorem that states that the auto-correlation function $C(\tau)$ and the \gls{psd} $S(\omega)$ are Fourier-transform pairs~\cite{Koopmans1995}.
+Furthermore, defining the latter through \cref{eq:psd:definition} gives us an intuitive picture of the \gls{psd} if we recall Parseval's theorem,
+\begin{align}\label{eq:parseval}
+    \intinf\ddf{\omega}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 = \frac{1}{T}\intinf\dd{t}\abs{x(t)}^2.
+\end{align}
+That is, the total power $P$ contained in the signal $x(t)$ is given by integrating over the \gls{psd}.
+Similarly, the power contained in a band of frequencies $[\omega_1, \omega_2]$ is given by
+\begin{align}
+    P(\omega_1, \omega_2) &= \rms\left(\omega_1, \omega_2\right)^2 \\
+                          &= \int_{\omega_1}^{\omega_2}\ddf{\omega} S(\omega) \label{eq:psd:bandpower}
+\end{align}
+where $\rms\left(\omega_1, \omega_2\right)$ is the root-mean-square within this frequency band.
+These relations are helpful when analyzing noise \glspl{psd} to gauge the relative weight of contributions from different frequency bands to the total noise power.
+
+\Cref{eq:psd:definition} represents the starting point for the experimental spectrum estimation procedure.
+Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized version\sidenote{
+    We only discuss the problem of equally spaced samples here. Variants for spectral estimation of time series with unequal spacing exist.
+}
+\todo{ref}
+\begin{align}\label{eq:signal:discrete}
+    x_n \qc n\in\lbrace 0, 1, \dotsc, N - 1\rbrace
+\end{align}
+defined at times $t_n = n\Delta t$ with $T = N\Delta t$ and where $\Delta t = \fs\inverse$ is the sampling interval (the inverse of the sampling frequency \fs).
+Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{i}$ and write
+\begin{align}\label{eq:psd:bartlett}
+    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{i}}^2 \\
+        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{i}
+\end{align}
+where $\hat{x}_n\gth{i}$ is the discrete Fourier transform of $x_n\gth{i}$, we defined the \emph{periodogram} of $x_n\gth{i}$ by
+\begin{align}\label{eq:periodogram}
+    S_n\gth{i} = \abs{\hat{x}_n\gth{i}}^2,
+\end{align}
+and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.\sidenote{
+    We blithely disregard integer algebra issues occuring here for conciseness and leave it as an exercise for the reader to figure out what the exact bounds of the set of $\omega_n$ are.
+}
+\Cref{eq:psd:bartlett} is known as Bartlett's method~\cite{Bartlett1948} for spectrum estimation.\sidenote{
+    By taking the limit $M\to\infty$ one recovers the true \gls{psd}, \[\lim_{M\to\infty}S_n = S(\omega_n).\]
+    The continuum limit is as always obtained by sending $\Delta t\to 0, N\to\infty, N\Delta t=\text{const}$.
+}
+
+To better understand the properties of this estimate, let us take a look at the parameters $\Delta t$, $N$, and $M$.
+The sampling interval $\Delta t$ defines the largest resolvable frequency by the Nyquist sampling theorem,
+\begin{align}\label{eq:f_max}
+    \fmax = \frac{\fs}{2} = \frac{1}{2\Delta t}.
+\end{align}
+In turn, the number of samples $N$ determines the frequency resolution $\Delta f$, or smallest resolvable frequency,
+\begin{align}\label{eq:f_min}
+    \fmin = \Delta f = \frac{1}{T} = \frac{1}{N\Delta t} = \frac{\fs}{N}.
+\end{align}
+Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{i}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
+
+In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
+It becomes clear, then, that the Bartlett average (\cref{eq:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\Delta t$.
+
+An improvement in data efficiency can be obtained using Welch's method~\cite{Welch1967}.
+To see how, we first need to discuss spectral windows.
+
+\section{Window functions}\label{sec:speck:theory:windows}
+Partitioning a signal $x_n$ into $M$ sections $x_n\gth{i}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
+    This window is also known as boxcar window.
+}
+\begin{align}\label{eq:window:boxcar}
+    w_n\gth{i}(t) =
+    \begin{cases}
+        1\qif (i - 1) N \leq n < i N\qand \\
+        0\qelse
+    \end{cases}
+\end{align}
+so that $x_n\gth{i} = x_n w_n\gth{i}$.
+Now recall that multiplication and convolution are Fourier pairs, that is,
+\begin{align}\label{eq:window:ft_pairs}
+    x_n w_n\gth{i} = \hat{x}_n \ast \hat{w}_n\gth{i}.
+\end{align}
+where the Fourier representation of the rectangular window
+\begin{align}\label{eq:window:boxcar:fourier}
+    \hat{w}_n = T\sinc\left(\frac{\omega T}{2}\right).
+\end{align}
+\begin{marginfigure}
+    \input{img/tikz/boxcar_fourier}
+    \caption{The Fourier representation of the rectangular window in continuous time.}
+    \label{fig:boxcar_fourier}
+\end{marginfigure}
+
+
+
+

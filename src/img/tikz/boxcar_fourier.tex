@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+    \begin{axis} [
+            domain=-11*pi:11*pi,
+            samples=200,
+            xlabel={$\omega_n$},
+            ylabel={$\hat{w}_n$},
+            xmin=-12*pi, xmax=12*pi,
+            ymin=-0.25, ymax=1.25,
+            xtick={-10*pi, 0, 10*pi},
+            xticklabels={$\flatfrac{-10\pi}{T}$, $0$, $\flatfrac{10\pi}{T}$},
+            ytick={0, 1},
+            yticklabels={$$, $T$},
+            axis lines=middle,
+            width=\marginparwidth,
+            height=4cm,
+        ]
+        \addplot [RWTHmagenta100, very thick] {2*sin(deg(x/2))/x};
+    \end{axis}
+\end{tikzpicture}

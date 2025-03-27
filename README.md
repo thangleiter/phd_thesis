@@ -13,10 +13,14 @@
 - [ ]
 ## Layout
 - [ ] Tune the bibliography style
+- [ ] Chapters instead of parts?
 ## `latexmk`
 - [ ]
 ## `tectonic`
 - [ ] The bibliography font is off
+
+# IntelliJ IDEA
+Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
 
 # XeTeX
  
@@ -25,14 +29,15 @@
 
 # Tectonic
 - Build from source using `cargo install --path .`
-  - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic`
+  - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic @ main`
 - Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
 - Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
 
 # Kaobook
-- Clone from source at `git@git.rwth-aachen.de:tobias.hangleiter/kaobook`
-- Branches `lualatex` or `tectonic`
+- Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
+
 ## Kaobook diffs
+These diffs should already be applied in the submodule shipped with this repository.
 - `kaorefs.sty`
    - `cleveref`
      Old:
@@ -89,10 +94,10 @@ searched by LaTeX.
    -var-value=TEXMFHOME`. For instance, suppose it is
    `/home/john/texmf/`.
 
-1. Create the following hierarchy of directories under the texmf home:
+2. Create the following hierarchy of directories under the texmf home:
    `tex/latex/kaobook/`.
 
-1. Copy all the `\*.cls` files and the `styles` directory from the
+3. Copy all the `\*.cls` files and the `styles` directory from the
    repository into the directory you just created. If you are in a
    hurry, you can copy the whole repository into that directory.
    Alternatively, you can `git clone` the `kaobook` repository into that folder
@@ -108,5 +113,5 @@ searched by LaTeX.
    kaotheorems.sty
    ```
 
-1. Run `kpsewhich kaobook.cls` to make sure that LaTeX can find the
+4. Run `kpsewhich kaobook.cls` to make sure that LaTeX can find the
    template.
