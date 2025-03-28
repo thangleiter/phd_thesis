@@ -61,6 +61,7 @@ These diffs should already be applied in the submodule shipped with this reposit
      because `\refeq` is already defined by `mathtools`.
 
 ## Fonts
+Download `Libertinus` here: https://github.com/alerque/libertinus.
 Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
 
 ---

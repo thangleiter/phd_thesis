@@ -5,6 +5,10 @@
                 T = 1;
                 hann(\x) = 4 * pi^2 / \x * sin(deg(\x * T / 2)) / (4 * pi^2 - \x^2 * T^2);
             },
+            xlabel={$\omega_n$},
+            ylabel={$\hat{w}_n$},
+            x label style={at={(current axis.south east)},anchor = north, xshift=2pt},
+            y label style={at={(current axis.north west)},anchor = south, yshift=2pt},
             axis lines=middle,
             %line width = 1 pt,
             %scale only axis, % Ensures the axis region is exactly \marginparwidth wide
@@ -22,21 +26,78 @@
                 black,
                 thick
             },
-            xlabel={$\omega_n$},
-            ylabel={$\hat{w}_n$},
-            x label style={at={(axis cs:12*pi,0)}, anchor=west, xshift=2pt},
-            y label style={at={(current axis.north)}, anchor=south},
         ]
 
         \addplot [RWTHmagenta100, very thick] {hann(x)};
 
-        %\foreach \x in {-6,-5,-4,-3,-2,-1,1,2,3,4,5,6} {
-        %    % Draw a vertical line from (x,0) up to (x,y) in the axis coordinate system.
-        %    \draw[RWTHgreen50, thick] (axis cs:\x,0) -- (axis cs:\x,hann(\y))
-        %        node [draw=RWTHgreen100, circle, fill=RWTHgreen50, inner sep=2pt, pos=0]  {};
-        %}
+        \foreach \X in {1,2} {
+            \pgfmathsetmacro{\y}{hann(\X)}
+            \addplot[mark = *, mark options = {RWTHgreen50}] coordinates {(\X,\y)};
+        }
+%            \draw[RWTHgreen50, thick] (axis cs:\X,0) -- (axis cs:\X,hann(\y))
+%                node [draw=RWTHgreen100, circle, fill=RWTHgreen50, inner sep=2pt, pos=0]  {};
 
     \end{axis}
 \end{tikzpicture}
 
 
+%\begin{axis}
+%    [
+%    % ybar,
+%    axis on top,
+%    line width = 1pt,
+%    % bar width=.3cm,
+%    xlabel={$t$},
+%    x label style={at={(current axis.south east)},anchor = north},
+%    y label style={at={(current axis.north west)},anchor = south},
+%    ylabel={$q(t)$},
+%    ymin=-60,
+%    ymax =105,
+%    xmin = -1.2,
+%    xmax = 5.5,
+%    ytick=\empty,
+%    xtick={-1,0,1,5},
+%    xticklabels = {$-\epsilon$,$0$,$\epsilon$,$1$},
+%    every tick/.style={
+%        black,
+%        thick,
+%    },
+%    axis x line=bottom,
+%    axis y line=middle,
+%    % enlarge x limits=0.1,
+%    enlarge y limits = 0.1,
+%    width = 10cm,
+%    height = 6cm,
+%    samples = 200,
+%    ]
+%    \addplot[
+%        applegreen,thick,
+%    ]{f(x)};
+%    \addplot[
+%        pink,thick,dashed,
+%    ]{g(x)};
+%
+%
+%    \addplot[
+%        LightGray,dotted,line width = .5pt,domain = -1:1]{f1(x)};
+%    \addplot[
+%        LightGray,dotted,line width = .5pt,domain = -1:1
+%    ]{f2(x)};
+%
+%
+%    \foreach \X  [count={\xi}]
+%    in {-1,-.5,0, .8}
+%    {  \pgfmathsetmacro{\y}{g(\X)}
+%    \addplot[mark = *, mark options = {pink}] coordinates {(\X,\y)};
+%    }
+%
+%    \addplot[mark = *, mark options = {pink}, draw = none] coordinates { (.5, -10)};
+%
+%    \pgfmathsetmacro{\a}{f1(1)};
+%    \pgfmathsetmacro{\b}{f2(1)};
+%    \draw [line width = .75pt,gray,<->] (1,\a) -- node [midway, rotate = -90,anchor = south, fill =white, fill opacity = .5,fill opacity = .8] {$\Delta$} (1,\b);
+%
+%    \pgfmathsetmacro{\c}{f(5)};
+%    \pgfmathsetmacro{\d}{g(5)};
+%    \draw [line width = .75pt,gray,<->] (5,\c) -- node [midway, rotate = -90,anchor = south, fill =white, fill opacity = .5,fill opacity = .8] {$ \Delta \mathrm e^{2r(1+\frac 1\epsilon)}$ } (5,\d);
+%\end{axis}

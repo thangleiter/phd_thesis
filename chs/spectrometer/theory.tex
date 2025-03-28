@@ -144,7 +144,8 @@ Partitioning a signal $x_n$ into $M$ sections $x_n\gth{m}$ of length $N$ is math
 so that $x_n\gth{m} = x_n w_n\gth{m}$.
 \todo{add $\omega_n\gth{m}$, scaled ticks}
 \begin{marginfigure}
-    \input{img/tikz/boxcar_fourier}
+    \centering
+    \includegraphics{pdf/rect}
     \caption{The Fourier representation of the rectangular window in continuous time.}
     \label{fig:boxcar_fourier}
 \end{marginfigure}
@@ -152,7 +153,9 @@ Now recall that multiplication and convolution are duals under the Fourier trans
 \begin{align}\label{eq:window:ft_pairs}
     \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m}.
 \end{align}
-where the Fourier representation of the rectangular window
+where the Fourier representation of the rectangular window\sidenote{
+    $\sinc(x) = \flatfrac{\sin(x)}{x}$.
+}
 \begin{align}
     \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:window:boxcar:fourier}\\
              \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:window:boxcar:fourier:unshifted}
@@ -163,10 +166,13 @@ However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cre
 These effects induce what is known as \emph{spectral leakage}~\cite{Harris1978,Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
 
 For this reason, a plethora of \emph{window functions} have been introduced to mitigate the effects of spectral leakage.
-Key properties of a window are the spectral bandwidth (center lobe width) and sidelobe amplitude between which there typically is a tradeoff.
+Key properties of a window are the spectral bandwidth (center lobe width) and sidelobe amplitude between which there typically is a tradeoff.\sidenote{
+    Wikipedia gives a good overview of existing window functions~\cite{WindowFunctionWiki}.
+}
 \todo{add $\omega_n\gth{m}$, scaled ticks}
 \begin{marginfigure}
-    \input{img/tikz/hann_fourier}
+    \centering
+    \includegraphics{pdf/hann}
     \caption{The Fourier representation of the Hann window in continuous time.}
     \label{fig:hann_fourier}
 \end{marginfigure}
@@ -180,10 +186,13 @@ A window frequently used in spectral analysis is the Hann window~\cite{Nuttall19
 \end{align}
 with the Fourier representation of the unshifted window,
 \begin{align}\label{eq:window:hann:fourier_unshifted}
-    \hat{w}_n &= \frac{4\pi^2}{\omega_n}\times\frac{\sin(\flatfrac{\omega_n T}{2})}{4\pi^2 - \omega_n^2 T^2},
+%    \hat{w}_n &= \frac{2T\pi^2\sinc(\flatfrac{\omega_n T}{2})}{4\pi^2 - \omega_n^2 T^2},
+%    \hat{w}_n &= \frac{2\pi^2 T\sinc(\flatfrac{\omega_n T}{2})}{(2\pi - \omega_n T)(2\pi + \omega_n T)},
+    \hat{w}_n &=  T\sinc\left(\frac{\omega_n T}{2}\right)\times
+                    \frac{1}{2(1 - \flatfrac{\omega_n T}{2\pi})(1 + \flatfrac{\omega_n T}{2\pi})},
 \end{align}
 shown in \cref{fig:hann_fourier}.
-The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{fig:boxcar_fourier}; the sidelobes are cubically suppressed while the center lobe is only slightly broadened.
+The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{fig:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is only slightly broadened.
 
 Another favorable property of the Hann window is that $w_0\gth{0} = w_{N-1}\gth{0} = 0$.
 This suppresses detrimental effects arising from a possible discontinuity ($x_0\gth{0}\neq x_{N-1}\gth{0}$) at the edge of a data segment related to the discrete Fourier transform, which assumes periodic data.\sidenote{
@@ -193,12 +202,71 @@ This suppresses detrimental effects arising from a possible discontinuity ($x_0\
 \section{Welch's method}\label{sec:speck:theory:welch}
 Contemplating \cref{eq:window:hann}, one might come to the conclusion that using a window such as this is not very data efficient in the sense that a large fraction of samples located at the edge of the window is strongly suppressed and hence does not contribute significantly to the spectrum estimate.
 To alleviate this lack of efficiency, one can introduce an overlap between adjacent data windows.
-That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window forward by $mK$ with $K>0$ the overlap.
+That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window forward by $-mK$ with $K>0$ the overlap.
 Finally, the periodogram (\cref{eq:periodogram}) is computed for each window and subsequently averaged to obtain the spectrum estimator (\cref{eq:psd:bartlett}).
 
 This method of spectrum estimation is known as Welch's method~\cite{Welch1967}.
 One can show~\cite{Welch1967} that the correlation between the periodograms of adjacent, overlapping windows is sufficiently small to avoid a biased estimate.
-A typical overlap is $K = \flatfrac{N}{2}$ with which one would obtain $M = \flatfrac{2L}{N} - 1$ windows for data of length $L$.\sidenote{
+The overlap naturally depends on the choice of window; a typical value for the Hann window $K = \flatfrac{N}{2}$ with which one would obtain $M = \flatfrac{2L}{N} - 1$ windows for data of length $L$.\sidenote{
     Again neglecting integer arithmetic issues.
 }
+\begin{figure}[htpb]
+    \includegraphics[width=\textwidth]{pdf/welch}
+    \caption{
+        Illustration of Welch's method for spectrum estimation.
+        The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
+        Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
+        A finite overlap $K$ between adjacent windows (gray) ensures efficient sample use.
+    }
+    \label{fig:welch}
+\end{figure}
 
+\Cref{fig:welch} conceptually illustrates Welch's method for a trace of \oneoverf noise with $L = 300$ samples in total.
+Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ segments for a window length of $N=100$.
+The data in the second window is highlighted.
+
+\subsection{Parameters}\label{subsec:speck:theory:parameters}
+\begin{margintable}
+    \footnotesize
+    \centering
+    \caption[Overview of spectrum estimation parameters]{
+        Overview of spectrum estimation parameters.
+        The parameters can be assigned into three groups
+        \begin{enumerate*}[
+            before=\unskip{: }, itemjoin={{, }}, itemjoin*={{, and }}
+        ]
+            \item \acrshort{daq} parameters configuring the data acquisition device
+            \item Welch parameters specifying the periodogram averaging
+            \item Spectrum properties induced by the above
+        \end{enumerate*}.
+    }
+    \label{tab:parameters}
+    \begin{tabular}{ c l }
+        \multicolumn{2}{l}{1. \acrshort{daq} parameters} \\
+        \toprule
+        $L$ & Total number of samples \\
+        \fs & Sample rate \\
+        [0.5ex]
+        \multicolumn{2}{l}{2. Welch parameters} \\
+        \toprule
+        $K$ & Number of overlap samples \\
+        $N$ & Number of segment samples \\
+        $M$ & Number of Welch segments \\
+        [0.5ex]
+        \multicolumn{2}{l}{3. Spectrum parameters} \\
+        \toprule
+        \fmin & Smallest resolvable frequency \\
+        \fmax & Largest resolvable frequency \\
+    \end{tabular}
+\end{margintable}
+
+We are now in a position to discuss how the various parameters of a time series relate to both to physical parameters of the resulting spectrum estimate and to each other.
+To this end, we will go through the typical procedure of acquiring a spectrum estimate using Welch's method chronologically.
+
+To acquire data using some form of (digital) \gls{daq}, one usually needs to specify two parameters first: the total number of samples to be acquired, $L$, and the sample rate, \fs.
+This results in a measurement of duration $T = L\Delta t$ where $\Delta t = \fs\inverse$ as previously mentioned.
+The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
+Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
+In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:f_min}).\sidenote{
+    Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
+}
