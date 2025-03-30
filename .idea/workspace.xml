@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/default/default.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/default/default.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/kaobook" beforeDir="false" afterPath="$PROJECT_DIR$/lib/kaobook" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/kaobook/kaorefs.sty" beforeDir="false" afterPath="$PROJECT_DIR$/lib/kaobook/kaorefs.sty" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/img/tikz/boxcar_fourier.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/img/tikz/boxcar_fourier.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tex/colors.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/colors.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tex/packages.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/packages.tex" afterDir="false" />
-    </list>
+    <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,7 +96,7 @@
       <recent name="D:\phd_thesis" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.tectonic watch AG-BLUHM-51">
+  <component name="RunManager" selected="LaTeX.tectonic">
     <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify>
         <compiler>PDFLATEX</compiler>

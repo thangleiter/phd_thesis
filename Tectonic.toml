@@ -52,7 +52,7 @@ type = "pdf"
 # is run in an environment where a shell exists.
 # Naturally, its use is strongly discouraged, but some packages depend on
 # this feature.
-shell_escape = false
+shell_escape = true  # for minted
 
 # The working directory path to use for “shell escape”. The default is a
 # temporary directory if `output.shell_escape` is true, else it's disabled.

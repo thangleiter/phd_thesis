@@ -27,11 +27,12 @@
 \documentclass[
     a4paper, % Page size
     fontsize=10pt, % Base font size
-    twoside=false, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+    twoside=, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
 	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
 	fontmethod=modern, % Can also use "modern" with XeLaTeX or LuaTex; "tex" is the default for PdfLaTex, and "modern" is the default for those two.
+	listing=minted
 ]{kaobook}
 
 %----------------------------------------------------------------------------------------
@@ -48,7 +49,7 @@
 \usepackage[english=american]{csquotes}	% English quotes
 
 % Load packages for testing
-\usepackage{blindtext} % Print text without any meaning for testing purposes
+%\usepackage{blindtext} % Print text without any meaning for testing purposes
 %\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
 %\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
 
@@ -76,6 +77,25 @@
 \addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
 %\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
 
+\PassOptionsToPackage{
+    chapter,%
+    cache=true,%
+}{minted}
+    \usepackage{minted}
+
+\setminted[Python]{
+    autogobble=true,%
+    linenos=true,%
+    firstnumber=last,% line number counts incrementally
+    fontfamily=tt,% tt,courier,helvetica
+    fontsize=\small,% normalsize, small, footnotesize
+    style=gruvbox-light,%
+    frame=leftline,% none | leftline | topline | bottomline | lines | single
+}
+\setmintedinline[Python]{
+    fontsize=\normalsize,% normalsize, small, footnotesize
+}
+
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
 
@@ -95,4 +115,21 @@
 %\counterwithin*{sidenote}{chapter}
 
 %----------------------------------------------------------------------------------------
-\includeonly{chs/spectrometer/introduction,chs/spectrometer/theory}
+% DEBUG
+%----------------------------------------------------------------------------------------
+%\usepackage{printlen}
+%\uselengthunit{in}
+% Use:
+% \printlength{\marginparsep}
+
+%\makeatletter
+%\newcommand\thefontsize[1]{{#1 The current font size is: \f@size pt\par}}
+%\makeatother
+% Use:
+% \thefontsize\footnotesize
+%----------------------------------------------------------------------------------------
+\includeonly{
+    chs/spectrometer/introduction,
+    chs/spectrometer/theory,
+    chs/spectrometer/software,
+}

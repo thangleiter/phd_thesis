@@ -1,0 +1,25 @@
+% mainfile: main.tex
+\chapter{The \texttt{python\_spectrometer} software package}\label{ch:speck:software}
+
+\begin{margintable}
+    \footnotesize
+    \centering
+    \setmintedinline[Python]{fontsize=\footnotesize}
+    \caption[Overview of spectrum estimation parameters]{
+        Variable names used in \cref{ch:speck:theory} and their corresponding parameter names as used in \code{python_spectrometer}.
+    }
+    \label{tab:software:parameters}
+    \begin{tabular}{ c C }
+        \toprule
+        Variable & Parameter \\
+        \midrule
+        $L$ & n_pts \\
+        \fs & fs \\
+        $K$ & noverlap \\
+        $N$ & nperseg \\
+        $M$ & n_seg \\
+        \fmin & f_min \\
+        \fmax & f_max \\
+        \bottomrule
+    \end{tabular}
+\end{margintable}
