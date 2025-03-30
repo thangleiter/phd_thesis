@@ -1,5 +1,8 @@
 \newcommand{\code}[1]{\mintinline{Python}|#1|}
 %\newcommand{\todo}[1]{\textcolor{red}{\textbf{TODO: }} \emph{\color{red}#1}}
+\newcolumntype{C}{>{\collectcell\code}c<{\endcollectcell}} % makes the whole column texttt style
+\newcommand{\tableheadline}[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}}
+
 \newcommand{\Ie}[0]{I.\,e.}
 \newcommand{\Eg}[0]{E.\,g.}
 \newcommand{\viz}[0]{viz.\ }

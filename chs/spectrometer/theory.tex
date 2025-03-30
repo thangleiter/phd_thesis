@@ -227,8 +227,8 @@ The data in the second window is highlighted.
 
 \subsection{Parameters}\label{subsec:speck:theory:parameters}
 \begin{margintable}
-    \footnotesize
     \centering
+    \footnotesize
     \caption[Overview of spectrum estimation parameters]{
         Overview of spectrum estimation parameters.
         The parameters can be assigned into three groups
@@ -241,7 +241,7 @@ The data in the second window is highlighted.
         \end{enumerate*}.
     }
     \label{tab:parameters}
-    \begin{tabular}{ c l }
+    \begin{tabularx}{\marginparwidth}{ c l }
         \multicolumn{2}{l}{1. \acrshort{daq} parameters} \\
         \toprule
         $L$ & Total number of samples \\
@@ -257,7 +257,7 @@ The data in the second window is highlighted.
         \toprule
         \fmin & Smallest resolvable frequency \\
         \fmax & Largest resolvable frequency \\
-    \end{tabular}
+    \end{tabularx}
 \end{margintable}
 
 We are now in a position to discuss how the various parameters of a time series relate to both to physical parameters of the resulting spectrum estimate and to each other.
@@ -270,3 +270,4 @@ Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their
 In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:f_min}).\sidenote{
     Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
 }
+\todo{D(A)G for parameter interdependencies?}
