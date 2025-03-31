@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.githooks/post-checkout" beforeDir="false" afterPath="$PROJECT_DIR$/.githooks/post-checkout" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chs/filter_functions/introduction.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/filter_functions/introduction.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chs/spectrometer/software.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/spectrometer/software.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chs/spectrometer/theory.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/spectrometer/theory.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.tex" beforeDir="false" afterPath="$PROJECT_DIR$/main.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/commands.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/commands.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/packages.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/packages.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,8 +129,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
-        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
@@ -184,6 +179,7 @@
       <workItem from="1743178237118" duration="13882000" />
       <workItem from="1743326820246" duration="1113000" />
       <workItem from="1743328071250" duration="519000" />
+      <workItem from="1743406413586" duration="799000" />
     </task>
     <servers />
   </component>

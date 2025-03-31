@@ -34,7 +34,10 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 - Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
 
 # Kaobook
-- Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
+- Linux:
+  - Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
+- Windows:
+  - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
 
 ## Kaobook diffs
 These diffs should already be applied in the submodule shipped with this repository.
