@@ -26,5 +26,9 @@
 
 In this chapter, I will lay out the design and functionality of the \pyspeck \python package.
 
-\section{Package design}
-The \pyspeck package provides a single user-facing class, the \code{Spectrometer}
+\section{Package design and implementation}\label{sec:speck:software:design}
+The \pyspeck package provides a single user-facing class, \code{core.Spectrometer}, that manages the entire process from data acquisition to spectrum estimation and plotting.
+Plotting functionality is factored out into a private submodule for maintainability.
+
+\section{Feature overview}\label{sec:speck:software:features}
+

@@ -59,7 +59,7 @@ shell_escape = true  # for minted
 # The path can be absolute or relative to the root file, but it must exist.
 # Specifying this path automatically sets `output.shell_escape` to true.
 # This is optional, and defaults to a temporary directory.
-shell_escape_cwd = "string"
+# shell_escape_cwd = "build/tmp"
 
 # Whether the synctex files will be created. This is optional and defaults to false.
 synctex = true
