@@ -77,6 +77,9 @@
 \addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
 %\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
 
+%----------------------------------------------------------------------------------------
+% Custom packages
+%----------------------------------------------------------------------------------------
 \PassOptionsToPackage{
     chapter,%
     cache=true,%
@@ -95,6 +98,30 @@
 \setmintedinline[Python]{
     fontsize=\normalsize,% normalsize, small, footnotesize
 }
+
+\usepackage{tabularx} % better tables with given width
+%\setlength{\extrarowheight}{3pt} % increase table row height
+\usepackage{collcell} % for verb columns
+
+%\usepackage{qcircuit}
+
+%! begin preamble = tikz
+%\usepackage{pgfplots}
+%\pgfplotsset{compat=1.18}
+
+%\usetikzlibrary{math}
+%! end preamble = tikz
+
+%! begin preamble = math
+%\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{mathtools}
+%\usepackage{mathrsfs}
+\usepackage{siunitx}
+\usepackage{physics}
+\AtBeginDocument{\RenewCommandCopy\qty\SI}
+%! end preamble = math
+%----------------------------------------------------------------------------------------
 
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
@@ -128,8 +155,8 @@
 % Use:
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
-\includeonly{
-    chs/spectrometer/introduction,
-    chs/spectrometer/theory,
-    chs/spectrometer/software,
-}
+%\includeonly{
+%    chs/spectrometer/introduction,
+%    chs/spectrometer/theory,
+%    chs/spectrometer/software,
+%}
