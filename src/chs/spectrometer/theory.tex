@@ -1,4 +1,4 @@
-% mainfile: main.tex
+% mainfile: ../../main.tex
 \chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
 There exists a multitude of methods for estimating noise properties.
 \todo{lay out some others}
@@ -210,7 +210,7 @@ One can show~\cite{Welch1967} that the correlation between the periodograms of a
 The overlap naturally depends on the choice of window; a typical value for the Hann window $K = \flatfrac{N}{2}$ with which one would obtain $M = \flatfrac{2L}{N} - 1$ windows for data of length $L$.\sidenote{
     Again neglecting integer arithmetic issues.
 }
-\begin{figure}[htpb]
+\begin{figure}[tphb]
     \includegraphics[width=\textwidth]{pdf/welch}
     \caption{
         Illustration of Welch's method for spectrum estimation.

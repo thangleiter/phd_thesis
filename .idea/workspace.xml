@@ -4,21 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="" />
-=======
-    <list default="true" id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/latexmk_windows.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/latexmk_windows.xml" afterDir="false" />
+    <list default="true" id="5cfdf8ad-d15d-4e0d-990c-5a3d1976d5c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/main.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chs/spectrometer/software.tex" beforeDir="false" afterPath="$PROJECT_DIR$/chs/spectrometer/software.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.tex" beforeDir="false" afterPath="$PROJECT_DIR$/main.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/commands.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/commands.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/packages.tex" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tex/preamble.tex" beforeDir="false" afterPath="$PROJECT_DIR$/tex/preamble.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/windows.latexmkrc" beforeDir="false" afterPath="$PROJECT_DIR$/windows.latexmkrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/default/default.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/build/default/default.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/gatesequence.tex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/introduction.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/filter_functions/introduction.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/prr.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/filter_functions/prr.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/qft.tex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/time_domain_methods.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/filter_functions/time_domain_methods.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/filter_functions/validation.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/filter_functions/validation.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/spectrometer/introduction.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/spectrometer/introduction.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/spectrometer/software.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/spectrometer/software.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/chs/spectrometer/theory.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tex/preamble.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/tex/preamble.tex" afterDir="false" />
     </list>
->>>>>>> f9c4985 (Move custom packages to preamble)
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,234 +25,54 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
-  </component>
-  <component name="GitToolBoxStore">
-    <option name="recentBranches">
-      <RecentBranches>
-        <option name="branchesForRepo">
-          <list>
-            <RecentBranchesForRepo>
-              <option name="branches">
-                <list>
-                  <RecentBranch>
-                    <option name="branchName" value="tectonic" />
-                    <option name="lastUsedInstant" value="1743065495" />
-                  </RecentBranch>
-                </list>
-              </option>
-              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
-            </RecentBranchesForRepo>
-          </list>
-        </option>
-      </RecentBranches>
-    </option>
-  </component>
-  <component name="LatexErrorTreeViewConfiguration">
-    <option name="showKeywordWarnings">
-      <map>
-        <entry key="overfull \hbox, underfull \hbox, overfull \vbox and underfull \vbox" value="false" />
-      </map>
-    </option>
   </component>
   <component name="MacroExpansionManager">
-    <option name="directoryName" value="bydo7zr6" />
+    <option name="directoryName" value="mTLAPDNW" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 4
-}</component>
-  <component name="ProjectId" id="2pWlWYx7ye08qhDz4rGTp8ZkWoW" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2v5KGrAwSxIKUSN8eGc1eb8T0jQ" />
   <component name="ProjectViewState">
-    <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< HEAD
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;LaTeX.latexmk clean linux.executor&quot;: &quot;Run&quot;,
-    &quot;LaTeX.latexmk clean windows.executor&quot;: &quot;Run&quot;,
-    &quot;LaTeX.latexmk linux.executor&quot;: &quot;Run&quot;,
-    &quot;LaTeX.latexmk windows.executor&quot;: &quot;Run&quot;,
-    &quot;LaTeX.tectonic.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Shell Script.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;Shell Script.tectonic build AG-BLUHM-51.executor&quot;: &quot;Run&quot;,
-    &quot;Shell Script.tectonic build manjaro@T14s.executor&quot;: &quot;Run&quot;,
-    &quot;Shell Script.tectonic watch AG-BLUHM-51.executor&quot;: &quot;Run&quot;,
-    &quot;Shell Script.tectonic watch manjaro@T14s.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;tectonic&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-=======
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "LaTeX.latexmk clean linux.executor": "Run",
-    "LaTeX.latexmk clean windows.executor": "Run",
-    "LaTeX.latexmk linux.executor": "Run",
-    "LaTeX.latexmk windows.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "full.screen.before.presentation.mode": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "tectonic",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/phd_thesis/img/tikz",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "editor.preferences.folding",
     "vue.rearranger.settings.migration": "true"
->>>>>>> f9c4985 (Move custom packages to preamble)
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\phd_thesis\src\img" />
-      <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/chs/filter_functions" />
-      <recent name="$PROJECT_DIR$/src/chs" />
-      <recent name="D:\phd_thesis" />
-    </key>
-  </component>
-<<<<<<< HEAD
-  <component name="RunManager" selected="LaTeX.tectonic">
-    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify>
-        <compiler>PDFLATEX</compiler>
-        <compiler-path />
-        <sumatra-path />
-        <pdf-viewer>NONE</pdf-viewer>
-        <viewer-command />
-        <compiler-arguments />
-        <envs />
-        <expand-macros-in-environment-variables>false</expand-macros-in-environment-variables>
-        <before-run-command />
-        <main-file />
-        <output-path>{projectDir}/out</output-path>
-        <auxil-path>{projectDir}/auxil</auxil-path>
-        <compile-twice>false</compile-twice>
-        <output-format>PDF</output-format>
-        <latex-distribution>PROJECT_SDK</latex-distribution>
-        <has-been-run>false</has-been-run>
-        <bib-run-config>[]</bib-run-config>
-        <makeindex-run-config>[]</makeindex-run-config>
-      </texify>
-      <method v="2" />
-    </configuration>
-=======
-  <component name="RunManager" selected="LaTeX.latexmk windows">
->>>>>>> f9c4985 (Move custom packages to preamble)
-    <list>
-      <item itemvalue="LaTeX.tectonic" />
-      <item itemvalue="Shell Script.tectonic build AG-BLUHM-51" />
-      <item itemvalue="Shell Script.tectonic build manjaro@T14s" />
-      <item itemvalue="Shell Script.tectonic build windows@T14s" />
-      <item itemvalue="Shell Script.tectonic watch AG-BLUHM-51" />
-      <item itemvalue="Shell Script.tectonic watch manjaro@T14s" />
-      <item itemvalue="Shell Script.tectonic watch windows@T14s" />
-    </list>
-  </component>
+  <component name="RunManager" selected="LaTeX.tectonic" />
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e138d731-ead9-46ec-91cd-8f8f631fbcd2" name="Changes" comment="" />
-      <created>1732889746497</created>
+      <changelist id="5cfdf8ad-d15d-4e0d-990c-5a3d1976d5c6" name="Changes" comment="" />
+      <created>1743429403542</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1732889746497</updated>
-      <workItem from="1732889749248" duration="395000" />
-      <workItem from="1732890172503" duration="6254000" />
-      <workItem from="1733056332584" duration="6667000" />
-      <workItem from="1733167595549" duration="1819000" />
-      <workItem from="1733226213480" duration="825000" />
-      <workItem from="1733227053787" duration="1607000" />
-      <workItem from="1733825699000" duration="1190000" />
-      <workItem from="1733828779410" duration="4122000" />
-      <workItem from="1733910230063" duration="1290000" />
-      <workItem from="1733918148369" duration="6805000" />
-      <workItem from="1734440319526" duration="95000" />
-      <workItem from="1734440424506" duration="9876000" />
-      <workItem from="1736436075468" duration="6742000" />
-      <workItem from="1736497877331" duration="11366000" />
-      <workItem from="1736843626082" duration="2996000" />
-      <workItem from="1737390867447" duration="608000" />
-      <workItem from="1737393219768" duration="2994000" />
-      <workItem from="1738166057763" duration="1478000" />
-      <workItem from="1738172096119" duration="9348000" />
-      <workItem from="1742569116896" duration="3043000" />
-      <workItem from="1742650171082" duration="187000" />
-<<<<<<< HEAD
-      <workItem from="1742661260440" duration="3765000" />
-      <workItem from="1742725942429" duration="1435000" />
-      <workItem from="1742727414565" duration="3539000" />
-      <workItem from="1743076389120" duration="1842000" />
-=======
-      <workItem from="1742661260440" duration="3003000" />
-      <workItem from="1742978152786" duration="396000" />
-      <workItem from="1742978577276" duration="698000" />
-      <workItem from="1742979802703" duration="2460000" />
-      <workItem from="1742982288038" duration="4940000" />
-      <workItem from="1742987320116" duration="54000" />
-      <workItem from="1743001063547" duration="8748000" />
-      <workItem from="1743082307515" duration="233000" />
-      <workItem from="1743082553291" duration="406000" />
-      <workItem from="1743083209566" duration="11418000" />
-      <workItem from="1743095086924" duration="44000" />
-      <workItem from="1743095146317" duration="2673000" />
-      <workItem from="1743101069454" duration="27062000" />
-      <workItem from="1743178237118" duration="13882000" />
-      <workItem from="1743326820246" duration="1113000" />
-      <workItem from="1743328071250" duration="519000" />
-      <workItem from="1743406413586" duration="5447000" />
->>>>>>> f9c4985 (Move custom packages to preamble)
+      <updated>1743429403542</updated>
+      <workItem from="1743429406587" duration="737000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>
