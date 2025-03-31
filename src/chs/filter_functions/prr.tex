@@ -129,7 +129,7 @@ Concretely, we consider a system described by the stochastic Hamiltonian
     \Hn(t) = \sum_\alpha b_\alpha(t) B_\alpha(t). \label{eq:ff:hamiltonian:noise}
 \end{gather}
 $\Hc(t)$ is implemented by the experimentalist to generate the desired control operation during the time $t\in [0, \tau]$ and $\Hn(t)$ describes classical fluctuating noise environments $b_\alpha(t)\in\mathbb{R}$ that couple to the quantum system via the Hermitian noise operators $B_\alpha(t)\in\mathsf{L}(\Hspace)$.
-These may carry a general, deterministic time dependence and without loss of generality, we can require them to be traceless since any contributions proportional to the identity do not contribute to noisy evolution in any case \footnote{The identity commutes with the control Hamiltonian at all times and hence does not generate any evolution in the interaction picture in which we work later on (\cf \cref{eq:ff:cumulant:truncated:substituted})}.
+These may carry a general, deterministic time dependence and without loss of generality, we can require them to be traceless since any contributions proportional to the identity do not contribute to noisy evolution in any case \sidenote{The identity commutes with the control Hamiltonian at all times and hence does not generate any evolution in the interaction picture in which we work later on (\cf \cref{eq:ff:cumulant:truncated:substituted})}.
 The $b_\alpha(t)$ are random variables drawn from (not necessarily Gaussian) distributions with zero mean that are assumed to be \gls{iid} both with respect to repetitions of the experiment.
 Note that this concept of independence does not preclude correlations between different noise sources $\alpha\neq\beta$ nor between one noise source at different times $t\neq t'$, but only serves to obtain a well-defined ensemble average.
 Lastly, to be able to later on relate the correlation functions of the $b_\alpha(t)$ to their spectral density, we require the noise fields to be wide-sense stationary, meaning that their correlation function depends only on the time difference.
@@ -143,7 +143,7 @@ Then, the Hamiltonian approximately becomes $H(\vec{\tilde{\lambda}}(t)) \approx
 Expanding the second term in the operator basis now results in the form \eqref{eq:ff:hamiltonian:noise} for the noise Hamiltonian as it is linear in $\vec{\delta\lambda}(t)$ and the deterministic time dependence is contained in $\vec{\nabla}_{\lambda} H(\vec{\lambda}(t))$ alone.
 
 This permits us to model complex relations between physical noise sources and the noise operators that capture the coupling to the quantum system, arising for example through control hardware or effective Hamiltonians obtained from \eg Schrieffer-Wolff transformations.
-While the linearization is in most cases an approximation, it does not impose significant constraints since the noise is typically weak compared to the control \footnote{The same argument forms the basis for the perturbative approach for non-Gaussian noise.}.
+While the linearization is in most cases an approximation, it does not impose significant constraints since the noise is typically weak compared to the control \sidenote{The same argument forms the basis for the perturbative approach for non-Gaussian noise.}.
 As an example, we could capture a dependence of the device sensitivity on external controls (see also~\citer{Gungordu2018}).
 In a widely used setting electrons confined in solid-state quantum dots are manipulated using the exchange interaction $J$ that depends non-linearly on the potential difference $\eps$ between two dots.
 Since the dominant physical noise source affecting this control is charge noise, one could include the effect on $J(\eps)$ to first order with $s_\eps(t)=\pdv*{J(\eps(t))}{\eps(t)}$ so that $\Hn(t) = b_\eps(t) B_\eps(t)  =  b_\eps(t) s_\eps(t) B_\eps$ for some operator $B_\eps$ which represents the exchange coupling.
@@ -184,7 +184,7 @@ In order to obtain the \emph{ensemble}-averaged evolution of many realizations o
 \begin{equation}\label{eq:ff:cumulant_expansion}
     \ev*{\liouvUe(\tau)} = \ev{\exp(-\i\tau\Li_\mr{eff}(\tau))} \eqqcolon \exp\cumulantfun(\tau)
 \end{equation}
-with $\ev{\placeholder}$ denoting the ensemble average \footnote{
+with $\ev{\placeholder}$ denoting the ensemble average \sidenote{
 The ensemble average represents the expectation value over identical repetitions of an operation in an experiment.
 It can be taken to be a spatial ensemble of many identical systems, \eg an NMR system, or, for ergodic systems, a time ensemble of a single system under stationary noise as would be the case for a single spin measured repeatedly, for instance.
 } and the cumulant function~\cite{Kubo1962}
@@ -205,7 +205,7 @@ We can hence write the cumulant function succinctly as
 \Cref{eq:ff:cumulant_expansion,eq:ff:cumulant:truncated} allow us to exactly compute the full quantum process $\ev*{\liouvUe}\!: \rho\rightarrow\ev*{\liouvUe(\rho)}$ for Gaussian noise with arbitrary spectral density and power.
 For non-Gaussian noise these expressions are approximate up to $\order{\xi^2}$ and higher order terms include both higher orders of the \gls{me} and the cumulant expansion.
 Inspecting \cref{eq:ff:cumulant:truncated}, we observe that the first term is anti-Hermitian as it is a pure Magnus term (remember that the \gls{me} preserves algebraic structure to every order) and thus generates unitary, coherent time evolution.
-Conversely, the second term is Hermitian and thus generates decoherence \footnote{In the Liouville representation, the first term is an antisymmetric matrix that generates a rotation and the second a symmetric matrix that generates a deformation of the generalized, $d^2-1$-dimensional Bloch sphere.}.
+Conversely, the second term is Hermitian and thus generates decoherence \sidenote{In the Liouville representation, the first term is an antisymmetric matrix that generates a rotation and the second a symmetric matrix that generates a deformation of the generalized, $d^2-1$-dimensional Bloch sphere.}.
 The former is more difficult to compute than the latter because the second order of the \gls{me}, \cref{eq:ff:magnus_expansion:2}, contains nested time integrals.
 Arguments can be made~\cite{Cerfontaine2021}, however, that for single gates in an experimental context the coherent errors captured by this term can be calibrated out to a large degree~\cite{Cerfontaine2020a,Kimmel2015}.
 Moreover, many of the central quantities of interest that can be extracted from the quantum process, among which are gate fidelities and certain measurement probabilities, are functions of only the diagonal elements of \cumulantfun.
@@ -252,7 +252,7 @@ Finally, we insert the expanded noise operators given by \cref{eq:ff:noise_opera
 \end{equation}
 Here, we captured the ordering of the noise operators due to the commutators in \cref{eq:ff:cumulant:truncated:substituted} in the coefficients $f_{ijkl}$ and $g_{ijkl}$.
 These are trivial functions of the fourth order trace tensor
-\footnote{Note the similarity to the relationship of a transfer matrix with the $\chi$--matrix, $\qp_{ij} = \sum_{kl}\chi_{kl} T_{i k j l}$, with $\chi_{kl}$ defined by $\qp(\rho) = \sum_{kl}\chi_{kl} C_k\rho C_l$ or, in terms of the Kraus operators $K_i$ of the quantum operation, $\chi_{kl} = \sum_i \tr(K_i C_k) \mr{tr}(K_i\adjoint C_l)  = \left[\sum_i\dop{K_i}{K_i}\right]_{kl}$~\cite{Greenbaum2015}}
+\sidenote{Note the similarity to the relationship of a transfer matrix with the $\chi$--matrix, $\qp_{ij} = \sum_{kl}\chi_{kl} T_{i k j l}$, with $\chi_{kl}$ defined by $\qp(\rho) = \sum_{kl}\chi_{kl} C_k\rho C_l$ or, in terms of the Kraus operators $K_i$ of the quantum operation, $\chi_{kl} = \sum_i \tr(K_i C_k) \mr{tr}(K_i\adjoint C_l)  = \left[\sum_i\dop{K_i}{K_i}\right]_{kl}$~\cite{Greenbaum2015}}
 \begin{equation}\label{eq:ff:trace_tensor}
     T_{ijkl} = \tr(C_i C_j C_k C_l)
 \end{equation}
@@ -792,7 +792,7 @@ As mentioned in \cref{sec:ff:performance:extending_hilbert_spaces} (see also \cr
 On the other hand, a sparse basis makes the calculation of the trace tensor $T_{ijkl}$ and therefore also of the error transfer matrix \liouvUe much faster (\cf \cref{sec:ff:performance:basis}).
 Additionally, the user can define custom bases using the class constructor.
 
-The error transfer matrix \liouvUe can be calculated for a given pulse and noise spectrum using the \verb|error_transfer_matrix()| function \footnote{Note that while the calculation of the frequency shifts \freqshifts is implemented, it should at time of publication be understood as preliminary and not thoroughly tested}.
+The error transfer matrix \liouvUe can be calculated for a given pulse and noise spectrum using the \verb|error_transfer_matrix()| function \sidenote{Note that while the calculation of the frequency shifts \freqshifts is implemented, it should at time of publication be understood as preliminary and not thoroughly tested}.
 Various other quantities can be computed from \liouvUe as outlined in \cref{sec:ff:theory:derived_quantities}.
 Furthermore, the package includes a plotting module that offers several functions, \eg for the visualization of filter functions or the evolution of the Bloch vector using \qutip.
 
@@ -1050,7 +1050,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 \section{Randomized Benchmarking}\label{sec:ff:examples:randomized_benchmarking}
 \Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012a}.
 The basic protocol consists of constructing $K$ random sequences of varying length $m$ of gates drawn from the Clifford group
-\footnote{The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
+\sidenote{The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
 This makes the Clifford gates a convenient choice for benchmarking.
 For a nice, short introduction as well as further references, see~\cite{Ozols2008}},
 and appending a final inversion gate so that the identity operation should be performed in total.
@@ -1106,7 +1106,7 @@ We investigate white noise and correlated noise with $S(\omega)\propto\omega^{-0
 We then randomly draw $K = \num{100}$ sequences for \num{11} different lengths $m\in[1, 101]$ and concatenate the $m$ Clifford gates using \cref{eq:ff:control_matrix:sequence:freq} to compute the control matrix of the entire sequence.
 For the integral in \cref{eq:ff:decay_amplitudes:freq} we choose the ultraviolet cutoff frequency two orders of magnitude above the inverse duration of the shortest pulse, $f_\mr{UV} = \flatfrac{10^2}{\tau_\mr{min}}$.
 Similarly, the infrared cutoff is chosen as $f_\mr{IR} = \flatfrac{10^{-2}}{m_\mr{max}\tau_\mr{max}}$ with $m_\mr{max} = 101$ and $\tau_\mr{max} = 7\tau_\mr{min}$ (since the longest gate is compiled from seven primitive gates with duration $\tau_\mr{min}$) to guarantee that all nontrivial structure of the filter functions is resolved at small frequencies
-\footnote{For a precise fidelity estimate, the infrared cutoff should be extended to $f=0$.
+\sidenote{For a precise fidelity estimate, the infrared cutoff should be extended to $f=0$.
 However, we are only interested in a qualitative picture and neglect this part of the spectrum here.
 At frequencies much smaller than $\approx\flatfrac{1}{\tau}$ where $\tau$ is the duration of the entire control operation, the filter function is constant and we therefore do not disregard any interesting features by setting $f_\mr{IR} = \flatfrac{10^{-2}}{\tau} = \flatfrac{10^{-2}}{m_\mr{max}\tau_\mr{max}}$.}.
 %adequately.
