@@ -1,4 +1,4 @@
-% mainfile: main.tex
+% mainfile: ../../main.tex
 \chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
 There exists a multitude of methods for estimating noise properties.
 \todo{lay out some others}
@@ -34,8 +34,8 @@ We define the windowed Fourier transform of $x(t)$ and its inverse by\sidenote{
     In this chapter we will always denote the Fourier transform of some quantity $\xi$ using the same symbol with a hat, $\hat{\xi}$.
 }
 \begin{align}
-    \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{\i\omega t} \label{eq:windowed_ft}\\
-       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{-\i\omega t}, \label{eq:windowed_ft:inverse}
+    \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{-\i\omega t} \label{eq:windowed_ft}\\
+       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{\i\omega t}, \label{eq:windowed_ft:inverse}
 \end{align}
 \ie, we assume that outside of the window of observation $x(t)$ is zero.
 The auto-correlation function of $x(t)$ is given by
@@ -49,11 +49,11 @@ Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:windowed_ft})
 }
 \begin{align}
     C(\tau) &= \lim_{T\to\infty}\frac{1}{T}\int_0^T\dd{t}
-                \intinf\ddf{\omega}\hat{x}_T(\omega)^{\ast}\e^{\i\omega t}
-                \intinf\ddf{\omega^\prime}\hat{x}_T(\omega^\prime)\e^{-\i\omega^\prime (t + \tau)}  \\
+                \intinf\ddf{\omega}\hat{x}_T(\omega)^{\ast}\e^{-\i\omega t}
+                \intinf\ddf{\omega^\prime}\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime (t + \tau)}  \\
             &= \lim_{T\to\infty}\frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
-                \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)\e^{-\i\omega^\prime\tau}
-                \int_0^T\dd{t}\e^{\i t (\omega - \omega^\prime)} \label{eq:autocorrelation:fourier}
+                \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime\tau}
+                \int_0^T\dd{t}\e^{\i t (\omega^\prime - \omega)} \label{eq:autocorrelation:fourier}
 \end{align}
 The innermost integral approaches a $\delta$-function for large $T$,\sidenote{
     Note that, because $x(t)$ is wide-sense stationary, we may shift the limits of integration $\int_{0}^{T}\to\int_{-\flatfrac{T}{2}}^{+\flatfrac{T}{2}}$.
@@ -62,15 +62,15 @@ allowing us to further simplify this under the limit as
 \begin{align}
     C(\tau) &= \lim_{T\to\infty} \frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
                 \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)
-                \e^{-\i\omega^\prime\tau}\delta(\omega - \omega^\prime)\\
+                \e^{\i\omega^\prime\tau}\delta(\omega^\prime - \omega)\\
             &= \lim_{T\to\infty}\frac{1}{T}
-                \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{-\i\omega\tau} \\
-            &= \intinf\ddf{\omega} S(\omega) \e^{-\i\omega\tau} \label{eq:wiener_khinchin}
+                \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{\i\omega\tau} \\
+            &= \intinf\ddf{\omega} S(\omega) \e^{\i\omega\tau} \label{eq:wiener_khinchin}
 \end{align}
 with the \gls{psd}
 \begin{align}
     S(\omega) &= \lim_{T\to\infty}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 \label{eq:psd:definition}\\
-              &= \intinf\dd{\tau} C(\tau)\e^{\i\omega\tau}
+              &= \intinf\dd{\tau} C(\tau)\e^{-\i\omega\tau}
 \end{align}
 \Cref{eq:wiener_khinchin} is the Wiener-Khinchin theorem that states that the auto-correlation function $C(\tau)$ and the \gls{psd} $S(\omega)$ are Fourier-transform pairs~\cite{Koopmans1995}.
 Furthermore, defining the latter through \cref{eq:psd:definition} gives us an intuitive picture of the \gls{psd} if we recall Parseval's theorem,
@@ -95,14 +95,14 @@ Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized ver
     x_n \qc n\in\lbrace 0, 1, \dotsc, N - 1\rbrace
 \end{align}
 defined at times $t_n = n\Delta t$ with $T = N\Delta t$ and where $\Delta t = \fs\inverse$ is the sampling interval (the inverse of the sampling frequency \fs).
-Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{\nu}$ and write
+Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
 \begin{align}\label{eq:psd:bartlett}
-    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{\nu}}^2 \\
-        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{\nu}
+    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{m}}^2 \\
+        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{m}
 \end{align}
-where $\hat{x}_n\gth{\nu}$ is the discrete Fourier transform of $x_n\gth{\nu}$, we defined the \emph{periodogram} of $x_n\gth{\nu}$ by
+where $\hat{x}_n\gth{m}$ is the discrete Fourier transform of $x_n\gth{m}$, we defined the \emph{periodogram} of $x_n\gth{m}$ by
 \begin{align}\label{eq:periodogram}
-    S_n\gth{\nu} = \abs{\hat{x}_n\gth{\nu}}^2,
+    S_n\gth{m} = \abs{\hat{x}_n\gth{m}}^2,
 \end{align}
 and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.\sidenote{
     We blithely disregard integer algebra issues occuring here for conciseness and leave it as an exercise for the reader to figure out what the exact bounds of the set of $\omega_n$ are.
@@ -122,7 +122,7 @@ In turn, the number of samples $N$ determines the frequency resolution $\Delta f
 \begin{align}\label{eq:f_min}
     \fmin = \Delta f = \frac{1}{T} = \frac{1}{N\Delta t} = \frac{\fs}{N}.
 \end{align}
-Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{\nu}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
+Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{m}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
 
 In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
 It becomes clear, then, that the Bartlett average (\cref{eq:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\Delta t$.
@@ -131,37 +131,143 @@ An improvement in data efficiency can be obtained using Welch's method~\cite{Wel
 To see how, we first need to discuss spectral windowing.
 
 \section{Window functions}\label{sec:speck:theory:windows}
-Partitioning a signal $x_n$ into $M$ sections $x_n\gth{\nu}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
-    This window is also known as the boxcar window.
+Partitioning a signal $x_n$ into $M$ sections $x_n\gth{m}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
+    This window is also known as the boxcar or Dirichlet window.
 }
 \begin{align}\label{eq:window:boxcar}
-    w_n\gth{\nu} =
+    w_n\gth{m} =
     \begin{cases}
-        1\qif (\nu - 1) N \leq n < \nu N\qand \\
+        1\qif (m - 1) N \leq n < m N\qand \\
         0\qelse
     \end{cases}
 \end{align}
-so that $x_n\gth{\nu} = x_n w_n\gth{\nu}$.
-Now recall that multiplication and convolution are duals under the Fourier transform, implying that
-\begin{align}\label{eq:window:ft_pairs}
-    \hat{x}_n\gth{\nu} = \hat{x}_n \ast \hat{w}_n\gth{\nu}.
-\end{align}
-where the Fourier representation of the rectangular window
-\begin{align}
-    \hat{w}_n\gth{\nu} &= \e^{\i(\nu - \flatfrac{1}{2})\omega_n T}\hat{w}_n, \label{eq:window:boxcar:fourier}\\
-             \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:window:boxcar:fourier:unshifted}
-\end{align}
-\Cref{fig:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
-We can hence understand the Fourier spectrum of $x_n\gth{\nu}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{\nu}$.
-However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cref{eq:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\Delta f$ of discrete signals introduces a finite bandwidth of the probe as well as so-called \emph{side-lobes}.
-These effects induce what is known as \emph{spectral leakage}~\cite{Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
-
-\begin{marginfigure}[-2cm]
-    \input{img/tikz/boxcar_fourier}
+so that $x_n\gth{m} = x_n w_n\gth{m}$.
+\todo{add $\omega_n\gth{m}$, scaled ticks}
+\begin{marginfigure}
+    \centering
+    \includegraphics{pdf/rect}
     \caption{The Fourier representation of the rectangular window in continuous time.}
     \label{fig:boxcar_fourier}
 \end{marginfigure}
+Now recall that multiplication and convolution are duals under the Fourier transform, implying that
+\begin{align}\label{eq:window:ft_pairs}
+    \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m}.
+\end{align}
+where the Fourier representation of the rectangular window\sidenote{
+    $\sinc(x) = \flatfrac{\sin(x)}{x}$.
+}
+\begin{align}
+    \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:window:boxcar:fourier}\\
+             \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:window:boxcar:fourier:unshifted}
+\end{align}
+\Cref{fig:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
+We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
+However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cref{eq:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\Delta f$ of discrete signals introduces a finite bandwidth of the probe as well as \emph{sidelobes}.
+These effects induce what is known as \emph{spectral leakage}~\cite{Harris1978,Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
 
+For this reason, a plethora of \emph{window functions} have been introduced to mitigate the effects of spectral leakage.
+Key properties of a window are the spectral bandwidth (center lobe width) and sidelobe amplitude between which there typically is a tradeoff.\sidenote{
+    Wikipedia gives a good overview of existing window functions~\cite{WindowFunctionWiki}.
+}
+\todo{add $\omega_n\gth{m}$, scaled ticks}
+\begin{marginfigure}
+    \centering
+    \includegraphics{pdf/hann}
+    \caption{The Fourier representation of the Hann window in continuous time.}
+    \label{fig:hann_fourier}
+\end{marginfigure}
+A window frequently used in spectral analysis is the Hann window~\cite{Nuttall1981},
+\begin{align}\label{eq:window:hann}
+    w_n\gth{m} =
+    \begin{cases}
+        \cos^2\left(\frac{\pi n}{N}\right)\qif (m - 1)N\leq n < mN\qand \\
+        0\qelse
+    \end{cases}
+\end{align}
+with the Fourier representation of the unshifted window,
+\begin{align}\label{eq:window:hann:fourier_unshifted}
+%    \hat{w}_n &= \frac{2T\pi^2\sinc(\flatfrac{\omega_n T}{2})}{4\pi^2 - \omega_n^2 T^2},
+%    \hat{w}_n &= \frac{2\pi^2 T\sinc(\flatfrac{\omega_n T}{2})}{(2\pi - \omega_n T)(2\pi + \omega_n T)},
+    \hat{w}_n &=  T\sinc\left(\frac{\omega_n T}{2}\right)\times
+                    \frac{1}{2(1 - \flatfrac{\omega_n T}{2\pi})(1 + \flatfrac{\omega_n T}{2\pi})},
+\end{align}
+shown in \cref{fig:hann_fourier}.
+The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{fig:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is only slightly broadened.
 
+Another favorable property of the Hann window is that $w_0\gth{0} = w_{N-1}\gth{0} = 0$.
+This suppresses detrimental effects arising from a possible discontinuity ($x_0\gth{0}\neq x_{N-1}\gth{0}$) at the edge of a data segment related to the discrete Fourier transform, which assumes periodic data.\sidenote{
+    Although this can usually also be achieved by detrending the data before performing the Fourier transform, which is a good idea in any case.
+}
 
+\section{Welch's method}\label{sec:speck:theory:welch}
+Contemplating \cref{eq:window:hann}, one might come to the conclusion that using a window such as this is not very data efficient in the sense that a large fraction of samples located at the edge of the window is strongly suppressed and hence does not contribute significantly to the spectrum estimate.
+To alleviate this lack of efficiency, one can introduce an overlap between adjacent data windows.
+That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window forward by $-mK$ with $K>0$ the overlap.
+Finally, the periodogram (\cref{eq:periodogram}) is computed for each window and subsequently averaged to obtain the spectrum estimator (\cref{eq:psd:bartlett}).
 
+This method of spectrum estimation is known as Welch's method~\cite{Welch1967}.
+One can show~\cite{Welch1967} that the correlation between the periodograms of adjacent, overlapping windows is sufficiently small to avoid a biased estimate.
+The overlap naturally depends on the choice of window; a typical value for the Hann window $K = \flatfrac{N}{2}$ with which one would obtain $M = \flatfrac{2L}{N} - 1$ windows for data of length $L$.\sidenote{
+    Again neglecting integer arithmetic issues.
+}
+\begin{figure}[tphb]
+    \includegraphics[width=\textwidth]{pdf/welch}
+    \caption{
+        Illustration of Welch's method for spectrum estimation.
+        The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
+        Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
+        A finite overlap $K$ between adjacent windows (gray) ensures efficient sample use.
+    }
+    \label{fig:welch}
+\end{figure}
+
+\Cref{fig:welch} conceptually illustrates Welch's method for a trace of \oneoverf noise with $L = 300$ samples in total.
+Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ segments for a window length of $N=100$.
+The data in the second window is highlighted.
+
+\subsection{Parameters}\label{subsec:speck:theory:parameters}
+\begin{margintable}
+    \centering
+    \footnotesize
+    \caption[Overview of spectrum estimation parameters]{
+        Overview of spectrum estimation parameters.
+        The parameters can be assigned into three groups
+        \begin{enumerate*}[
+            before=\unskip{: }, itemjoin={{, }}, itemjoin*={{, and }}
+        ]
+            \item \acrshort{daq} parameters configuring the data acquisition device
+            \item Welch parameters specifying the periodogram averaging
+            \item Spectrum properties induced by the above
+        \end{enumerate*}.
+    }
+    \label{tab:parameters}
+    \begin{tabularx}{\marginparwidth}{ c l }
+        \multicolumn{2}{l}{1. \acrshort{daq} parameters} \\
+        \toprule
+        $L$ & Total number of samples \\
+        \fs & Sample rate \\
+        [0.5ex]
+        \multicolumn{2}{l}{2. Welch parameters} \\
+        \toprule
+        $K$ & Number of overlap samples \\
+        $N$ & Number of segment samples \\
+        $M$ & Number of Welch segments \\
+        [0.5ex]
+        \multicolumn{2}{l}{3. Spectrum parameters} \\
+        \toprule
+        \fmin & Smallest resolvable frequency \\
+        \fmax & Largest resolvable frequency \\
+    \end{tabularx}
+\end{margintable}
+
+We are now in a position to discuss how the various parameters of a time series relate to both to physical parameters of the resulting spectrum estimate and to each other.
+To this end, we will go through the typical procedure of acquiring a spectrum estimate using Welch's method chronologically.
+
+To acquire data using some form of (digital) \gls{daq}, one usually needs to specify two parameters first: the total number of samples to be acquired, $L$, and the sample rate, \fs.
+This results in a measurement of duration $T = L\Delta t$ where $\Delta t = \fs\inverse$ as previously mentioned.
+The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
+Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
+In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:f_min}).\sidenote{
+    Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
+}
+\todo{D(A)G for parameter interdependencies?}

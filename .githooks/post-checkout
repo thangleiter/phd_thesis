@@ -11,7 +11,16 @@ is_branch_checkout=$3
 if [ "$is_branch_checkout" = "1" ]; then
     echo "Switched branches, updating submodules..."
     git submodule update
-    cp --recursive --update ./lib/kaobook $HOME/texmf/tex/latex/
+
+    # Copy to ~/texmf on windows only (on linux the soft link works
+    case "$(uname -s)" in
+      *MINGW*|*MSYS*)
+        mkdir -p "$HOME"/texmf/tex/latex
+        cp --recursive --update ./lib/kaobook "$HOME"/texmf/tex/latex
+      ;;
+        *)
+      ;;
+    esac
 fi
 
 exit $?

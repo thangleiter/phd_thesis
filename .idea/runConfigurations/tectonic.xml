@@ -6,7 +6,7 @@
       <sumatra-path />
       <pdf-viewer>NONE</pdf-viewer>
       <viewer-command />
-      <compiler-arguments>--keep-intermediates</compiler-arguments>
+      <compiler-arguments>--keep-intermediates --open</compiler-arguments>
       <envs />
       <expand-macros-in-environment-variables>false</expand-macros-in-environment-variables>
       <before-run-command />
@@ -14,7 +14,7 @@
       <output-path>$PROJECT_DIR$/build</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
       <compile-twice>false</compile-twice>
-      <output-format>DEFAULT</output-format>
+      <output-format>PDF</output-format>
       <latex-distribution>PROJECT_SDK</latex-distribution>
       <has-been-run>true</has-been-run>
       <bib-run-config>[]</bib-run-config>

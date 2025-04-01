@@ -1,0 +1,34 @@
+% mainfile: ../../main.tex
+\chapter{The \texttt{python\_spectrometer} software package}\label{ch:speck:software}
+
+\begin{margintable}
+    \footnotesize
+    \centering
+    \setmintedinline[Python]{fontsize=\footnotesize}
+    \caption[Overview of spectrum estimation parameters]{
+        Variable names used in \cref{ch:speck:theory} and their corresponding parameter names as used in \pyspeck and \code{scipy.signal.welch()}~\cite{scipy_welch}.
+    }
+    \label{tab:software:parameters}
+    \begin{tabular}{ c C }
+        \toprule
+        Variable & Parameter \\
+        \midrule
+        $L$ & n_pts \\
+        \fs & fs \\
+        $K$ & noverlap \\
+        $N$ & nperseg \\
+        $M$ & n_seg \\
+        \fmin & f_min \\
+        \fmax & f_max \\
+        \bottomrule
+    \end{tabular}
+\end{margintable}
+
+In this chapter, I will lay out the design and functionality of the \pyspeck \python package.
+
+\section{Package design and implementation}\label{sec:speck:software:design}
+The \pyspeck package provides a single user-facing class, \code{core.Spectrometer}, that manages the entire process from data acquisition to spectrum estimation and plotting.
+Plotting functionality is factored out into a private submodule for maintainability.
+
+\section{Feature overview}\label{sec:speck:software:features}
+

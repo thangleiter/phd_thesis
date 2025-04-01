@@ -1,5 +1,4 @@
 \input{tex/preamble}
-\input{tex/packages}
 \input{tex/commands}
 \input{tex/colors}
 
@@ -162,11 +161,12 @@
 % \include{chapters/mathematics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{A flexible \python tool for Fourier-transform noise spectroscopy}\label{part:spectrometer}
+\addpart{A Flexible \python Tool For Fourier-Transform Noise Spectroscopy}\label{part:spectrometer}
 \pagelayout{margin} % Restore margins
 
 \include{chs/spectrometer/introduction}
 \include{chs/spectrometer/theory}
+\include{chs/spectrometer/software}
 
 \pagelayout{wide} % No margins
 \addpart{Characterization and Improvements of a Millikelvin Confocal Microscope}\label{part:setup}
@@ -183,7 +183,7 @@
 \include{chs/filter_functions/introduction}
 \include{chs/filter_functions/time_domain_methods}
 \include{chs/filter_functions/validation}
-%\include{chs/filter_functions/prr.tex}
+\include{chs/filter_functions/prr.tex}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
