@@ -335,7 +335,7 @@ However, because the structure of the control matrix \ctrlmat is similar to that
 For a perhaps more intuitive description employing exclusively conjugation by unitaries, we refer the reader to our accompanying publication~\citer{Cerfontaine2021}.
 
 \begin{figure}
-    \[\centerline{\input{img/circuits/gatesequence.tex}}\]   % math environment for vertical padding
+    \[\centerline{\input{img/circuits/gatesequence}}\]   % math environment for vertical padding
     \caption{
         Illustration of a sequence of $G$ gates.
         Individual gates with propagators $P_g$ start at time $t_{g-1}$ and complete at time $t_g$.
@@ -716,7 +716,7 @@ On a different system with an \fastprocessor the FF method outperformed MC even 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/benchmark_MC_vs_FF_linear-inset.pdf}
+    \includegraphics{img/pdf/benchmark_MC_vs_FF_linear-inset}
     \caption{
         Performance of the formalism using \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} compared to a Monte Carlo method for a single gate as a function of problem dimension $d$.
         Parameters are: $n_{\Delta t} = \num{1}, n_\alpha = 3, n_\mr{MC} = 100, f_\mr{UV} = \flatfrac{10^2}{\Delta t}, n_\omega = \num{500}$ where $n_\alpha$ is the number of noise operators considered, $n_\mr{MC}$ the number of Monte Carlo trajectories over which is averaged, and $n_\omega$ the number of frequency samples.
@@ -915,7 +915,7 @@ $\cumulantfun_{\eps_{12}}$ displays clear characteristics of a Pauli channel wit
 
 \begin{figure*}[tbp]
     \centering
-    \includegraphics[width=\textwidth]{img/pdf/all_in_one_alpha-0-7_linear_complete_CNOT.pdf}
+    \includegraphics[width=\textwidth]{img/pdf/all_in_one_alpha-0-7_linear_complete_CNOT}
     \caption{
         (a) Exchange interaction $J(\epsilon_{ij})$ for the CNOT gate presented in~\citer{Cerfontaine2020b} as function of time.
         (b) Filter functions $F_{\epsilon_{ij}}$ for noise in the detunings evaluated on the computational subspace.
@@ -1033,7 +1033,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/rabi_driving_weak_vs_strong.pdf}
+    \includegraphics{img/pdf/rabi_driving_weak_vs_strong}
     \caption{
         Filter functions for weak (a) and strong (b) Rabi driving (\num{20} identity gates in total).
         Grey dashed (dotted) lines indicate the respective drive (Rabi) frequencies $\omega_0$ ($\Omega_\mr{R}$).
@@ -1120,7 +1120,7 @@ The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset.pdf}
+    \includegraphics{img/pdf/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset}
     \caption{
         Simulation of a \gls{srb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
         Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{srb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
@@ -1167,8 +1167,8 @@ Note that the circuit could be compressed in time by parallelizing some operatio
 
 \begin{figure*}[tbp]
     %\resizebox{\columnwidth}{!}{}
-    \centerline{\input{img/circuits/qft.tex}}
-    \includegraphics[width=\textwidth]{img/pdf/qft_filter_function_first_qubit_with_cumulative_fraction.pdf}
+    \centerline{\input{img/circuits/qft}}
+    \includegraphics[width=\textwidth]{img/pdf/qft_filter_function_first_qubit_with_cumulative_fraction}
     \caption{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
