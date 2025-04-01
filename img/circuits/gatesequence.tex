@@ -1,8 +1,14 @@
-\Qcircuit @C=1em @R=0em {
-    & \qw           & \gate{P_1}    & \qw           & \gate{P_2}    & \qw           & \ \cdots\ &                   & \gate{P_G}    & \qw           & \qwa  & \push{\equiv} & & \qw           & \gate{Q_G}    & \qw           & \qwa\\
-    & \dstick{t_0}  &               & \dstick{t_1}  &               & \dstick{t_2}  &           & \dstick{t_{G-1}}  &               & \dstick{t_G}  &       &               & & \dstick{t_0}  &               & \dstick{t_G}  &
-} 
-%\Qcircuit @C=1em @R=0em {
-%    & \dstick{t_0}  &               & \dstick{t_g}  &       \\
-%    & \qw           & \gate{Q_g}    & \qw           & \qwa
-%} 
+\tikzset{slice/.append style={draw=none}}
+
+\begin{quantikz}[align equals at = 1]
+	\slice{$t_0$} &
+	\gate{P_1} \slice{$t_1$} & 
+	\gate{P_2} \slice{$t_2$} & 
+	\midstick{$\dotsc$} \slice{$t_{g-1}$} & 
+	\gate{P_g} \slice{$t_g$} \arrow[r] &
+\end{quantikz}
+$=$ 
+\begin{quantikz}[align equals at = 1]
+	\slice{$t_0$} &
+	\gate{Q_g} \slice{$t_g$} \arrow[r] & 
+\end{quantikz}
