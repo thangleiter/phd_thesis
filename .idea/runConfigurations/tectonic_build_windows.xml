@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="tectonic build AG-BLUHM-51" type="ShConfigurationType" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="tectonic build windows" type="ShConfigurationType">
     <option name="SCRIPT_TEXT" value="# Activate the conda environment Write-Host &quot;Activating mamba env&quot; conda activate tectonic # Run Tectonic to build the document Write-Host &quot;Building document&quot; Z:\Code\tectonic\target\release\tectonic.exe -X build --keep-intermediates # Open the generated PDF with SumatraPDF Write-Host &quot;Viewing document&quot; Start-Process '$env:localappdata\SumatraPDF\sumatrapdf.exe' -reuse-instance &quot;build\default\default.pdf&quot;" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
     <option name="SCRIPT_PATH" value="$PROJECT_DIR$/shell/build_windows.ps1" />
@@ -11,10 +11,7 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="EXECUTE_IN_TERMINAL" value="false" />
     <option name="EXECUTE_SCRIPT_FILE" value="true" />
-    <envs>
-      <env name="MAMBA_ROOT_PREFIX" value="C:\Users\hangleiter\AppData\Local\miniforge3" />
-      <env name="MAMBA_EXE" value="C:\Users\hangleiter\AppData\Local\miniforge3\Library\bin\mamba.exe" />
-    </envs>
+    <envs />
     <method v="2" />
   </configuration>
 </component>
