@@ -1,17 +1,17 @@
 $out_dir = "./build";
 $aux_dir = "./build"; # needs to be set; setting to auxil errors (win)
-
-# Output a pdf
-set_tex_cmds('-synctex=1 -interaction=nonstopmode -file-line-error -shell-escape %O %S');
-$pdf_mode = 4;  # 5: xetex, 4: luatex, 1: pdflatex
-
+$allow_subdir_creation = 1; # needs to be set for \include to work with subdirs!
 $preview_continuous_mode = 1;
+$pdf_mode = 5;  # 5: xetex, 4: luatex, 1: pdflatex
 $pdf_previewer = "evince";
+$clean_ext = " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy synctex synctex(busy)";
 
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');
 
-$clean_ext .= " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy synctex synctex(busy)";
+# IMPORTANT:
+# -file-line-error kills the $allow_subdir_creation functionality!
+set_tex_cmds('-synctex=1 -interaction=nonstopmode %O %S');
 
 # Compile the glossary and acronyms list (package 'glossaries')
 add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );

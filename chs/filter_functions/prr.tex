@@ -2,6 +2,7 @@
 %           INTRODUCTION SECTION
 % ==================================================
 \chapter{Introduction}\label{ch:ff:introduction}
+$\gamma, \Gamma$
 In the circuit model of quantum computing, computations are driven by applying time-local quantum gates.
 Any algorithm can be compiled using sequences of one- and two-qubit gates~\cite{DiVincenzo1995}.
 Ideal, error-free gates are represented by unitary transformations, so that simulating the action of an algorithm on an initial state of a quantum computer amounts to simple matrix multiplication.
@@ -18,7 +19,7 @@ To capture experimentally relevant effects important to understand the capabilit
 For example, one may expect the fidelity requirements for quantum error correction to be more stringent for correlated noise as errors of different gates can interfere constructively~\cite{Ng2009}.
 On the other hand, it might also be possible to use correlation effects to one's benefit, attenuating decoherence by cleverly constructing the gate sequences in algorithms.
 
-As experimental platforms begin to approach fidelity limits set by employing primitive pulse schemes~\cite{Veldhorst2014,Debnath2016,Yoneda2018} and detailed knowledge about noise sources and spectra in solid-state systems becomes available~\cite{Dial2013,Quintana2017,Malinowski2017}, control pulse optimizations tailored towards specific systems will be required to further push fidelities beyond the error correction threshold~\cite{Barends2014,Blume-Kohout2017}.
+As experimental platforms begin to approach fidelity limits set by employing primitive pulse schemes~\cite{Veldhorst2014,Debnath2016,Yoneda2018} and detailed knowledge about noise sources and spectra in solid-state systems becomes available~\cite{Dial2013,Quintana2017,Malinowski2017}, control pulse optimizations tailored towards specific systems will be required to further push fidelities beyond the error correction threshold~\cite{Barends2014a,Blume-Kohout2017}.
 This calls for flexible and generically applicable tools as a basis for the numerical optimization of pulses as well as the detailed analysis of the quantum processes they effect.
 In order to obtain a useful description also for gate operations that decouple from leading orders of noise, such as \glspl{dcg}~\cite{Khodjasteh2009}, beyond leading order results are required.
 
@@ -26,7 +27,7 @@ In an accompanying publication~\cite{Cerfontaine2021} we presented a formalism b
 Specifically, we showed how process descriptions can be obtained perturbatively for arbitrary classical noise spectra and derived a concatenation rule to obtain the filter function of a sequence of gates from those of the individual gates.
 This paper extends these results.
 
-\Glspl{ff} were originally introduced to describe the decay of phase coherence under \gls{dd} sequences~\cite{Kofman2001,Martinis2003,Uhrig2006,Cywinski2008} consisting of wait times and perfect $\pi$-pulses.
+\Glspl{ff} were originally introduced to describe the decay of phase coherence under \gls{dd} sequences~\cite{Kofman2001,Martinis2003,Uhrig2007,Cywinski2008} consisting of wait times and perfect $\pi$-pulses.
 The formalism facilitated recognizing these sequences as band-pass filters that allow for probing the environmental noise characteristics of a quantum system through noise spectroscopy~\cite{Alvarez2011,Bylander2011,Paz-Silva2017,Malinowski2017} or optimizing sequences to suppress specific noise bands~\cite{Biercuk2009,Uys2009,Soare2014,Malinowski2017}.
 It can also be extended to fidelities of gate operations for single~\cite{Green2012,Green2013} or multiple~\cite{Gungordu2018,Ball2020} qubits using the \gls{me}~\cite{Magnus1954,Blanes2009} as well as more general \gls{dd} protocols~\cite{Paz-Silva2014}.
 The works by~\citeauthor{Green2013} and~\citeauthor{Clausen2010} also introduced the notion of the control matrix as a quantity closely related to the canonical filter function that is convenient for calculations.
@@ -87,7 +88,7 @@ We then move on to show how several quantities of interest can be extracted and 
 \section{Transfer matrix representation of quantum operations}\label{sec:ff:theory:transfer_matrix}
 \subsection{Brief review of quantum operations and superoperators}
 The quantum operations formalism provides a general framework for the description of open quantum systems~\cite{Kraus1983,Nielsen2011}.
-It forms the mathematical basis for \gls{qpt}~\cite{Chuang1997,Poyatos1997} as well as \gls{gst}~\cite{Blume-Kohout2013,Greenbaum2015} and has also been extensively employed in the context of \gls{rb}~\cite{Magesan2012a,Kimmel2014}.
+It forms the mathematical basis for \gls{qpt}~\cite{Chuang1997,Poyatos1997} as well as \gls{gst}~\cite{Blume-Kohout2013,Greenbaum2015} and has also been extensively employed in the context of \gls{rb}~\cite{Magesan2011,Kimmel2014}.
 Several different representations of quantum operations exist.
 While all of them are equivalent one typically chooses the most convenient for the problem at hand.
 For an overview of the most commonly used representations see~\citer{Greenbaum2015} and for matrix representations in particular~\citer{Nambu2005} and the references therein.
@@ -99,7 +100,7 @@ Concretely, the Liouville representation of an operation $\qp: \rho\rightarrow\q
     \qp_{ij}\doteq\tr(C_i\adjoint\qp(C_j))
 \end{equation}
 with an operator basis $\basis=\lbrace C_0, C_1, \dotsc, C_{d^2-1}\rbrace$ for the space of linear operators over \Hspace, $\mathsf{L}(\Hspace)$, orthonormal with respect to the Hilbert-Schmidt product $\dotHS{A}{B}\coloneqq\tr(A\adjoint B)$.
-In the case that the operator basis corresponds to the Pauli matrices \cref{eq:ff:liouville_representation} is known as the Pauli transfer matrix (PTM).
+In the case that the operator basis corresponds to the Pauli matrices \cref{eq:ff:liouville_representation} is known as the \gls{ptm}.
 The operation \qp is thus associated with a $d^2\times d^2$ matrix in \emph{Liouville space} \Lspace that describes its action as the degree to which the $j$ basis element is mapped onto the $i$th.
 On \Lspace one can identify a set of basis kets $\lbrace\dket{C_i}\rbrace_{i=0}^{d^2-1} = \lbrace\dket{i}\rbrace_{i=0}^{d^2-1}$ isomorphic to the operators $C_i$ (and correspondingly bras $\dbra{i}$ to the adjoint $C_i\adjoint$) as well as the inner product $\dip{i}{j} = \dotHS{C_i}{C_j}$.
 As the vectors $\dket{i}$ form an orthonormal basis, any operator on \Hspace can be written as a vector on \Lspace, $\dket{A} = \sum_i\dket{i}\dip{i}{A}$, whereas a superoperator on \Hspace becomes a matrix on \Lspace, see \cref{eq:ff:liouville_representation}.
@@ -335,8 +336,9 @@ However, because the structure of the control matrix \ctrlmat is similar to that
 For a perhaps more intuitive description employing exclusively conjugation by unitaries, we refer the reader to our accompanying publication~\citer{Cerfontaine2021}.
 
 \begin{figure}
-    \[\centerline{\input{img/circuits/gatesequence.tex}}\]   % math environment for vertical padding
-    \caption{
+    \centering
+    \input{img/circuits/gatesequence}
+    \caption[Illustration of gate sequence]{
         Illustration of a sequence of $G$ gates.
         Individual gates with propagators $P_g$ start at time $t_{g-1}$ and complete at time $t_g$.
         The total action from $t_0$ to $t_g$ is given by $Q_g$.
@@ -631,7 +633,7 @@ with
 \end{subequations}
 for $1\leq j < k\leq d$, $1\leq l\leq d - 1$, and an orthonormal vector basis $\lbrace\ket{j}\rbrace_{j=1}^d$ of the Hilbert space.
 Expanding an arbitrary matrix $A\in\mathbb{C}^{d\times d}$ in the basis of \cref{eq:ff:basis:ggm} is then simply a matter of adding up the corresponding matrix elements of $A$ according to \cref{eq:ff:basis:ggm:u,eq:ff:basis:ggm:v,eq:ff:basis:ggm:w}.
-For instance, the expansion coefficient for the first symmetric basis element is given by $u_{12} = \flatfrac{(A_{12}\dyad{1}{2} + A_{21}\dyad{2}{1})}{\sqrt{2}}$.
+For instance, the expansion coefficient for the first symmetric basis element is given by $u_{12} = 2^{-\flatfrac{1}{2}} (A_{12}\dyad{1}{2} + A_{21}\dyad{2}{1})$.
 The explicit construction prescription of the GGM basis thus allows calculating inner products of the form $\ip{\Lambda_j}{A}$ at constant cost instead of the quadratic cost of the trace of a matrix product, speeding up the computation of the transfer matrix from \cref{eq:ff:liouville_representation} (in which case $A = \qp(\Lambda_k)$).
 In numerical experiments, calculating the transfer matrix of a unitary $U$ with dimension $d$ and precomputed matrix products $A_k  =  U \Lambda_k U\adjoint$ scaled as $\sim d^{4.16}$.
 This agrees with the expected scaling of $\sim d^4$ (a transfer matrix has $d^2\times d^2$ elements) and presents a significant improvement over the explicit calculation with trace overlaps $\tr(\Lambda_j A_k)$ that we observed to scale as $\sim d^{5.93}$ (we expected $\sim d^6$).
@@ -716,7 +718,7 @@ On a different system with an \fastprocessor the FF method outperformed MC even 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/benchmark_MC_vs_FF_linear-inset.pdf}
+    \includegraphics{img/pdf/benchmark_MC_vs_FF_linear-inset}
     \caption{
         Performance of the formalism using \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} compared to a Monte Carlo method for a single gate as a function of problem dimension $d$.
         Parameters are: $n_{\Delta t} = \num{1}, n_\alpha = 3, n_\mr{MC} = 100, f_\mr{UV} = \flatfrac{10^2}{\Delta t}, n_\omega = \num{500}$ where $n_\alpha$ is the number of noise operators considered, $n_\mr{MC}$ the number of Monte Carlo trajectories over which is averaged, and $n_\omega$ the number of frequency samples.
@@ -755,12 +757,12 @@ Moreover, control matrices may be efficiently extended to and merged on larger H
 Calculations using unitary conjugation instead of transfer matrices are implemented but at this point not available in the high-level API.
 
 Our software is written in Python and available on GitHub~\cite{Hangleiter_ff} under the GPLv3 license.
-We also provide a current snapshot in the Supplementary Material~\cite{prrSupp}.
+We also provide a current snapshot in the Supplementary Material~\cite{prrSupp}.\todo{ref}
 It features a broad coverage through unit tests and extensive API documentation as well as didactic examples (see \cref{ch:ff:examples}).
 The package relies on the \numpy~\cite{Harris2020} and \scipy~\cite{Virtanen2020} libraries for vectorized array operations.
 Data visualization is handled by \matplotlib~\cite{Hunter2007}.
 For tensor multiplications with optimized contraction order we use \opteinsum~\cite{Smith2018} for which \sparse~\cite{Pydata2019}, a library aiming to extend the \scipy sparse module to multi-dimensional arrays, serves as a backend in the calculation of the trace tensor from \cref{eq:ff:trace_tensor}.
-Lastly, the package is written to interface with \qopt~\cite{Teske2021,Teske2022} and \qutip~\cite{Johansson2013}, frameworks for the simulation and optimization of open quantum systems, and mirrors the latter's data structure for Hamiltonians ensuring easy interoperability between the two.
+Lastly, the package is written to interface with \qopt~\cite{Teske2021,Teske2022} and \qutip~\cite{Johansson2012}, frameworks for the simulation and optimization of open quantum systems, and mirrors the latter's data structure for Hamiltonians ensuring easy interoperability between the two.
 
 \section{Package overview}\label{sec:ff:software:overview}
 In the \filterfunctions package all operations are understood as sequences of pulses that are applied to a quantum system.
@@ -915,7 +917,7 @@ $\cumulantfun_{\eps_{12}}$ displays clear characteristics of a Pauli channel wit
 
 \begin{figure*}[tbp]
     \centering
-    \includegraphics[width=\textwidth]{img/pdf/all_in_one_alpha-0-7_linear_complete_CNOT.pdf}
+    \includegraphics[width=\textwidth]{img/pdf/all_in_one_alpha-0-7_linear_complete_CNOT}
     \caption{
         (a) Exchange interaction $J(\epsilon_{ij})$ for the CNOT gate presented in~\citer{Cerfontaine2020b} as function of time.
         (b) Filter functions $F_{\epsilon_{ij}}$ for noise in the detunings evaluated on the computational subspace.
@@ -962,7 +964,7 @@ If we had additionally evaluated the frequency shifts \freqshifts we could have 
 \end{table}
 
 \section{Rabi driving}\label{sec:ff:examples:rabi_driving}
-A widely used method for qubit control is Rabi driving~\cite{Wallraff2004,Barends2014,Soare2014,Veldhorst2014}.
+A widely used method for qubit control is Rabi driving~\cite{Wallraff2004,Barends2014a,Soare2014,Veldhorst2014}.
 If we restrict ourselves to the resonant case for simplicity, the control Hamiltonian takes on the general form $\Hc = \flatfrac{\omega_0\pz}{2} + A\sin(\omega_0 t + \phi)\px$.
 Here, $\omega_0$ is the resonance frequency, $A$ the drive amplitude corresponding to the Rabi frequency in the weak driving limit $\flatfrac{A}{\omega_\mr{0}}\ll 1$, $\Omega_\mr{R}\approx A$, and $\phi$ an adjustable phase giving control over the rotation axis in the $xy$-plane of the Bloch sphere.
 This Hamiltonian and associated decoherence mechanisms are well-studied in the weak driving regime, where the rotating wave approximation (RWA) can be applied to remove fast-oscillating terms in the rotating frame~\cite{Jaynes1963,Gerry2008}.
@@ -1033,7 +1035,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/rabi_driving_weak_vs_strong.pdf}
+    \includegraphics{img/pdf/rabi_driving_weak_vs_strong}
     \caption{
         Filter functions for weak (a) and strong (b) Rabi driving (\num{20} identity gates in total).
         Grey dashed (dotted) lines indicate the respective drive (Rabi) frequencies $\omega_0$ ($\Omega_\mr{R}$).
@@ -1048,7 +1050,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 \end{figure}
 
 \section{Randomized Benchmarking}\label{sec:ff:examples:randomized_benchmarking}
-\Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012a}.
+\Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012}.
 The basic protocol consists of constructing $K$ random sequences of varying length $m$ of gates drawn from the Clifford group
 \sidenote{The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
 This makes the Clifford gates a convenient choice for benchmarking.
@@ -1120,7 +1122,7 @@ The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset.pdf}
+    \includegraphics{img/pdf/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset}
     \caption{
         Simulation of a \gls{srb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
         Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{srb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
@@ -1154,7 +1156,7 @@ That is, we assume full control of the $x$- and $y$-axes of the individual qubit
 This system allows for native access to the minimal gateset $\mathbb{G} = \lbrace\mr{X}_{i}(\flatfrac{\pi}{2}),\mr{Y}_{i}(\flatfrac{\pi}{2}),\mr{CR}_{ij}(\flatfrac{\pi}{2^3})\rbrace$ where $\mr{CR}_{ij}(\phi)$ denotes a controlled rotation by $\phi$ about $z$ with control qubit $i$ and target qubit $j$.
 Controlled-$z$ rotations by angles $\flatfrac{\pi}{2^m}$ as required for the QFT can thus be obtained by concatenating $2^{3-m}$ minimal gates $\mr{CR}_{ij}(\flatfrac{\pi}{2^3})$.
 
-Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2013} of the GRAPE algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
+Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the GRAPE algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
 For the optimization we choose a time step of $\Delta t = \qty{1}{\nano\second}$ and a total gate duration of $\tau = \qty{30}{\nano\second}$.
 For completeness, see \cref{sec:app:ff:qft} for details on the optimized gates.
 We then construct the remaining required gates by sequencing these elementary gates, \ie the Hadamard gate $\mr{H}_i = \mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{Y}_{i}(\flatfrac{\pi}{2})$, where $\mr{B}\circ\mr{A}$ denotes the composition of gates A and B such that gate A is executed before gate B.
@@ -1167,9 +1169,10 @@ Note that the circuit could be compressed in time by parallelizing some operatio
 
 \begin{figure*}[tbp]
     %\resizebox{\columnwidth}{!}{}
-    \centerline{\input{img/circuits/qft.tex}}
-    \includegraphics[width=\textwidth]{img/pdf/qft_filter_function_first_qubit_with_cumulative_fraction.pdf}
-    \caption{
+    \centering
+    \input{img/circuits/qft}
+    \includegraphics[width=\textwidth]{img/pdf/qft_filter_function_first_qubit_with_cumulative_fraction}
+    \caption[\gls{qft} circuit and filter function]{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
         Bottom: Filter functions for noise operators on the first qubit ($i = 0$).

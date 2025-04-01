@@ -1,13 +1,12 @@
-\Qcircuit @C=1em @R=1.4em {
-    \lstick{3}  & \qw       & \qw                           & \qw           & \qw                           & \qw           & \ctrl{1}                      & \qswap     & \qw      & \qw                           & \qw           & \qw                           & \qw           & \qw      & \qw                            & \qw           & \qw       & \qwa    & \rstick{0} \\
-    \lstick{2}  & \qw       & \qw                           & \qw           & \ctrl{1}                      & \qswap        & \gate{R(\flatfrac{\pi}{2^3})} & \qswap\qwx & \qw      & \qw                           & \qw           & \ctrl{1}                      & \qswap        & \qw      & \qw                            & \qw           & \qw       & \qwa    & \rstick{1} \\
-    \lstick{1}  & \qw       & \ctrl{1}                      & \qswap        & \gate{R(\flatfrac{\pi}{2^2})} & \qswap\qwx    & \qw                           & \qw        & \qw      & \ctrl{1}                      & \qswap        & \gate{R(\flatfrac{\pi}{2^2})} & \qswap\qwx    & \qw      & \ctrl{1}                       & \qswap        & \qw       & \qwa    & \rstick{2} \\
-    \lstick{0}  & \gate{H}  & \gate{R(\flatfrac{\pi}{2^1})} & \qswap\qwx    & \qw                           & \qw           & \qw                           & \qw        & \gate{H} & \gate{R(\flatfrac{\pi}{2^1})} & \qswap\qwx    & \qw                           & \qw           & \gate{H} & \gate{R(\flatfrac{\pi}{2^1})}  & \qswap\qwx    & \gate{H}  & \qwa    & \rstick{3} 
-    %\gategroup{3}{2}{4}{4}{1em}{--}
-    %\gategroup{2}{5}{3}{6}{1em}{--}
-    %\gategroup{2}{2}{4}{6}{1em}{--}
-    %\gategroup{3}{9}{4}{11}{1em}{--}
-    %\gategroup{2}{12}{3}{13}{1em}{--}
-    %\gategroup{2}{9}{4}{13}{1em}{--}
-    %\gategroup{3}{14}{4}{16}{1em}{--}
-}
+\newcommand{\Rz}[1]{\gate{R\left(\flatfrac{\pi}{2^{#1}}\right)}}
+
+\begin{quantikz}[
+    %thin lines,
+	font=\footnotesize,
+	column sep=1em,
+]
+    \lstick{3} &          &     	 &          &          &      	  & \ctrl{1} & \swap{1} &          &     	  &          &          &          &     	  &          	  & \permute{4,2,3,1} & \rstick{3} \\
+    \lstick{2} &          &     	 &          & \ctrl{1} & \swap{1} & \Rz{3}   & \targX{} &          &     	  &          & \ctrl{1} &          &     	  & \permute{2,1} & 			      & \rstick{2} \\
+    \lstick{1} &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{} &      	 &          &          & \ctrl{1} & \swap{1} & \Rz{2}   &          & \ctrl{1} & 		 	  & 			      & \rstick{1} \\
+    \lstick{0} & \gate{H} & \Rz{1}   & \targX{} &          &      	  &          &          & \gate{H} & \Rz{1}   & \targX{} &          & \gate{H} & \Rz{1}   & \gate{H} 	  & 			      & \rstick{0}
+\end{quantikz}
