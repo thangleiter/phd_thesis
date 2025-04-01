@@ -1,5 +1,8 @@
 **/__pycache__/*
-build/*
-.idea/shelf/
 
+.idea/shelf/
+.idea/workspace.xml
+
+build/*
 !build/main.pdf
+
