@@ -45,7 +45,7 @@ Moreover, we show that the formalism naturally lends itself as a tool for numeri
 On top of providing methods to handle individual quantum gates, the package also implements the concatenation operation as well as parallelized execution of pulses on different groups of qubits, allowing for a highly modular and hence computationally powerful treatment of quantum algorithms in the presence of correlated noise.
 Given an arbitrary, classical noise spectral density, it can be used to calculate a matrix representation of the error process.
 From this matrix one can extract average gate fidelities, transition probabilities, and leakage rates as we derive below.
-To simplify adaptation the software's API is strongly inspired by and compatible with \qutip~\cite{Johansson2013} as well as \qopt~\cite{Teske2021,Teske2022}.
+To simplify adaptation the software's API is strongly inspired by and compatible with \qutip~\cite{Johansson2012} as well as \qopt~\cite{Teske2021,Teske2022}.
 This allows users to use these packages in conjunction.
 Assessing the computational performance, we show that our method outperforms Monte Carlo simulations for single gates.
 New analytic results applicable to periodic Hamiltonians and employing the concatenation property make this advantage even more pronounced for sequences of gates.
@@ -176,7 +176,7 @@ The first and second terms of the \gls{me} are given by~\cite{Magnus1954,Blanes2
 The $n$ term of the expansion contains $n$ factors of the noise variables $b_\alpha(t)$ and scales with $n$ factors of the control duration $\tau$, suggesting that higher-order terms can be neglected if their product is small.
 In the Bloch sphere picture this corresponds to requiring that the angle by which the Bloch vector is rotated away from its intended trajectory due to the noise be small.
 Below, we will use the parameter $\xi$ to denote the magnitude of this deviation.
-It is properly defined in \cref{appsec:ff:convergence:magnus_expansion} where also bounds for the convergence of the \gls{me} are discussed.
+It is properly defined in \cref{sec:app:ff:convergence:magnus_expansion} where also bounds for the convergence of the \gls{me} are discussed.
 Here, we only state that $\Li_{\mr{eff},n}\sim\xi^n$ (see also~\citer{Green2013}).
 
 We have suggestively written the \gls{me} in terms of an effective Liouvillian $\Li_\mr{eff} = \comm{H_\mr{eff}}{\placeholder}$ to interpret it as the generator of a \emph{time}-averaged evolution of a single noise realization up to time $\tau$.
@@ -275,7 +275,7 @@ These terms are due to an incoherent average that only takes classical correlati
 Note that \cref{eq:ff:cumulant:truncated:liouville} together with \cref{eq:ff:cumulant_expansion} constitutes an exact version (in the Liouville representation) of Eq.~(4) from~\citer{Cerfontaine2021} for Gaussian noise.
 The approximation of~\citer{Cerfontaine2021} is obtained by expanding the exponential to linear order and neglecting the second order terms \freqshifts.
 
-For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{appsec:ff:derivations:cumulant:pauli})
+For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{sec:app:ff:derivations:cumulant:pauli})
 \begin{equation}\label{eq:ff:cumulant:truncated:liouville:pauli}
     \cumulantfun_{ij}(\tau) = \begin{cases}
         - \sum_{k\neq i}\decayamps_{kk}                         &\qif* i = j,   \\
@@ -461,7 +461,7 @@ with $\bar{B}_{\alpha,ij}\gth{g},\bar{C}_{k,ij}\gth{g},\Omega_{ij}\gth{g}$ as de
     I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
                               \int_{t_{g-1}}^{t}\dd{t'}\e^{\i\Omega_{mn}\gth{g}(t' - t_{g-1}) + \i\omega t'}.
 \end{equation}
-Explicit results for the integration in \cref{eq:ff:frequency_shifts:integral} are given in \cref{appsec:ff:derivations:frequency_shifts:integral}.
+Explicit results for the integration in \cref{eq:ff:frequency_shifts:integral} are given in \cref{sec:app:ff:derivations:frequency_shifts:integral}.
 To calculate the frequency shifts \freqshifts, we can thus reuse the quantity $\mc{G}\gth{g}(\omega)$ also required for the decay amplitudes \decayamps.
 The only additional computation, apart from contraction, involves the $G$ integrations $I_{ijmn}\gth{g}(\omega)$.
 Importantly, \cref{eq:ff:frequency_shifts:freq} has the same structure as the corresponding \cref{eq:ff:decay_amplitudes:freq} for \decayamps in that the individual entries of \freqshifts are given by an integral over the spectral density of the noise multiplied with a -- in this case second order -- filter function that describes the susceptibility to noise at frequency $\omega$:
@@ -499,7 +499,7 @@ In the low-noise regime where \cref{eq:ff:error_transfer_matrix:approx} holds, w
                       &\eqqcolon 1 - \sum_{\alpha\beta}\infid_{\alpha\beta}(\liouvUe).
 \end{align}
 Here, we defined $\infid_{\alpha\beta}$, the infidelity due to a pair of noise sources $(\alpha,\beta)$.
-As we show in \cref{appsec:ff:derivations:fidelity}, we can simplify the trace of the cumulant function so that the infidelity reads
+As we show in \cref{sec:app:ff:derivations:fidelity}, we can simplify the trace of the cumulant function so that the infidelity reads
 \begin{equation}\label{eq:ff:infidelity:ent}
     \infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{equation}
@@ -900,7 +900,7 @@ That is, we consider noise sources $\alpha\in\lbrace\epsilon_{12},\epsilon_{23},
 We take the non-linear dependence of the Hamiltonian on the detunings $\epsilon_{ij}$ into account by setting $s_{\epsilon_{ij}}(t) = \pdv*{J_{ij}(\epsilon_{ij}(t))}{\epsilon_{ij}(t)}\propto J_{ij}(\epsilon_{ij}(t))$.
 
 \Cref{fig:ff:CNOT} shows the filtered (convoluted) exchange interaction $J_{ij}$ between each pair of dots during the pulse sequence in panel (a) and filter functions plotted as function of frequency in panel (b) for the three different detunings.
-For a detailed description on how the filter functions were computed in the presence of additional leakage levels refer to \cref{appsec:ff:singlet-triplet}.
+For a detailed description on how the filter functions were computed in the presence of additional leakage levels refer to \cref{sec:app:ff:singlet-triplet}.
 As one would expect from the fact that the intermediate (inter-qubit) exchange interaction $J_{23}$ (orange dash-dotted lines) is only turned on for short times to entangle the qubits, the filter function for $\eps_{23}$ is smaller by roughly an order of magnitude than the intra-qubit exchange filter functions.
 Notably, the filter functions for $\eps_{12}$ and $\eps_{34}$ show clear characteristics of DCGs, that is they drop to zero as $\omega\rightarrow 0$, and decouple from quasistatic noise with an error suppression $\propto\omega^2$.
 This is not unexpected as the optimization minimizes quasistatic noise contributions to the infidelity.
@@ -927,7 +927,7 @@ $\cumulantfun_{\eps_{12}}$ displays clear characteristics of a Pauli channel wit
     \label{fig:ff:CNOT}
 \end{figure*}
 
-We now compute the infidelity contribution originating from fast charge noise using \cref{eq:ff:fidelity:avg} but tracing only over the computational subspace to compare to the Monte Carlo calculations of~\citer{Cerfontaine2020b} (see \cref{appsec:ff:singlet-triplet} for further details).
+We now compute the infidelity contribution originating from fast charge noise using \cref{eq:ff:fidelity:avg} but tracing only over the computational subspace to compare to the Monte Carlo calculations of~\citer{Cerfontaine2020b} (see \cref{sec:app:ff:singlet-triplet} for further details).
 Like the reference, we use a noise spectrum $S_{\epsilon,a}(f)\propto \flatfrac{1}{f^a}$ with $S_{\epsilon,a}(\qty{1}{\MHz}) = \qty{4e-20}{\volt\squared\per\Hz}$ and consider white noise ($a = 0$) and correlated noise with $a = 0.7$~\cite{Dial2013} with infrared and ultraviolet cutoffs $\flatfrac{1}{\tau}$ and $\qty{100}{\per\nano\second}$, respectively.
 \Cref{tab:ff:infidelities} compares the results in this work with the reference.
 The values computed here are consistent with the more elaborate Monte Carlo calculations within a few percent.
@@ -1156,7 +1156,7 @@ Controlled-$z$ rotations by angles $\flatfrac{\pi}{2^m}$ as required for the QFT
 
 Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2013} of the GRAPE algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
 For the optimization we choose a time step of $\Delta t = \qty{1}{\nano\second}$ and a total gate duration of $\tau = \qty{30}{\nano\second}$.
-For completeness, see \cref{appsec:ff:qft} for details on the optimized gates.
+For completeness, see \cref{sec:app:ff:qft} for details on the optimized gates.
 We then construct the remaining required gates by sequencing these elementary gates, \ie the Hadamard gate $\mr{H}_i = \mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{Y}_{i}(\flatfrac{\pi}{2})$, where $\mr{B}\circ\mr{A}$ denotes the composition of gates A and B such that gate A is executed before gate B.
 To map the canonical circuit~\cite{Nielsen2011} onto our specific qubit layout with only nearest-neighbor coupling, we furthermore introduce SWAP operations to couple distant qubits.
 These gates can be implemented by three CNOTs, $\mr{SWAP}_{ij} = \mr{CNOT}_{ij}\circ\mr{CNOT}_{ji}\circ\mr{CNOT}_{ij}$.

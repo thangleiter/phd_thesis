@@ -5,7 +5,7 @@
 % ==================================================
 %           DERIVATION SECTION
 % ==================================================
-\section{Additional derivations}\label{appsec:ff:derivations:cumulant:pauli}
+\section{Additional derivations}\label{sec:app:ff:derivations:cumulant:pauli}
 In this appendix we show additional derivations omitted from the main text.
 \subsection{Derivation of the single-qubit cumulant function in the Liouville representation}
 For a single qubit, the Pauli basis $\left\lbrace\sigma_i\right\rbrace_{i=0}^3 = \flatfrac{\left\lbrace\eye,\px,\py,\pz\right\rbrace}{\sqrt{2}}$ is a natural choice to define the Liouville representation.
@@ -55,7 +55,7 @@ Hence, only terms with $i,j > 0$ contribute and we can plug the simplified expre
 \end{align}
 as given in the main text.
 
-\subsection{Evaluation of the integrals in \cref{eq:ff:frequency_shifts:freq}}\label{appsec:ff:derivations:frequency_shifts:integral}
+\subsection{Evaluation of the integrals in \cref{eq:ff:frequency_shifts:freq}}\label{sec:app:ff:derivations:frequency_shifts:integral}
 Here we calculate the integrals appearing in the calculation of the frequency shifts \freqshifts, \cref{eq:ff:frequency_shifts:integral}, given by
 \begin{equation}
     I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
@@ -84,7 +84,7 @@ Shifting the limits of integration and performing integration by parts in the ca
     \end{cases}
 \end{equation}
 
-\subsection{Simplifying the calculation of the entanglement infidelity}\label{appsec:ff:derivations:fidelity}
+\subsection{Simplifying the calculation of the entanglement infidelity}\label{sec:app:ff:derivations:fidelity}
 In the main text, we claimed that the contribution of noise sources $(\alpha,\beta)$ to the total entanglement infidelity $\entinfid(\liouvUe) = \sum_{\alpha\beta}\infid_{\alpha\beta}$ reduces from the trace of the cumulant function \cumulantfun to
 \begin{align}
     \infid_{\alpha\beta} &= -\frac{1}{d^2}\tr\cumulantfun_{\alpha\beta} \label{appeq:ff:infid} \\
@@ -124,11 +124,11 @@ Finally, substituting \cref{appeq:ff:cumulant:trace:2} into \cref{appeq:ff:infid
 % ==================================================
 %           SINGLET-TRIPLET GATES SECTION
 % ==================================================
-\section{Singlet-Triplet Gate Fidelity}\label{appsec:ff:singlet-triplet}
-In this appendix we lay out in more detail how the fidelity of the optimized \sts qubit gates from~\citer{Cerfontaine2019} was calculated using filter functions.
+\section{Singlet-Triplet Gate Fidelity}\label{sec:app:ff:singlet-triplet}
+In this appendix we lay out in more detail how the fidelity of the optimized \sts qubit gates from~\citer{Cerfontaine2020} was calculated using filter functions.
 In two singlet-triplet qubits, angular momentum conservation suppresses occupancy of states with non-vanishing magnetic spin quantum number $m_s$ so that the total accessible state space of dimension $d=6$ is spanned by $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu,\ketuudd,\ketdduu\rbrace$.
-A straightforward method to single out the computational subspace (CS) dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the CS as proposed by~\citeauthor{Wood2018}, that is calculate the fidelity as $\entfid = \mr{tr}\bigl(\Pi_c\liouvUe\bigr)/d_c^2$ where $\Pi_c$ is the Liouville representation of the projector onto the CS and $d_c = 4$ the dimension of the CS.
-However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\citeauthor{Cerfontaine2019}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ CS during their Monte Carlo simulation.
+A straightforward method to single out the computational subspace (CS) dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the CS as proposed by~\citeauthor{Wood2018}, that is calculate the fidelity as $\entfid = d_c^{-2}\mr{tr}\bigl(\Pi_c\liouvUe\bigr)$ where $\Pi_c$ is the Liouville representation of the projector onto the CS and $d_c = 4$ the dimension of the CS.
+However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\citeauthor{Cerfontaine2020}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ CS during their Monte Carlo simulation.
 
 To calculate the fidelity of the target unitary on the $4\times 4$ CS, we thus construct an orthonormal operator basis \basis of the full $6\times 6$ space that is partitioned into elements which are nontrivial only on the CS on the one hand and elements which are nontrivial only on the remaining space on the other such that $\basis = \basis^c\cup\basis^\ell$.
 Using such a basis, we can then trace only over CS elements of the error transfer matrix \liouvUe in \cref{eq:ff:fidelity:ent} to obtain the fidelity of the gate on the CS.
@@ -152,7 +152,7 @@ We then compute an orthonormal vector basis $V$ (a matrix of size $36\times 20$)
 \begin{equation}
     C_i^\ell = \sum_j\Lambda_j V_{ji}\qcomma{i\in\lbrace 0,\dotsc,19\rbrace}.
 \end{equation}
-Finally, to account for the fact that~\citer{Cerfontaine2019} map the total propagator to the closest unitary on the CS, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
+Finally, to account for the fact that~\citer{Cerfontaine2020} map the total propagator to the closest unitary on the CS, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
 \begin{equation}
     \entfid = \frac{1}{16}\sum_{i=1}^{15}\liouvUe_{ii},
 \end{equation}
@@ -180,7 +180,7 @@ In \cref{appfig:ff:filter_function:cnot} we show the filter functions once inclu
 % ==================================================
 %           QFT GATES SECTION
 % ==================================================
-\section{GRAPE-optimized gate set for QFT}\label{appsec:ff:qft}
+\section{GRAPE-optimized gate set for QFT}\label{sec:app:ff:qft}
 For completeness, in this appendix we give details on the GRAPE-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\flatfrac{\pi}{2}),\mr{Y}_{i}(\flatfrac{\pi}{2}),\mr{CR}_{ij}(\flatfrac{\pi}{2^3})\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm.
 As mentioned in the main text, we consider a toy Rabi driving model with IQ single-qubit control and exchange to mediate inter-qubit coupling.
 Cast in the language of quantum optimal control theory this translates to a vanishing drift (static) Hamiltonian, $H_\mr{d} =  0$, and a control Hamiltonian in the rotating frame given by
@@ -189,7 +189,7 @@ Cast in the language of quantum optimal control theory this translates to a vani
     \Hc\gth{i}(t) = I_i(t)\px\gth{i} + Q_i(t)\py\gth{i},\qquad\Hc\gth{ij}(t) = J_{ij}(t)\pz\gth{i}\otimes\pz\gth{j},
 \end{gather}
 where $I_i(t)$ and $Q_i(t)$ are the in-phase and quadrature pulse envelopes and $\sigma_{x,y}\gth{i}$ are the Pauli matrices acting on the $i$-th and extended trivially to the other qubit.
-As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the GRAPE algorithm implemented in \qutip~\cite{Johansson2013} initialized with randomly distributed amplitudes.
+As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the GRAPE algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
 The resulting pulses and the corresponding filter functions for the relevant noise operators are shown in \cref{appfig:ff:qft:gates}.
 
 \begin{figure}
@@ -206,12 +206,12 @@ The resulting pulses and the corresponding filter functions for the relevant noi
 % ==================================================
 %           CONVERGENCE SECTION
 % ==================================================
-\section{Convergence Bounds}\label{appsec:ff:convergence}
+\section{Convergence Bounds}\label{sec:app:ff:convergence}
 In this appendix we give bounds for the convergence of the expansions employed in the main text for the case of purely auto-correlated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\citeauthor{Green2013}.
 For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms.
 Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
 For non-Gaussian noise, the following considerations apply.
-\subsection{Magnus Expansion}\label{appsec:ff:convergence:magnus_expansion}
+\subsection{Magnus Expansion}\label{sec:app:ff:convergence:magnus_expansion}
 The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\abs{A_{ij}}^2$ the Frobenius norm~\cite{Moan1999}.
 We assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
 By the Cauchy-Schwarz inequality we then have
@@ -221,32 +221,32 @@ By the Cauchy-Schwarz inequality we then have
                           &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
                           &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
                              \norm{B_\alpha}\norm{B_{\beta}} \\
-                          &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta^{(g)}(t)
-                             s_\alpha^{(g)}b_\alpha^{(m)}\norm{B_\alpha}\biggr]^2
+                          &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
+                             s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
     \end{split}
 \end{equation}
-where $b_{\alpha}^{(m)}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \transposeheta(t - t_{g-1}) - \transposeheta(t - t_g)$ is one during the $g$-th time interval and zero else, and where we approximated the time evolution as piecewise constant.
+where $b_{\alpha}\gth{m}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$-th time interval and zero else, and where we approximated the time evolution as piecewise constant.
 Then, in order to guarantee convergence of the \gls{me},
 \begin{equation}
     \begin{split}
         \int_0^{\tau}\dd{t}\norm*{\Hnt(t)} &\leq\int_0^\tau\dd{t}\abs\bigg{\sum_{\alpha}\sum_{g=1}^{G}
-                                              \vartheta^{(g)}(t) s_\alpha^{(g)} b_\alpha^{(m)}\norm{B_\alpha}} \\
-                                           &= \sum_{\alpha} b_\alpha^{(m)}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha^{(g)}
+                                              \vartheta\gth{m}(t) s_\alpha\gth{m} b_\alpha\gth{m}\norm{B_\alpha}} \\
+                                           &= \sum_{\alpha} b_\alpha\gth{m}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha\gth{m}
                                               \int_{t_{g-1}}^{t_{g}}\dd{t} \\
                                            &= \sum_{\alpha} C_m\delta b_\alpha\norm{B_\alpha}\sum_{g=1}^{G}
-                                              s_\alpha^{(g)}\Delta t_g \\
+                                              s_\alpha\gth{m}\Delta t_g \\
                                            &\eqqcolon N
     \end{split}
 \end{equation}
-where we have expressed the in principle unknown maximum noise amplitude $b_\alpha^{(m)}$ in terms of the root mean square value $\delta b_\alpha$.
-That is, $b_\alpha^{(m)} = C_m \expval*{b_\alpha(0)^2}^{1/2} =  C_m \delta b_\alpha$ for a sufficiently large value $C_m$.
+where we have expressed the in principle unknown maximum noise amplitude $b_\alpha\gth{m}$ in terms of the root mean square value $\delta b_\alpha$.
+That is, $b_\alpha\gth{m} = C_m \expval*{b_\alpha(0)^2}^{1/2} =  C_m \delta b_\alpha$ for a sufficiently large value $C_m$.
 Finally, realizing that $\delta b_\alpha^2 = \int\frac{\dd{\omega}}{2\pi} S_\alpha(\omega)$ and by the triangle inequality,
 \begin{equation}
     \begin{split}
         N &= C_m\sum_{\alpha}\norm{B_\alpha}\biggl[\int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi} S_\alpha(\omega)\biggr]^{1/2}
-            \sum_{g=1}^{G} s_\alpha^{(g)}\Delta t_g \\
+            \sum_{g=1}^{G} s_\alpha\gth{m}\Delta t_g \\
           &\leq C_m\biggl[\sum_{\alpha}\norm{B_\alpha}^2\int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi} S_\alpha(\omega)
-            \biggl(\sum_{g=1}^{G} s_\alpha^{(g)}\Delta t_g\biggr)^2\biggr]^{1/2} \\
+            \biggl(\sum_{g=1}^{G} s_\alpha\gth{m}\Delta t_g\biggr)^2\biggr]^{1/2} \\
           &\eqqcolon C_m\xi \\
           &\overset{!}{<} \pi
     \end{split}
@@ -254,23 +254,23 @@ Finally, realizing that $\delta b_\alpha^2 = \int\frac{\dd{\omega}}{2\pi} S_\alp
 where we have introduced the parameter $\xi$.
 Thus, the expansion converges if $\xi < \flatfrac{\pi}{C_m}$.
 However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will often be infinite, limiting the usefulness of this bound for certain noise spectra.
-\subsection{Infidelity}\label{appsec:ff:convergence:infidelity}
+\subsection{Infidelity}\label{sec:app:ff:convergence:infidelity}
 Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
 \begin{equation}
     \begin{split}
         \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
                                  \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \\
                               &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
-                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g'=1}^{G}\vartheta^{(g)}(t_1)\vartheta^{(g')}(t_2)
-                                 s_\alpha^{(g)} s_\alpha^{(g')} \norm{B_\alpha}^2} \\
+                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g'=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g')}(t_2)
+                                 s_\alpha\gth{m} s_\alpha^{(g')} \norm{B_\alpha}^2} \\
                               &\leq\sum_{\alpha}\norm{B_\alpha}^2
                                  \underbrace{\expval{b_\alpha^2(0)}}_{\int\frac{\dd{\omega}}{2\pi}S_\alpha(\omega)}
-                                 \sum_{g,g'=1}^{G} s_\alpha^{(g)} s_\alpha^{(g')}
+                                 \sum_{g,g'=1}^{G} s_\alpha\gth{m} s_\alpha^{(g')}
                                  \abs\Bigg{\int_{t_{g'-1}}^{t_{g'}}\dd{t_2}\int_{t_{g-1}}^{t_g}\dd{t_1}
                                  \underbrace{\overline{\expval{b_\alpha(t_1)b_\alpha(t_2)}}}_{\abs{\placeholder}\leq 1}} \\
                               &\leq\sum_{\alpha}\left[\norm{B_\alpha}^2
                                  \int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi}S_\alpha(\omega)
-                                 \biggl(\sum_{g=1}^{G}s_\alpha^{(g)}\Delta t_g\biggr)^2\right] \\
+                                 \biggl(\sum_{g=1}^{G}s_\alpha\gth{m}\Delta t_g\biggr)^2\right] \\
                               &= \xi^2,
     \end{split}
 \end{equation}
@@ -280,7 +280,6 @@ Thus, the first order infidelity \cref{eq:ff:fidelity:ent} is upper bounded by $
 Note that similar arguments can be made for the higher orders of the \gls{me}~\cite{Green2013}.
 In particular, the $n$-th order \gls{me} term containing $n$-point correlation functions of the noise is of order $\order{\xi^n}$ as stated in the main text.
 
-\section{Second-order concatenation}\label{appsec:ff:concatenation}
+\section{Second-order concatenation}\label{sec:app:ff:concatenation}
 In this appendix, I lay out how the second-order filter functions of atomic pulse segments can be re-used to compute the filter function of the concatenated sequence.
 While it is not possible, due to the nested time integral\todo{refeq}, to perform the calculation entirely without concern for the internal structure of the individual segments, it is also not necessary to compute everything from scratch.
-
