@@ -1,5 +1,10 @@
 % mainfile: ../../main.tex
 \chapter{The \texttt{python\_spectrometer} software package}\label{ch:speck:software}
+In this chapter, I will lay out the design and functionality of the \pyspeck \python package.\sidenote{
+    The package repository is hosted on \href{https://git.rwth-aachen.de/qutech/python-spectrometer/}{GitLab}.
+    Its documentation is automatically generated and hosted on \href{https://qutech.pages.rwth-aachen.de/python-spectrometer/}{GitLab} as well.
+    Releases are automatically published to \href{https://pypi.org/project/python-spectrometer/}{PyPI} and allow the package to be installed using \code{pip install python-spectrometer}.
+}
 
 \begin{margintable}
     \footnotesize
@@ -24,11 +29,122 @@
     \end{tabular}
 \end{margintable}
 
-In this chapter, I will lay out the design and functionality of the \pyspeck \python package.
-
 \section{Package design and implementation}\label{sec:speck:software:design}
-The \pyspeck package provides a single user-facing class, \code{core.Spectrometer}, that manages the entire process from data acquisition to spectrum estimation and plotting.
-Plotting functionality is factored out into a private submodule for maintainability.
+The \pyspeck package provides a central class, \code{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
+It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.
+New spectra are obtained by calling the \code{Spectrometer.take()} method with all acquisition and metadata settings.
+
+In the following, I will go over the the design of these aspects of the package in more detail.
+
+\subsection{Data acquisition}\label{sec:speck:software:design:daq}
+The \code{daq} module contains on the one hand the declaration of the \code{DAQ} abstract base class and its child class implementations, and on the other the \code{settings} module, which defines the \code{DAQSettings} class.
+This class is used in the background to validate data acquisition settings both for consistency (\cf \cref{sec:speck:theory:welch:parameters}) and hardware constraints.
+
+To better understand the necessity of this functionality, consider the typical scenario of a physicist\sidenote{
+    Let's call her Alice.
+}
+in the lab.
+Alice has wired up her experiment, performed a first measurement, and to her dismay discovered that the data is too noisy to see the sought-after effect.
+She sets up the \pyspeck code to investigate the noise spectrum of her measurement setup.
+From her noisy data she could already estimate the frequency of the most harrowing noise, so she knows the frequency band $[\fmin, \fmax]$ she is most interested in.
+But because she is lazy,\sidenote{
+    Physicists generally are.
+}
+she does not want to do the mental gymnastics to convert \fmin to the parameter that her \gls{daq} device understands, $L$ (see \cref{tab:software:parameters}), especially considering that $L$ depends on the number of Welch averages and the overlap.
+Furthermore, while she could just about do the conversion from \fmax to the other relevant \gls{daq} parameter, \fs, in her head, her device imposes hardware constraints on the allowed sample rates she can select!
+The \code{DAQSettings} class addresses these issues.
+It is instantiated with any subset of the parameters listed in \cref{tab:software:parameters}\sidenote{
+    \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:software:parameters}. However, automatic validation of parameter consistency is only performed for these special keys.
+}
+and attempts to resolve the parameter interdependencies lined out in \cref{sec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
+    Since the graph spanned by the parameters is not acyclic, this only works \emph{most} of the time.
+}
+This either infers those parameters that were not given from those that were or, if not possible, uses a default value.
+Child classes of the \code{DAQ} class can subclass \code{DAQSettings} to implement hardware constraints such as a finite set of allowed sampling rates or a maximum number of samples per data buffer.
+
+For instance, Alice might want to measure the noise spectrum in the frequency band $[\qty{1.5}{\hertz}, \qty{72}{\kilo\hertz}]$.
+Although she would not have to do this explicitly,\sidenote{
+    Settings are automatically parsed when passed to the \code{take()} method of the \code{Spectrometer} class.
+}
+she could inspect the parameters after resolution using the code shown in \cref{lst:speck:daq_settings}.
+\begin{listing}[htpb]
+    \begin{py}
+        >>> from python_spectrometer.daq import DAQSettings
+        >>> settings = DAQSettings(f_min=1.5, f_max=7.2e4)
+        >>> settings.to_consistent_dict()
+        {'f_min': 1.5,
+         'f_max': 72000.0,
+         'fs': 144000.0,
+         'df': 1.5,
+         'nperseg': 96000,
+         'noverlap': 48000,
+         'n_seg': 5,
+         'n_pts': 288000,
+         'n_avg': 1}
+    \end{py}
+    \caption{\code{DAQSettings} example showcasing automatic parameter resolution. \code{n_avg} determines the number of outer averages, \ie, the number of data buffers acquired and processed individually.}
+    \label{lst:speck:daq_settings}
+\end{listing}
+\begin{marginlisting}
+    \begin{py}
+    {'f_min': 14.30511474609375,
+     'f_max': 72000.0,
+     'fs': 234375.0,
+     'df': 14.30511474609375,
+     'nperseg': 16384,
+     'noverlap': 0,
+     'n_seg': 1,
+     'n_pts': 16384,
+     'n_avg': 1}
+    \end{py}
+    \caption{
+        Resolved settings for the same input parameters as in \cref{lst:speck:daq_settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \texttt{fs}. % for some reason tex errors for \code{fs} or \codev{fs}
+    }
+    \label{lst:speck:daq_settings:mfli_scope}
+\end{marginlisting}
+If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's \enquote{Scope} module~\sidecite{ScopeModuleZhinst}, the same requested settings would have resolved to those shown in \cref{lst:speck:daq_settings:mfli_scope}.\sidenote{
+    And issued a warning to inform the user their requested settings could not be matched.
+}
+This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
+
+As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware agnostic.
+That is, changing the instrument that is used to acquire the data does not necessitate adapting the code used to interact with the instrument.
+To enable this, different instruments require small wrapper drivers that map the functionality of their actual driver onto the interface dictated by the \code{DAQ} class.
+This is achieved by subclassing \code{DAQ} and implementing the \code{DAQ.setup()} and \code{DAQ.acquire()} methods.
+Their functionality is best explained at hand of the internal workflow.
+When acquiring a new spectrum, all settings supplied by the user are first fed into the \code{setup()} method where instrument configuration takes place.
+The method returns the actual device settings,\sidenote{
+    Which might differ from the requested settings as outlined above.
+}
+which are then forwarded to the \code{acquire()} generator function.
+Here, the instrument is armed (if necessary) and subsequently data is fetched from the device and yielded to the caller \code{n_avg} times, where \code{n_avg} is the number of outer averages.
+\Cref{lst:speck:daq_workflow} represents the data acquisition workflow as pseudocode.
+
+\begin{listing}
+    \begin{py}
+        daq = SomeDAQ(driver)
+        parsed_settings = daq.setup(**user_settings)
+        acquisition_generator = daq.acquire(**parsed_settings)
+        for data_buffer in acquisition_generator:
+            do_something_with(data_buffer)
+    \end{py}
+    \caption[\gls{daq} workflow pseudocode]{
+        \gls{daq} workflow pseudocode.
+        A \code{SomeDAQ} object (representing the instrument \code{Some}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
+        The instrument is configured with the given \code{user_settings}.
+        Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
+        The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
+    }
+    \label{lst:speck:daq_workflow}
+\end{listing}
+
+\subsection{Data processing}\label{sec:speck:software:design:processing}
+Once time series data has been acquired using a given \code{DAQ} backend, it could in principle immediately be used to estimate the \gls{psd} following \cref{eq:speck:psd:bartlett}.
+However, it is often desirable to transform, or process, the data in some fashion.
+This can include simple transformations such as accounting for the gain of a \gls{tia} to convert the voltage back to a current\sidenote{
+    Although it is of course less than trivial to discriminate between current and voltage noise in a \gls{tia}.
+}
+or more complex ones such as calibrations.
 
 \section{Feature overview}\label{sec:speck:software:features}
 

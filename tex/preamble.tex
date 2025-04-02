@@ -21,32 +21,32 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
-%	EXAMPLE AND DOCUMENTATION OF THE KAOBOOK CLASS
+%    EXAMPLE AND DOCUMENTATION OF THE KAOBOOK CLASS
 %----------------------------------------------------------------------------------------
 
 \documentclass[
     a4paper, % Page size
     fontsize=10pt, % Base font size
-    twoside=, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
-	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
-	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
-	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
-	fontmethod=modern, % Can also use "modern" with XeLaTeX or LuaTex; "tex" is the default for PdfLaTex, and "modern" is the default for those two.
-	listing=minted
+    twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+    %open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
+    %chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
+    numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
+    fontmethod=modern, % Can also use "modern" with XeLaTeX or LuaTex; "tex" is the default for PdfLaTex, and "modern" is the default for those two.
+    listing=minted
 ]{kaobook}
 
 %----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
 % Choose the language
 \ifxetexorluatex
-	\usepackage{polyglossia}
-	\setmainlanguage[variant=american]{english}
+    \usepackage{polyglossia}
+    \setmainlanguage[variant=american]{english}
 \else
-	\usepackage[english]{babel} % Load characters and hyphenation
+    \usepackage[english]{babel} % Load characters and hyphenation
 \fi
-\usepackage[english=american]{csquotes}	% English quotes
+\usepackage[english=american]{csquotes}    % English quotes
 
 % Load packages for testing
 %\usepackage{blindtext} % Print text without any meaning for testing purposes
@@ -55,18 +55,18 @@
 
 % Load the bibliography package
 \PassOptionsToPackage{
-	natbib=true,
-	datamodel=software,
+    natbib=true,
+    datamodel=software,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
 
 \usepackage{software-biblatex}
 \ExecuteBibliographyOptions{
-	halid=false,
-	swhid=false,
-	swlabels=false,
-	vcs=true,
-	license=true
+    halid=false,
+    swhid=false,
+    swlabels=false,
+    vcs=true,
+    license=true
 }
 
 %\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
@@ -86,18 +86,19 @@
 }{minted}
     \usepackage{minted}
 
-\setminted[Python]{
-    autogobble=true,%
-    linenos=true,%
-    firstnumber=last,% line number counts incrementally
+\setminted[python]{
     fontfamily=tt,% tt,courier,helvetica
-    fontsize=\small,% normalsize, small, footnotesize
-    style=gruvbox-light,%
+    style=gruvbox-light,%gruvbox-light,github-light,default
+}
+
+\newminted[py]{python}{
+    autogobble=true,
     frame=leftline,% none | leftline | topline | bottomline | lines | single
+    fontsize=\small,% normalsize, small, footnotesize
+    linenos=false,
+    firstnumber=last,% line number counts incrementally
 }
-\setmintedinline[Python]{
-    fontsize=\normalsize,% normalsize, small, footnotesize
-}
+\newmintinline[pyinline]{python}{}
 
 \usepackage{tabularx} % better tables with given width
 %\setlength{\extrarowheight}{3pt} % increase table row height
@@ -156,8 +157,6 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
-    chs/appendices/filter_functions,
-    chs/filter_functions/time_domain_methods,
-    chs/filter_functions/prr
+    chs/spectrometer/software,
 }
 
