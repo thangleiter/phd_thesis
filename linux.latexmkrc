@@ -3,6 +3,7 @@ $aux_dir = "./build"; # needs to be set; setting to auxil errors (win)
 $allow_subdir_creation = 1; # needs to be set for \include to work with subdirs!
 $preview_continuous_mode = 1;
 $pdf_mode = 5;  # 5: xetex, 4: luatex, 1: pdflatex
+$max_repeat = 10;
 $pdf_previewer = "evince";
 $clean_ext = " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy synctex synctex(busy)";
 
