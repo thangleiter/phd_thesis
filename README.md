@@ -10,14 +10,19 @@
 
 # To Do's
 ## Content
-- [ ]
+- [ ] ?
+ 
 ## Layout
 - [ ] Tune the bibliography style
 - [ ] Chapters instead of parts?
+	- [ ] Else numbered parts
+
 ## `latexmk`
-- [ ]
+- [ ] ?
+
 ## `tectonic`
-- [ ] The bibliography font is off
+- [ ] `\underbrace{}`
+- [ ] marginfigure placement
 
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
@@ -25,12 +30,12 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 # XeTeX
  
 ## `luaotfload-tool`
-- Apply patch https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be
+- Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
 
 # Tectonic
 - Build from source using `cargo install --path .`
   - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic @ main`
-- Biber and BibLaTeX versions need to be compatible. Download matching binary and replace TeXlive's: https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries
+- Biber and BibLaTeX versions need to be compatible. Download [matching binary](https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries) and replace TeXlive's.
 - Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
 
 # Kaobook
@@ -41,21 +46,19 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 
 ## Kaobook diffs
 These diffs should already be applied in the submodule shipped with this repository.
+
 - `kaorefs.sty`
+
    - `cleveref`
-     Old:
-	 ```latex
-	 \RequirePackage{hyperref}
-	 \RequirePackage{varioref}
-	 %\RequirePackage{cleveref} % Don't use cleveref! It breaks everything
+	 ```diff	 
+	 - \RequirePackage{hyperref}
+	 - \RequirePackage{varioref}
+	 - \RequirePackage{cleveref} % Don't use cleveref! It breaks everything
+	 + \RequirePackage{varioref}
+	 + \RequirePackage{hyperref}
+	 + \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
 	 ```
-	 New:
-	 ```latex
-	 \RequirePackage{varioref}
-	 \RequirePackage{hyperref}
-	 \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
-	 ```
-	 See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
+See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
 
    - Commented out the line
      ```latex
@@ -64,58 +67,14 @@ These diffs should already be applied in the submodule shipped with this reposit
      because `\refeq` is already defined by `mathtools`.
 
 ## Fonts
-Download `Libertinus` here: https://github.com/alerque/libertinus.
-Downloaded and followed instructions here: https://git.nsa.his.se/latex/fonts/-/tree/master.
+- Download Libertinus [here](https://github.com/alerque/libertinus).
+- Download and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
+- Download NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
 
----
-**IMPORTANT**
-
-One of those variables breaks `kpsewhich` finding files in `TEXMFHOME`!
-
----
 
 ## TeXLive Integration
-
----
 **IMPORTANT**
 
-Delete the `build/` directories in the `examples/` subdirectories. Otherwise latexmk breaks!
+Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
 
----
 
-Normally, when you write a book with this template, you need that the
-`kaobook.cls` and the `styles` directory be in the same directory as the
-`main.tex`. After following these instructions, kindly provided by
-@pwgallagher, you can start writing your `main.tex` anywhere in your
-computer and still be able to use the kaobook class.
-
-LaTeX looks at certain directories to find all the packages it can use.
-Integrating the kaobook with the TeXLive installation amounts to
-copying all the `*.cls` and `*.sty` files in one of the places that are
-searched by LaTeX.
-
-1. Find the appropriate directory by running `kpsewhich 
-   -var-value=TEXMFHOME`. For instance, suppose it is
-   `/home/john/texmf/`.
-
-2. Create the following hierarchy of directories under the texmf home:
-   `tex/latex/kaobook/`.
-
-3. Copy all the `\*.cls` files and the `styles` directory from the
-   repository into the directory you just created. If you are in a
-   hurry, you can copy the whole repository into that directory.
-   Alternatively, you can `git clone` the `kaobook` repository into that folder
-   and periodically `git pull` to update your `kaobook` installation.
-   In the end, the folder `/home/john/texmf/tex/latex/kaobook` should contain the
-   following files
-   ```
-   kao.sty
-   kaobiblio.sty
-   kaobook.cls
-   kaohandt.cls
-   kaorefs.sty
-   kaotheorems.sty
-   ```
-
-4. Run `kpsewhich kaobook.cls` to make sure that LaTeX can find the
-   template.
