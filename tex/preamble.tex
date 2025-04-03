@@ -98,7 +98,10 @@
     linenos=false,
     firstnumber=last,% line number counts incrementally
 }
-\newmintinline[pyinline]{python}{}
+\newmintinline[pyinline]{python}{
+    breaklines,%
+    breakafter=._,%
+}
 
 \usepackage{tabularx} % better tables with given width
 %\setlength{\extrarowheight}{3pt} % increase table row height

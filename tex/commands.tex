@@ -18,12 +18,13 @@
 \newcommand{\citerr}[2]{Refs.~\citenum{#1} and~\citenum{#2}}
 \newcommand{\citerrr}[3]{Refs.~\citenum{#1},~\citenum{#2}, and~\citenum{#3}}
 
+\newcommand{\code}[1]{\pyinline{#1}}
+\newcommand{\codev}[1]{\texttt{#1}}
+
 \newcommand{\python}{Python\xspace}
-\newcommand{\package}[1]{\nohyphens{\texttt{#1}}\xspace}
-\newcommand{\codev}[1]{\verb|#1|}
-\newcommand{\code}[1]{\mintinline{Python}|#1|}
-\newcommand{\pyspeck}{\package{python\_spectrometer}}
-\newcommand{\filterfunctions}{\package{filter\_functions}}
+\newcommand{\package}[1]{\nohyphens{\code{#1}}\xspace}
+\newcommand{\pyspeck}{\package{python_spectrometer}}
+\newcommand{\filterfunctions}{\package{filter_functions}}
 \newcommand{\qupulse}{\package{qupulse}}
 \newcommand{\qopt}{\package{qopt}}
 \newcommand{\numpy}{\package{NumPy}}
@@ -31,15 +32,15 @@
 \newcommand{\matplotlib}{\package{matplotlib}}
 \newcommand{\qutip}{\package{QuTiP}}
 \newcommand{\sparse}{\package{sparse}}
-\newcommand{\opteinsum}{\package{opt\_einsum}}
+\newcommand{\opteinsum}{\package{opt_einsum}}
 \newcommand{\jupyter}{\package{Jupyter}}
 \newcommand{\qcodes}{\package{QCoDeS}}
-\newcommand{\pulsesequence}{\texttt{PulseSequence}\xspace}
-\newcommand{\pulsesequences}{\texttt{PulseSequence}s\xspace}
-\newcommand{\qobj}{\texttt{Qobj}\xspace}
+\newcommand{\pulsesequence}{\code{PulseSequence}}
+\newcommand{\pulsesequences}{\code{PulseSequence}s}
+\newcommand{\qobj}{\code{Qobj}}
 \newcommand{\slowprocessor}{AMD FX\texttrademark-6300 processor with six logical cores\xspace}
-%\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i7-6850K six-core processor\xspace}
 \newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i9-9900K eight-core processor\xspace}
+%\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i7-6850K six-core processor\xspace}
 
 \newcolumntype{C}{>{\collectcell\code}c<{\endcollectcell}} % makes the whole column texttt style
 \newcommand{\tableheadline}[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}}
