@@ -1,4 +1,4 @@
-% mainfile: ../../main.tex
+% mainfile: ../../main.src.tex
 \chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
 There exists a multitude of methods for estimating noise properties.
 \todo{lay out some others}
@@ -34,17 +34,17 @@ We define the windowed Fourier transform of $x(t)$ and its inverse by\sidenote{
     In this chapter we will always denote the Fourier transform of some quantity $\xi$ using the same symbol with a hat, $\hat{\xi}$.
 }
 \begin{align}
-    \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{-\i\omega t} \label{eq:windowed_ft}\\
-       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{\i\omega t}, \label{eq:windowed_ft:inverse}
+    \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{-\i\omega t} \label{eq:speck:windowed_ft}\\
+       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{\i\omega t}, \label{eq:speck:windowed_ft:inverse}
 \end{align}
 \ie, we assume that outside of the window of observation $x(t)$ is zero.
 The auto-correlation function of $x(t)$ is given by
 \begin{align}
-    C(\tau) &= \expval{x(t)^\ast x(t + \tau)} \label{eq:autocorrelation}\\
+    C(\tau) &= \expval{x(t)^\ast x(t + \tau)} \label{eq:speck:autocorrelation}\\
             &= \lim_{T\to\infty} \frac{1}{T}\int_0^T\dd{t} x(t)^{\ast} x(t + \tau),
 \end{align}
 where $\expval{\placeholder}$ is the ensemble average over multiple realizations of the process and the last equality holds true for ergodic processes.
-Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:windowed_ft}) and reordering the integrals, we get\sidenote{
+Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:speck:windowed_ft}) and reordering the integrals, we get\sidenote{
     Mathematicians might at this point argue the integrability of $x(t)$, but as we deal with physical processes with finite bandwidth (and have no shame), we do not.
 }
 \begin{align}
@@ -53,7 +53,7 @@ Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:windowed_ft})
                 \intinf\ddf{\omega^\prime}\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime (t + \tau)}  \\
             &= \lim_{T\to\infty}\frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
                 \hat{x}_T(\omega)^{\ast}\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime\tau}
-                \int_0^T\dd{t}\e^{\i t (\omega^\prime - \omega)} \label{eq:autocorrelation:fourier}
+                \int_0^T\dd{t}\e^{\i t (\omega^\prime - \omega)} \label{eq:speck:autocorrelation:fourier}
 \end{align}
 The innermost integral approaches a $\delta$-function for large $T$,\sidenote{
     Note that, because $x(t)$ is wide-sense stationary, we may shift the limits of integration $\int_{0}^{T}\to\int_{-\flatfrac{T}{2}}^{+\flatfrac{T}{2}}$.
@@ -65,49 +65,49 @@ allowing us to further simplify this under the limit as
                 \e^{\i\omega^\prime\tau}\delta(\omega^\prime - \omega)\\
             &= \lim_{T\to\infty}\frac{1}{T}
                 \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{\i\omega\tau} \\
-            &= \intinf\ddf{\omega} S(\omega) \e^{\i\omega\tau} \label{eq:wiener_khinchin}
+            &= \intinf\ddf{\omega} S(\omega) \e^{\i\omega\tau} \label{eq:speck:wiener_khinchin}
 \end{align}
 with the \gls{psd}
 \begin{align}
-    S(\omega) &= \lim_{T\to\infty}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 \label{eq:psd:definition}\\
+    S(\omega) &= \lim_{T\to\infty}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 \label{eq:speck:psd:definition}\\
               &= \intinf\dd{\tau} C(\tau)\e^{-\i\omega\tau}
 \end{align}
-\Cref{eq:wiener_khinchin} is the Wiener-Khinchin theorem that states that the auto-correlation function $C(\tau)$ and the \gls{psd} $S(\omega)$ are Fourier-transform pairs~\cite{Koopmans1995}.
-Furthermore, defining the latter through \cref{eq:psd:definition} gives us an intuitive picture of the \gls{psd} if we recall Parseval's theorem,
-\begin{align}\label{eq:parseval}
+\Cref{eq:speck:wiener_khinchin} is the Wiener-Khinchin theorem that states that the auto-correlation function $C(\tau)$ and the \gls{psd} $S(\omega)$ are Fourier-transform pairs~\cite{Koopmans1995}.
+Furthermore, defining the latter through \cref{eq:speck:psd:definition} gives us an intuitive picture of the \gls{psd} if we recall Parseval's theorem,
+\begin{align}\label{eq:speck:parseval}
     \intinf\ddf{\omega}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 = \frac{1}{T}\intinf\dd{t}\abs{x(t)}^2.
 \end{align}
 That is, the total power $P$ contained in the signal $x(t)$ is given by integrating over the \gls{psd}.
 Similarly, the power contained in a band of frequencies $[\omega_1, \omega_2]$ is given by
 \begin{align}
     P(\omega_1, \omega_2) &= \rms\left(\omega_1, \omega_2\right)^2 \\
-                          &= \int_{\omega_1}^{\omega_2}\ddf{\omega} S(\omega) \label{eq:psd:bandpower}
+                          &= \int_{\omega_1}^{\omega_2}\ddf{\omega} S(\omega) \label{eq:speck:psd:bandpower}
 \end{align}
 where $\rms\left(\omega_1, \omega_2\right)$ is the root-mean-square within this frequency band.
 These relations are helpful when analyzing noise \glspl{psd} to gauge the relative weight of contributions from different frequency bands to the total noise power.
 
-\Cref{eq:psd:definition} represents the starting point for the experimental spectrum estimation procedure.
+\Cref{eq:speck:psd:definition} represents the starting point for the experimental spectrum estimation procedure.
 Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized version\sidenote{
     We only discuss the problem of equally spaced samples here. Variants for spectral estimation of time series with unequal spacing exist.
 }
 \todo{ref}
-\begin{align}\label{eq:signal:discrete}
+\begin{align}\label{eq:speck:signal:discrete}
     x_n \qc n\in\lbrace 0, 1, \dotsc, N - 1\rbrace
 \end{align}
 defined at times $t_n = n\Delta t$ with $T = N\Delta t$ and where $\Delta t = \fs\inverse$ is the sampling interval (the inverse of the sampling frequency \fs).
-Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
-\begin{align}\label{eq:psd:bartlett}
+Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:speck:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
+\begin{align}\label{eq:speck:psd:bartlett}
     S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{m}}^2 \\
         &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{m}
 \end{align}
 where $\hat{x}_n\gth{m}$ is the discrete Fourier transform of $x_n\gth{m}$, we defined the \emph{periodogram} of $x_n\gth{m}$ by
-\begin{align}\label{eq:periodogram}
+\begin{align}\label{eq:speck:periodogram}
     S_n\gth{m} = \abs{\hat{x}_n\gth{m}}^2,
 \end{align}
 and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.\sidenote{
     We blithely disregard integer algebra issues occuring here for conciseness and leave it as an exercise for the reader to figure out what the exact bounds of the set of $\omega_n$ are.
 }
-\Cref{eq:psd:bartlett} is known as Bartlett's method~\cite{Bartlett1948} for spectrum estimation.\sidenote{
+\Cref{eq:speck:psd:bartlett} is known as Bartlett's method~\cite{Bartlett1948} for spectrum estimation.\sidenote{
     \label{sidenote:continuum_limit}
     By taking the limit $M\to\infty$ one recovers the true \gls{psd}, \[\lim_{M\to\infty}S_n = S(\omega_n).\]
     The continuum limit is as always obtained by sending $\Delta t\to 0, N\to\infty, N\Delta t=\text{const}$.
@@ -115,17 +115,17 @@ and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete fr
 
 To better understand the properties of this estimate, let us take a look at the parameters $\Delta t$, $N$, and $M$.
 The sampling interval $\Delta t$ defines the largest resolvable frequency by the Nyquist sampling theorem,
-\begin{align}\label{eq:f_max}
+\begin{align}\label{eq:speck:f_max}
     \fmax = \frac{\fs}{2} = \frac{1}{2\Delta t}.
 \end{align}
 In turn, the number of samples $N$ determines the frequency resolution $\Delta f$, or smallest resolvable frequency,
-\begin{align}\label{eq:f_min}
+\begin{align}\label{eq:speck:f_min}
     \fmin = \Delta f = \frac{1}{T} = \frac{1}{N\Delta t} = \frac{\fs}{N}.
 \end{align}
 Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n\gth{m}\bigr\rbrace_{i=0}^{M-1}$ and hence the accuracy of the estimate $S_n$.
 
 In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
-It becomes clear, then, that the Bartlett average (\cref{eq:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\Delta t$.
+It becomes clear, then, that the Bartlett average (\cref{eq:speck:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\Delta t$.
 
 An improvement in data efficiency can be obtained using Welch's method~\cite{Welch1967}.
 To see how, we first need to discuss spectral windowing.
@@ -134,7 +134,7 @@ To see how, we first need to discuss spectral windowing.
 Partitioning a signal $x_n$ into $M$ sections $x_n\gth{m}$ of length $N$ is mathematically equivalent to multiplying the signal with the rectangular \emph{window function} given by\sidenote{
     This window is also known as the boxcar or Dirichlet window.
 }
-\begin{align}\label{eq:window:boxcar}
+\begin{align}\label{eq:speck:window:boxcar}
     w_n\gth{m} =
     \begin{cases}
         1\qif (m - 1) N \leq n < m N\qand \\
@@ -150,19 +150,19 @@ so that $x_n\gth{m} = x_n w_n\gth{m}$.
     \label{fig:boxcar_fourier}
 \end{marginfigure}
 Now recall that multiplication and convolution are duals under the Fourier transform, implying that
-\begin{align}\label{eq:window:ft_pairs}
+\begin{align}\label{eq:speck:window:ft_pairs}
     \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m}.
 \end{align}
 where the Fourier representation of the rectangular window\sidenote{
     $\sinc(x) = \flatfrac{\sin(x)}{x}$.
 }
 \begin{align}
-    \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:window:boxcar:fourier}\\
-             \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:window:boxcar:fourier:unshifted}
+    \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:speck:window:boxcar:fourier}\\
+             \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:speck:window:boxcar:fourier:unshifted}
 \end{align}
 \Cref{fig:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
 We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
-However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cref{eq:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\Delta f$ of discrete signals introduces a finite bandwidth of the probe as well as \emph{sidelobes}.
+However, while in the continuum limit (\cf \cref{sidenote:continuum_limit}) \cref{eq:speck:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\Delta f$ of discrete signals introduces a finite bandwidth of the probe as well as \emph{sidelobes}.
 These effects induce what is known as \emph{spectral leakage}~\cite{Harris1978,Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
 
 For this reason, a plethora of \emph{window functions} have been introduced to mitigate the effects of spectral leakage.
@@ -177,7 +177,7 @@ Key properties of a window are the spectral bandwidth (center lobe width) and si
     \label{fig:hann_fourier}
 \end{marginfigure}
 A window frequently used in spectral analysis is the Hann window~\cite{Nuttall1981},
-\begin{align}\label{eq:window:hann}
+\begin{align}\label{eq:speck:window:hann}
     w_n\gth{m} =
     \begin{cases}
         \cos^2\left(\frac{\pi n}{N}\right)\qif (m - 1)N\leq n < mN\qand \\
@@ -185,7 +185,7 @@ A window frequently used in spectral analysis is the Hann window~\cite{Nuttall19
     \end{cases}
 \end{align}
 with the Fourier representation of the unshifted window,
-\begin{align}\label{eq:window:hann:fourier_unshifted}
+\begin{align}\label{eq:speck:window:hann:fourier_unshifted}
 %    \hat{w}_n &= \frac{2T\pi^2\sinc(\flatfrac{\omega_n T}{2})}{4\pi^2 - \omega_n^2 T^2},
 %    \hat{w}_n &= \frac{2\pi^2 T\sinc(\flatfrac{\omega_n T}{2})}{(2\pi - \omega_n T)(2\pi + \omega_n T)},
     \hat{w}_n &=  T\sinc\left(\frac{\omega_n T}{2}\right)\times
@@ -200,10 +200,10 @@ This suppresses detrimental effects arising from a possible discontinuity ($x_0\
 }
 
 \section{Welch's method}\label{sec:speck:theory:welch}
-Contemplating \cref{eq:window:hann}, one might come to the conclusion that using a window such as this is not very data efficient in the sense that a large fraction of samples located at the edge of the window is strongly suppressed and hence does not contribute significantly to the spectrum estimate.
+Contemplating \cref{eq:speck:window:hann}, one might come to the conclusion that using a window such as this is not very data efficient in the sense that a large fraction of samples located at the edge of the window is strongly suppressed and hence does not contribute significantly to the spectrum estimate.
 To alleviate this lack of efficiency, one can introduce an overlap between adjacent data windows.
 That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window forward by $-mK$ with $K>0$ the overlap.
-Finally, the periodogram (\cref{eq:periodogram}) is computed for each window and subsequently averaged to obtain the spectrum estimator (\cref{eq:psd:bartlett}).
+Finally, the periodogram (\cref{eq:speck:periodogram}) is computed for each window and subsequently averaged to obtain the spectrum estimator (\cref{eq:speck:psd:bartlett}).
 
 This method of spectrum estimation is known as Welch's method~\cite{Welch1967}.
 One can show~\cite{Welch1967} that the correlation between the periodograms of adjacent, overlapping windows is sufficiently small to avoid a biased estimate.
@@ -225,7 +225,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
 Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ segments for a window length of $N=100$.
 The data in the second window is highlighted.
 
-\subsection{Parameters}\label{subsec:speck:theory:parameters}
+\subsection{Parameters}\label{sec:speck:theory:welch:parameters}
 \begin{margintable}
     \centering
     \footnotesize
@@ -265,9 +265,9 @@ To this end, we will go through the typical procedure of acquiring a spectrum es
 
 To acquire data using some form of (digital) \gls{daq}, one usually needs to specify two parameters first: the total number of samples to be acquired, $L$, and the sample rate, \fs.
 This results in a measurement of duration $T = L\Delta t$ where $\Delta t = \fs\inverse$ as previously mentioned.
-The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
+The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:speck:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
 Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
-In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:f_min}).\sidenote{
+In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote{
     Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
 }
 \todo{D(A)G for parameter interdependencies?}
