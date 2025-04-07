@@ -15,10 +15,13 @@ from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
 
 SEED = 1
 mpl.use('qtagg')
+mpl.rcdefaults()
+mpl.style.use('main.mplstyle')
 rng = np.random.default_rng(SEED)
 
 
-def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, **_):
+def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, npeaks=None,
+             **_):
     f = np.asarray(f)
     S = np.zeros_like(f)
 
@@ -31,7 +34,8 @@ def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, **_
         harmonics = abs(f % 50) < np.diff(f).mean()
         idx, = harmonics.nonzero()
         p = sc.stats.beta.sf(np.linspace(0, 1, idx.size, endpoint=False), 5, 2)
-        idx = rng.choice(idx, size=min(25, idx.size), replace=False, p=p/p.sum())
+        idx = rng.choice(idx, size=(min(10, idx.size) if npeaks is None else npeaks),
+                         replace=False, p=p/p.sum())
         S[(idx,)] += 5e0 * A / (10 * f[f.nonzero()].min()) ** rng.random(size=idx.size)
 
     S += baseline
@@ -50,27 +54,54 @@ settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False)
 speck.take('baseline', add_50hz=False, add_colored=False, **settings)
 speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
-speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_baseline.pdf', backend='pdf')
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_baseline.pdf')
 
 # %%
-speck.take('lifted cable', add_50hz=True, exp=1, A=1e-12, **settings)
-speck.take('jumped', add_50hz=True, exp=1, A=1e-12, **settings)
+speck.take('connected', add_50hz=True, exp=1, A=1e-13, **settings)
+speck.take('lifted cable', add_50hz=True, exp=1, A=1e-13, **settings)
+speck.take('jumped', add_50hz=True, exp=1, A=1e-13, **settings)
 speck.leg.set_loc('lower left')
-speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_spectra.pdf', backend='pdf')
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_spectra.pdf')
 
 # %%
 speck.plot_timetrace = True
-speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25)
 speck.leg.set_loc('lower left')
-speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_timetrace.pdf', backend='pdf')
+speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25)
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_timetrace.pdf')
 
 # %%
+speck.plot_timetrace = False
 speck.plot_cumulative = True
 speck.plot_cumulative_normalized = False
 speck.leg.set_loc('lower left')
-speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.5)
-speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_timetrace_cumulative.pdf', backend='pdf')
+speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25)
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_cumulative.pdf')
 
+# %%
+speck.plot_timetrace = False
+speck.plot_cumulative = False
+speck.plot_amplitude = False
+speck.plot_dB_scale = True
+speck.set_reference_spectrum('baseline')
+speck.leg.set_loc('lower left')
+speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_db.pdf')
+
+# %%
+for _ in range(6):
+    speck.take('dud', **settings)
+    speck.hide(-1)
+
+# %%
+speck.hide('lifted cable')
+speck.hide('jumped')
+speck.take('fixed', add_50hz=True, exp=1, A=1e-13, npeaks=1, **settings)
+
+speck.plot_amplitude = True
+speck.plot_dB_scale = False
+speck.leg.set_loc('lower left')
+speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
+speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_success.pdf')
 # %%
 sys.exit(0)
 # %%

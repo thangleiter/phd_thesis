@@ -213,30 +213,90 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 \begin{listing}
     \begin{py}
         from python_spectrometer import Spectrometer, daq
+        from qutil.functools import scaled
 
         mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
-        spect = Spectrometer(mfli_daq)
+        spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
+                             processed_unit='μV')
         spect.take('baseline', f_min=1e1, f_max=1e5)
     \end{py}
     \caption[\pyspeck workflow]{
         Setup and workflow using the \pyspeck package.
         \code{session} and \code{device} are \gls{api} objects of the \code{zhinst.toolkit} driver package.
         It is therefore possible to simply use the driver objects that are already in use in the measurement setup.
+        The \code{procfn} and \code{processed_unit} arguments help converting raw data into a more human-friendly unit.
     }
     \label{lst:speck:workflow:sequential}
 \end{listing}
 
 Having obtained a baseline for subsequent experiments, he starts to tweak things on his setup, test out different parameters, \etc
-Every time he changes something, he acquires another spectrum using \code{take()}
+Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
 
 \begin{figure}
     \centering
     \includegraphics{pdf/spectrometer/workflow_baseline}
     \caption{
-        The \pyspeck plot after acquiring the baseline spectrum.
+        The \pyspeck plot after acquiring the (synthetic) baseline spectrum.
         By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
     }
-    \label{fig:speck:software:baseline}
+    \label{fig:speck:software:workflow_baseline}
 \end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_spectra}
+    \caption{
+        The \pyspeck plot after acquiring additional (synthetic) spectra.
+        Each spectrum is uniquely identified by a two-tuple of \code{(index, comment)}.
+    }
+    \label{fig:speck:software:workflow_spectra}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_timetrace}
+    \caption{
+        The \pyspeck plot shown in \cref{fig:speck:software:workflow_spectra} when setting \code{spect.plot_timetrace = True}.
+        This adds a subplot that shows the time series data from which the \gls{psd} was computed, \ie, what an oscilloscope would show.
+    }
+    \label{fig:speck:software:workflow_timetrace}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_cumulative}
+    \caption{
+        The \pyspeck plot shown in \cref{fig:speck:software:workflow_spectra} when setting \code{spect.plot_cumulative = True}.
+        This adds a subplot that shows the \gls{rms} (\cf \cref{eq:speck:psd:bandpower}) which can be helpful in evaluating the contribution of individual peaks in the spectrum to the total noise power.
+        Both the oscilloscope subplot (\cref{fig:speck:software:workflow_timetrace}) and the \gls{rms} subplot can be shown at the same time.
+    }
+    \label{fig:speck:software:workflow_cumulative}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_db}
+    \caption[The \pyspeck plot in relative mode.]{
+        The \pyspeck plot in relative mode.
+        Starting from the state in \cref{fig:speck:software:workflow_spectra}, we set \code{spect.plot_dB_scale = True} and \code{spect.plot_amplitude = False} to compare the relative noise powers with respect to the baseline.
+    }
+    \label{fig:speck:software:workflow_db}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_success}
+    \caption{
+        The \pyspeck plot after multiple additional spectra were acquired and hidden.
+        Hiding spectra that one is not interested in anymore is achieved through \code{spect.hide(*range(2, 10))}.
+        This is reversed by \code{spect.show(*range(2, 10))}.
+        Data can also be dropped (\code{spect.drop(key)}) or deleted (\code{spect.delete(key)}) from the internal cache and disk, respectively.
+    }
+    \label{fig:speck:software:workflow_success}
+\end{figure}
+
+
+
+Having acquired six more spectra in between, he hides those he is not interested in anymore from the plot using \code{spect.hide(*range(2, 10))}.
 
 

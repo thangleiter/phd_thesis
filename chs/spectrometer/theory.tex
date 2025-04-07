@@ -80,10 +80,10 @@ Furthermore, defining the latter through \cref{eq:speck:psd:definition} gives us
 That is, the total power $P$ contained in the signal $x(t)$ is given by integrating over the \gls{psd}.
 Similarly, the power contained in a band of frequencies $[\omega_1, \omega_2]$ is given by
 \begin{align}
-    P(\omega_1, \omega_2) &= \rms\left(\omega_1, \omega_2\right)^2 \\
+    P(\omega_1, \omega_2) &= \rms_S\left(\omega_1, \omega_2\right)^2 \\
                           &= \int_{\omega_1}^{\omega_2}\ddf{\omega} S(\omega) \label{eq:speck:psd:bandpower}
 \end{align}
-where $\rms\left(\omega_1, \omega_2\right)$ is the root-mean-square within this frequency band.
+where $\rms_S\left(\omega_1, \omega_2\right)$ is the \acrfull{rms} within this frequency band.
 These relations are helpful when analyzing noise \glspl{psd} to gauge the relative weight of contributions from different frequency bands to the total noise power.
 
 \Cref{eq:speck:psd:definition} represents the starting point for the experimental spectrum estimation procedure.
@@ -211,6 +211,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
     Again neglecting integer arithmetic issues.
 }
 \begin{figure}[tphb]
+    \centering
     \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
     \caption{
         Illustration of Welch's method for spectrum estimation.
