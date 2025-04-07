@@ -1,8 +1,12 @@
-\newcommand{\Ie}[0]{I.\,e.}
-\newcommand{\Eg}[0]{E.\,g.}
-\newcommand{\viz}[0]{viz.\ }
-\newcommand{\wrt}[0]{w.r.t.\ }
-\newcommand{\cf}[0]{c.f.\ }
+\makeatletter
+\newcommand{\printFontSize}{\f@size\ pt}
+\makeatother
+
+\newcommand{\Ie}{\textit{I.\nobreak\hairsp{}e.}\xspace}
+\newcommand{\Eg}{\textit{E.\nobreak\hairsp{}g.}\xspace}
+\newcommand{\cf}{\textit{c.\nobreak\hairsp{}f.}\xspace}
+\newcommand{\viz}{\textit{viz.}\xspace}
+\newcommand{\wrt}{w.\nobreak\hairsp{}r.\nobreak\hairsp{}t.\xspace}
 \newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
 \newcommand{\mr}[1]{\ensuremath{\mathrm{#1}}}
 \newcommand{\e}[0]{\ensuremath{\mr{e}\xspace}}
@@ -18,12 +22,13 @@
 \newcommand{\citerr}[2]{Refs.~\citenum{#1} and~\citenum{#2}}
 \newcommand{\citerrr}[3]{Refs.~\citenum{#1},~\citenum{#2}, and~\citenum{#3}}
 
+\newcommand{\code}[1]{\pyinline{#1}}
+\newcommand{\codev}[1]{\texttt{#1}}
+
 \newcommand{\python}{Python\xspace}
-\newcommand{\package}[1]{\nohyphens{\texttt{#1}}\xspace}
-\newcommand{\codev}[1]{\verb|#1|}
-\newcommand{\code}[1]{\mintinline{Python}|#1|}
-\newcommand{\pyspeck}{\package{python\_spectrometer}}
-\newcommand{\filterfunctions}{\package{filter\_functions}}
+\newcommand{\package}[1]{\nohyphens{\code{#1}}\xspace}
+\newcommand{\pyspeck}{\package{python_spectrometer}}
+\newcommand{\filterfunctions}{\package{filter_functions}}
 \newcommand{\qupulse}{\package{qupulse}}
 \newcommand{\qopt}{\package{qopt}}
 \newcommand{\numpy}{\package{NumPy}}
@@ -31,15 +36,15 @@
 \newcommand{\matplotlib}{\package{matplotlib}}
 \newcommand{\qutip}{\package{QuTiP}}
 \newcommand{\sparse}{\package{sparse}}
-\newcommand{\opteinsum}{\package{opt\_einsum}}
+\newcommand{\opteinsum}{\package{opt_einsum}}
 \newcommand{\jupyter}{\package{Jupyter}}
 \newcommand{\qcodes}{\package{QCoDeS}}
-\newcommand{\pulsesequence}{\texttt{PulseSequence}\xspace}
-\newcommand{\pulsesequences}{\texttt{PulseSequence}s\xspace}
-\newcommand{\qobj}{\texttt{Qobj}\xspace}
+\newcommand{\pulsesequence}{\code{PulseSequence}}
+\newcommand{\pulsesequences}{\code{PulseSequence}s}
+\newcommand{\qobj}{\code{Qobj}}
 \newcommand{\slowprocessor}{AMD FX\texttrademark-6300 processor with six logical cores\xspace}
-%\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i7-6850K six-core processor\xspace}
 \newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i9-9900K eight-core processor\xspace}
+%\newcommand{\fastprocessor}{Intel\textsuperscript{\textregistered}\ Core\texttrademark\ i7-6850K six-core processor\xspace}
 
 \newcolumntype{C}{>{\collectcell\code}c<{\endcollectcell}} % makes the whole column texttt style
 \newcommand{\tableheadline}[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}}
@@ -157,4 +162,3 @@
 \newcommand{\dev}[2]{\dexpval{#1}{#2}}
 \newcommand{\dmatrixel}[3]{\mbox{\ensuremath{\left\langle\!\!\matrixel{#1}{#2}{#3}\!\right\rangle}}\xspace}
 \newcommand{\dmel}[3]{\dmatrixel{#1}{#2}{#3}}
-

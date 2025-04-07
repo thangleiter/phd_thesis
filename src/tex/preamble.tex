@@ -89,16 +89,20 @@
 \setminted[python]{
     fontfamily=tt,% tt,courier,helvetica
     style=gruvbox-light,%gruvbox-light,github-light,default
-}
-
-\newminted[py]{python}{
     autogobble=true,
     frame=leftline,% none | leftline | topline | bottomline | lines | single
     fontsize=\small,% normalsize, small, footnotesize
     linenos=false,
     firstnumber=last,% line number counts incrementally
 }
-\newmintinline[pyinline]{python}{}
+
+\newmintinline[pyinline]{python}{
+    breaklines,%
+    breakafter=._,%
+}
+
+\usepackage{lettrine}
+\renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
 
 \usepackage{tabularx} % better tables with given width
 %\setlength{\extrarowheight}{3pt} % increase table row height
@@ -130,7 +134,7 @@
 % Load the package for hyperreferences
 \usepackage{kaorefs}
 
-\graphicspath{{img/}} % Paths in which to look for images
+\graphicspath{{img/}{./}} % Paths in which to look for images
 
 % \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
@@ -157,6 +161,7 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
+    chs/spectrometer/theory,
     chs/spectrometer/software,
 }
 

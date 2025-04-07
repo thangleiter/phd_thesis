@@ -1,3 +1,10 @@
+import pathlib
+
+TEXTWIDTH = 4.2134
+MARGINWIDTH = 1.87831
+TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
+PATH = pathlib.Path(__file__).parents[1]
+
 
 def apply_sketch_style(ax):
     ax.spines.left.set_position(("data", 0))

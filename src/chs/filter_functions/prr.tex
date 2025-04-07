@@ -109,7 +109,7 @@ Thus, the composition of two operations $\qp_1$ and $\qp_2$ corresponds to matri
 Although from a numerical perspective the computational complexity scales unfavorably with the system dimension $d$ (\cf \cref{sec:ff:performance:complexity}),  we will employ the Liouville representation for its transparent interpretation and concise behavior under composition in the following analytical considerations.
 Lastly, we note that for $C_0\propto\eye$, trace-preservation and unitality are encoded in the relations $\qp_{0j} = \delta_{0j}$ and $\qp_{j0} = \delta_{j0}$, respectively.
 
-\subsection{Liouville representation of the error channel}\label{sec:ff:theory:transfer_matrix:derivation}
+\subsection{Liouville representation of the error channel}\label{subsec:ff:theory:transfer_matrix:derivation}
 We will now derive an expression for the quantum process of a quantum gate in the presence of arbitrary classical noise.
 As a single realization of a classical noise generates strictly unitary dynamics, we will be interested in the expectation value of the dynamics over many such realizations, which will lead to a quantum process including decoherence.
 If the noise is additionally Gaussian, these results are exact and therefore apply without restrictions to arbitrarily large noise strength as well as to gates that partially decouple from noise.
@@ -177,7 +177,7 @@ The first and second terms of the \gls{me} are given by~\cite{Magnus1954,Blanes2
 The $n$ term of the expansion contains $n$ factors of the noise variables $b_\alpha(t)$ and scales with $n$ factors of the control duration $\tau$, suggesting that higher-order terms can be neglected if their product is small.
 In the Bloch sphere picture this corresponds to requiring that the angle by which the Bloch vector is rotated away from its intended trajectory due to the noise be small.
 Below, we will use the parameter $\xi$ to denote the magnitude of this deviation.
-It is properly defined in \cref{sec:app:ff:convergence:magnus_expansion} where also bounds for the convergence of the \gls{me} are discussed.
+It is properly defined in \cref{subsec:app:ff:convergence:magnus_expansion} where also bounds for the convergence of the \gls{me} are discussed.
 Here, we only state that $\Li_{\mr{eff},n}\sim\xi^n$ (see also~\citer{Green2013}).
 
 We have suggestively written the \gls{me} in terms of an effective Liouvillian $\Li_\mr{eff} = \comm{H_\mr{eff}}{\placeholder}$ to interpret it as the generator of a \emph{time}-averaged evolution of a single noise realization up to time $\tau$.
@@ -320,14 +320,14 @@ For $\alpha = \beta, k = l$, and by summing over the basis elements,
 \begin{equation}\label{eq:ff:filter_function:fidelity}
     F_{\alpha}(\omega) = \sum_k\bigl\lvert\ctrlmat_{\alpha k}(\omega)\bigr\rvert^2 = \tr(\Bat\adjoint(\omega)\Bat(\omega)),
 \end{equation}
-and this tensor reduces to the canonical \emph{fidelity} filter function~\cite{Green2012} from which the entanglement fidelity can be obtained, see \cref{sec:ff:theory:derived_quantities:entanglement_fidelity}.
+and this tensor reduces to the canonical \emph{fidelity} filter function~\cite{Green2012} from which the entanglement fidelity can be obtained, see \cref{subsec:ff:theory:derived_quantities:entanglement_fidelity}.
 Thus, if the frequency-domain control matrix $\ctrlmat_{\alpha k}(\omega)$ for noise source $\alpha$ and basis element $k$ is known, the transfer matrix can be evaluated by integrating \cref{eq:ff:decay_amplitudes:freq}.
 Moreover, one can study the contributions of each pair of noise sources $(\alpha, \beta)$ both separately or, at virtually no additional cost and to leading order, collectively by summing over them, $\decayamps_{kl} = \sum_{\alpha\beta}\decayamps_{\alpha\beta,kl}$.
 
 We now discuss how to calculate the control matrix $\ctrlmat(\omega)$ in frequency space for a given control operation.
 We focus first on sequences of quantum gates, assuming that the control matrices $\ctrlmat\gth{g}(\omega)$ for each gate $g$ have been calculated before.
 
-\subsection{Control matrix of a gate sequence}\label{sec:ff:theory:control_matrix:sequence}
+\subsection{Control matrix of a gate sequence}\label{subsec:ff:theory:control_matrix:sequence}
 For a sequence of gates with precomputed interaction picture noise operators the approach developed by~\citeauthor{Green2013} based on piecewise constant control can be adapted to yield an analytical expression for those of the composite gate sequence that is computationally efficient to evaluate~\cite{Cerfontaine2021}.
 Here we review these results to give a complete picture of the formalism.
 While our results are general and apply to any superoperator representation, we employ the Liouville representation here for its simple composition operation: matrix multiplication.
@@ -386,7 +386,7 @@ where we defined the pulse correlation filter function $F_{\alpha\beta,kl}\gth{g
 Unlike regular filter functions, these can be negative for $g\neq g'$ and therefore reduce the overall noise susceptibility of a sequence given by $F(\omega) = \sum_{gg'}F\gth{gg'}(\omega)$.
 We have thus gained a concise description of the noise-cancelling properties of gate sequences: in this picture, they arise purely from the concatenation of different pulses, quantifying, for instance, the effectiveness of dynamical decoupling (DD) sequences~\cite{Cerfontaine2021}.
 
-\subsection{Control matrix of a single gate}\label{sec:ff:theory:control_matrix:pulse}
+\subsection{Control matrix of a single gate}\label{subsec:ff:theory:control_matrix:pulse}
 Previous efforts have derived the control matrix analytically for selected pulses such as dynamical decoupling (DD) sequences~\cite{Cywinski2008}, special dynamically corrected gates (DCGs)~\cite{Gungordu2018}, as well as developed a general analytic framework~\cite{Green2012,Green2013}.
 However, analytical solutions might not always be accessible, \eg for numerically optimized pulses, and are generally laborious to obtain.
 Therefore, we now detail a method to obtain the control matrix numerically under the assumption of piecewise constant control.
@@ -422,7 +422,7 @@ A similar expression is obtained for representations other than the Liouville re
 \section{Calculating the frequency shifts}\label{sec:ff:theory:frequency_shifts}
 The frequency shifts $\freqshifts_{\alpha\beta,kl}$ in \cref{eq:ff:cumulant:truncated:liouville} correspond to the second order of the \gls{me} and thus involve a double integral with a nested time dependence.
 This makes their evaluation more involved than that of the decay amplitudes $\decayamps_{\alpha\beta,kl}$ and, in contrast to the previous section, we cannot identify a concatenation rule or single out correlation terms as in \cref{eq:ff:decay_amplitudes:pulse_correlation}.
-However, we can still apply the approximation of piecewise constant control and follow a similar approach as in \cref{sec:ff:theory:control_matrix:pulse} to compute \freqshifts in Fourier space.
+However, we can still apply the approximation of piecewise constant control and follow a similar approach as in \cref{subsec:ff:theory:control_matrix:pulse} to compute \freqshifts in Fourier space.
 Since these terms correspond to a coherent gate error that can in principle be calibrated out in experiments we will not go into much detail here.
 
 We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t')}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
@@ -437,7 +437,7 @@ That is, taking the time $t$ of the outer integral to be within the interval $(t
 \begin{equation}
     \int_0^t\dd{t'} \rightarrow \sum_{g'=1}^{g-1}\int_{t_{g'-1}}^{t_{g'}}\dd{t'} + \int_{t_{g-1}}^{t}\dd{t'}.
 \end{equation}
-We have thus divided our task into two: The first term allows, as before in \cref{sec:ff:theory:control_matrix:sequence,sec:ff:theory:control_matrix:pulse}, to identify the Fourier transform of the control matrix during time steps $g'$ and $g$ for both the inner and the outer integral according to \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}.
+We have thus divided our task into two: The first term allows, as before in \cref{subsec:ff:theory:control_matrix:sequence,subsec:ff:theory:control_matrix:pulse}, to identify the Fourier transform of the control matrix during time steps $g'$ and $g$ for both the inner and the outer integral according to \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}.
 The second term remains a nested double integral, but now the integrand contains only products of complex exponentials because we assume the control to be constant within the limits of integration.
 As a next step, we also replace the outer time integral by a sum of integrals over single segments, $\int_0^\tau\dd{t}\rightarrow\sum_{g=1}^G\int_{t_{g-1}}^{t_g}\dd{t}$, to obtain
 \begin{equation}\label{eq:ff:frequency_shifts:time:substituted}
@@ -447,7 +447,7 @@ As a next step, we also replace the outer time integral by a sum of integrals ov
             \e^{\i\omega t'}\ctrlmat_{\beta l}(t').
 \end{equation}
 Before continuing, we ease notation and define $\ctrlmat(\omega) \eqqcolon \sum_g\mc{G}\gth{g}(\omega)$ with $\mc{G}\gth{g}(\omega)$ obtained from \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} and furthermore adopt the Einstein summation convention for the remainder of this section, meaning multiple subscript indices that appear on only one side of an equality are summed over implicitly.
-We now proceed like in \cref{sec:ff:theory:control_matrix:pulse} and make use of the piecewise constant approximation to diagonalize the control Hamiltonian during each segment.
+We now proceed like in \cref{subsec:ff:theory:control_matrix:pulse} and make use of the piecewise constant approximation to diagonalize the control Hamiltonian during each segment.
 For the nested integrals, we obtain $\ctrlmat_{\alpha k}(t)$ from \cref{eq:ff:control_matrix:pulse:time:piecewise}, whereas the remaining integrals factorize and we can identify the Fourier transformed quantity $\mc{G}\gth{g}(\omega)$.
 \Cref{eq:ff:frequency_shifts:time:substituted} then becomes
 %\begin{widetext}
@@ -458,12 +458,12 @@ For the nested integrals, we obtain $\ctrlmat_{\alpha k}(t)$ from \cref{eq:ff:co
         \bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g}
     \right]
 \end{equation}
-with $\bar{B}_{\alpha,ij}\gth{g},\bar{C}_{k,ij}\gth{g},\Omega_{ij}\gth{g}$ as defined above in \cref{sec:ff:theory:control_matrix:pulse} and
+with $\bar{B}_{\alpha,ij}\gth{g},\bar{C}_{k,ij}\gth{g},\Omega_{ij}\gth{g}$ as defined above in \cref{subsec:ff:theory:control_matrix:pulse} and
 \begin{equation}\label{eq:ff:frequency_shifts:integral}
     I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
                               \int_{t_{g-1}}^{t}\dd{t'}\e^{\i\Omega_{mn}\gth{g}(t' - t_{g-1}) + \i\omega t'}.
 \end{equation}
-Explicit results for the integration in \cref{eq:ff:frequency_shifts:integral} are given in \cref{sec:app:ff:derivations:frequency_shifts:integral}.
+Explicit results for the integration in \cref{eq:ff:frequency_shifts:integral} are given in \cref{subsec:app:ff:derivations:frequency_shifts:integral}.
 To calculate the frequency shifts \freqshifts, we can thus reuse the quantity $\mc{G}\gth{g}(\omega)$ also required for the decay amplitudes \decayamps.
 The only additional computation, apart from contraction, involves the $G$ integrations $I_{ijmn}\gth{g}(\omega)$.
 Importantly, \cref{eq:ff:frequency_shifts:freq} has the same structure as the corresponding \cref{eq:ff:decay_amplitudes:freq} for \decayamps in that the individual entries of \freqshifts are given by an integral over the spectral density of the noise multiplied with a -- in this case second order -- filter function that describes the susceptibility to noise at frequency $\omega$:
@@ -486,7 +486,7 @@ In the weak-noise regime, one can also define specific filter functions for each
 The ensemble expectation value of the quantity can then be obtained directly from the overlap with the spectral density, $\int\flatfrac{\dd{\omega}}{2\pi} F(\omega) S(\omega)$.
 Finally, we will drop the averaging brackets and the argument of the error transfer matrix $\ev*{\liouvUe(\tau)}$ for brevity in the following.
 
-\subsection{Average gate and entanglement fidelity}\label{sec:ff:theory:derived_quantities:entanglement_fidelity}
+\subsection{Average gate and entanglement fidelity}\label{subsec:ff:theory:derived_quantities:entanglement_fidelity}
 The average gate fidelity is a commonly quoted figure of merit used to characterize physical gate implementations~\cite{Loss1998,Ladd2010,Chow2012,Veldhorst2014,Yoneda2018}.
 It represents the fidelity between an implementation \liouvU and the ideal gate \liouvQ averaged over the uniform Haar measure.
 Since $\avgfid(\liouvU, \liouvQ) = \avgfid(\liouvQ\adjoint\circ\liouvU, \eye) = \avgfid(\liouvUe)$, the average gate fidelity can be obtained from the error channel \liouvUe as~\cite{Horodecki1999,Nielsen2002}
@@ -501,7 +501,7 @@ In the low-noise regime where \cref{eq:ff:error_transfer_matrix:approx} holds, w
                       &\eqqcolon 1 - \sum_{\alpha\beta}\infid_{\alpha\beta}(\liouvUe).
 \end{align}
 Here, we defined $\infid_{\alpha\beta}$, the infidelity due to a pair of noise sources $(\alpha,\beta)$.
-As we show in \cref{sec:app:ff:derivations:fidelity}, we can simplify the trace of the cumulant function so that the infidelity reads
+As we show in \cref{subsec:app:ff:derivations:fidelity}, we can simplify the trace of the cumulant function so that the infidelity reads
 \begin{equation}\label{eq:ff:infidelity:ent}
     \infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{equation}
@@ -512,7 +512,7 @@ As we show in \cref{sec:app:ff:derivations:fidelity}, we can simplify the trace 
 with the fidelity filter function $F_{\alpha}(\omega)$ given by \cref{eq:ff:filter_function:fidelity}.
 Notably, only the decay amplitudes \decayamps contribute to the fidelity to leading order since the frequency shifts \freqshifts are antisymmetric and therefore vanish under the trace.
 
-\subsection{State fidelity and measurements}\label{sec:ff:theory:derived_quantities:state_fidelity-measurements}
+\subsection{State fidelity and measurements}\label{subsec:ff:theory:derived_quantities:state_fidelity-measurements}
 In the context of quantum information processing we are often interested in the probability of measuring the expected state during readout.
 We can extract this projective readout probability from the transfer matrix in \cref{eq:ff:error_propagator} by inspecting the transition probability, or state fidelity, between a pure state $\rho = \op{\psi}$ and an arbitrary state $\sigma$ that evolves according to the quantum operation $\qp: \sigma\rightarrow\qp(\sigma)$.
 Using the double braket notation introduced at the beginning of \cref{ch:ff:theory} we then define the state fidelity as
@@ -531,7 +531,7 @@ General measurements can be incorporated in the superoperator formalism we have 
 \Glspl{povm} constitute a set of Hermitian, positive semidefinite operators $\lbrace E_i\rbrace_i$ (in contrast to the projective measurement $\lbrace\op{\psi}{\psi},\eye - \op{\psi}{\psi}\rbrace$) that fulfill the completeness relation $\sum_i E_i = \eye$ and in the double braket notation may be represented as the row vectors $\lbrace\dbra{E_i}\rbrace_i$ in Liouville space.
 Consequently, the measurement probability for outcome $E_i$ is given by $\dip{E_i}{\qp(\sigma)} = \dmel{E_i}{\qp}{\sigma}$ if the system was prepared in the state $\sigma$ and evolved according to \qp.
 
-\subsection{Leakage}\label{sec:ff:theory:derived_quantities:leakage}
+\subsection{Leakage}\label{subsec:ff:theory:derived_quantities:leakage}
 In many physical implementations qubits are not encoded in real two-level systems but in two levels of a larger Hilbert space (\eg transmon~\cite{Koch2007} or singlet-triplet~\cite{Petta2005} spin qubits) such that population can leak between this computational subspace and other energy levels.
 Thus, it is often of interest to quantify leakage when assessing gate performance.
 Recently,~\citeauthor{Wood2018} have suggested two separate measures for quantifying leakage out of the computational subspace on the one hand and seepage into the subspace on the other.
@@ -548,7 +548,7 @@ and the seepage rate as
 \end{equation}
 \end{subequations}
 Here, $\Pi_{c,\ell}$ are projectors onto the computational and leakage subspaces, respectively, and $d_{c,\ell}$ the corresponding dimensions.
-For unital channels the leakage and seepage rates are not independent but satisfy $d_c \leak_c = d_\ell \leak_\ell$~\cite{Wood2018} so that we only need to consider one of the above expressions here (\cf \cref{sec:ff:theory:transfer_matrix:derivation}).
+For unital channels the leakage and seepage rates are not independent but satisfy $d_c \leak_c = d_\ell \leak_\ell$~\cite{Wood2018} so that we only need to consider one of the above expressions here (\cf \cref{subsec:ff:theory:transfer_matrix:derivation}).
 
 \Cref{eq:ff:leakage,eq:ff:seepage} can be used to determine both coherent and incoherent leakage separately by substituting \liouvQ or \liouvUe, respectively, for \qp.
 While the former is due to systematic errors of the applied pulse and could thus be corrected for by calibration, the latter is induced by noise only.
@@ -583,7 +583,7 @@ Note that the same also applies to other representations of quantum operations.
 Suppose we extend the Hilbert space $\Hspace_1$ of a gate for which we have already computed the control matrix by a second Hilbert space $\Hspace_2$ so that $\Hspace_{12} = \Hspace_1\otimes\Hspace_2$.
 If we can find an operator basis whose elements separate into tensor products themselves, \ie $\basis_{12} = \basis_1\otimes\basis_2$ as for the Pauli basis (\cf \cref{sec:ff:performance:basis}), the control matrix of the composite gate defined on $\Hspace_{12}$ has the same non-trivial columns as that of the original gate on $\Hspace_1$ up to a different normalization factor.
 The remaining columns are simply zero.
-This is because the trace over a tensor product factors into traces over the individual subsystems so that $\ctrlmat_{\alpha k}(t)\propto\mr{tr}\bigl([U_1\adjoint\otimes U_2\adjoint][B_\alpha\otimes\eye][U_1\otimes U_2][\eye\otimes C_k]\bigr) = \mr{tr}\bigl(U_1\adjoint B_\alpha U_1\eye\bigr)\mr{tr}\bigl(U_2\adjoint\eye U_2 C_k\bigr) = 0$ since we assumed that the noise operators $B_\alpha$ are traceless (\cf \cref{sec:ff:theory:transfer_matrix:derivation}).
+This is because the trace over a tensor product factors into traces over the individual subsystems so that $\ctrlmat_{\alpha k}(t)\propto\mr{tr}\bigl([U_1\adjoint\otimes U_2\adjoint][B_\alpha\otimes\eye][U_1\otimes U_2][\eye\otimes C_k]\bigr) = \mr{tr}\bigl(U_1\adjoint B_\alpha U_1\eye\bigr)\mr{tr}\bigl(U_2\adjoint\eye U_2 C_k\bigr) = 0$ since we assumed that the noise operators $B_\alpha$ are traceless (\cf \cref{subsec:ff:theory:transfer_matrix:derivation}).
 
 Generalizing this result to multiple originally disjoint Hilbert spaces we write the composite space as $\Hspace = \bigotimes_i\Hspace_i$ and the corresponding basis as $\basis = \bigotimes_i\basis_i$.
 The control matrix of the composite pulse on \Hspace is then a combination of the columns of the control matrices on $\Hspace_i$ for noise operators $B_\alpha$ that are non-trivial, \ie not the identity, only on their original space.
@@ -607,13 +607,13 @@ In our normalization convention where $\dotHS{C_i}{C_i} = \eye$ it can be writte
 \begin{equation}\label{eq:ff:basis:pauli}
     \left\lbrace\sigma_i\right\rbrace_{i=0}^{d^2-1} = \left\lbrace
                                                           \frac{\eye}{\sqrt{2}},
-                                                          \frac{\px}{\sqrt{2}},
-                                                          \frac{\py}{\sqrt{2}},
-                                                          \frac{\pz}{\sqrt{2}}
+                                                          \frac{\sx}{\sqrt{2}},
+                                                          \frac{\sy}{\sqrt{2}},
+                                                          \frac{\sz}{\sqrt{2}}
                                                       \right\rbrace^{\otimes n}
-    %\lbrace\eye,\px,\py,\pz\rbrace^{\otimes n}/d^{\flatfrac{1}{2}}
+    %\lbrace\eye,\sx,\sy,\sz\rbrace^{\otimes n}/d^{\flatfrac{1}{2}}
 \end{equation}
-with the Pauli matrices $\px,\py$ and $\pz$ .
+with the Pauli matrices $\sx,\sy$ and $\sz$ .
 While it is obvious that it is separable, meaning it factors into tensor products of the single-qubit Pauli matrices, the dimension of the Pauli basis is restricted to powers of two, \ie $d = 2^n$.
 An operator basis without this restriction is the generalized Gell-Mann (GGM) basis~\cite{Kimura2003,Bertlmann2008}.
 In the following we will discuss optimizations pertaining to this basis that are also implemented in the software (see \cref{ch:ff:software}).
@@ -718,7 +718,7 @@ On a different system with an \fastprocessor the FF method outperformed MC even 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/benchmark_MC_vs_FF_linear-inset}
+    \includegraphics{img/pdf/filter_functions/benchmark_MC_vs_FF_linear-inset}
     \caption{
         Performance of the formalism using \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} compared to a Monte Carlo method for a single gate as a function of problem dimension $d$.
         Parameters are: $n_{\Delta t} = \num{1}, n_\alpha = 3, n_\mr{MC} = 100, f_\mr{UV} = \flatfrac{10^2}{\Delta t}, n_\omega = \num{500}$ where $n_\alpha$ is the number of noise operators considered, $n_\mr{MC}$ the number of Monte Carlo trajectories over which is averaged, and $n_\omega$ the number of frequency samples.
@@ -803,14 +803,14 @@ We now give a short introduction into the workflow of the \filterfunctions packa
 The sequence consists of a single $\pi$-pulse of finite duration around the $x$-axis of the Bloch sphere in between two periods of free evolution.
 We can hence divide the control fields into three constant segments and write the control Hamiltonian as
 \begin{equation}
-    \Hc\gth{\mr{SE}}(t) = \frac{\px}{2}\times\begin{cases}
+    \Hc\gth{\mr{SE}}(t) = \frac{\sx}{2}\times\begin{cases}
         \flatfrac{\pi}{t_\pi},  &\mr{if\;} \tau\leq t < \tau + t_\pi \\
         0,                      &\mr{otherwise} \\
     \end{cases}
 \end{equation}
 with $\tau$ the duration of the free evolution period and $t_\pi$ that of the $\pi$ pulse.
 For the noise Hamiltonian we only need to define the deterministic time dependence $s_\alpha(t)$ and operators $B_\alpha$ since the noise strength is captured by the spectrum $S(\omega)$.
-Thus we have $s_z(t) =  1$ and $B_z = \flatfrac{\pz}{2}$ for pure dephasing noise that couples linearly to the system.
+Thus we have $s_z(t) =  1$ and $B_z = \flatfrac{\sz}{2}$ for pure dephasing noise that couples linearly to the system.
 
 In the software, we first define a \pulsesequence object representing the spin echo (SE) sequence.
 As was already mentioned, the control and noise Hamiltonians are given as a list containing lists for every control or noise operator that is considered.
@@ -896,7 +896,7 @@ Because treating colored (correlated) noise using Monte Carlo methods is computa
 
 Two-qubit interactions are mediated via the exchange $J_{23}$ that makes the states \ketuudd and \ketdduu accessible.
 They constitute levels outside of the computational subspace that ideally should only be occupied during an entangling gate operation.
-A non-vanishing population of these states after the operation has ended is therefore unwanted and considered leakage, the magnitude of which we could quantify following \cref{sec:ff:theory:derived_quantities:leakage}.
+A non-vanishing population of these states after the operation has ended is therefore unwanted and considered leakage, the magnitude of which we could quantify following \cref{subsec:ff:theory:derived_quantities:leakage}.
 However, here we limit ourselves to determine the infidelity contribution from fast, \viz non-quasistatic, charge noise entering the system through $\epsilon_{ij}$.
 That is, we consider noise sources $\alpha\in\lbrace\epsilon_{12},\epsilon_{23},\epsilon_{34}\rbrace$.
 We take the non-linear dependence of the Hamiltonian on the detunings $\epsilon_{ij}$ into account by setting $s_{\epsilon_{ij}}(t) = \pdv*{J_{ij}(\epsilon_{ij}(t))}{\epsilon_{ij}(t)}\propto J_{ij}(\epsilon_{ij}(t))$.
@@ -917,7 +917,7 @@ $\cumulantfun_{\eps_{12}}$ displays clear characteristics of a Pauli channel wit
 
 \begin{figure*}[tbp]
     \centering
-    \includegraphics[width=\textwidth]{img/pdf/all_in_one_alpha-0-7_linear_complete_CNOT}
+    \includegraphics[width=\textwidth]{img/pdf/filter_functions/all_in_one_alpha-0-7_linear_complete_CNOT}
     \caption{
         (a) Exchange interaction $J(\epsilon_{ij})$ for the CNOT gate presented in~\citer{Cerfontaine2020b} as function of time.
         (b) Filter functions $F_{\epsilon_{ij}}$ for noise in the detunings evaluated on the computational subspace.
@@ -965,7 +965,7 @@ If we had additionally evaluated the frequency shifts \freqshifts we could have 
 
 \section{Rabi driving}\label{sec:ff:examples:rabi_driving}
 A widely used method for qubit control is Rabi driving~\cite{Wallraff2004,Barends2014a,Soare2014,Veldhorst2014}.
-If we restrict ourselves to the resonant case for simplicity, the control Hamiltonian takes on the general form $\Hc = \flatfrac{\omega_0\pz}{2} + A\sin(\omega_0 t + \phi)\px$.
+If we restrict ourselves to the resonant case for simplicity, the control Hamiltonian takes on the general form $\Hc = \flatfrac{\omega_0\sz}{2} + A\sin(\omega_0 t + \phi)\sx$.
 Here, $\omega_0$ is the resonance frequency, $A$ the drive amplitude corresponding to the Rabi frequency in the weak driving limit $\flatfrac{A}{\omega_\mr{0}}\ll 1$, $\Omega_\mr{R}\approx A$, and $\phi$ an adjustable phase giving control over the rotation axis in the $xy$-plane of the Bloch sphere.
 This Hamiltonian and associated decoherence mechanisms are well-studied in the weak driving regime, where the rotating wave approximation (RWA) can be applied to remove fast-oscillating terms in the rotating frame~\cite{Jaynes1963,Gerry2008}.
 There is a comprehensive understanding of how spectral densities transform to this frame and which frequencies are most relevant to loss of coherence~\cite{Yan2013}.
@@ -1015,7 +1015,7 @@ For the strong driving regime, we use the approximate analytical solution for a 
 In the reference, strong driving in this regime is shown to give rise to non-negligible counterrotating terms that modulate the Rabi oscillations and which are well-described by Floquet theory applied to the Rabi driving Hamiltonian.
 While for the regime studied here only two additional modes appear, the results extend to the regime where $A > \omega_0$ and up to eight different frequency components were observed.
 
-\Cref{fig:ff:filter_function:rabi:weak_vs_strong} shows the filter functions $F_{xx}$ and $F_{zz}$ for the \px and \pz noise operators in the weak (a) and the strong (b) driving regime.
+\Cref{fig:ff:filter_function:rabi:weak_vs_strong} shows the filter functions $F_{xx}$ and $F_{zz}$ for the \sx and \sz noise operators in the weak (a) and the strong (b) driving regime.
 Both display sharp peaks at their Rabi frequencies and the resonance frequency for $F_{zz}$ and $F_{xx}$, respectively.
 We expect these features as they correspond to perturbations of the qubit Hamiltonian that are resonant with the qubit dynamics about an axis orthogonal to them.
 For weak driving, $F_{xx}$ is constant up to the resonance frequency where it peaks sharply and then aligns with $F_{zz}$.
@@ -1035,12 +1035,12 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/rabi_driving_weak_vs_strong}
+    \includegraphics{img/pdf/filter_functions/rabi_driving_weak_vs_strong}
     \caption{
         Filter functions for weak (a) and strong (b) Rabi driving (\num{20} identity gates in total).
         Grey dashed (dotted) lines indicate the respective drive (Rabi) frequencies $\omega_0$ ($\Omega_\mr{R}$).
         (a) Weak driving with $\flatfrac{A}{\omega_\mr{0}}\ll 1$.
-        The filter function $F_{xx}$ for noise operator \px is approximately constant up to the resonance frequency where it peaks sharply and then aligns with the filter function $F_{zz}$ for \pz.
+        The filter function $F_{xx}$ for noise operator \sx is approximately constant up to the resonance frequency where it peaks sharply and then aligns with the filter function $F_{zz}$ for \sz.
         $F_{zz}$ peaks at the Rabi frequency before rolling off with $\omega^{-2}$ and a DC level that is almost ten orders of magnitude larger than the DC level of the transverse filter function $F_{xx}$.
         (b) Strong driving with $\flatfrac{A}{\omega_\mr{0}}\sim 1$.
         Again $F_{zz}$ peaks at $\Omega_\mr{R}$ whereas $F_{xx}$ has three distinct peaks at $\omega_\mr{0}$ and $\omega_\mr{0}\pm\Omega_\mr{R}$.
@@ -1077,7 +1077,7 @@ Since for sufficiently long \gls{rb} sequences $r\in\order{1}$, and we would nee
 Unfortunately, the concatenation property does not hold for \freqshifts.
 Therefore, we focus on the high-fidelity regime where the exponential decay of the sequence fidelity may be approximated to linear order and only the decay amplitudes \decayamps need to be considered.
 
-In order to evaluate the survival probability of a \gls{rb} experiment using filter functions, we employ the state fidelity from \cref{sec:ff:theory:derived_quantities:state_fidelity-measurements} and focus on the single-qubit case with $d = 2$ and the (normalized) Pauli basis from \cref{eq:ff:basis:pauli}.
+In order to evaluate the survival probability of a \gls{rb} experiment using filter functions, we employ the state fidelity from \cref{subsec:ff:theory:derived_quantities:state_fidelity-measurements} and focus on the single-qubit case with $d = 2$ and the (normalized) Pauli basis from \cref{eq:ff:basis:pauli}.
 Because the ideal action of a \gls{rb} sequence is the identity we have $\liouvQ = \eye$.
 Assuming we prepare and measure in the computational basis, $\kpsi\in\lbrace\ket{0}, \ket{1}\rbrace$ so that $\sqrt{2}\dket{\rho} = \dket{\sigma_0}\pm\dket{\sigma_3}$, we simplify \cref{eq:ff:fidelity:state} to
 \begin{equation}\label{eq:ff:fidelity:state:RB}
@@ -1089,7 +1089,7 @@ Assuming we prepare and measure in the computational basis, $\kpsi\in\lbrace\ket
                                                 &= \frac{1 + \liouvUe_{33}}{2} \approx 1 - \frac{1}{2}\sum_{k\neq 3}\decayamps_{kk}.
     \end{split}
 \end{equation}
-For the second equality we used that \liouvUe is trace-preserving and unital (\cf \cref{sec:ff:theory:transfer_matrix:derivation}) while in the last step we approximated the expression using \cref{eq:ff:error_transfer_matrix:approx,eq:ff:cumulant:truncated:liouville:pauli}.
+For the second equality we used that \liouvUe is trace-preserving and unital (\cf \cref{subsec:ff:theory:transfer_matrix:derivation}) while in the last step we approximated the expression using \cref{eq:ff:error_transfer_matrix:approx,eq:ff:cumulant:truncated:liouville:pauli}.
 For our simulation, we neglect SPAM errors so that $A =  B =  0.5$, choose $\kpsi = \ket{0}$, and approximate \cref{eq:ff:SRB} as
 \begin{equation}\label{eq:ff:fidelity:state:RB:fit}
     p(\ket{0}) = \fid(\ket{0}, \liouvU_\mr{RB}(\op{0}))\approx 1 - rm
@@ -1122,23 +1122,23 @@ The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the 
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics{img/pdf/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset}
+    \includegraphics{img/pdf/filter_functions/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset}
     \caption{
         Simulation of a \gls{srb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
         Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{srb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
         Errorbars show the standard deviation of the \gls{srb} sequence fidelities, illustrating that for the \enquote{single} gate set noise correlations can lead to amplified destructive and constructive interference of errors.
-        The same noise spectrum is used for all three error channels (\px, \py, \pz) and the large plots show the sum of all contributions.
+        The same noise spectrum is used for all three error channels (\sx, \sy, \sz) and the large plots show the sum of all contributions.
         (a) Uncorrelated white noise with the noise power adjusted for each gate type so that the average error per gate $r$ is constant over all gate types.
         No notable deviation is seen between different gate types.
         (b) Correlated \oneoverf-like noise with noise power adjusted to match the average Clifford fidelity in (a).
         The decay of the \enquote{single} gateset differs considerably from that of the other gate sets and the \gls{srb} decay expected for the given average gate fidelity, whereas \enquote{naive} and \enquote{optimized} gates match the zeroth order \gls{srb} model well, indicating that correlations in the noise affect the relation between \gls{srb} decay and average gate fidelity in a gateset-dependent way.
-        Inset: contributions from \pz-noise show that the sequence fidelity can be better than expected for certain gate types and noise channels.
+        Inset: contributions from \sz-noise show that the sequence fidelity can be better than expected for certain gate types and noise channels.
     }
     \label{fig:ff:randomized_benchmarking:noise_comparison}
 \end{figure}
 
 On top of affirming the findings by the references, our results demonstrate that the accuracy of the predictions made by \gls{srb} theory, \ie that the \gls{rb} decay rate directly corresponds to the average error rate of the gates, not only depends on the gate implementation but also on which error channels are assumed.
-This can be seen from the inset of \cref{fig:ff:randomized_benchmarking:noise_comparison}(b), where only dephasing noise (\pz) contributions are shown.
+This can be seen from the inset of \cref{fig:ff:randomized_benchmarking:noise_comparison}(b), where only dephasing noise (\sz) contributions are shown.
 For this noise channel and the \enquote{naive} gates, one finds a slower \gls{rb} decay than expected from the actual average gate fidelity, so that the latter would be overestimated by an \gls{rb} experiment, whereas the \enquote{single} gates show the opposite behavior.
 Depending on the gate set and relevant error channels, non-Markovian noise may thus even lead to improved sequence fidelities due to errors interfering destructively.
 This behavior is captured by the pulse correlation filter functions whose contributions to the sequence fidelity lead to the deviations from the \gls{srb} prediction.
@@ -1171,7 +1171,7 @@ Note that the circuit could be compressed in time by parallelizing some operatio
     %\resizebox{\columnwidth}{!}{}
     \centering
     \input{img/circuits/qft}
-    \includegraphics[width=\textwidth]{img/pdf/qft_filter_function_first_qubit_with_cumulative_fraction}
+    \includegraphics[width=\textwidth]{img/pdf/filter_functions/qft_filter_function_first_qubit_with_cumulative_fraction}
     \caption[\gls{qft} circuit and filter function]{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
