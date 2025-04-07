@@ -145,7 +145,7 @@ so that $x_n\gth{m} = x_n w_n\gth{m}$.
 \todo{add $\omega_n\gth{m}$, scaled ticks}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/rect}
+    \includegraphics{pdf/spectrometer/rect}
     \caption{The Fourier representation of the rectangular window in continuous time.}
     \label{fig:boxcar_fourier}
 \end{marginfigure}
@@ -172,7 +172,7 @@ Key properties of a window are the spectral bandwidth (center lobe width) and si
 \todo{add $\omega_n\gth{m}$, scaled ticks}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/hann}
+    \includegraphics{pdf/spectrometer/hann}
     \caption{The Fourier representation of the Hann window in continuous time.}
     \label{fig:hann_fourier}
 \end{marginfigure}
@@ -211,7 +211,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
     Again neglecting integer arithmetic issues.
 }
 \begin{figure}[tphb]
-    \includegraphics[width=\textwidth]{pdf/welch}
+    \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
     \caption{
         Illustration of Welch's method for spectrum estimation.
         The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
@@ -225,7 +225,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
 Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ segments for a window length of $N=100$.
 The data in the second window is highlighted.
 
-\subsection{Parameters}\label{sec:speck:theory:welch:parameters}
+\subsection{Parameters}\label{subsec:speck:theory:welch:parameters}
 \begin{margintable}
     \centering
     \footnotesize

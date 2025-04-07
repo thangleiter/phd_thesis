@@ -1,8 +1,12 @@
-\newcommand{\Ie}[0]{I.\,e.}
-\newcommand{\Eg}[0]{E.\,g.}
-\newcommand{\viz}[0]{viz.\ }
-\newcommand{\wrt}[0]{w.r.t.\ }
-\newcommand{\cf}[0]{c.f.\ }
+\makeatletter
+\newcommand{\printFontSize}{\f@size\ pt}
+\makeatother
+
+\newcommand{\Ie}{\textit{I.\nobreak\hairsp{}e.}\xspace}
+\newcommand{\Eg}{\textit{E.\nobreak\hairsp{}g.}\xspace}
+\newcommand{\cf}{\textit{c.\nobreak\hairsp{}f.}\xspace}
+\newcommand{\viz}{\textit{viz.}\xspace}
+\newcommand{\wrt}{w.\nobreak\hairsp{}r.\nobreak\hairsp{}t.\xspace}
 \newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
 \newcommand{\mr}[1]{\ensuremath{\mathrm{#1}}}
 \newcommand{\e}[0]{\ensuremath{\mr{e}\xspace}}
@@ -158,4 +162,3 @@
 \newcommand{\dev}[2]{\dexpval{#1}{#2}}
 \newcommand{\dmatrixel}[3]{\mbox{\ensuremath{\left\langle\!\!\matrixel{#1}{#2}{#3}\!\right\rangle}}\xspace}
 \newcommand{\dmel}[3]{\dmatrixel{#1}{#2}{#3}}
-

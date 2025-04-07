@@ -38,7 +38,7 @@ In the following, I will go over the the design of these aspects of the package 
 
 \subsection{Data acquisition}\label{subsec:speck:software:design:daq}
 The \code{daq} module contains on the one hand the declaration of the \code{DAQ} abstract base class and its child class implementations, and on the other the \code{settings} module, which defines the \code{DAQSettings} class.
-This class is used in the background to validate data acquisition settings both for consistency (\cf \cref{sec:speck:theory:welch:parameters}) and hardware constraints.
+This class is used in the background to validate data acquisition settings both for consistency (\cf \cref{subsec:speck:theory:welch:parameters}) and hardware constraints.
 
 To better understand the necessity of this functionality, consider the typical scenario of a physicist\sidenote{
     Let's call her Alice.
@@ -57,7 +57,7 @@ It is instantiated with any subset of the parameters listed in \cref{tab:softwar
     \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:software:parameters}.
     However, automatic validation of parameter consistency is only performed for these special keys.
 }
-and attempts to resolve the parameter interdependencies lined out in \cref{sec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
+and attempts to resolve the parameter interdependencies lined out in \cref{subsec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
     Since the graph spanned by the parameters is not acyclic, this only works \emph{most} of the time.
 }
 This either infers those parameters that were not given from those that were or, if not possible, uses a default value.
@@ -189,7 +189,7 @@ The latter are required in case the function modifies the frequencies.\sidenote{
 }
 A simple example for a processing function in Fourier space is shown in \cref{lst:speck:fourier_procfn}, which computes the \mbox{(anti-)}derivative of the data using the fact that
 \begin{align}\label{eq:speck:fourier_derivative}
-    \pdv[n]{t} \overset{\mathrm{F.T.}}{\longrightarrow} \left(\i\omega\right)^n
+    \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
 \end{align}
 under the Fourier transform.
 In \cref{part:setup}\todo{ref}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
@@ -207,8 +207,8 @@ The experimentalist,\sidenote{
     Let's call him Charlie.
 }
 having discovered that his data is noisier than expected, sets up the \code{Spectrometer} class with an instance of the \code{DAQ} subclass for the \gls{daq} instrument connected to his sample.
-Choosing the frequency bounds \fmin and \fmax, and using the sensible defaults for the remaining spectrum parameters, Charlie first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
-Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}.
+Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{100}{\kilo\hertz}$, and using the sensible defaults for the remaining spectrum parameters, Charlie first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
+Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}
 
 \begin{listing}
     \begin{py}
@@ -216,7 +216,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 
         mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
         spect = Spectrometer(mfli_daq)
-        spect.take('baseline', f_min=f_min, f_max=f_max)
+        spect.take('baseline', f_min=1e1, f_max=1e5)
     \end{py}
     \caption[\pyspeck workflow]{
         Setup and workflow using the \pyspeck package.
@@ -225,5 +225,18 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
     }
     \label{lst:speck:workflow:sequential}
 \end{listing}
+
+Having obtained a baseline for subsequent experiments, he starts to tweak things on his setup, test out different parameters, \etc
+Every time he changes something, he acquires another spectrum using \code{take()}
+
+\begin{figure}
+    \centering
+    \includegraphics{pdf/spectrometer/workflow_baseline}
+    \caption{
+        The \pyspeck plot after acquiring the baseline spectrum.
+        By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
+    }
+    \label{fig:speck:software:baseline}
+\end{figure}
 
 

@@ -1,19 +1,13 @@
-import pathlib
-
+# %%
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
 from qopt.noise import fast_colored_noise
-from qutil import const, itertools
+from qutil import itertools
 from qutil.plotting import RWTH_COLORS
 
-from common import apply_sketch_style
-
-TEXTWIDTH = 4.2134
-MARGINWIDTH = 1.87831
-TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
-PATH = pathlib.Path(__file__).parents[1]
+from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
 
 mpl.use('pgf')
 # %%
@@ -75,7 +69,7 @@ with plt.style.context('./margin.mplstyle', after_reset=True):
             ax.yaxis.set_label_coords(2.25*np.pi, .55*T, transform=ax.transData)
 
         fig.tight_layout()
-        fig.savefig(PATH / f'pdf/{window.__name__}.pdf', backend='pgf')
+        fig.savefig(PATH / f'pdf/spectrometer/{window.__name__}.pdf', backend='pgf')
         plt.close(fig)
 
 # %%
@@ -117,5 +111,5 @@ with plt.style.context('./main.mplstyle', after_reset=True):
     ax.tick_params(direction='inout')
 
     fig.tight_layout()
-    fig.savefig(PATH / 'pdf/welch.pdf', backend='pgf')
+    fig.savefig(PATH / 'pdf/spectrometer/welch.pdf', backend='pgf')
     plt.close(fig)

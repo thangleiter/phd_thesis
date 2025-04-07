@@ -8,7 +8,7 @@
 \section{Additional derivations}\label{sec:app:ff:derivations:cumulant:pauli}
 In this appendix we show additional derivations omitted from the main text.
 \subsection{Derivation of the single-qubit cumulant function in the Liouville representation}
-For a single qubit, the Pauli basis $\left\lbrace\sigma_i\right\rbrace_{i=0}^3 = \flatfrac{\left\lbrace\eye,\px,\py,\pz\right\rbrace}{\sqrt{2}}$ is a natural choice to define the Liouville representation.
+For a single qubit, the Pauli basis $\left\lbrace\sigma_i\right\rbrace_{i=0}^3 = \flatfrac{\left\lbrace\eye,\sx,\sy,\sz\right\rbrace}{\sqrt{2}}$ is a natural choice to define the Liouville representation.
 In this case, the trace tensor \cref{eq:ff:trace_tensor} can be simplified and thus \cref{eq:ff:cumulant:truncated:liouville} given a more intuitive form which we derive in this appendix.
 Since the cumulant function is linear in the noise indices $\alpha,\beta$ we drop them in the following for legibility.
 Our results hold for both a single pair of noise indices and the total cumulant.
@@ -55,7 +55,7 @@ Hence, only terms with $i,j > 0$ contribute and we can plug the simplified expre
 \end{align}
 as given in the main text.
 
-\subsection{Evaluation of the integrals in \cref{eq:ff:frequency_shifts:freq}}\label{sec:app:ff:derivations:frequency_shifts:integral}
+\subsection{Evaluation of the integrals in \cref{eq:ff:frequency_shifts:freq}}\label{subsec:app:ff:derivations:frequency_shifts:integral}
 Here we calculate the integrals appearing in the calculation of the frequency shifts \freqshifts, \cref{eq:ff:frequency_shifts:integral}, given by
 \begin{equation}
     I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
@@ -84,7 +84,7 @@ Shifting the limits of integration and performing integration by parts in the ca
     \end{cases}
 \end{equation}
 
-\subsection{Simplifying the calculation of the entanglement infidelity}\label{sec:app:ff:derivations:fidelity}
+\subsection{Simplifying the calculation of the entanglement infidelity}\label{subsec:app:ff:derivations:fidelity}
 In the main text, we claimed that the contribution of noise sources $(\alpha,\beta)$ to the total entanglement infidelity $\entinfid(\liouvUe) = \sum_{\alpha\beta}\infid_{\alpha\beta}$ reduces from the trace of the cumulant function \cumulantfun to
 \begin{align}
     \infid_{\alpha\beta} &= -\frac{1}{d^2}\tr\cumulantfun_{\alpha\beta} \label{appeq:ff:infid} \\
@@ -168,7 +168,7 @@ In \cref{appfig:ff:filter_function:cnot} we show the filter functions once inclu
 
 \begin{figure}
     \centering
-    \includegraphics{img/pdf/filter_function-CNOT_unitary_v_complete}
+    \includegraphics{img/pdf/filter_functions/filter_function-CNOT_unitary_v_complete}
     \caption{
         Filter functions of the voltage detunings $\epsilon_{ij}$ excluding (a) and including (b) the zero-padded identity matrix basis element $C_0^c\propto\text{diag}(1,1,1,1,0,0)$ for the computational subspace.
         Evidently, including $C_0^c$ removes the DCG character, namely that $F_{\epsilon_{ij}}(\omega)\rightarrow 0$ as $\omega\rightarrow 0$, of the gates but has little effect on the high-frequency behavior.
@@ -186,7 +186,7 @@ As mentioned in the main text, we consider a toy Rabi driving model with IQ sing
 Cast in the language of quantum optimal control theory this translates to a vanishing drift (static) Hamiltonian, $H_\mr{d} =  0$, and a control Hamiltonian in the rotating frame given by
 \begin{gather}
     \Hc(t) = \Hc\gth{0}(t)\otimes\eye + \eye\otimes\Hc\gth{1}(t) + \Hc\gth{01}(t), \\
-    \Hc\gth{i}(t) = I_i(t)\px\gth{i} + Q_i(t)\py\gth{i},\qquad\Hc\gth{ij}(t) = J_{ij}(t)\pz\gth{i}\otimes\pz\gth{j},
+    \Hc\gth{i}(t) = I_i(t)\sx\gth{i} + Q_i(t)\sy\gth{i},\qquad\Hc\gth{ij}(t) = J_{ij}(t)\sz\gth{i}\otimes\sz\gth{j},
 \end{gather}
 where $I_i(t)$ and $Q_i(t)$ are the in-phase and quadrature pulse envelopes and $\sigma_{x,y}\gth{i}$ are the Pauli matrices acting on the $i$-th and extended trivially to the other qubit.
 As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the GRAPE algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
@@ -194,7 +194,7 @@ The resulting pulses and the corresponding filter functions for the relevant noi
 
 \begin{figure}
     \centering
-    \includegraphics{img/pdf/qft_atomic_pulses}
+    \includegraphics{img/pdf/filter_functions/qft_atomic_pulses}
     \caption{
         Control fields (top row) and corresponding filter functions (bottom row) of the GRAPE-optimized pulses in $\mathbb{G}$.
         (a),(b) $\text{X}_0(\flatfrac{\pi}{2})$; (c),(d) $\text{Y}_0(\flatfrac{\pi}{2})$; (e),(f) $\text{CR}_{01}(\flatfrac{\pi}{2^3})$.
@@ -211,7 +211,7 @@ In this appendix we give bounds for the convergence of the expansions employed i
 For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms.
 Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
 For non-Gaussian noise, the following considerations apply.
-\subsection{Magnus Expansion}\label{sec:app:ff:convergence:magnus_expansion}
+\subsection{Magnus Expansion}\label{subsec:app:ff:convergence:magnus_expansion}
 The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\abs{A_{ij}}^2$ the Frobenius norm~\cite{Moan1999}.
 We assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
 By the Cauchy-Schwarz inequality we then have
@@ -254,7 +254,7 @@ Finally, realizing that $\delta b_\alpha^2 = \int\frac{\dd{\omega}}{2\pi} S_\alp
 where we have introduced the parameter $\xi$.
 Thus, the expansion converges if $\xi < \flatfrac{\pi}{C_m}$.
 However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will often be infinite, limiting the usefulness of this bound for certain noise spectra.
-\subsection{Infidelity}\label{sec:app:ff:convergence:infidelity}
+\subsection{Infidelity}\label{subsec:app:ff:convergence:infidelity}
 Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
 \begin{equation}
     \begin{split}
