@@ -103,6 +103,9 @@
     breakafter=._,%
 }
 
+\usepackage{lettrine}
+\renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
+
 \usepackage{tabularx} % better tables with given width
 %\setlength{\extrarowheight}{3pt} % increase table row height
 \usepackage{collcell} % for verb columns
@@ -160,6 +163,7 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
+    chs/spectrometer/theory,
     chs/spectrometer/software,
 }
 
