@@ -81,6 +81,7 @@ speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_cumulative.pdf')
 speck.plot_timetrace = False
 speck.plot_cumulative = False
 speck.plot_amplitude = False
+speck.plot_density = False
 speck.plot_dB_scale = True
 speck.set_reference_spectrum('baseline')
 speck.leg.set_loc('lower left')
@@ -99,6 +100,7 @@ speck.take('fixed', add_50hz=True, exp=1, A=1e-13, npeaks=1, **settings)
 
 speck.plot_amplitude = True
 speck.plot_dB_scale = False
+speck.plot_density = True
 speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_success.pdf')
