@@ -217,7 +217,7 @@ from qutil.functools import scaled
 
 mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
 spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
-		     processed_unit='μV')
+                     processed_unit='μV')
 spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
     \end{py}
     \caption[\pyspeck workflow]{
@@ -344,7 +344,7 @@ Charlie carries on with his enterprise and continues to acquire spectra until, f
 Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
 He simply calls %\code{spect.hide(*range(2, 10))}
 %\begin{py}
-%spect.hide(*range(2, 10))
+%    spect.hide(*range(2, 10))
 %\end{py}
 to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow_success}.
 \begin{py}
@@ -373,7 +373,7 @@ Charlie pulls up the \code{Spectrometer} session stored on his disk, allowing th
 \begin{py}
 # Read-only instance because no DAQ attached
 spect = Spectrometer.recall_from_disk(
-savepath / '2032-12-24_noise_hunting'
+    savepath / '2032-12-24_noise_hunting'
 )
 \end{py}
 
