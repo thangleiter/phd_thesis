@@ -208,9 +208,9 @@ The experimentalist,\sidenote{
 }
 having discovered that his data is noisier than expected, sets up the \code{Spectrometer} class with an instance of the \code{DAQ} subclass for the \gls{daq} instrument connected to his sample.
 Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{100}{\kilo\hertz}$, and using the sensible defaults for the remaining spectrum parameters, Charlie first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
-Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}
+Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}.
 
-\begin{listing}
+\begin{listing}[htpb]
     \begin{py}
         from python_spectrometer import Spectrometer, daq
         from qutil.functools import scaled
@@ -218,7 +218,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
         mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
         spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
                              processed_unit='μV')
-        spect.take('baseline', f_min=1e1, f_max=1e5)
+        spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
     \end{py}
     \caption[\pyspeck workflow]{
         Setup and workflow using the \pyspeck package.
@@ -228,21 +228,35 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
     }
     \label{lst:speck:workflow:sequential}
 \end{listing}
-
-Having obtained a baseline for subsequent experiments, he starts to tweak things on his setup, test out different parameters, \etc
-Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
-
-\begin{figure}
+\begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_baseline}
     \caption{
         The \pyspeck plot after acquiring the (synthetic) baseline spectrum.
         By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
+        Each spectrum is assigned a unique identifier key consisting of an incrementing integer and the user comment, and can be refered to by either (or both) when interacting with the object.
     }
     \label{fig:speck:software:workflow_baseline}
 \end{figure}
 
-\begin{figure}
+After acquiring the baseline, he next ungrounds the \gls{daq} to obtain a representative spectrum of the noise in an actual measurement.
+He then proceeds by tweaking things on his setup, testing out different parameters, \etc
+Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
+
+\begin{listing}[htpb]
+    \begin{py}
+        settings = {'f_min': 1e1, 'f_max': 1e5, 'daq': 'connected'}
+        spect.take('connected', **settings)
+        spect.take('lifted cable', cable='lifted', **settings)
+        spect.take('jumped', **settings)
+    \end{py}
+    \caption[]{
+        Code to acquire additional spectra.
+        Arbitrary key-value pairs can be passed to the \code{take()} method, which are stored as metadata if they do not apply to any functions downstream in the data processing chain.
+    }
+    \label{lst:speck:workflow:spectra}
+\end{listing}
+\begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_spectra}
     \caption{
@@ -252,28 +266,56 @@ Every time he changes something, he acquires another spectrum using \code{take()
     \label{fig:speck:software:workflow_spectra}
 \end{figure}
 
-\begin{figure}
+This leaves him with the spectrometer plot as shown in \cref{fig:speck:software:workflow_spectra}.
+While working, Charlie realizes he'd like see the signal in the time-domain as well.
+He easily achieves this by setting \code{spect.plot_timetrace = True}, which adds an oscilloscope subplot to spectrometer figure as shown in \cref{fig:speck:software:workflow_timetrace}.
+
+\begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_timetrace}
     \caption{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow_spectra} when setting \code{spect.plot_timetrace = True}.
-        This adds a subplot that shows the time series data from which the \gls{psd} was computed, \ie, what an oscilloscope would show.
+        This adds a subplot that shows the time series data from which the \gls{psd} was computed akin to what an oscilloscope would show.
+        Note that this is the entire time series, \ie, the data of length $L$, which is (by default, using Welch's method) segmented for spectrum estimation.
     }
     \label{fig:speck:software:workflow_timetrace}
 \end{figure}
 
-\begin{figure}
+Charlie now observes that the noise spectra he has acquired display many sharp peaks in particular at high frequencies while the \oneoverf noise floor seems pretty consistent across different measurements.
+This makes it harder for him to evaluate whether any of his changes are actually an improvement or not.
+The \pyspeck package allows addressing this by plotting the integrated spectra in another subplot.
+Charlie's spectrometer figure after setting \code{spect.plot_cumulative = True} is shown in \cref{fig:speck:software:workflow_cumulative}.
+In the case that \code{spect.plot_amplitude == True}, this new subplot shows the \gls{rms} in the band $[\fmin, f]$,
+\begin{align}\label{eq:speck:software:cumulative}
+    \rms_S(f)\equiv\rms_S(\fmin, f),
+\end{align}
+and the band power (\cref{eq:speck:psd:bandpower}) otherwise.
+
+\begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_cumulative}
     \caption{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow_spectra} when setting \code{spect.plot_cumulative = True}.
         This adds a subplot that shows the \gls{rms} (\cf \cref{eq:speck:psd:bandpower}) which can be helpful in evaluating the contribution of individual peaks in the spectrum to the total noise power.
-        Both the oscilloscope subplot (\cref{fig:speck:software:workflow_timetrace}) and the \gls{rms} subplot can be shown at the same time.
+        Both the oscilloscope subplot (\cref{fig:speck:software:workflow_timetrace}) and the \gls{rms} subplot can also be shown at the same time.
     }
     \label{fig:speck:software:workflow_cumulative}
 \end{figure}
 
-\begin{figure}
+The cumulative \gls{rms} plot already helps, but Charlie would like a more quantitative comparison of relative spectral powers.
+Therefore, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote{
+    Recall that the decibel is defined by the ratio $L_P$ of two powers $P_1, P_2$ as~\cite{Pozar2005}
+    \begin{align*}
+        L_P = 10\log_{10}\left(\frac{P_1}{P_2}\right)\,\unit{\decibel}.
+    \end{align*}
+}
+by applying the following settings, which produces the plot shown in \cref{fig:speck:software:workflow_db}:
+\begin{py}
+    spect.plot_dB_scale = True
+    spect.plot_amplitude = False
+    spect.plot_density = False
+\end{py}
+\begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_db}
     \caption[The \pyspeck plot in relative mode.]{
@@ -282,6 +324,32 @@ Every time he changes something, he acquires another spectrum using \code{take()
     }
     \label{fig:speck:software:workflow_db}
 \end{figure}
+The attribute \code{plot_density} controls whether the \emph{\acrlong{psd}} or the \emph{power spectrum}.\sidenote{
+    \label{sidenote:speck:software_vocabulary}
+    %The peak height in the power spectrum is an estimate of the RMS amplitude.
+    At this point, we \emph{do} need to distinguish between the \gls{psd} and the power spectrum counter to \cref{sidenote:speck:theory_vocabulary} in \cref{ch:speck:theory}.
+    The \gls{psd} and power spectrum are related by the \gls{enbw},
+    \begin{align*}
+        \text{Spectral density} \xrightarrow{\times\enbw} \text{Spectrum},
+    \end{align*}
+    which is itself a function of the sampling rate and the properties of the spectral window~\cite{Harris1978},
+    \begin{align}\label{eq:speck:software:enbw}
+        \enbw = \fs\frac{\sum_n\hat{w}_n^2}{\left[\sum_n\hat{w}_n\right]^2}.
+    \end{align}
+}
+Scaling the data to the power spectrum instead of the density, Charlie can get an estimate of the \gls{rms} at a single frequency by reading off the peak height.
+Additionally displaying the data in \unit{\decibel} then gives insight into relative noise powers of different spectra.
+
+Charlie carries on with his enterprise and continues to acquire spectra until, finally, he finds the source of his noise!
+Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
+He simply calls %\code{spect.hide(*range(2, 10))}
+%\begin{py}
+%    spect.hide(*range(2, 10))
+%\end{py}
+to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow_success}.
+\begin{py}
+    spect.hide(*range(2, 10))
+\end{py}
 
 \begin{figure}
     \centering
@@ -295,8 +363,18 @@ Every time he changes something, he acquires another spectrum using \code{take()
     \label{fig:speck:software:workflow_success}
 \end{figure}
 
-
-
-Having acquired six more spectra in between, he hides those he is not interested in anymore from the plot using \code{spect.hide(*range(2, 10))}.
+Finally, happy with the results, Charlie serializes the state of the spectrometer to disk, allowing him to pick up where he left off at a later point in time:
+\begin{py}
+    # file path relative to spect.savepath
+    spect.serialize_to_disk('2032-12-24_noise_hunting')
+\end{py}
+The next week, Charlie is asked by his team about his progress on debugging the noise in their setup.
+Charlie pulls up the \code{Spectrometer} session stored on his disk, allowing them to interactively discuss the spectra:
+\begin{py}
+    # Read-only instance because no DAQ attached
+    spect = Spectrometer.recall_from_disk(
+        savepath / '2032-12-24_noise_hunting'
+    )
+\end{py}
 
 
