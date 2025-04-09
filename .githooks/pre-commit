@@ -1,0 +1,23 @@
+#!/bin/sh
+# pre-commit hook: Copy a file from one location to another
+
+SRC_FILE="build/default/default.pdf"
+DEST_FILE="review/main.pdf"
+
+# Check if the source file exists
+if [ ! -f "$SRC_FILE" ]; then
+    echo "Error: Source file '$SRC_FILE' not found. Aborting commit."
+    exit 1
+fi
+
+# Perform the copy operation
+cp "$SRC_FILE" "$DEST_FILE"
+if ! cp "$SRC_FILE" "$DEST_FILE"; then
+    echo "Error: Failed to copy '$SRC_FILE' to '$DEST_FILE'. Aborting commit."
+    exit 1
+else
+  git add "$DEST_FILE"
+fi
+
+echo "Successfully copied '$SRC_FILE' to '$DEST_FILE'."
+exit 0
