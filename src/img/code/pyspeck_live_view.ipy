@@ -1,0 +1,63 @@
+import tempfile
+import threading
+
+import matplotlib as mpl
+import numpy as np
+import scipy as sc
+
+from python_spectrometer import daq, Spectrometer
+from qutil import const, functools
+from qutil.plotting import make_sequential_colormap
+
+from common import PATH, TEXTWIDTH
+
+%matplotlib qt
+SEED = 1
+mpl.rcdefaults()
+mpl.style.use('main.mplstyle')
+rng = np.random.default_rng(SEED)
+
+
+def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, npeaks=None,
+             **_):
+    f = np.asarray(f)
+    S = np.zeros_like(f)
+
+    if add_colored:
+        with np.errstate(divide='ignore'):
+            S += A / f ** exp
+
+    if add_50hz:
+        # sophisticated algorithm!
+        harmonics = abs(f % 50) < np.diff(f).mean()
+        idx, = harmonics.nonzero()
+        p = sc.stats.beta.sf(np.linspace(0, 1, idx.size, endpoint=False), 5, 2)
+        idx = rng.choice(idx, size=(min(10, idx.size) if npeaks is None else npeaks),
+                         replace=False, p=p/p.sum())
+        S[(idx,)] += 5e0 * A / (10 * f[f.nonzero()].min()) ** rng.random(size=idx.size)
+
+    S += baseline
+    return S
+
+
+# %%
+demod_daq = daq.simulator.DemodulatorQoptColoredNoise(functools.partial(spectrum, add_50hz=True))
+speck = Spectrometer(demod_daq, savepath=tempfile.mkdtemp(),
+                     threaded_acquisition=False, purge_raw_data=False,
+                     procfn=functools.scaled(1e6), processed_unit='μV',
+                     figure_kw=dict(layout='constrained'))
+speck.plot_negative_frequencies = False
+# speck.plot_absolute_frequencies = True
+
+# %%
+view, = speck.live_view(
+    fs=13.4e3, nperseg=2 << 11, exp=1, A=1e-13, freq=77,
+    delay=False, in_process=False,
+    live_view_kw=dict(
+        style=['fast', {'axes.prop_cycle': (2 * mpl.rcParams['axes.prop_cycle'])[9:]}],
+        img_kw=dict(cmap=make_sequential_colormap('bordeaux').reversed()),
+        fig_kw=dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
+    )
+)
+timer = threading.Timer(2.5, view.pause)
+timer.start()

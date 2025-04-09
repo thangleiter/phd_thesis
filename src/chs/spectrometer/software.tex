@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{The \pyspeck software package}\label{ch:speck:software}
-\lettrine[lines=1]{I}{n} this chapter, I will lay out the design and functionality of the \pyspeck \python package.\sidenote{
+\mylettrine{I}{n} this chapter, I will lay out the design and functionality of the \pyspeck \python package.\sidenote{
     The package repository is hosted on \href{https://git.rwth-aachen.de/qutech/python-spectrometer/}{GitLab}.
     Its documentation is automatically generated and hosted on \href{https://qutech.pages.rwth-aachen.de/python-spectrometer/}{GitLab} as well.
     Releases are automatically published to \href{https://pypi.org/project/python-spectrometer/}{PyPI} and allow the package to be installed using \code{pip install python-spectrometer}.
@@ -160,7 +160,10 @@ In particular, since the process of computing the \gls{psd} already involves Fou
 def compensate_gain(x, gain=1.0):
     return x / gain
     \end{py}
-    \caption[Simple \code{procfn} example]{A simple \code{procfn}, which converts amplified data back to the level before amplification.}
+    \caption[Simple \code{procfn} example]{
+        A simple \code{procfn}, which converts amplified data back to the level before amplification.
+        More complex processing chains can concisely be defined with \code{qutil.functools.FunctionChain} that pipes the output of a function into the input of the next.
+    }
     \label{lst:speck:procfn}
 \end{marginlisting}
 \begin{marginlisting}
@@ -342,14 +345,11 @@ Additionally displaying the data in \unit{\decibel} then gives insight into rela
 
 Charlie carries on with his enterprise and continues to acquire spectra until, finally, he finds the source of his noise!
 Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
-He simply calls %\code{spect.hide(*range(2, 10))}
-%\begin{py}
-%    spect.hide(*range(2, 10))
-%\end{py}
-to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow_success}.
+He simply calls
 \begin{py}
 spect.hide(*range(2, 10))
 \end{py}
+to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow_success}.
 
 \begin{figure}
     \centering
@@ -365,16 +365,22 @@ spect.hide(*range(2, 10))
 
 Finally, happy with the results, Charlie serializes the state of the spectrometer to disk, allowing him to pick up where he left off at a later point in time:
 \begin{py}
-# file path relative to spect.savepath
+# do some stuff
 spect.serialize_to_disk('2032-12-24_noise_hunting')
 \end{py}
 The next week, Charlie is asked by his team about his progress on debugging the noise in their setup.
-Charlie pulls up the \code{Spectrometer} session stored on his disk, allowing them to interactively discuss the spectra:
+Even though he is working from home that day and does not have access to the lab computer, Charlie simply uses his laptop computer and pulls up the \code{Spectrometer} session stored on the server, allowing them to interactively discuss the spectra:
+% Important: Spectrometer(
+%    bla
+%)
+% breaks something!
 \begin{py}
 # Read-only instance because no DAQ attached
-spect = Spectrometer.recall_from_disk(
-    savepath / '2032-12-24_noise_hunting'
-)
+file = '2032-12-24_noise_hunting'
+spect = Spectrometer.recall_from_disk(savepath / file)
 \end{py}
-
-
+This opens up the plot shown in \cref{fig:speck:software:workflow_success} again.
+While they cannot acquire new spectra in this state,\sidenote{
+    They could of course always attach a \code{DAQ} instance to the spectrometer and continue as they were.
+}
+they can still use all the plotting features like showing or hiding spectra, or changing plot types as discussed above.

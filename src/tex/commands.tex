@@ -25,6 +25,10 @@
 \newcommand{\code}[1]{\pyinline{#1}}
 \newcommand{\codev}[1]{\texttt{#1}}
 
+\newcommand{\mylettrine}[2]{
+  \lettrine[lines=3, lhang=0.33, loversize=0.25]{#1}{#2}
+}
+
 \newcommand{\python}{Python\xspace}
 \newcommand{\package}[1]{\nohyphens{\code{#1}}\xspace}
 \newcommand{\pyspeck}{\package{python_spectrometer}}
@@ -66,7 +70,6 @@
 \newcommand{\entfid}[0]{\ensuremath{\fid_\mr{e}}\xspace}
 \newcommand{\infid}[0]{\ensuremath{I}\xspace}
 \newcommand{\leak}[0]{\ensuremath{L}\xspace}
-\newcommand{\basis}[0]{\ensuremath{\mc{C}}\xspace}
 \newcommand{\avginfid}[0]{\ensuremath{\infid_\mr{avg}}\xspace}
 \newcommand{\entinfid}[0]{\ensuremath{\infid_\mr{e}}\xspace}
 \newcommand{\oneoverf}{\ensuremath{\flatfrac{1}{f}}\xspace}
@@ -104,8 +107,9 @@
 \newcommand{\bpsi}[0]{\mbox{\ensuremath{\bra{\psi}}}\xspace}
 \newcommand{\bphi}[0]{\mbox{\ensuremath{\bra{\phi}}}\xspace}
 \newcommand{\dotHS}[2]{\ensuremath{\expval{#1,#2}}\xspace}
-\newcommand{\Hspace}{\ensuremath{\mathscr{H}}\xspace}
-\newcommand{\Lspace}{\ensuremath{\mathscr{L}}\xspace}
+\newcommand{\basis}[0]{\ensuremath{\mathsf{C}}\xspace}
+\newcommand{\Hspace}{\ensuremath{\mathsf{H}}\xspace}
+\newcommand{\Lspace}{\ensuremath{\mathsf{L}}\xspace}
 \newcommand{\adjoint}{\ensuremath{^\dagger}\xspace}
 \newcommand{\transpose}{\ensuremath{^\mathsf{T}}\xspace}
 \newcommand{\inverse}{\ensuremath{^{-1}}\xspace}
