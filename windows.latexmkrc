@@ -7,7 +7,7 @@ $aux_dir = "./build"; # needs to be set; setting to auxil errors (win)
 $allow_subdir_creation = 1; # needs to be set for \include to work with subdirs!
 $pdf_mode = 4;  # 5: xetex, 4: luatex, 1: pdflatex
 $pdf_previewer = join(' ', $ENV{'LOCALAPPDATA'} . '/SumatraPDF/SumatraPDF.exe', '-reuse-instance');
-$clean_ext = " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl nav snm xdy synctex synctex(busy)";
+$clean_ext = " acr acn alg glo gls glg bak dvi aux log toc fls bcf run.xml out .fdb_latexmk blg bbl bbl-SAVE-ERROR nav snm xdy synctex synctex(busy) lol mw nlo synctex.gz.sum.synctex";
 
 # By default compile only the file called 'main.tex'
 @default_files = ('main.tex');

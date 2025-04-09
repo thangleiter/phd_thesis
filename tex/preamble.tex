@@ -48,11 +48,6 @@
 \fi
 \usepackage[english=american]{csquotes}    % English quotes
 
-% Load packages for testing
-%\usepackage{blindtext} % Print text without any meaning for testing purposes
-%\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
-%\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
-
 % Load the bibliography package
 \PassOptionsToPackage{
     natbib=true,
@@ -92,7 +87,7 @@
 }
 
 \newminted[py]{python}{
-    autogobble=true,
+    autogobble=true,%
     frame=leftline,% none | leftline | topline | bottomline | lines | single
     fontsize=\small,% normalsize, small, footnotesize
     linenos=false,
@@ -104,6 +99,11 @@
 }
 
 \usepackage{lettrine}
+%\usepackage{Zallman}
+%\usepackage{Starburst}
+%\usepackage{Rothdn}
+% Use these like so:
+% \Zallmanfamily
 \renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
 
 \usepackage{tabularx} % better tables with given width
@@ -145,12 +145,13 @@
 
 % \makenomenclature % Make LaTeX produce the files required to compile the nomenclature
 
-% Reset sidenote counter at chapters
-%\counterwithin*{sidenote}{chapter}
-
 %----------------------------------------------------------------------------------------
 % DEBUG
 %----------------------------------------------------------------------------------------
+%\usepackage{blindtext} % Print text without any meaning for testing purposes
+%\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
+%\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
+
 %\usepackage{printlen}
 %\uselengthunit{in}
 % Use:
@@ -163,6 +164,7 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
+    chs/spectrometer/introduction,
     chs/spectrometer/theory,
     chs/spectrometer/software,
 }

@@ -1,17 +1,13 @@
-# %%
-import sys
 import tempfile
 
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sc
 
 from python_spectrometer import daq, Spectrometer
 from qutil import const, functools
-from qutil.plotting import RWTH_COLORS
 
-from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
+from common import PATH, TEXTWIDTH
 
 SEED = 1
 mpl.use('qtagg')
@@ -104,29 +100,3 @@ speck.plot_density = True
 speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_success.pdf')
-# %%
-sys.exit(0)
-# %%
-demod_daq = daq.simulator.DemodulatorQoptColoredNoise(functools.partial(spectrum, add_50hz=True))
-speck = Spectrometer(demod_daq, savepath=tempfile.mkdtemp())
-
-# %%
-speck.take(n_avg=5, freq=789, fs=13.4e3, nperseg=2 << 11, delay=True, modulate_signal=False)
-plt.show()  # necessary if using notebook widget
-
-# %%
-speck.plot_negative_frequencies = False
-speck.plot_absolute_frequencies = True
-speck.ax[0].set_xscale('log')
-
-# %% [markdown]
-# For noise hunting, it is often convenient to continuously acquire noise spectra while changing things around the setup. For this, use the `live_view` method.
-#
-# Note: the plot seems to have some issues in `widget` mode, use `qt` for a more reliable plot.
-
-# %%
-views = speck.live_view(11, fs=13.4e3, nperseg=2<<11, delay=True,
-                        in_process=False)
-
-# %%
-plt.close('all')

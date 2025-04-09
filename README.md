@@ -10,7 +10,9 @@
 
 # To Do's
 ## Content
-- [ ] ?
+### FF
+- [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
+- [ ] `\mathcal{}` for FF, regular for fidelity.
  
 ## Layout
 - [ ] Tune the bibliography style
