@@ -1,7 +1,6 @@
 $out_dir = "./build";
 $aux_dir = "./build"; # needs to be set; setting to auxil errors (win)
 $allow_subdir_creation = 1; # needs to be set for \include to work with subdirs!
-$preview_continuous_mode = 1;
 $pdf_mode = 4;  # 5: xetex, 4: luatex, 1: pdflatex
 $max_repeat = 10;
 $pdf_previewer = "evince";

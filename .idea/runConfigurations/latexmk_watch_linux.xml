@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="latexmk windows" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+  <configuration default="false" name="latexmk watch linux" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
     <texify>
       <compiler>LATEXMK</compiler>
       <compiler-path />
       <sumatra-path />
-      <pdf-viewer>SUMATRA</pdf-viewer>
+      <pdf-viewer>NONE</pdf-viewer>
       <viewer-command />
-      <compiler-arguments>-r $PROJECT_DIR$/windows.latexmkrc</compiler-arguments>
+      <compiler-arguments>-r $PROJECT_DIR$/linux.latexmkrc -pvc</compiler-arguments>
       <envs />
       <expand-macros-in-environment-variables>false</expand-macros-in-environment-variables>
       <before-run-command />
