@@ -2,9 +2,6 @@
 # Universal post-checkout launcher - save as .githooks/post-checkout
 # This script detects the platform and launches the appropriate version
 
-# Get the previous and current branch names
-previous_ref=$1
-current_ref=$2
 is_branch_checkout=$3
 
 # Only run for branch checkouts (not file checkouts)

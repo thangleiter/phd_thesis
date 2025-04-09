@@ -5,5 +5,4 @@
 .idea/workspace.xml
 
 build/*
-!build/main.pdf
 
