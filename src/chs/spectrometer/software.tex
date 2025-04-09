@@ -70,7 +70,7 @@ Although she would not have to do this explicitly,\sidenote{
 she could inspect the parameters after resolution using the code shown in \cref{lst:speck:daq_settings}.
 
 \begin{listing}[htpb]
-    \begin{minted}{python}
+    \begin{py}
         >>> from python_spectrometer.daq import DAQSettings
         >>> settings = DAQSettings(f_min=1.5, f_max=7.2e4)
         >>> settings.to_consistent_dict()
@@ -83,7 +83,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
          'n_seg': 5,
          'n_pts': 288000,
          'n_avg': 1}
-    \end{minted}
+    \end{py}
     \caption{
         \code{DAQSettings} example showcasing automatic parameter resolution.
         \code{n_avg} determines the number of outer averages, \ie, the number of data buffers acquired and processed individually.
@@ -92,7 +92,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
 \end{listing}
 
 \begin{marginlisting}
-    \begin{minted}[fontsize=\footnotesize]{python}
+    \begin{py}
         {'f_min': 14.30511474609375,
          'f_max': 72000.0,
          'fs': 234375.0,
@@ -102,7 +102,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
          'n_seg': 1,
          'n_pts': 16384,
          'n_avg': 1}
-    \end{minted}
+    \end{py}
     \caption[Resolved \code{DAQSettings} for MFLI Scope]{
         Resolved settings for the same input parameters as in \cref{lst:speck:daq_settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}. % for some reason tex errors for \code{fs}
     }
@@ -127,13 +127,13 @@ Here, the instrument is armed (if necessary), and subsequently data is fetched f
 \Cref{lst:speck:daq_workflow} represents the data acquisition workflow as pseudocode.
 
 \begin{listing}
-    \begin{minted}{python}
+    \begin{py}
         daq = SomeDAQ(driver)
         parsed_settings = daq.setup(**user_settings)
         acquisition_generator = daq.acquire(**parsed_settings)
         for data_buffer in acquisition_generator:
             do_something_with(data_buffer)
-    \end{minted}
+    \end{py}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
         A \code{SomeDAQ} object (representing the instrument \code{Some}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
@@ -156,18 +156,18 @@ or more complex ones such as applying calibrations.
 In particular, since the process of computing the \gls{psd} already involves Fourier transformation, the processing can also be performed in frequency space.
 
 \begin{marginlisting}
-    \begin{minted}[fontsize=\footnotesize]{python}
+    \begin{py}
         def compensate_gain(x, gain=1.0):
             return x / gain
-    \end{minted}
+    \end{py}
     \caption[Simple \code{procfn} example]{A simple \code{procfn}, which converts amplified data back to the level before amplification.}
     \label{lst:speck:procfn}
 \end{marginlisting}
 \begin{marginlisting}
-    \begin{minted}[fontsize=\footnotesize]{python}
+    \begin{py}
         def derivative(xf, f, n=0):
             return xf / (2j * pi * f)**n
-    \end{minted}
+    \end{py}
     \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
 \end{marginlisting}
@@ -211,7 +211,7 @@ Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{
 Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}
 
 \begin{listing}
-    \begin{minted}{python}
+    \begin{py}
         from python_spectrometer import Spectrometer, daq
         from qutil.functools import scaled
 
@@ -219,7 +219,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
         spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
                              processed_unit='μV')
         spect.take('baseline', f_min=1e1, f_max=1e5)
-    \end{minted}
+    \end{py}
     \caption[\pyspeck workflow]{
         Setup and workflow using the \pyspeck package.
         \code{session} and \code{device} are \gls{api} objects of the \code{zhinst.toolkit} driver package.
