@@ -71,18 +71,18 @@ she could inspect the parameters after resolution using the code shown in \cref{
 
 \begin{listing}[htpb]
     \begin{py}
-        >>> from python_spectrometer.daq import DAQSettings
-        >>> settings = DAQSettings(f_min=1.5, f_max=7.2e4)
-        >>> settings.to_consistent_dict()
-        {'f_min': 1.5,
-         'f_max': 72000.0,
-         'fs': 144000.0,
-         'df': 1.5,
-         'nperseg': 96000,
-         'noverlap': 48000,
-         'n_seg': 5,
-         'n_pts': 288000,
-         'n_avg': 1}
+>>> from python_spectrometer.daq import DAQSettings
+>>> settings = DAQSettings(f_min=1.5, f_max=7.2e4)
+>>> settings.to_consistent_dict()
+{'f_min': 1.5,
+ 'f_max': 72000.0,
+ 'fs': 144000.0,
+ 'df': 1.5,
+ 'nperseg': 96000,
+ 'noverlap': 48000,
+ 'n_seg': 5,
+ 'n_pts': 288000,
+ 'n_avg': 1}
     \end{py}
     \caption{
         \code{DAQSettings} example showcasing automatic parameter resolution.
@@ -93,15 +93,15 @@ she could inspect the parameters after resolution using the code shown in \cref{
 
 \begin{marginlisting}
     \begin{py}
-        {'f_min': 14.30511474609375,
-         'f_max': 72000.0,
-         'fs': 234375.0,
-         'df': 14.30511474609375,
-         'nperseg': 16384,
-         'noverlap': 0,
-         'n_seg': 1,
-         'n_pts': 16384,
-         'n_avg': 1}
+{'f_min': 14.30511474609375,
+ 'f_max': 72000.0,
+ 'fs': 234375.0,
+ 'df': 14.30511474609375,
+ 'nperseg': 16384,
+ 'noverlap': 0,
+ 'n_seg': 1,
+ 'n_pts': 16384,
+ 'n_avg': 1}
     \end{py}
     \caption[Resolved \code{DAQSettings} for MFLI Scope]{
         Resolved settings for the same input parameters as in \cref{lst:speck:daq_settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}. % for some reason tex errors for \code{fs}
@@ -128,11 +128,11 @@ Here, the instrument is armed (if necessary), and subsequently data is fetched f
 
 \begin{listing}
     \begin{py}
-        daq = SomeDAQ(driver)
-        parsed_settings = daq.setup(**user_settings)
-        acquisition_generator = daq.acquire(**parsed_settings)
-        for data_buffer in acquisition_generator:
-            do_something_with(data_buffer)
+daq = SomeDAQ(driver)
+parsed_settings = daq.setup(**user_settings)
+acquisition_generator = daq.acquire(**parsed_settings)
+for data_buffer in acquisition_generator:
+    do_something_with(data_buffer)
     \end{py}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
@@ -157,16 +157,16 @@ In particular, since the process of computing the \gls{psd} already involves Fou
 
 \begin{marginlisting}
     \begin{py}
-        def compensate_gain(x, gain=1.0):
-            return x / gain
+def compensate_gain(x, gain=1.0):
+    return x / gain
     \end{py}
     \caption[Simple \code{procfn} example]{A simple \code{procfn}, which converts amplified data back to the level before amplification.}
     \label{lst:speck:procfn}
 \end{marginlisting}
 \begin{marginlisting}
     \begin{py}
-        def derivative(xf, f, n=0):
-            return xf / (2j * pi * f)**n
+def derivative(xf, f, n=0):
+    return xf / (2j * pi * f)**n
     \end{py}
     \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
@@ -212,13 +212,13 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 
 \begin{listing}[htpb]
     \begin{py}
-        from python_spectrometer import Spectrometer, daq
-        from qutil.functools import scaled
+from python_spectrometer import Spectrometer, daq
+from qutil.functools import scaled
 
-        mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
-        spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
-                             processed_unit='μV')
-        spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
+mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
+spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
+		     processed_unit='μV')
+spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
     \end{py}
     \caption[\pyspeck workflow]{
         Setup and workflow using the \pyspeck package.
@@ -245,10 +245,10 @@ Every time he changes something, he acquires another spectrum using \code{take()
 
 \begin{listing}[htpb]
     \begin{py}
-        settings = {'f_min': 1e1, 'f_max': 1e5, 'daq': 'connected'}
-        spect.take('connected', **settings)
-        spect.take('lifted cable', cable='lifted', **settings)
-        spect.take('jumped', **settings)
+settings = {'f_min': 1e1, 'f_max': 1e5, 'daq': 'connected'}
+spect.take('connected', **settings)
+spect.take('lifted cable', cable='lifted', **settings)
+spect.take('jumped', **settings)
     \end{py}
     \caption[]{
         Code to acquire additional spectra.
@@ -311,9 +311,9 @@ Therefore, he rescales the spectra in terms of their relative powers expressed i
 }
 by applying the following settings, which produces the plot shown in \cref{fig:speck:software:workflow_db}:
 \begin{py}
-    spect.plot_dB_scale = True
-    spect.plot_amplitude = False
-    spect.plot_density = False
+spect.plot_dB_scale = True
+spect.plot_amplitude = False
+spect.plot_density = False
 \end{py}
 \begin{figure}[htpb]
     \centering
@@ -344,11 +344,11 @@ Charlie carries on with his enterprise and continues to acquire spectra until, f
 Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
 He simply calls %\code{spect.hide(*range(2, 10))}
 %\begin{py}
-%    spect.hide(*range(2, 10))
+%spect.hide(*range(2, 10))
 %\end{py}
 to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow_success}.
 \begin{py}
-    spect.hide(*range(2, 10))
+spect.hide(*range(2, 10))
 \end{py}
 
 \begin{figure}
@@ -365,16 +365,16 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
 
 Finally, happy with the results, Charlie serializes the state of the spectrometer to disk, allowing him to pick up where he left off at a later point in time:
 \begin{py}
-    # file path relative to spect.savepath
-    spect.serialize_to_disk('2032-12-24_noise_hunting')
+# file path relative to spect.savepath
+spect.serialize_to_disk('2032-12-24_noise_hunting')
 \end{py}
 The next week, Charlie is asked by his team about his progress on debugging the noise in their setup.
 Charlie pulls up the \code{Spectrometer} session stored on his disk, allowing them to interactively discuss the spectra:
 \begin{py}
-    # Read-only instance because no DAQ attached
-    spect = Spectrometer.recall_from_disk(
-        savepath / '2032-12-24_noise_hunting'
-    )
+# Read-only instance because no DAQ attached
+spect = Spectrometer.recall_from_disk(
+savepath / '2032-12-24_noise_hunting'
+)
 \end{py}
 
 

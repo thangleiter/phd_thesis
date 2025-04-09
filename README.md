@@ -37,6 +37,7 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
   - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic @ main`
 - Biber and BibLaTeX versions need to be compatible. Download [matching binary](https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries) and replace TeXlive's.
 - Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
+- The `autogobble` option of `minted` does not seem to work.
 
 # Kaobook
 - Linux:
