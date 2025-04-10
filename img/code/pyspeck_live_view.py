@@ -1,6 +1,7 @@
 import tempfile
 import threading
 
+import IPython
 import matplotlib as mpl
 import numpy as np
 import scipy as sc
@@ -11,10 +12,13 @@ from qutil.plotting import make_sequential_colormap
 
 from common import PATH, TEXTWIDTH
 
-%matplotlib qt
-SEED = 1
+ipy = IPython.get_ipython()
+ipy.run_line_magic('matplotlib', 'qt')
+
 mpl.rcdefaults()
 mpl.style.use('main.mplstyle')
+
+SEED = 1
 rng = np.random.default_rng(SEED)
 
 
