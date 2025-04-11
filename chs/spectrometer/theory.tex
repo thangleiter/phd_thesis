@@ -1,12 +1,11 @@
 % mainfile: ../../main.tex
 \chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
-\mylettrine{T}{here} exists a multitude of methods for estimating noise properties.
-\todo{lay out some others}
-
-If the noisy process $x(t)$\sidenote{
+\mylettrine{T}{here} exists a multitude of methods for estimating noise properties of a classical signal $x(t)$.\sidenote{
     We discuss only classical noise here, meaning $x(t)$ commutes with itself at all times. For descriptions of and spectroscopy protocols for quantum noise refer to \citerr{Clerk2010}{Paz-Silva2017}, for example.
 }
-has Gaussian statistics, meaning that the value at a given point in time follows a normal distribution with some mean $\mu$ and variance $\sigma^2$ over multiple realizations of the process, it can be fully described by the \gls{psd} $S(\omega)$.\sidenote{
+\todo{lay out some others}
+
+If the noisy process $x(t)$ has Gaussian statistics, meaning that the value at a given point in time follows a normal distribution with some mean $\mu$ and variance $\sigma^2$ over multiple realizations of the process, it can be fully described by the \gls{psd} $S(\omega)$.\sidenote{
     \label{sidenote:speck:theory_vocabulary}
     The term \emph{power spectrum} is often used interchangably.
     I will do so as well, but emphasize at this point that in digital signal processing in particular, the \emph{spectrum} is a different quantity from the \emph{spectral density}.
