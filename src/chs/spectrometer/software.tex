@@ -370,12 +370,13 @@ spect.serialize_to_disk('2032-12-24_noise_hunting')
 \end{py}
 The next week, Charlie is asked by his team about his progress on debugging the noise in their setup.
 Even though he is working from home that day and does not have access to the lab computer, Charlie simply uses his laptop computer and pulls up the \code{Spectrometer} session stored on the server, allowing them to interactively discuss the spectra:
-% Important: Spectrometer(
+% Important:
+% Spectrometer(
 %    bla
 %)
-% breaks something!
+% breaks something! (tl '25)
+% Adding a code comment here also breaks something (tl '22)
 \begin{py}
-# Read-only instance because no DAQ attached
 file = '2032-12-24_noise_hunting'
 spect = Spectrometer.recall_from_disk(savepath / file)
 \end{py}
