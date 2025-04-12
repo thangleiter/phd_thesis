@@ -43,12 +43,12 @@ qopt_daq = daq.simulator.QoptColoredNoise(spectrum)
 speck = Spectrometer(qopt_daq, savepath=tempfile.mkdtemp(),
                      threaded_acquisition=False, purge_raw_data=False,
                      procfn=functools.scaled(1e6), processed_unit='μV',
-                     plot_style='./main.mplstyle', figure_kw=dict(layout='constrained'))
+                     plot_style='./main.mplstyle',
+                     figure_kw=dict(layout='constrained'), legend_kw=dict(loc='lower left'))
 settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False)
 
 # %%
 speck.take('baseline', add_50hz=False, add_colored=False, **settings)
-speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_baseline.pdf')
 
@@ -61,7 +61,6 @@ speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_spectra.pdf')
 
 # %%
 speck.plot_timetrace = True
-speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_timetrace.pdf')
 
@@ -69,7 +68,6 @@ speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_timetrace.pdf')
 speck.plot_timetrace = False
 speck.plot_cumulative = True
 speck.plot_cumulative_normalized = False
-speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_cumulative.pdf')
 
@@ -80,7 +78,6 @@ speck.plot_amplitude = False
 speck.plot_density = False
 speck.plot_dB_scale = True
 speck.set_reference_spectrum('baseline')
-speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_db.pdf')
 
@@ -97,6 +94,5 @@ speck.take('fixed', add_50hz=True, exp=1, A=1e-13, npeaks=1, **settings)
 speck.plot_amplitude = True
 speck.plot_dB_scale = False
 speck.plot_density = True
-speck.leg.set_loc('lower left')
 speck.fig.set_size_inches(TEXTWIDTH, TEXTWIDTH / const.golden * 0.75)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_success.pdf')
