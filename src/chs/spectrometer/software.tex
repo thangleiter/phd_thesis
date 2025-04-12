@@ -113,6 +113,33 @@ If the instrument she'd chosen for data acquisition had been a Zurich Instrument
 }
 This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
 
+\begin{listing}
+    \begin{py}
+# daq/mydaq.py
+import dataclasses
+from .base import DAQ
+from .settings import DAQSettings
+
+@dataclasses.dataclass
+class MyDAQ(DAQ):
+    handle: mydriver.DeviceHandle
+
+    def setup(self, **settings) -> Mapping:
+        settings = DAQSettings(**settings).to_consistent_dict()
+        self.handle.configure(settings)
+        return settings
+
+    def acquire(self, n_avg: int, *, **settings) -> Generator:
+        self.handle.arm(n_avg)
+        for _ in range(n_avg):
+            self.handle.wait_for_trigger()
+            yield self.handle.fetch()
+        return self.handle.metadata
+    \end{py}
+    \caption[\code{DAQ} pseudocode]{}
+    \label{lst:speck:software:daq_pseudocode}
+\end{listing}
+
 As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware agnostic.
 That is, changing the instrument that is used to acquire the data does not necessitate adapting the code used to interact with the instrument.
 To enable this, different instruments require small wrapper drivers that map the functionality of their actual driver onto the interface dictated by the \code{DAQ} class.
@@ -162,7 +189,7 @@ def compensate_gain(x, gain=1.0):
     \end{py}
     \caption[Simple \code{procfn} example]{
         A simple \code{procfn}, which converts amplified data back to the level before amplification.
-        More complex processing chains can concisely be defined with \code{qutil.functools.FunctionChain} that pipes the output of a function into the input of the next.
+        More complex processing chains can concisely be defined with \code{qutil.functools.FunctionChain} that pipes the output of one function into the input of the next.
     }
     \label{lst:speck:procfn}
 \end{marginlisting}
