@@ -5,7 +5,7 @@ import numpy as np
 
 from qopt.noise import fast_colored_noise
 from qutil import itertools
-from qutil.plotting import RWTH_COLORS
+from qutil.plotting.colors import RWTH_COLORS
 
 from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
 
