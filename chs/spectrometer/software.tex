@@ -115,8 +115,47 @@ This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qt
 
 \begin{listing}
     \begin{py}
+        daq = MyDAQ(driver_handle)
+        parsed_settings = daq.setup(**user_settings)
+        acquisition_generator = daq.acquire(**parsed_settings)
+        for data_buffer in acquisition_generator:
+            do_something_with(data_buffer)
+    \end{py}
+    \caption[\gls{daq} workflow pseudocode]{
+        \gls{daq} workflow pseudocode.
+        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
+        The instrument is configured with the given \code{user_settings}.
+        Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
+        The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
+    }
+    \label{lst:speck:daq_workflow}
+\end{listing}
+
+As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware agnostic.
+That is, changing the instrument that is used to acquire the data does not necessitate adapting the code used to interact with the \code{Spectrometer}.
+To enable this, different instruments require small wrapper drivers that map the functionality of their actual driver onto the interface dictated by the \code{DAQ} class.
+This is achieved by subclassing \code{DAQ} and implementing the \code{DAQ.setup()} and \code{DAQ.acquire()} methods.
+Their functionality is best illustrated by the internal workflow as representatively shown in \cref{lst:speck:daq_workflow}.
+When acquiring a new spectrum, all settings supplied by the user are first fed into the \code{setup()} method where instrument configuration takes place.
+The method returns the actual device settings,\sidenote{
+    Which might differ from the requested settings as outlined above.
+}
+which are then forwarded to the \code{acquire()} generator function.
+Here, the instrument is armed (if necessary), and subsequently data is fetched from the device and yielded to the caller \code{n_avg} times, where \code{n_avg} is the number of outer averages.\sidenote{
+    \Ie, the number of time series data batches acquired, as opposed to the number of Welch averages \code{n_seg} within one batch.
+}
+An exemplary implementation of a \code{DAQ} subclass for a fictitious instrument is shown in \cref{lst:speck:daq_pseudocode}.
+In addition to the methods to configure the instrument and perform data acquisition, it is possible to override the \code{DAQSettings} property to implement instrument-specific hardware constraints such as, in this example, the number of samples per buffer being constrained to the discrete interval $[1, 2048]$.
+Leveraging the \code{qutil.domains} module, more complex constraints such as sample rates restricted to an internal clock rate divided by a power of two\sidenote{
+    \Cf the implementation of the \href{https://git.rwth-aachen.de/qutech/python-spectrometer/-/blob/main/src/python_spectrometer/daq/atssimple.py}{AlazarTech ATS9440} digitizer card.
+}
+can be specified.
+
+\begin{listing}
+    \begin{py}
         # daq/mydaq.py
         import dataclasses
+        from qutil.domains import DiscreteInterval
         from .base import DAQ
         from .settings import DAQSettings
 
@@ -124,10 +163,17 @@ This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qt
         class MyDAQ(DAQ):
             handle: mydriver.DeviceHandle
 
-            def setup(self, **settings) -> Mapping:
-                settings = DAQSettings(**settings).to_consistent_dict()
-                self.handle.configure(settings)
-                return settings
+            @property
+            def DAQSettings(self) -> type[DAQSettings]:
+                class MyDAQSettings(DAQSettings):
+                    ALLOWED_NPERSEG = DiscreteInterval(1, 2048)
+                return MyDAQSettings
+
+            def setup(self, **settings) -> dict:
+                settings = self.DAQSettings(**settings)
+                parsed_settings = settings.to_consistent_dict()
+                self.handle.configure(parsed_settings)
+                return parsed_settings
 
             def acquire(self, n_avg: int, *, **settings) -> Generator:
                 self.handle.arm(n_avg)
@@ -136,41 +182,18 @@ This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qt
                     yield self.handle.fetch()
                 return self.handle.metadata
     \end{py}
-    \caption[\code{DAQ} pseudocode]{}
-    \label{lst:speck:software:daq_pseudocode}
-\end{listing}
-
-As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware agnostic.
-That is, changing the instrument that is used to acquire the data does not necessitate adapting the code used to interact with the instrument.
-To enable this, different instruments require small wrapper drivers that map the functionality of their actual driver onto the interface dictated by the \code{DAQ} class.
-This is achieved by subclassing \code{DAQ} and implementing the \code{DAQ.setup()} and \code{DAQ.acquire()} methods.
-Their functionality is best illustrated by the internal workflow.
-When acquiring a new spectrum, all settings supplied by the user are first fed into the \code{setup()} method where instrument configuration takes place.
-The method returns the actual device settings,\sidenote{
-    Which might differ from the requested settings as outlined above.
-}
-which are then forwarded to the \code{acquire()} generator function.
-Here, the instrument is armed (if necessary), and subsequently data is fetched from the device and yielded to the caller \code{n_avg} times, where \code{n_avg} is the number of outer averages.
-\Cref{lst:speck:daq_workflow} represents the data acquisition workflow as pseudocode.
-
-\begin{listing}
-    \begin{py}
-        daq = SomeDAQ(driver)
-        parsed_settings = daq.setup(**user_settings)
-        acquisition_generator = daq.acquire(**parsed_settings)
-        for data_buffer in acquisition_generator:
-            do_something_with(data_buffer)
-    \end{py}
-    \caption[\gls{daq} workflow pseudocode]{
-        \gls{daq} workflow pseudocode.
-        A \code{SomeDAQ} object (representing the instrument \code{Some}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
-        The instrument is configured with the given \code{user_settings}.
-        Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
-        The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
+    \caption[\code{DAQ} pseudocode]{
+        Exemplary code for a \code{DAQ} implementation of some instrument with given driver class \code{DeviceHandle} in the package \code{mydriver}.
+        The \code{MyDAQ} class is instantiated with a \code{DeviceHandle} instance.
+        Optionally, the \code{DAQSettings} property can be overridden to implement hardware constraints or default values for data acquisition parameters.
+        For this, the \code{qutil.domains} module provides several classes that represent bounded domains and sets.
+        The \code{setup()} method parses the given acquisition settings and configures the instrument through the external driver interface \code{handle.configure()}.
+        The \code{acquire()} method arms the instrument (if necessary) and loops over the number of outer averages, \code{n_avg}.
+        In the body of the loop, it can wait for external triggers (or send software triggers) before yielding a batch of data fetched from the external driver interface.
+        Once acquisition is done, the method can return arbitrary metadata to the \code{Spectrometer} object to attach to the stored data.
     }
-    \label{lst:speck:daq_workflow}
+    \label{lst:speck:daq_pseudocode}
 \end{listing}
-\todo{DAQ pseudocode?}
 
 \subsection{Data processing}\label{subsec:speck:software:design:processing}
 \todo{Introduce Bob?}
@@ -226,7 +249,7 @@ In \cref{part:setup}\todo{ref}, I discuss more complex use-cases of the processi
 
 \section{Feature overview}\label{sec:speck:software:features}
 \todo{überleitung}
-\subsection{Sequential spectrum acquisition}\label{subsec:speck:software:features:sequential}
+\subsection{Serial spectrum acquisition}\label{subsec:speck:software:features:serial}
 Now that we have a basic understanding of the design choices underlying \pyspeck, let us discuss the typical workflow of using the package.
 The default mode for spectrum acquisition using \pyspeck revolves around the \code{take()} method.
 Key to this workflow is the idea that each acquired spectrum can be assigned a comment that allows to easily identify a spectrum in the main plot.
@@ -238,7 +261,7 @@ The experimentalist,\sidenote{
 }
 having discovered that his data is noisier than expected, sets up the \code{Spectrometer} class with an instance of the \code{DAQ} subclass for the \gls{daq} instrument connected to his sample.
 Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{100}{\kilo\hertz}$, and using the sensible defaults for the remaining spectrum parameters, Charlie first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
-Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:sequential}.
+Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:serial}.
 
 \begin{listing}[htpb]
     \begin{py}
@@ -256,7 +279,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
         It is therefore possible to simply use the driver objects that are already in use in the measurement setup.
         The \code{procfn} and \code{processed_unit} arguments help converting raw data into a more human-friendly unit.
     }
-    \label{lst:speck:workflow:sequential}
+    \label{lst:speck:workflow:serial}
 \end{listing}
 \begin{figure}[htpb]
     \centering
@@ -411,3 +434,6 @@ While they cannot acquire new spectra in this state,\sidenote{
     They could of course always attach a \code{DAQ} instance to the spectrometer and continue as they were.
 }
 they can still use all the plotting features like showing or hiding spectra, or changing plot types as discussed above.
+
+\subsection{Live spectrum acquisition}\label{subsec:speck:software:features:live_mode}
+Serial data

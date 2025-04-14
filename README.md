@@ -1,6 +1,6 @@
 # Repository layout
-- The most recent version of the compiled document is located at `build/main.pdf`
-- Reviews should be placed in `reviews/` :)
+- The most recent version of the compiled document is automatically placed at `review/main.pdf`.
+- Reviews should be placed in `reviews/`, preferably by branching off at the commit at which the review starts :)
 - The TeX style is included as a git submodule at `lib/kaobook`. 
 - There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
   To automatically switch to the correct submodule branch when switching branches in the main repository, run 
@@ -39,6 +39,8 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
   - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic @ main`
 - Biber and BibLaTeX versions need to be compatible. Download [matching binary](https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries) and replace TeXlive's.
 - Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
+- The `autogobble` option of `minted` does not seem to work.
+- The font size in `minted` also does not seem to adjust.
 
 # Kaobook
 - Linux:
