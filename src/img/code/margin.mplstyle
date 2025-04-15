@@ -83,4 +83,4 @@ savefig.transparent: True  # setting that controls whether figures are saved wit
 ### pgf parameter
 pgf.rcfonts : False
 pgf.preamble : \usepackage{physics}\usepackage{unicode-math}\setmainfont{Libertinus Sans}\setmonofont{Liberation Mono}\setmathfont{Libertinus Math}
-pgf.texsystem : xelatex
+pgf.texsystem : lualatex

@@ -27,11 +27,12 @@ def hann(x, T=1):
 
 
 # %%
-x = np.linspace(-11, 11, 1001)*np.pi
-xn = np.linspace(-11, 11, 11)*np.pi
-
 alpha = 0.5
 T = 1
+
+x = np.linspace(-5.5, 5.5, 1001)*2*np.pi/T
+xn = np.arange(-5, 6)*2*np.pi/T
+xm = np.arange(-4.5, 5.5)*2*np.pi/T
 
 with plt.style.context('./margin.mplstyle', after_reset=True):
     for window in (rect, hann):
@@ -42,8 +43,16 @@ with plt.style.context('./margin.mplstyle', after_reset=True):
             ax.vlines(xnn, *itertools.minmax(0, window(xnn, T).item()),
                       color=RWTH_COLORS['green'] + (alpha,))
             ax.plot([xnn], window(xnn, T), 'o',
+                    markersize=5,
                     markeredgecolor=RWTH_COLORS['green'],
                     markerfacecolor=RWTH_COLORS['green'] + (alpha,))
+        for xmm in xm:
+            ax.vlines(xmm, *itertools.minmax(0, window(xmm, T).item()),
+                      color=RWTH_COLORS['orange'] + (alpha,))
+            ax.plot([xmm], window(xmm, T), 'D',
+                    markersize=4,
+                    markeredgecolor=RWTH_COLORS['orange'],
+                    markerfacecolor=RWTH_COLORS['orange'] + (alpha,))
 
         ax.set_xlim(-12.5*np.pi, 12.5*np.pi)
         ax.set_xticks([-10 * np.pi / T, 10 * np.pi / T])
@@ -58,15 +67,18 @@ with plt.style.context('./margin.mplstyle', after_reset=True):
             ax.set_yticks([T])
             ax.set_yticklabels([r'$T$'])
             ax.set_ylim(-0.25, 1.2*T)
-            ax.xaxis.set_tick_params(pad=7.5)
-            ax.xaxis.set_label_coords(12.5*np.pi, .2*T, transform=ax.transData)
-            ax.yaxis.set_label_coords(2.25*np.pi, 1.1*T, transform=ax.transData)
+            ax.xaxis.set_tick_params(pad=5, length=7.5)
+            ax.yaxis.set_tick_params(length=7.5)
+            ax.xaxis.set_label_coords(12.5*np.pi/T, .2*T, transform=ax.transData)
+            ax.yaxis.set_label_coords(2.25*np.pi/T, 1.1*T, transform=ax.transData)
         elif window is hann:
             ax.set_yticks([T/2])
             ax.set_yticklabels([r'$\flatfrac{T}{2}$'])
             ax.set_ylim(-0.25/4, .6*T)
-            ax.xaxis.set_label_coords(12.5*np.pi, .115*T, transform=ax.transData)
-            ax.yaxis.set_label_coords(2.25*np.pi, .55*T, transform=ax.transData)
+            ax.xaxis.set_tick_params(length=7.5)
+            ax.yaxis.set_tick_params(length=7.5)
+            ax.xaxis.set_label_coords(12.5*np.pi/T, .1*T, transform=ax.transData)
+            ax.yaxis.set_label_coords(2.25*np.pi/T, .55*T, transform=ax.transData)
 
         fig.tight_layout()
         fig.savefig(PATH / f'pdf/spectrometer/{window.__name__}.pdf', backend='pgf')
