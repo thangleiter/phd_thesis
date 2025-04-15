@@ -1,5 +1,4 @@
 import tempfile
-import threading
 
 import IPython
 import matplotlib as mpl
@@ -44,24 +43,43 @@ def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, npe
     return S
 
 
+def stop(timer, max_callbacks: int):
+    global CALLED_BACK
+    if CALLED_BACK >= max_callbacks:
+        timer.stop()
+    else:
+        CALLED_BACK += 1
+
+
 # %%
-demod_daq = daq.simulator.DemodulatorQoptColoredNoise(functools.partial(spectrum, add_50hz=True))
-speck = Spectrometer(demod_daq, savepath=tempfile.mkdtemp(),
+# TODO: Matplotlib does not automatically relim the y axis based on new x limits.
+#       - always index data?
+daq = daq.simulator.QoptColoredNoise(functools.partial(spectrum, add_50hz=True))
+speck = Spectrometer(daq, savepath=tempfile.mkdtemp(),
                      threaded_acquisition=False, purge_raw_data=False,
                      procfn=functools.scaled(1e6), processed_unit='μV',
                      figure_kw=dict(layout='constrained'))
-speck.plot_negative_frequencies = False
+# speck.plot_negative_frequencies = False
 # speck.plot_absolute_frequencies = True
 
 # %%
+CALLED_BACK = 1
+timer = mpl.backends.backend_qt.TimerQT(1)
+timer.add_callback(stop, timer, max_callbacks=12)
+
+# bordeaux has the largest dynamic range. at index 9 in the cycle
 view, = speck.live_view(
-    fs=13.4e3, nperseg=2 << 11, exp=1, A=1e-13, freq=77,
+    21,
+    f_min=1e1, f_max=1e5, exp=1, A=1e-13, baseline=1e-16,
     delay=False, in_process=False,
     live_view_kw=dict(
-        style=['fast', {'axes.prop_cycle': (2 * mpl.rcParams['axes.prop_cycle'])[9:]}],
-        img_kw=dict(cmap=make_sequential_colormap('bordeaux').reversed()),
+        event_source=timer,
+        style=['fast', {'axes.prop_cycle': (2 * mpl.rcParams['axes.prop_cycle'])[0:]}],
+        img_kw=dict(cmap=make_sequential_colormap('blue').reversed()),
         fig_kw=dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
     )
 )
-timer = threading.Timer(2.5, view.pause)
-timer.start()
+
+# %%%
+view.stop()
+view.fig.savefig(PATH / 'pdf/spectrometer/live_view.pdf')
