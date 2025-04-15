@@ -70,7 +70,7 @@ Although she would not have to do this explicitly,\sidenote{
 she could inspect the parameters after resolution using the code shown in \cref{lst:speck:daq:settings}.
 
 \begin{listing}[htpb]
-    \begin{py}
+    \begin{minted}{python}
 >>> from python_spectrometer.daq import DAQSettings
 >>> settings = DAQSettings(f_min=1.5, f_max=7.2e4)
 >>> settings.to_consistent_dict()
@@ -83,7 +83,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
  'n_seg': 5,
  'n_pts': 288000,
  'n_avg': 1}
-    \end{py}
+    \end{minted}
     \caption{
         \code{DAQSettings} example showcasing automatic parameter resolution.
         \code{n_avg} determines the number of outer averages, \ie, the number of data buffers acquired and processed individually.
@@ -92,7 +92,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
 \end{listing}
 
 \begin{marginlisting}
-    \begin{py}
+    \begin{minted}[fontsize=\footnotesize]{python}
 {'f_min': 14.30511474609375,
  'f_max': 72000.0,
  'fs': 234375.0,
@@ -102,7 +102,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
  'n_seg': 1,
  'n_pts': 16384,
  'n_avg': 1}
-    \end{py}
+    \end{minted}
     \caption[Resolved \code{DAQSettings} for MFLI Scope]{
         Resolved settings for the same input parameters as in \cref{lst:speck:daq:settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}. % for some reason tex errors for \code{fs}
     }
@@ -121,15 +121,15 @@ This is achieved by subclassing \code{DAQ} and implementing the \code{DAQ.setup(
 Their functionality is best illustrated by the internal workflow as representatively shown in \cref{lst:speck:daq:workflow}.
 
 \begin{listing}[htpb]
-    \begin{py}
-        daq = MyDAQ(driver_handle)
+    \begin{minted}{python}
+daq = MyDAQ(driver_handle)
 
-        parsed_settings = daq.setup(**user_settings)
-        acquisition_generator = daq.acquire(**parsed_settings)
+parsed_settings = daq.setup(**user_settings)
+acquisition_generator = daq.acquire(**parsed_settings)
 
-        for data_buffer in acquisition_generator:
-            do_something_with(data_buffer)
-    \end{py}
+for data_buffer in acquisition_generator:
+    do_something_with(data_buffer)
+    \end{minted}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
         A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
@@ -156,7 +156,7 @@ Leveraging the \code{qutil.domains} module, more complex constraints such as sam
 can be specified.
 
 \begin{listing}
-    \begin{py}
+    \begin{minted}{python}
 # daq/mydaq.py
 import dataclasses
 from qutil.domains import DiscreteInterval
@@ -169,23 +169,23 @@ class MyDAQ(DAQ):
 
     @property
     def DAQSettings(self) -> type[DAQSettings]:
-	class MyDAQSettings(DAQSettings):
-	    ALLOWED_NPERSEG = DiscreteInterval(1, 2048)
-	return MyDAQSettings
+        class MyDAQSettings(DAQSettings):
+            ALLOWED_NPERSEG = DiscreteInterval(1, 2048)
+        return MyDAQSettings
 
     def setup(self, **settings) -> dict:
-	settings = self.DAQSettings(settings)
-	parsed_settings = settings.to_consistent_dict()
-	self.handle.configure(parsed_settings)
-	return parsed_settings
+        settings = self.DAQSettings(settings)
+        parsed_settings = settings.to_consistent_dict()
+        self.handle.configure(parsed_settings)
+        return parsed_settings
 
     def acquire(self, n_avg: int, *, **settings) -> Generator:
-	self.handle.arm(n_avg)
-	for _ in range(n_avg):
-	    self.handle.wait_for_trigger()
-	    yield self.handle.fetch()
-	return self.handle.metadata
-    \end{py}
+        self.handle.arm(n_avg)
+        for _ in range(n_avg):
+            self.handle.wait_for_trigger()
+            yield self.handle.fetch()
+        return self.handle.metadata
+    \end{minted}
     \caption[\code{DAQ} pseudocode]{
         Exemplary code for a \code{DAQ} implementation of some instrument with given driver class \code{DeviceHandle} in the package \code{mydriver}.
         The \code{MyDAQ} class is instantiated with a \code{DeviceHandle} instance.
@@ -210,10 +210,10 @@ or more complex ones such as applying calibrations.
 In particular, since the process of computing the \gls{psd} already involves Fourier transformation, the processing can also be performed in frequency space.
 
 \begin{marginlisting}
-    \begin{py}
+    \begin{minted}[fontsize=\footnotesize]{python}
 def comp_gain(x, gain=1.0, **_):
     return x / gain
-    \end{py}
+    \end{minted}
     \caption[Simple \code{procfn} example]{
         A simple \code{procfn}, which converts amplified data back to the level before amplification.
         More complex processing chains can concisely be defined with \code{qutil.functools.FunctionChain} that pipes the output of one function into the input of the next.
@@ -238,10 +238,10 @@ The latter are required in case the function modifies the frequencies.\sidenote{
 }
 A simple example for a processing function in Fourier space is shown in \cref{lst:speck:fourier_procfn}, which computes the \mbox{(anti-)}derivative of the data using the fact that
 \begin{marginlisting}
-    \begin{py}
-        def derivative(xf, f, n=0, **_):
-            return xf / (2j * pi * f)**n
-    \end{py}
+    \begin{minted}[fontsize=\footnotesize]{python}
+def derivative(xf, f, n=0, **_):
+    return xf / (2j * pi * f)**n
+    \end{minted}
     \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
 \end{marginlisting}
@@ -271,16 +271,16 @@ Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{
 Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:serial}, which produces the plot shown in \cref{fig:speck:software:workflow:baseline}.
 
 \begin{listing}[htpb]
-    \begin{py}
+    \begin{minted}{python}
 from python_spectrometer import Spectrometer, daq
 from qutil.functools import scaled
 
 mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
 spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
-		     processed_unit='μV')
+             processed_unit='μV')
 
 spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
-    \end{py}
+    \end{minted}
     \caption[\pyspeck serial workflow]{
         Setup and serial workflow using the \pyspeck package.
         \code{session} and \code{device} are \gls{api} objects of the \code{zhinst.toolkit} driver package.
@@ -305,12 +305,12 @@ He then proceeds by tweaking things on his setup, testing out different paramete
 Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
 
 \begin{listing}[htpb]
-    \begin{py}
+    \begin{minted}{python}
 settings = {'f_min': 1e1, 'f_max': 1e5, 'daq': 'connected'}
 spect.take('connected', **settings)
 spect.take('lifted cable', cable='lifted', **settings)
 spect.take('jumped', **settings)
-    \end{py}
+    \end{minted}
     \caption[]{
         Code to acquire additional spectra.
         Arbitrary key-value pairs can be passed to the \code{take()} method, which are stored as metadata if they do not apply to any functions downstream in the data processing chain.
@@ -371,11 +371,11 @@ Therefore, he rescales the spectra in terms of their relative powers expressed i
     \end{align*}
 }
 by applying the following settings, which produces the plot shown in \cref{fig:speck:software:workflow:db}:
-\begin{py}
+\begin{minted}{python}
 spect.plot_dB_scale = True
 spect.plot_amplitude = False
 spect.plot_density = False
-\end{py}
+\end{minted}
 \begin{figure}[htpb]
     \centering
     \includegraphics{pdf/spectrometer/workflow_db}
@@ -403,9 +403,9 @@ Additionally displaying the data in \unit{\decibel} then gives insight into rela
 Bob carries on with his enterprise and continues to acquire spectra until, finally, he finds the source of his noise!
 Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
 He simply calls
-\begin{py}
+\begin{minted}{python}
 spect.hide(*range(2, 10))
-\end{py}
+\end{minted}
 to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow:success}.
 
 \begin{figure}
@@ -421,9 +421,9 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
 \end{figure}
 
 Finally, happy with the results, Bob serializes the state of the spectrometer to disk, allowing him to pick up where he left off at a later point in time:
-\begin{py}
+\begin{minted}{python}
 spect.serialize_to_disk('2032-12-24_noise_hunting')
-\end{py}
+\end{minted}
 The next week, Bob is asked by his team about his progress on debugging the noise in their setup.
 Even though he is working from home that day and does not have access to the lab computer, Bob simply uses his laptop computer and pulls up the \code{Spectrometer} session stored on the server, allowing them to interactively discuss the spectra:
 % Important: Spectrometer(
@@ -431,10 +431,11 @@ Even though he is working from home that day and does not have access to the lab
 %)
 % breaks something! (tl '25)
 % Adding a code comment here also breaks something (tl '22)
-\begin{py}
+\begin{minted}{python}
 file = '2032-12-24_noise_hunting'
+# Read-only instance because no DAQ attached
 spect = Spectrometer.recall_from_disk(savepath / file)
-\end{py}
+\end{minted}
 This opens up the plot shown in \cref{fig:speck:software:workflow:success} again.
 While they cannot acquire new spectra in this state,\sidenote{
     They could of course always attach a \code{DAQ} instance to the spectrometer and continue as they were.
@@ -462,9 +463,9 @@ Instead of saving the data on disk and managing plotting from \pyspeck, however,
 }
 A \code{live_view.IncrementalLiveView2D} object then retrieves the data from the queue and handles plotting in a GUI event loop.
 To start a spectroscopy session with the same parameters as in \cref{subsec:speck:software:features:serial} with a given \code{Spectrometer} object (\cf \cref{lst:speck:workflow:serial}), we would call
-\begin{py}
+\begin{minted}{python}
 view = spect.live_view(f_min=1e1, f_max=1e5, in_process=True)
-\end{py}
+\end{minted}
 which would open a figure window such as that shown in \cref{fig:speck:software:live_view}.
 Similar to \code{take()}, the data acquisition parameters are passed to \code{live_view()} as keyword arguments.\sidenote{
     The difference is, of course, that we do not need to specify a comment since no data is retained.

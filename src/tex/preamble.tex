@@ -84,19 +84,16 @@
 \setminted[python]{
     fontfamily=tt,% tt,courier,helvetica
     style=gruvbox-light,%gruvbox-light,github-light,default
-}
-
-\newminted[py]{python}{
     autogobble=true,%
     frame=leftline,% none | leftline | topline | bottomline | lines | single
     fontsize=\small,% normalsize, small, footnotesize
     linenos=false,
     firstnumber=last,% line number counts incrementally
 }
-
-\newmintinline[pyinline]{python}{
+\setmintedinline[python]{
     breaklines,%
     breakafter=._,%
+    fontsize=\normalsize,%
 }
 
 \usepackage{lettrine}

@@ -17,28 +17,32 @@ In a client-server architecture, which is inherently asynchronous, such as Zuric
 But of course the strength of the \pyspeck package stems from its capacity to be utilized in conjunction with any hardware instrument.
 
 \begin{marginlisting}
-    \begin{py}
-        # daq/tee.py
-        import dataclasses
-        import threading
-        import multiprocessing as mp
+    \begin{minted}[
+        fontsize=\footnotesize,%
+        breaklines,%
+        breakafter=.,%
+    ]{python}
+# daq/tee.py
+import dataclasses
+import threading
+import multiprocessing as mp
 
-        from .base import DAQ
+from .base import DAQ
 
-        @dataclasses.dataclass
-        class TeeDAQ(DAQ):
-            settings: mp.managers.DictProxy
-            data_queue: mp.JoinableQueue
-            stop_event: threading.Event
+@dataclasses.dataclass
+class TeeDAQ(DAQ):
+    settings: mp.managers.DictProxy
+    data_queue: mp.JoinableQueue
+    stop_event: threading.Event
 
-            def setup(self, **_):
-                settings = self.DAQSettings(self.settings)
-                return settings.to_consistent_dict()
+    def setup(self, **_):
+        settings = self.DAQSettings(self.settings)
+        return settings.to_consistent_dict()
 
-            def acquire(self, **_):
-                while not self.stop_event.is_set():
-                    yield self.data_queue.get(block=True)
-    \end{py}
+    def acquire(self, **_):
+        while not self.stop_event.is_set():
+            yield self.data_queue.get(block=True)
+    \end{minted}
     \caption[\code{TeeDAQ} template]{
         Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
         The \code{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
@@ -54,14 +58,14 @@ Because the live view mode runs in the background, the external measurement fram
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
 Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{data_queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
-\begin{py}
-    spect = Spectrometer(TeeDAQ(...))
-    view = spect.live_view()
-    ...
-    data = measure(fs, n_pts)
-    spect.daq.settings.update(fs=fs, n_pts=n_pts)
-    spect.daq.data_queue.put(data)
-\end{py}
+\begin{minted}{python}
+spect = Spectrometer(TeeDAQ(...))
+view = spect.live_view()
+...
+data = measure(fs, n_pts)
+spect.daq.settings.update(fs=fs, n_pts=n_pts)
+spect.daq.data_queue.put(data)
+\end{minted}
 Measurement frameworks integrating with this interface could thus provide experimentalists live feedback on current noise levels with negligible overhead and minimal code adaptation.
 
 Finally, it might be useful to not only allow estimating \glspl{psd} but also \emph{cross-spectra}.
