@@ -5,7 +5,7 @@
 \paragraph{Outlook.\label{par:speck:outlook}}
 There are several possible avenues for future development of the \pyspeck package.
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
-Modular devices such as those offered by \href{https://www.qblox.com/research}{QBLOX} and \href{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
+Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
 
 Next, incorporating noise spectroscopy into the standard measurement workflow of quantum device experiments would allow experimentalists to quickly gauge noise levels as they are performing measurements.
@@ -13,7 +13,7 @@ If for some reason the noise changed\sidenote{
     As it happens often, unfortunately.
 }
 the experimentalist could quickly obtain insight into the noise by analyzing the spectrum.
-In a client-server architecture, which is inherently asynchronous, such as Zurich Instrument's \href{https://www.zhinst.com/ch/en/instruments/labone/labone-instrument-control-software}{LabOne} software, this is already possible using the web interface.
+In a client-server architecture, which is inherently asynchronous, such as Zurich Instrument's \sidehref{https://www.zhinst.com/ch/en/instruments/labone/labone-instrument-control-software}{LabOne} software, this is already possible using the web interface.
 But of course the strength of the \pyspeck package stems from its capacity to be utilized in conjunction with any hardware instrument.
 
 \begin{marginlisting}
@@ -59,23 +59,83 @@ The \code{setup()} method ignores the input parameters and instead obtains the c
 Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{data_queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
 \begin{minted}{python}
-spect = Spectrometer(TeeDAQ(...))
+daq = TeeDAQ(...)
+spect = Spectrometer(daq)
 view = spect.live_view()
 ...
 data = measure(fs, n_pts)
-spect.daq.settings.update(fs=fs, n_pts=n_pts)
-spect.daq.data_queue.put(data)
+daq.settings.update(fs=fs, n_pts=n_pts)
+daq.data_queue.put(data)
 \end{minted}
 Measurement frameworks integrating with this interface could thus provide experimentalists live feedback on current noise levels with negligible overhead and minimal code adaptation.
 
-Finally, it might be useful to not only allow estimating \glspl{psd} but also \emph{cross-spectra}.
-The cross-spectrum is the Fourier transform of not the auto-correlation but the cross-correlation function $C(\tau)$ (\cf \cref{eq:speck:autocorrelation}) between two random processes.
-Take a set of processes $\{x_1(t), x_2(t), \dotsc, x_n(t)\}$ that correspond to noise measured at different locations in a sample.
+Finally, it might be useful to not only allow estimating \glspl{psd} but also \glspl{csd} or \emph{cross-spectra}.
+The cross-spectrum\sidenote{
+    Again, we use the two terms interchangably unless otherwise indicated, see \cref{sidenote:speck:theory_vocabulary} in \cref{ch:speck:theory}.
+}
+is the Fourier transform of not the auto-correlation but the cross-correlation function $C(\tau)$ (\cf \cref{eq:speck:autocorrelation}) between two random processes.
+Take a set of processes $\{x_1(t), \allowbreak x_2(t), \allowbreak \dotsc, \allowbreak x_n(t)\}$ that correspond to noise measured at different locations in a sample.
 The cross-correlation function between variables $x_i$ and $x_j$ is then given by\sidenote{
     Again assuming wide-sense stationary processes.
 }
 \begin{align}\label{eq:speck:conclusion:crosscorrelation}
     C_{ij}(\tau) = \expval{x_i(t)\conjugate x_j(t + \tau)}.
 \end{align}
-This function (and its Fourier pair the cross-spectrum) quantifies the degree of correlation between noise at site $i$ and noise at site $j$.
-It is straightforward to see that for quantum processors, for example, these types of correlations could significantly impact the operation, and error correction in particular~\cite{Aharonov2006,Nickerson2019,Clader2021}.
+This function (and its Fourier pair the cross-spectrum $S_{ij}(\omega)$) quantifies the degree of correlation between noise at site $i$ and noise at site $j$.
+Unlike the \emph{auto}-spectrum (or self-spectrum), the cross-spectrum is always a complex quantity, even for real $x_i(t)$.
+It is not hard to see that for quantum processors, for example, these kinds of correlations could have significant impact on operation, and on error correction in particular~\cite{Aharonov2006,Nickerson2019,Clader2021}.
+To incorporate cross-spectra in the \pyspeck package, only small changes should be necessary.
+
+First, the data acquisition logic would need to be adapted.
+Two possible routes suggest themselves here; first, specialized \code{DAQ} classes could be implemented that, in place of yielding one batch of time series data, yield two batches each time they are queried.
+This approach first of all requires instruments with multiple channels,\sidenote{
+    If one sticks to single \code{DAQ} instances managing single instruments.
+}
+which is not necessarily given.
+Furthermore, it would incur additional coding efforts by having to re-implement each \code{DAQ} class for cross-spectra.
+On the other hand, it would arguably make synchronization between channels easier to achieve.
+
+A less involved path would adapt the \code{Spectrometer} class to work with multiple \code{DAQ}s.
+This would not involve additional driver work\sidenote{
+    Except possibly ensuring thread safety and timing synchronization if multiple \code{DAQ} objects communicate with the same physical instrument.
+}
+and allow the \code{Spectrometer} object to ensure synchronization between the different \code{DAQ}s.
+The internal workflow shown in \cref{lst:speck:daq:workflow} would then need to be slightly adapted to the code shown in \cref{lst:speck:conclusion:cross_workflow}.
+The downside of this approach is that synchronization of different instruments or channels would need to be taken care of externally.
+
+\begin{listing}[htpb]
+    \begin{minted}{python}
+daq_1 = MyDAQ(driver_handle, channel=1)
+# Or MyOtherDAQ(driver_handle_2) if another instrument
+daq_2 = MyDAQ(driver_handle, channel=2)
+daqs = (daq_1, daq_2)
+
+parsed_settings = [daq.setup(**user_settings) for daq in daqs]
+assert all_equal(parsed_settings), "DAQ settings do not match"
+
+acquisition_generators = [daq.acquire(**parsed_settings[0])
+			  for daq in daqs]
+for data_buffers in zip(*acquisition_generators):
+    estimate_csd(*data_buffers)
+    \end{minted}
+    \caption[Proposed \code{DAQ} workflow for cross-spectra]{
+        Proposed \code{DAQ} workflow for estimating cross-spectra.
+        Each hardware channel (same or different instruments) is assigned to a \code{DAQ} object.
+        After instrument configuration, it is asserted that the parameters match.
+        Finally, data is fetched from both channels and fed into a \gls{csd} estimator.
+        Note that triggering would need to be implemented externally.
+    }
+    \label{lst:speck:conclusion:cross_workflow}
+\end{listing}
+
+Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\sidecite{CSDScipy} for \gls{csd} estimation\sidenote{
+    In practice, working with the normalized \gls{csd}, or correlation coefficient~\cite{Rojas-Arias2023,Yoneda2023}
+    \begin{align}
+        r_{ij}(\omega) = \frac{S_{ij}(\omega)}{\sqrt{S_i(\omega)S_j(\omega)}}
+    \end{align}
+    with $S_i(\omega)$ the \gls{psd} of process $x_i$ would likely be more favorable.
+}
+and make the plotting conform to complex data.\sidenote{
+    It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
+}
+\todo{improve this part.}

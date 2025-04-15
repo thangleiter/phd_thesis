@@ -128,11 +128,11 @@ parsed_settings = daq.setup(**user_settings)
 acquisition_generator = daq.acquire(**parsed_settings)
 
 for data_buffer in acquisition_generator:
-    do_something_with(data_buffer)
+    estimate_psd(data_buffer)
     \end{minted}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
-        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \qcodes \code{Instrument}).
+        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \href{https://github.com/microsoft/qcodes}{QCoDeS} \code{Instrument}).
         The instrument is configured with the given \code{user_settings}.
         Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
         The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
