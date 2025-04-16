@@ -110,7 +110,37 @@
 %\setlength{\extrarowheight}{3pt} % increase table row height
 \usepackage{collcell} % for verb columns
 
+\usepackage{fontawesome5}
+
 %! begin preamble = tikz
+\usepackage[edges]{forest}
+\forestset{
+  dir tree/.style={
+    for tree={
+      parent anchor=south west,
+      child anchor=west,
+      anchor=mid west,
+      inner ysep=0pt,
+      grow'=0,
+      align=left,
+      s sep=1ex,
+      edge path={
+        \noexpand\path [draw, \forestoption{edge}] (!u.parent anchor) ++(0.75em,0) |- (.child anchor)\forestoption{edge label};
+      },
+      font=\footnotesize\ttfamily,
+      if n children=0{}{
+        delay={
+          prepend={[,phantom, calign with current]}
+        }
+      },
+      fit=band,
+      before computing xy={
+        l=1.5em
+      }
+    },
+  }
+}
+
 %\usepackage{pgfplots}
 %\pgfplotsset{compat=1.18}
 
