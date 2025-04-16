@@ -9,6 +9,9 @@ There are several possible avenues for future development of the \pyspeck packag
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
+Another valuable addition would be to add support for generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
+\qumada is a \qcodes-based measurement framework that provides a unified interface to instruments to, in a similar spirit to \pyspeck's \code{DAQ} interface, abstract away internals of individual instruments and provide users with a standardized way to interact with them.
+This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
 Next, incorporating noise spectroscopy into the standard measurement workflow of quantum device experiments would allow experimentalists to quickly gauge noise levels as they are performing measurements.
 If for some reason the noise changed\sidenote{
@@ -75,7 +78,7 @@ Finally, it might be useful to not only allow estimating \glspl{psd} but also \g
 The cross-spectrum\sidenote{
     Again, we use the two terms interchangably unless otherwise indicated, see \cref{sidenote:speck:theory_vocabulary} in \cref{ch:speck:theory}.
 }
-is the Fourier transform of not the auto-correlation but the cross-correlation function $C(\tau)$ (\cf \cref{eq:speck:autocorrelation}) between two random processes.
+is the Fourier transform of not the auto-correlation but the cross-correlation function $C(\tau)$ (\cref{eq:speck:autocorrelation}) between two random processes.
 Take a set of processes $\{x_1(t), \allowbreak x_2(t), \allowbreak \dotsc, \allowbreak x_n(t)\}$ that correspond to noise measured at different locations in a sample.
 The cross-correlation function between variables $x_i$ and $x_j$ is then given by\sidenote{
     Again assuming wide-sense stationary processes.
