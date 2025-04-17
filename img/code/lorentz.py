@@ -1,18 +1,21 @@
 # %%
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numba as nb
 import numpy as np
 import scipy as sc
 from matplotlib import colors
 from matplotlib.ticker import FuncFormatter
 
 from lindblad_mc_tools.noise import FFTSpectralSampler
+from lindblad_mc_tools.noise.real_space import MultithreadedRNG
 from qopt.noise import fast_colored_noise
 from qutil import functools
 
 from common import PATH
 
 mpl.use('pgf')
+# mpl.style.use('margin.mplstyle')
 # %%
 
 
@@ -32,19 +35,53 @@ def noise(σ, τ_c, N, method):
             return FFTSpectralSampler(
                 (N,), functools.partial(psd, σ=σ, τ_c=τ_c), dt=np.full(L, 1), seed=SEED
             ).values.squeeze()
+        case 'bartosch':
+            Z = np.empty((N, L))
+            mrng = MultithreadedRNG(SEED)
+            mrng.fill(Z)
+            return bartosch_2001_I_nb_mt(Z, 1, σ, τ_c).squeeze()
+
+
+@nb.njit
+def bartosch_2001_I_nb_st(rng, t, σ=1, τ=1):
+    ρ = np.exp(-(t[1] - t[0])/τ)
+    ξ = np.sqrt(1 - ρ ** 2) * σ
+
+    N = len(t)
+    Z = rng.standard_normal(N)
+    X = np.empty_like(Z)
+    X[0] = σ * Z[0]
+    for n in range(1, N):
+        X[n] = ρ * X[n-1] + ξ * Z[n]
+
+    return X
+
+
+@nb.njit(parallel=True)
+def bartosch_2001_I_nb_mt(Z, dt, σ=1, τ=1):
+    ρ = np.exp(-dt/τ)
+    ξ = np.sqrt(1 - ρ ** 2) * σ
+
+    X = np.empty_like(Z)
+    X[:, 0] = σ * Z[:, 0]
+    for m in nb.prange(Z.shape[0]):
+        for n in range(1, Z.shape[1]):
+            X[m, n] = ρ * X[m, n-1] + ξ * Z[m, n]
+
+    return X
 
 
 # %%
 L = 1000
 SEED = 1
+rng = np.random.default_rng(SEED)
 np.random.seed(SEED)
 exp_formatter = FuncFormatter(lambda x, pos: f'$10^{{{int(np.log10(x))}}}$')
 
-# %% PSDs
 τ_cs = np.array([1e-2, 1, 1e2])
 σs = .5 * τ_cs ** 0.25
+# %% PSDs
 
-# usetex only for non-pgf backend
 with mpl.style.context(['./margin.mplstyle'], after_reset=True):
     fig, ax = plt.subplots(layout='constrained')
     for σ, τ_c in zip(σs, τ_cs):
@@ -66,6 +103,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
     # ax.legend()
 
     fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psd.pdf', backend='pgf')
+
 # %% Correlators
 alpha = 0.5
 
