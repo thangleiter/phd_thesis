@@ -29,6 +29,112 @@
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
 
+# Zotero
+## Better BibTeX
+- Add the following javascript to the `postscript` field:
+  <details><summary>postscript code</summary>
+
+  ```js
+  /* 
+  Thanks chatty:
+  https://genai.rwth-aachen.de/app/conversations/6800f383ef384a984672ee4a
+  */
+  /**
+   * Process text to protect math mode and backslashed LaTeX commands.
+   * - Math mode fragments ($...$) are wrapped in <script>{…}</script>
+   * - All backslashed LaTeX commands (with an optional argument) are also wrapped,
+   *   while avoiding nesting over already-protected parts.
+   * - For \texttt commands, underscores in their argument are escaped.
+   *
+   * @param {string} text - The input text.
+   * @returns {string} - The processed (protected) text.
+   */
+  function protectLatex(text) {
+    // 1. Protect math mode fragments
+    text = text.replace(/(\$.*?\$)/g, '<script>{$1}</script>');
+
+    // 2. Protect LaTeX commands, but skip any parts that are already protected.
+    text = protectLatexCommandsAvoidNesting(text);
+
+    return text;
+  }
+
+  /**
+   * Processes the text so that any region that is not already wrapped in
+   * a <script>{…}</script> block gets its LaTeX commands protected.
+   *
+   * @param {string} input - The input text.
+   * @returns {string} - The text with unprotected regions processed.
+   */
+  function protectLatexCommandsAvoidNesting(input) {
+    let output = "";
+    let pos = 0;
+    const openTag = "<script>{";
+    const closeTag = "</script>";
+
+    while (pos < input.length) {
+      // Find the next already protected block
+      let nextIdx = input.indexOf(openTag, pos);
+      if (nextIdx === -1) {
+        // Process remainder
+        output += protectLatexCommandsInSegment(input.substring(pos));
+        break;
+      }
+      // Process the text segment that is not yet protected.
+      output += protectLatexCommandsInSegment(input.substring(pos, nextIdx));
+      // Then, copy the already protected block unmodified.
+      let closeIdx = input.indexOf(closeTag, nextIdx);
+      if (closeIdx === -1) {
+        // If there's no closing tag (should not happen), append the rest.
+        output += input.substring(nextIdx);
+        break;
+      }
+      output += input.substring(nextIdx, closeIdx + closeTag.length);
+      pos = closeIdx + closeTag.length;
+    }
+    return output;
+  }
+
+  /**
+   * Processes a text segment to wrap LaTeX commands in <script>{…}</script>.
+   * This function uses a regex that looks for a backslash command (one or more word characters)
+   * optionally followed by a braced argument. For \texttt commands, underscores in the argument are escaped.
+   *
+   * Note: This simplified regex does not handle nested braces.
+   *
+   * @param {string} segment - The input text segment.
+   * @returns {string} - The processed segment.
+   */
+  function protectLatexCommandsInSegment(segment) {
+    return segment.replace(/(\\\w+)(\{[^{}]*\})?/g, function(match, command, arg) {
+      let fullCommand = command;
+      if(arg) {
+        // For \texttt commands, escape underscores in the argument.
+        if (command === '\\texttt') {
+          arg = arg.replace(/_/g, '\\_');
+        }
+        fullCommand += arg;
+      }
+      return '<script>{' + fullCommand + '}</script>';
+    });
+  }
+
+  // Example usage in your hook:
+  if (Translator.BetterTeX && tex.has.title) {
+    let title = zotero.title;
+    title = protectLatex(title);
+    tex.add({ name: 'title', value: title });
+  }
+  ```
+  
+  </details>
+   
+  This does a couple of things. 
+  - First, it protects `$`-delimited math mode (see [here](https://retorque.re/zotero-better-bibtex/exporting/scripting/#detect-and-protect-latex-math-formulas)) in `title` fields.
+  - Next, it protects LaTeX macros (`\texttt{}` for example) in `title` fields, but takes care to not nest `<script>` blocks from previous math mode protections.
+  - Finally, it replaces `_` underscores.
+- Alternatively, import BBT settings from `lib/bbt_settings.json`.
+
 # XeTeX
  
 ## `luaotfload-tool`
