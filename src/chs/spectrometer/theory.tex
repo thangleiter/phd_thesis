@@ -1,9 +1,42 @@
 % mainfile: ../../main.src.tex
 \chapter{Theory of spectral noise estimation}\label{ch:speck:theory}
-\mylettrine{T}{here} exists a multitude of methods for estimating noise properties of a classical signal $x(t)$.\sidenote{
+\mylettrine{T}{here} exist various methods for estimating the properties of noise in a classical signal $x(t)$.\sidenote{
     We discuss only classical noise here, meaning $x(t)$ commutes with itself at all times. For descriptions of and spectroscopy protocols for quantum noise refer to \citerr{Clerk2010}{Paz-Silva2017}, for example.
 }
 \todo{lay out some others}
+A simple metric quantifying the average noise amplitude of the signal observed from time $t=0$ to $t=T$ is the \gls{rms}~\cite{RMSOxford},
+\begin{align}\label{eq:speck:rms:timedomain}
+    \rms_x = \sqrt{\frac{1}{T}\int_{0}^{T}\dd{t}x(t)^2}.
+\end{align}
+While this already tells us \emph{something} about the noise, it is evident that a single number does not provide many clues if we were to attempt to mitigate the noise or say something qualitative about it beyond \enquote{small} and \enquote{large}.
+In cases such as these, physics has often turned to the \emph{spectral} representation of the function of interest.
+Knowing the frequency content of a function gives access to a wealth of information about the underlying contributing processes.
+But how can we learn how a system behaves as a function of frequency?
+
+\begin{marginfigure}[-2.5cm]
+    \centering
+    \input{img/tikz/lockin_dut}
+    \caption{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
+    \label{fig:speck:theory:lockin_dut}
+\end{marginfigure}
+
+Consider an electrical black box (some \gls{dut}) with two leads connected to a \gls{lia} as shown in \cref{fig:speck:theory:lockin_dut}.
+Assuming the \gls{dut} is conducting, we could simply measure the conductance $G(t) = \flatfrac{I(t)}{V(t)}$ through the device for some time $T$ with a given lock-in modulation frequency $f_i$, subtract the constant offset\sidenote{
+    The constant part $G_0 = G(t) - \delta G(t)$ of course also holds some information about the system, for example about its bandwidth.
+}
+and calculate the \gls{rms} using \cref{eq:speck:rms:timedomain}.
+Repeating this procedure for various different modulation frequencies \set{f}{i}, we would collect a set of \gls{rms}-values that we could assign to the modulation frequencies at which they were measured and thus sample the noise amplitude spectrum of the conductance, $S_G(f_i)$.\sidenote{
+    See \cref{subsec:speck:software:features:serial} for a discussion on how the \gls{rms} at a certain frequency relates to other quantities discussed in this part.
+}
+This method has the advantage that we can choose the frequencies at which the spectrum should be sampled---in particular they do not have to be evenly spaced.
+However, it has two significant shortcomings.
+First, it is very inefficient and therefore time-consuming.
+For $N$ frequency sample points, it takes a total time of $NT$ to acquire all data, where $T$ needs to be chosen such that the variance of $\rms_G$ is sufficiently small.
+Second, and crucially, it is not always possible to excite the system at a certain frequency and measure its response.
+For example, it is generally considered hard\sidenote{
+    And also unpopular with colleagues.
+}
+to -- deliberately -- excite vibrations of a specific frequency in a cryostat.
 
 If the noisy process $x(t)$ has Gaussian statistics, meaning that the value at a given point in time follows a normal distribution with some mean $\mu$ and variance $\sigma^2$ over multiple realizations of the process, it can be fully described by the \gls{psd} $S(\omega)$.\sidenote{
     \label{sidenote:speck:theory_vocabulary}
