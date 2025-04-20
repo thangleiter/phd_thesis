@@ -1,0 +1,17 @@
+\begin{circuitikz}[every node/.style={font=\sffamily\small}]
+    % Draw the lock-in amplifier block
+%    \node[draw, minimum width=1cm, minimum height=0.5cm, align=center] (lockin) at (0,1) {\acrshort{lia}};
+    \node[draw, minimum width=1cm, minimum height=0.5cm, align=center] (lockin) at (-1,0) {\acrshort{lia}};
+
+    % Draw the DUT (device under test)
+%    \node[draw, minimum width=1cm, minimum height=0.5cm, align=center] (dut) at (0,-1) {\acrshort{dut}};
+    \node[draw, minimum width=1cm, minimum height=0.5cm, align=center] (dut) at (1,0) {\acrshort{dut}};
+
+    % Connection: Lock-In output --> DUT input
+%    \draw[->, thick] (lockin.south west) to[bend right=45] node[midway, sloped, below] {$V(t)$} (dut.north west);
+    \draw[->, thick] (lockin.north) to[bend left=60] node[midway, sloped, above] {$V(t)$} (dut.north);
+
+    % Connection: DUT output --> Lock-In input
+%    \draw[->, thick] (dut.north east) to[bend right=45] node[midway, sloped, below] {$I(t)$} (dut.north east |- lockin.south east);
+    \draw[->, thick] (dut.south) to[bend left=60] node[midway, sloped, below] {$I(t)$} (lockin.south);
+\end{circuitikz}
