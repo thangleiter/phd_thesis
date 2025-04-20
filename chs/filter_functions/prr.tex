@@ -2,7 +2,6 @@
 %           INTRODUCTION SECTION
 % ==================================================
 \chapter{Introduction}\label{ch:ff:introduction}
-$\gamma, \Gamma$
 In the circuit model of quantum computing, computations are driven by applying time-local quantum gates.
 Any algorithm can be compiled using sequences of one- and two-qubit gates~\cite{DiVincenzo1995}.
 Ideal, error-free gates are represented by unitary transformations, so that simulating the action of an algorithm on an initial state of a quantum computer amounts to simple matrix multiplication.
@@ -19,7 +18,7 @@ To capture experimentally relevant effects important to understand the capabilit
 For example, one may expect the fidelity requirements for quantum error correction to be more stringent for correlated noise as errors of different gates can interfere constructively~\cite{Ng2009}.
 On the other hand, it might also be possible to use correlation effects to one's benefit, attenuating decoherence by cleverly constructing the gate sequences in algorithms.
 
-As experimental platforms begin to approach fidelity limits set by employing primitive pulse schemes~\cite{Veldhorst2014,Debnath2016,Yoneda2018} and detailed knowledge about noise sources and spectra in solid-state systems becomes available~\cite{Dial2013,Quintana2017,Malinowski2017}, control pulse optimizations tailored towards specific systems will be required to further push fidelities beyond the error correction threshold~\cite{Barends2014a,Blume-Kohout2017}.
+As experimental platforms begin to approach fidelity limits set by employing primitive pulse schemes~\cite{Veldhorst2014,Debnath2016,Yoneda2018} and detailed knowledge about noise sources and spectra in solid-state systems becomes available~\cite{Dial2013,Quintana2017,Malinowski2017}, control pulse optimizations tailored towards specific systems will be required to further push fidelities beyond the error correction threshold~\cite{Barends2014,Blume-Kohout2017}.
 This calls for flexible and generically applicable tools as a basis for the numerical optimization of pulses as well as the detailed analysis of the quantum processes they effect.
 In order to obtain a useful description also for gate operations that decouple from leading orders of noise, such as \glspl{dcg}~\cite{Khodjasteh2009}, beyond leading order results are required.
 
@@ -120,7 +119,7 @@ As most of our discussion later on in this article will focus on the approximati
 The difference is that in~\citer{Cerfontaine2021}, the Magnus expansion is applied to the solution of the Schr\"odinger equation, whereas the approach presented here is based on the theory of stochastic Liouville equations and the cumulant expansion~\cite{Kubo1962,Kubo1963}.
 In the filter function context, the cumulant expansion has been used to express the decay of the off-diagonal terms of a single-qubit density matrix in~\citer{Cywinski2008}.
 More recently,~\citeauthor{Paz-Silva2014} employed it in conjunction with the \gls{me} to obtain the matrix elements of the perturbed density operator after a time $T$ of noisy evolution.
-In~\citer{Yang2019}, the authors made use of the cumulant expansion and stochastic Liouville equations for the purpose of gate optimization.
+In~\citer{Yang2019a}, the authors made use of the cumulant expansion and stochastic Liouville equations for the purpose of gate optimization.
 Here, we combine different aspects of these works and make the connection to the quantum operations formalism by determining the noise-averaged error propagator in the Liouville representation.
 This form completely characterizes the error process and hence allows for detailed insight into the decoherence mechanisms of the operation.
 
@@ -337,7 +336,7 @@ For a perhaps more intuitive description employing exclusively conjugation by un
 
 \begin{figure}
     \centering
-    \input{img/circuits/gatesequence}
+    \input{img/tikz/circuits/gatesequence}
     \caption[Illustration of gate sequence]{
         Illustration of a sequence of $G$ gates.
         Individual gates with propagators $P_g$ start at time $t_{g-1}$ and complete at time $t_g$.
@@ -964,7 +963,7 @@ If we had additionally evaluated the frequency shifts \freqshifts we could have 
 \end{table}
 
 \section{Rabi driving}\label{sec:ff:examples:rabi_driving}
-A widely used method for qubit control is Rabi driving~\cite{Wallraff2004,Barends2014a,Soare2014,Veldhorst2014}.
+A widely used method for qubit control is Rabi driving~\cite{Wallraff2004,Barends2014,Soare2014,Veldhorst2014}.
 If we restrict ourselves to the resonant case for simplicity, the control Hamiltonian takes on the general form $\Hc = \flatfrac{\omega_0\sz}{2} + A\sin(\omega_0 t + \phi)\sx$.
 Here, $\omega_0$ is the resonance frequency, $A$ the drive amplitude corresponding to the Rabi frequency in the weak driving limit $\flatfrac{A}{\omega_\mr{0}}\ll 1$, $\Omega_\mr{R}\approx A$, and $\phi$ an adjustable phase giving control over the rotation axis in the $xy$-plane of the Bloch sphere.
 This Hamiltonian and associated decoherence mechanisms are well-studied in the weak driving regime, where the rotating wave approximation (RWA) can be applied to remove fast-oscillating terms in the rotating frame~\cite{Jaynes1963,Gerry2008}.
@@ -1050,7 +1049,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 \end{figure}
 
 \section{Randomized Benchmarking}\label{sec:ff:examples:randomized_benchmarking}
-\Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012}.
+\Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012a}.
 The basic protocol consists of constructing $K$ random sequences of varying length $m$ of gates drawn from the Clifford group
 \sidenote{The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
 This makes the Clifford gates a convenient choice for benchmarking.
@@ -1170,7 +1169,7 @@ Note that the circuit could be compressed in time by parallelizing some operatio
 \begin{figure*}[tbp]
     %\resizebox{\columnwidth}{!}{}
     \centering
-    \input{img/circuits/qft}
+    \input{img/tikz/circuits/qft}
     \includegraphics[width=\textwidth]{img/pdf/filter_functions/qft_filter_function_first_qubit_with_cumulative_fraction}
     \caption[\gls{qft} circuit and filter function]{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
