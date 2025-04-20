@@ -1,0 +1,53 @@
+\begin{tikzpicture}[
+    >=stealth,
+    auto,
+    box/.style={
+        draw,
+        rectangle,
+        rounded corners,
+        thick,
+        align=center,
+        inner sep=2mm,
+%        drop shadow,
+    },
+    float1/.style={box, fill=RWTHmagenta25, text=RWTHmagenta100},
+    float2/.style={box, fill=RWTHmagenta10, text=RWTHmagenta75},
+    int1/.style={box, fill=RWTHgreen25, text=RWTHgreen100},
+    int2/.style={box, fill=RWTHgreen10, text=RWTHgreen75},
+    int3/.style={box, fill=RWTHblack10, text=RWTHblack100},
+]
+
+    % Central node: nperseg
+    \node[int1] (nperseg) {$N$};
+
+    % Frequency branch: relative to nperseg, all nodes placed at the same x-coordinate.
+    \node[float1, above left=1cm of nperseg, anchor=center] (fs) {\fs};
+    \node[float1, below left=1cm of nperseg, anchor=center] (df) {\df};
+    \node[float2, left=of fs] (fmax) {\fmax};
+    \node[float2, left=of df] (fmin) {\fmin};
+
+    % Segmentation branch: relative to nperseg
+    \node[int2, right=of nperseg] (npts) {$L$};
+    \node[int2, above right=of npts, anchor=center] (noverlap) {$K$};
+    \node[int2, below right=of npts, anchor=center] (nseg) {$M$};
+
+    % Stand-alone node for n_avg
+    \node[int3, above=1cm of $(npts)!0.5!(nperseg)$] (navg) {$O$};
+
+    % Draw frequency branch arrows
+    \draw[->] (nperseg) -- (fs);
+    \draw[->] (nperseg) -- (df);
+    \draw[<->] (df) to[bend left=45] (fs);
+    \draw[->] (fs) to[bend right=45] (fmax);
+    \draw[->] (df) to[bend left=45] (fmin);
+    \draw[<->] (fs) -- (nperseg);
+    \draw[<->] (df) -- (nperseg);
+
+    % Draw segmentation branch arrows (nperseg, noverlap, and n_seg together inform n_pts)
+    \draw[<->] (nperseg) -- (npts);
+    \draw[->] (noverlap) -- (npts);
+    \draw[->] (nseg) -- (npts);
+
+    % n_avg remains independent (no arrows drawn)
+
+\end{tikzpicture}

@@ -15,7 +15,7 @@ But how can we learn how a system behaves as a function of frequency?
 
 \begin{marginfigure}[-2.5cm]
     \centering
-    \input{img/tikz/lockin_dut}
+    \input{img/tikz/spectrometer/lockin_dut}
     \caption{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
     \label{fig:speck:theory:lockin_dut}
 \end{marginfigure}
@@ -258,29 +258,35 @@ The overlap naturally depends on the choice of window; a typical value for the H
         Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
         A finite overlap $K$ between adjacent windows (gray) ensures efficient sample use.
     }
-    \label{fig:welch}
+    \label{fig:speck:welch}
 \end{figure}
 
-\Cref{fig:welch} conceptually illustrates Welch's method for a trace of \oneoverf noise with $L = 300$ samples in total.
+\Cref{fig:speck:welch} conceptually illustrates Welch's method for a trace of \oneoverf noise with $L = 300$ samples in total.
 Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ segments for a window length of $N=100$.
 The data in the second window is highlighted.
 
 \subsection{Parameters}\label{subsec:speck:theory:welch:parameters}
+We are now in a position to discuss how the various parameters of a time series relate to both to physical parameters of the resulting spectrum estimate and to each other.
+To this end, we will go through the typical procedure of acquiring a spectrum estimate using Welch's method chronologically.
+\todo{put discussion of properties here as well?}
+
 \begin{margintable}
     \centering
     \footnotesize
     \caption[Overview of spectrum estimation parameters]{
         Overview of spectrum estimation parameters.
-        The parameters can be assigned into three groups
+        The parameters can be assigned into four groups
         \begin{enumerate*}[
             before=\unskip{: }, itemjoin={{, }}, itemjoin*={{, and }}
         ]
-            \item \acrshort{daq} parameters configuring the data acquisition device
+            \item \acrshort{daq} parameters configuring the \acrlong{daq} device
             \item Welch parameters specifying the periodogram averaging
             \item Spectrum properties induced by the above
+            \item External parameters unrelated to the others
         \end{enumerate*}.
     }
-    \label{tab:parameters}
+    \label{tab:speck:theory:parameters}
+    \renewcommand{\arraystretch}{1.1}
     \begin{tabularx}{\marginparwidth}{ c l }
         \multicolumn{2}{l}{1. \acrshort{daq} parameters} \\
         \toprule
@@ -297,18 +303,32 @@ The data in the second window is highlighted.
         \toprule
         \fmin & Smallest resolvable frequency \\
         \fmax & Largest resolvable frequency \\
+        \multicolumn{2}{l}{4. Miscellaneous parameters} \\
+        \toprule
+        $O$ & Number of outer averages \\
     \end{tabularx}
 \end{margintable}
 
-\todo{put discussion of properties here as well?}
-We are now in a position to discuss how the various parameters of a time series relate to both to physical parameters of the resulting spectrum estimate and to each other.
-To this end, we will go through the typical procedure of acquiring a spectrum estimate using Welch's method chronologically.
-
 To acquire data using some form of (digital) \gls{daq}, one usually needs to specify two parameters first: the total number of samples to be acquired, $L$, and the sample rate, \fs.
-This results in a measurement of duration $T = L\Delta t$ where $\Delta t = \fs\inverse$ as previously mentioned.
+This results in a measurement of duration $T = L\dt$ where $\dt = \fs\inverse$ as previously mentioned.
 The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:speck:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
 Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
 In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote{
     Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
 }
-\todo{D(A)G for parameter interdependencies?}
+Finally, we can introduce a number of \emph{outer} averages $O$, that is, the number of data batches that are acquired.
+While not directly related to Welch's method, choosing $O > 1$ can, for instance, help achieve a certain variance if the number of samples per batch, $L$, is limited by the \acrlong{daq} hardware, or simply allow for updating the spectrum estimate as data is being acquired.
+\Cref{fig:speck:theory:parameters} shows the relationships of the various parameters among each other.
+In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependencies are implemented in software.
+
+\begin{figure}[htpb]
+    \centering
+    \input{img/tikz/spectrometer/daq_settings}
+    \caption{
+        Relationships of data acquisition parameters (\cf \cref{tab:speck:theory:parameters,tab:speck:software:parameters}, with arrows indicating dependencies.
+        $N$, \fs, and \df are the central quantities defining the estimated spectrum's properties.
+        From \fs and \df follow (bounds for) \fmax and \fmin.
+        From $N$, together with $K$ and $M$, follows $L$, the total number of samples per data batch.
+    }
+    \label{fig:speck:theory:parameters}
+\end{figure}
