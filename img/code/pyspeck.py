@@ -34,25 +34,27 @@ x = np.linspace(-5.5, 5.5, 1001)*2*np.pi/T
 xn = np.arange(-5, 6)*2*np.pi/T
 xm = np.arange(-4.5, 5.5)*2*np.pi/T
 
+colors = mpl.color_sequences['rwth'][1:]
+
 with plt.style.context('./margin.mplstyle', after_reset=True):
     for window in (rect, hann):
         fig, ax = plt.subplots(figsize=(MARGINWIDTH, 1.4))
 
-        ax.plot(x, window(x, T), color=RWTH_COLORS['magenta'])
+        ax.plot(x, window(x, T), color=colors[0])
         for xnn in xn:
             ax.vlines(xnn, *itertools.minmax(0, window(xnn, T).item()),
-                      color=RWTH_COLORS['green'] + (alpha,))
+                      color=mpl.colors.to_rgba(colors[1], alpha))
             ax.plot([xnn], window(xnn, T), 'o',
                     markersize=5,
-                    markeredgecolor=RWTH_COLORS['green'],
-                    markerfacecolor=RWTH_COLORS['green'] + (alpha,))
+                    markeredgecolor=colors[1],
+                    markerfacecolor=mpl.colors.to_rgba(colors[1], alpha))
         for xmm in xm:
             ax.vlines(xmm, *itertools.minmax(0, window(xmm, T).item()),
-                      color=RWTH_COLORS['orange'] + (alpha,))
+                      color=mpl.colors.to_rgba(colors[2], alpha))
             ax.plot([xmm], window(xmm, T), 'D',
                     markersize=4,
-                    markeredgecolor=RWTH_COLORS['orange'],
-                    markerfacecolor=RWTH_COLORS['orange'] + (alpha,))
+                    markeredgecolor=colors[2],
+                    markerfacecolor=mpl.colors.to_rgba(colors[2], alpha))
 
         ax.set_xlim(-12.5*np.pi, 12.5*np.pi)
         ax.set_xticks([-10 * np.pi / T, 10 * np.pi / T])
@@ -66,7 +68,7 @@ with plt.style.context('./margin.mplstyle', after_reset=True):
         if window is rect:
             ax.set_yticks([T])
             ax.set_yticklabels([r'$T$'])
-            ax.set_ylim(-0.25, 1.2*T)
+            ax.set_ylim(-0.3, 1.2*T)
             ax.xaxis.set_tick_params(pad=5, length=7.5)
             ax.yaxis.set_tick_params(length=7.5)
             ax.xaxis.set_label_coords(12.5*np.pi/T, .2*T, transform=ax.transData)
