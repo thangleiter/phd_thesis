@@ -19,6 +19,8 @@
 % LPPL (see included MANIFEST.md file)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{tex/predoc}
+
 \documentclass[
 	a4paper, % Page size
 	fontsize=10pt, % Base font size
@@ -140,7 +142,7 @@
 \setlength{\textheight}{230\hscale} % Manually adjust the height of the ToC pages
 
 % Turn on compatibility mode for the etoc package
-\etocstandarddisplaystyle % "toc display" as if etoc was not loaded
+\etocclasstocstyle % "toc display" as if etoc was not loaded
 \etocstandardlines % "toc lines as if etoc was not loaded
 
 \tableofcontents % Output the table of contents
