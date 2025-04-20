@@ -27,7 +27,7 @@ The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather
 
 \section{Package design and implementation}\label{sec:speck:software:design}
 \begin{marginfigure}[-3.75cm]
-    \input{img/tikz/speck_tree}
+    \input{img/tikz/spectrometer/speck_tree}
     \caption[Source tree structure of the \pyspeck package.]{
         Source tree structure of the \pyspeck package.
         Driver wrappers are placed in the \code{daq} subpackage.
@@ -54,18 +54,19 @@ This class is used in the background to validate data acquisition settings both 
     \caption[Overview of spectrum estimation parameters]{
         Variable names used in \cref{ch:speck:theory} and their corresponding parameter names as used in \pyspeck and \code{scipy.signal.welch()}~\cite{WelchScipy}.
     }
-    \label{tab:software:parameters}
+    \label{tab:speck:software:parameters}
     \begin{tabular}{ c C }
         \toprule
         Variable & Parameter \\
         \midrule
         $L$ & n_pts \\
-        \fs & fs \\
-        $K$ & noverlap \\
         $N$ & nperseg \\
+        $K$ & noverlap \\
         $M$ & n_seg \\
-        \fmin & f_min \\
+        $O$ & n_avg \\
+        \fs & fs \\
         \fmax & f_max \\
+        \fmin & f_min \\
         \bottomrule
     \end{tabular}
 \end{margintable}
@@ -80,11 +81,11 @@ From her noisy data she could already estimate the frequency of the most harrowi
 But because she is lazy,\sidenote{
     Physicists generally are.
 }
-she does not want to do the mental gymnastics to convert \fmin to the parameter that her \gls{daq} device understands, $L$ (see \cref{tab:software:parameters}), especially considering that $L$ depends on the number of Welch averages and the overlap.
+she does not want to do the mental gymnastics to convert \fmin to the parameter that her \gls{daq} device understands, $L$ (see \cref{tab:speck:software:parameters}), especially considering that $L$ depends on the number of Welch averages and the overlap.
 Furthermore, while she could just about do the conversion from \fmax to the other relevant \gls{daq} parameter, \fs, in her head, her device imposes hardware constraints on the allowed sample rates she can select!
 The \code{DAQSettings} class addresses these issues.
-It is instantiated with any subset of the parameters listed in \cref{tab:software:parameters}\sidenote{
-    \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:software:parameters}.
+It is instantiated with any subset of the parameters listed in \cref{tab:speck:software:parameters}\sidenote{
+    \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:speck:software:parameters}.
     However, automatic validation of parameter consistency is only performed for these special keys.
 }
 and attempts to resolve the parameter interdependencies lined out in \cref{subsec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
@@ -399,7 +400,7 @@ and the band power (\cref{eq:speck:psd:bandpower}) otherwise.
 
 The cumulative \gls{rms} plot already helps, but Bob would like a more quantitative comparison of relative spectral powers.
 Therefore, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote{
-    Recall that the decibel is defined by the ratio $L_P$ of two powers $P_1, P_2$ as~\cite{Pozar2005}
+    Recall that the decibel is defined by the ratio $L_P$ of two powers $P_1, P_2$ as~\cite{Pozar2012}
     \begin{align*}
         L_P = 10\log_{10}\left(\frac{P_1}{P_2}\right)\,\unit{\decibel}.
     \end{align*}
