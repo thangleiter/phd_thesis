@@ -5,17 +5,16 @@ import numba as nb
 import numpy as np
 import scipy as sc
 from matplotlib import colors
-from matplotlib.ticker import FuncFormatter
 
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
 from qopt.noise import fast_colored_noise
-from qutil import functools
+from qutil import functools, const, signal_processing as sp
 
-from common import PATH
+from common import PATH, MARGINWIDTH
 
 mpl.use('pgf')
-# mpl.style.use('margin.mplstyle')
+mpl.style.use('margin.mplstyle')
 # %%
 
 
@@ -27,19 +26,19 @@ def corr(τ, σ, τ_c):
     return σ ** 2 * np.exp(-abs(τ) / τ_c)
 
 
-def noise(σ, τ_c, N, method):
+def noise(σ, τ_c, N, method='lmt'):
     match method:
         case 'qopt':
-            return fast_colored_noise(functools.partial(psd, σ=σ, τ_c=τ_c), 1, L, (N,))
+            return fast_colored_noise(functools.partial(psd, σ=σ, τ_c=τ_c), Δt, L, (N,))
         case 'lmt':
             return FFTSpectralSampler(
-                (N,), functools.partial(psd, σ=σ, τ_c=τ_c), dt=np.full(L, 1), seed=SEED
+                (N,), functools.partial(psd, σ=σ, τ_c=τ_c), dt=np.full(L, Δt), seed=SEED,
             ).values.squeeze()
         case 'bartosch':
             Z = np.empty((N, L))
             mrng = MultithreadedRNG(SEED)
             mrng.fill(Z)
-            return bartosch_2001_I_nb_mt(Z, 1, σ, τ_c).squeeze()
+            return bartosch_2001_I_nb_mt(Z, Δt, σ, τ_c).squeeze()
 
 
 @nb.njit
@@ -71,75 +70,109 @@ def bartosch_2001_I_nb_mt(Z, dt, σ=1, τ=1):
     return X
 
 
-# %%
-L = 1000
+# %% Parameters
 SEED = 1
-rng = np.random.default_rng(SEED)
-np.random.seed(SEED)
-exp_formatter = FuncFormatter(lambda x, pos: f'$10^{{{int(np.log10(x))}}}$')
-
+N_MC = 1000
+L = 1000
+Δt = 1
+T = L * Δt
 τ_cs = np.array([1e-2, 1, 1e2])
 σs = .5 * τ_cs ** 0.25
-# %% PSDs
 
-with mpl.style.context(['./margin.mplstyle'], after_reset=True):
-    fig, ax = plt.subplots(layout='constrained')
-    for σ, τ_c in zip(σs, τ_cs):
-        ax.plot((f := np.insert(np.geomspace(1e-4, 1e2, 1000), 0, 0)) * 2 * np.pi * τ_cs[1],
-                psd(f, σ, τ_c) / (4 * τ_cs[1] * σs[1] ** 2),
-                label=exp_formatter(τ_c))
-
-    ax.set_xscale('asinh', linear_width=7e-4)
-    ax.set_yscale('log')
-    ax.margins(x=0, y=0.075)
-    ax.set_xticks([0, *τ_cs])
-    ax.tick_params('x', pad=10)
-    for label in ax.get_xticklabels():
-        label.set_verticalalignment('bottom')
-    ax.set_yticks([1e-6, 1e-3, 1, 1e3])
-    ax.set_xlabel(r'$2\pi f\tau_c$')
-    ax.set_ylabel(r'$\flatfrac{S(f)}{4\tau_c\sigma^2}$')
-    ax.grid()
-    # ax.legend()
-
-    fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psd.pdf', backend='pgf')
-
-# %% Correlators
+# %% Both in same figure
 alpha = 0.5
+rng = np.random.default_rng(SEED)
+np.random.seed(SEED)
 
 with mpl.style.context(['./margin.mplstyle'], after_reset=True):
-    fig, ax = plt.subplots(layout='constrained')
+    fig, axes = plt.subplots(3, 1, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 3),
+                             layout='constrained')
+
     for σ, τ_c in zip(σs, τ_cs):
-        τ = np.insert(np.geomspace(1e-3, L, 1000), 0, 0)
+        X = noise(σ, τ_c, N_MC, method='lmt')
+
+        # Timetrace
+        ax = axes[0]
+        t = np.linspace(0, 1, L)
+        ax.plot(t, X[0] / sp.real_space.rms(X[0]), '-')
+
+        # Correlation
+        ax = axes[1]
+        τ = np.insert(np.geomspace(1e-3, L, L), 0, 0)
         # τ = np.insert(np.geomspace(1e-2, L, 1000), 0, 0)
-        ln, = ax.plot(τ / τ_cs[1], corr(τ, σ, τ_c) / σs[1] ** 2, '--')
+        ln, = ax.plot(τ / τ_cs[1], corr(τ, σ, τ_c) / σs[1] ** 2, '-')
 
-        C = np.mean([sc.signal.correlate(*[n]*2) for n in noise(σ, τ_c, 1000, 'lmt')], axis=0)
+        C = np.array([sc.signal.correlate(*[x]*2) for x in X])
         τ = sc.signal.correlation_lags(L, L)
+        # select only a few of the data points
         log_indices = np.logspace(0, np.log10(L), num=25, endpoint=True) - 1
-        # Round to the nearest integer and convert to int
         idx = np.unique(np.round(log_indices).astype(int))
-        ax.plot(τ[τ >= 0][idx] / τ_cs[1], (C[τ >= 0] / np.arange(L, 0, -1))[idx] / σs[1] ** 2,
-                color=ln.get_color(),
-                marker='.',
-                ls='',
-                markersize=5,
-                markeredgecolor=ln.get_color(),
-                markerfacecolor=colors.to_rgb(ln.get_color()) + (alpha,))
 
+        ax.errorbar(τ[τ >= 0][idx] / τ_cs[1],
+                    (C.mean(0)[τ >= 0] / np.arange(L, 0, -1))[idx] / σs[1] ** 2,
+                    (C.std(0)[τ >= 0] / np.arange(L, 0, -1))[idx] / σs[1] ** 2 / np.sqrt(N_MC),
+                    color=ln.get_color(),
+                    ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
+                    marker='.',
+                    ls='',
+                    markersize=5,
+                    markeredgecolor=ln.get_color(),
+                    markerfacecolor=colors.to_rgb(ln.get_color()) + (alpha,))
+
+        # PSD
+        ax = axes[2]
+        f = np.insert(np.geomspace(1e-4 * τ_cs[1], (L - 1) / (τ_cs[1] * 2 * np.pi), L), 0, 0)
+        ln, = ax.plot(f * 2 * np.pi,
+                      psd(f, σ, τ_c) / (4 * τ_cs[1] * σs[1] ** 2))
+
+        fx, Sx = sc.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False)
+        # select only a few of the data points
+        log_indices = np.logspace(0, np.log10(len(fx)), num=15, endpoint=True) - 1
+        idx = np.unique(np.round(log_indices).astype(int))
+        ax.errorbar(fx[idx]*2*np.pi,
+                    Sx.mean(0)[idx] / (4 * τ_cs[1] * σs[1] ** 2),
+                    Sx.std(0)[idx] / (np.sqrt(N_MC) * 4 * τ_cs[1] * σs[1] ** 2),
+                    color=ln.get_color(),
+                    ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
+                    marker='.',
+                    ls='',
+                    markersize=5,
+                    markeredgecolor=ln.get_color(),
+                    markerfacecolor=colors.to_rgb(ln.get_color()) + (alpha,))
+
+    ax = axes[0]
+    ax.margins(x=0)
+    ax.set_xticks([0, 1])
+    ax.set_xlabel(r'$\flatfrac{t}{T}$', labelpad=-8.5)
+    ax.set_ylabel(r'$\flatfrac{x(t)}{\mathrm{RMS}_x}$')
+
+    ax = axes[1]
     ax.set_xscale('asinh', linear_width=1e-3)
-    # ax.set_xscale('asinh', linear_width=8.5e-2)
-    ax.set_yscale('asinh', linear_width=3e-2)
+    ax.set_yscale('asinh', linear_width=2.275e-2)
     ax.set_xlim(0, τ[-1] / τ_cs[1])
+    ax.set_ylim(-1e-2)
     ax.set_xticks([0, *τ_cs])
     ax.tick_params('x', pad=10)
     for label in ax.get_xticklabels():
         label.set_verticalalignment('bottom')
-    # ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), va='bottom', pad=10)
-    # ax.set_xticks([t for t in ax.get_xticks() if t != 0])
     ax.set_yticks([0, 1e-1, 1, 1e1])
     ax.set_xlabel(r'$\flatfrac{\tau}{\tau_c}$')
     ax.set_ylabel(r'$\flatfrac{C(\tau)}{\sigma^2}$')
     ax.grid()
 
-    fig.savefig(PATH / 'pdf/spectrometer/lorentzian_corr.pdf', backend='pgf')
+    ax = axes[2]
+    ax.set_xscale('asinh', linear_width=1e-3)
+    ax.set_yscale('log')
+    ax.margins(y=0.075)
+    ax.set_xlim(axes[1].get_xlim())
+    # ax.set_ylim(2e-9)
+    ax.set_xticks([0, *τ_cs])
+    ax.tick_params('x', pad=10)
+    for label in ax.get_xticklabels():
+        label.set_verticalalignment('bottom')
+    ax.set_yticks([1e-6, 1e-3, 1, 1e3])
+    ax.set_xlabel(r'$\omega\tau_c$')
+    ax.set_ylabel(r'$\flatfrac{S(\omega)}{4\tau_c\sigma^2}$')
+    ax.grid()
+
+    fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psdcorr.pdf', backend='pgf')
