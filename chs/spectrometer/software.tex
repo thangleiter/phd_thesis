@@ -304,7 +304,13 @@ having discovered that his data is noisier than expected, sets up the \code{Spec
     For the MFLI, \code{DAQ} subclasses for both the \href{https://docs.zhinst.com/labone_api_user_manual/modules/scope/index.html}{Scope} and the \href{https://docs.zhinst.com/labone_api_user_manual/modules/daq/index.html}{DAQ} module are implemented.
     The former gives access to the signal before and the latter to the signal after demodulation.
 }
-Choosing the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{100}{\kilo\hertz}$, and using the sensible defaults for the remaining spectrum parameters, Bob first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
+Choosing to work with the demodulated data to benefit from the corresponding \acrshort{daq} modules larger flexibility, he recognizes that the resulting \gls{psd} will be the two-sided version because the data returned by the \gls{lia} is complex.
+Since he is interested in the physical frequencies\sidenote{
+    A discussion of lock-in amplification is beyond the scope of this chapter.
+    Here I will simply note that, for finite modulation frequencies $f_m$, \glspl{lia} will measure the \gls{psd} in the up-converted frequency band $[-\fmax + f_m, f_m + \fmax]$ rather than the baseband.
+}
+he sets the lock-in's modulation frequency to \qty{0}{\hertz} and disables plotting the negative part of the frequency spectrum as it contains only redundant data in this case.
+Selecting the frequency bounds, say $\fmin = \qty{10}{\hertz}$ and $\fmax = \qty{100}{\kilo\hertz}$, and using the sensible defaults for the remaining spectrum parameters, Bob first grounds the input of his \gls{daq} to record a \emph{baseline} spectrum.
 Thus far, his code would hence look something like that shown in \cref{lst:speck:workflow:serial}, which produces the plot shown in \cref{fig:speck:software:workflow:baseline}.
 
 \begin{listing}[htpb]
@@ -314,9 +320,11 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 
         mfli_daq = daq.ZurichInstrumentsMFLIDAQ(session, device)
         spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
+                             plot_negative_frequencies=False,
                              processed_unit='μV')
 
-        spect.take('baseline', f_min=1e1, f_max=1e5, daq='grounded')
+        settings = {'f_min': 1e1, 'f_max': 1e5', 'freq': 0}
+        spect.take('baseline', daq='grounded', **settings)
     \end{py}
     \caption[\pyspeck serial workflow]{
         Setup and serial workflow using the \pyspeck package.
@@ -337,12 +345,18 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
     \label{fig:speck:software:workflow:baseline}
 \end{figure}
 
+The noise spectrum he obtains is white up until approximately \qty{20}{\kilo\hertz} where it starts falling off $\propto f^{-n}$.
+This is because the \gls{lia} low-pass filters the signal to suppress aliasing\sidenote[][*-4]{
+    Aliasing effects arise from finite sampling according to the Nyquist-Shannon sampling theorem~\cite{Whittaker1915,Nyquist1928,Shannon1949}.
+    It states that for a given physical bandwidth, the sampling rate \fs must be at least twice as large to faithfully reconstruct the signal in order to avoid aliasing, \ie, the reverse of the argument we have made for the largest resolvable frequency \fmax.
+    Some \gls{daq} devices perform internal aliasing rejection while others do not.
+}
 After acquiring the baseline, he next ungrounds the \gls{daq} to obtain a representative spectrum of the noise in an actual measurement.
 He then proceeds by tweaking things on his setup, testing out different parameters, \etc
 Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
-\begin{listing}[H]
+\begin{listing}[htpb]
     \begin{py}
-        settings = {'f_min': 1e1, 'f_max': 1e5, 'daq': 'connected'}
+        settings['daq'] = 'connected'
         spect.take('connected', **settings)
         spect.take('lifted cable', cable='lifted', **settings)
         spect.take('jumped', **settings)
@@ -365,6 +379,7 @@ Every time he changes something, he acquires another spectrum using \code{take()
 The code shown in \cref{lst:speck:workflow:spectra} would then leave him with the spectrometer plot as shown in \cref{fig:speck:software:workflow:spectra}.
 While working, Bob realizes he'd like see the signal in the time-domain as well.
 He easily achieves this by setting \code{spect.plot_timetrace = True}, which adds an oscilloscope subplot to spectrometer figure as shown in \cref{fig:speck:software:workflow:timetrace}.
+In case the \gls{daq} returns complex data, the absolute value $R = X + \i Y$ is plotted.
 
 \begin{figure}
     \centering
@@ -372,6 +387,7 @@ He easily achieves this by setting \code{spect.plot_timetrace = True}, which add
     \caption{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_timetrace = True}.
         This adds a subplot that shows the time series data from which the \gls{psd} was computed akin to what an oscilloscope would show.
+        For complex time series, the absolute value $R = X + \i Y$ is plotted.
         Note that this is the entire time series, \ie, the data of length $L$, which is (by default, using Welch's method) segmented for spectrum estimation.
     }
     \label{fig:speck:software:workflow:timetrace}

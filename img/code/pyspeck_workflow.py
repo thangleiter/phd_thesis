@@ -1,18 +1,22 @@
 import tempfile
 
+import IPython
 import matplotlib as mpl
 import numpy as np
 import scipy as sc
 
 from python_spectrometer import daq, Spectrometer
-from qutil import const, functools
+from qutil import const, domains, functools
 
 from common import PATH, TEXTWIDTH
 
-SEED = 1
-mpl.use('qtagg')
+if (ipy := IPython.get_ipython()) is not None:
+    ipy.run_line_magic('matplotlib', 'qt')
+
 mpl.rcdefaults()
 mpl.style.use('main.mplstyle')
+
+SEED = 1
 rng = np.random.default_rng(SEED)
 
 
@@ -38,14 +42,30 @@ def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, npe
     return S
 
 
+class MockMFLIDAQ(daq.simulator.DemodulatorQoptColoredNoise):
+
+    @property
+    def DAQSettings(self) -> type[daq.DAQSettings]:
+        class MFLIDAQSettings(daq.DAQSettings):
+            CLOCKBASE = 60e6
+            # TODO: always the same for each instrument?
+            ALLOWED_FS = domains.ExponentialDiscreteInterval(-23, 0, base=2,
+                                                             prefactor=CLOCKBASE / 70)
+            DEFAULT_FS = CLOCKBASE / 70 / 2**6
+
+        return MFLIDAQSettings
+
+
 # %%
-qopt_daq = daq.simulator.QoptColoredNoise(spectrum)
+qopt_daq = MockMFLIDAQ(spectrum)
 speck = Spectrometer(qopt_daq, savepath=tempfile.mkdtemp(),
                      threaded_acquisition=False, purge_raw_data=False,
+                     plot_negative_frequencies=False,
                      procfn=functools.scaled(1e6), processed_unit='μV',
                      plot_style='./main.mplstyle',
                      figure_kw=dict(layout='constrained'), legend_kw=dict(loc='lower left'))
-settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False)
+settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False,
+                freq=0, filter_order=3)
 
 # %%
 speck.take('baseline', add_50hz=False, add_colored=False, **settings)
