@@ -26,7 +26,7 @@ Moreover, when concerned with noise spectrum estimation, we are typically more i
 The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather than inferring the spectrum properties from the time series data, users specify the properties they would like the resulting spectrum to have and the package chooses the correct parameters for \acrlong{daq} accordingly.
 
 \section{Package design and implementation}\label{sec:speck:software:design}
-\begin{marginfigure}[-3.75cm]
+\begin{marginfigure}[*-10]
     \input{img/tikz/spectrometer/speck_tree}
     \caption[Source tree structure of the \pyspeck package.]{
         Source tree structure of the \pyspeck package.
@@ -36,7 +36,7 @@ The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather
     \label{fig:speck:software:tree}
 \end{marginfigure}
 The \pyspeck package provides a central class, \code{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
-It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.\sidenote[][4.6cm]{
+It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.\sidenote[][*10]{
     Actually \emph{drivers} to be more precise.
 }
 New spectra are obtained by calling the \code{Spectrometer.take()} method with all acquisition and metadata settings.
@@ -122,17 +122,17 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings}
 \end{listing}
 
-\begin{marginlisting}[-2.5cm]
+\begin{marginlisting}[*-5]
     \begin{minted}[fontsize=\footnotesize]{python}
 {'f_min': 14.30511474609375,
-'f_max': 72000.0,
-'fs': 234375.0,
-'df': 14.30511474609375,
-'nperseg': 16384,
-'noverlap': 0,
-'n_seg': 1,
-'n_pts': 16384,
-'n_avg': 1}
+ 'f_max': 72000.0,
+ 'fs': 234375.0,
+ 'df': 14.30511474609375,
+ 'nperseg': 16384,
+ 'noverlap': 0,
+ 'n_seg': 1,
+ 'n_pts': 16384,
+ 'n_avg': 1}
     \end{minted}
     \caption[Resolved \code{DAQSettings} for MFLI Scope]{
         Resolved settings for the same input parameters as in \cref{lst:speck:daq:settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}.
@@ -140,10 +140,10 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings:mfli_scope}
 \end{marginlisting}
 
-If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][2.7cm]{
+If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][*7]{
     \url{https://docs.zhinst.com/labone_api_user_manual/modules/scope/index.html}
 }
-the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][3.5cm]{
+the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][*9]{
     And issued a warning to inform the user their requested settings could not be matched.
 }
 This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
@@ -166,7 +166,7 @@ for data_buffer in acquisition_generator:
     \end{minted}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
-        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \href{https://github.com/microsoft/qcodes}{QCoDeS} \code{Instrument}).
+        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \href{https://github.com/microsoft/qcodes}{\qcodes} \code{Instrument}).
         The instrument is configured with the given \code{user_settings}.
         Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
         The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
@@ -268,7 +268,8 @@ def comp_gain(x, gain=1.0, **_):
 \end{marginlisting}
 
 The latter are required in case the function modifies the frequencies.\sidenote{
-    One example is the \code{octave_band_rms()} function from the \code{qutil.signal_processing} subpackage~\cite{OctaveBandRmsQutil} that decimates frequencies to fractions of octave bands. See \cref{part:setup} for a use-case. TODO: ref
+    One example is the \code{octave_band_rms()} function from the \code{qutil.signal_processing} subpackage~\cite{OctaveBandRmsQutil} that decimates frequencies to fractions of octave bands. See \cref{part:setup} for a use-case.
+    % TODO: ref
 }
 A simple example for a processing function in Fourier space is shown in \cref{lst:speck:fourier_procfn}, which computes the \mbox{(anti-)}derivative of the data using the fact that
 \begin{marginlisting}
@@ -283,7 +284,8 @@ def derivative(xf, f, n=0, **_):
     \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
 \end{align}
 under the Fourier transform.
-In \cref{part:setup}\todo{ref}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
+In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
+% TODO: ref
 
 \section{Feature overview}\label{sec:speck:software:features}
 Now that we have a basic understanding of the design choices underlying \pyspeck, let us discuss the typical workflow of using the package.
@@ -415,7 +417,7 @@ and the band power (\cref{eq:speck:psd:bandpower}) otherwise.
 \end{figure}
 
 The cumulative \gls{rms} plot already helps, but Bob would like a more quantitative comparison of relative spectral powers.
-Therefore, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote{
+Therefore, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote[][*-3]{
     Recall that the decibel is defined by the ratio $L_P$ of two powers $P_1, P_2$ as~\cite{Pozar2012}
     \begin{align*}
         L_P = 10\log_{10}\left(\frac{P_1}{P_2}\right)\,\unit{\decibel}.
@@ -436,7 +438,7 @@ spect.plot_density = False
     }
     \label{fig:speck:software:workflow:db}
 \end{figure}
-The attribute \code{plot_density} controls whether the \emph{\acrlong{psd}} or the \emph{power spectrum} is plotted.\sidenote{
+The attribute \code{plot_density} controls whether the \emph{\acrlong{psd}} or the \emph{power spectrum} is plotted.\sidenote[][*-5]{
     \label{sidenote:speck:software_vocabulary}
     At this point, we \emph{do} need to distinguish between the \gls{psd} and the power spectrum counter to \cref{sidenote:speck:theory_vocabulary} in \cref{ch:speck:theory}.
     The \gls{psd} and power spectrum are related by the \gls{enbw},
@@ -531,7 +533,7 @@ Dictionaries with customization parameters for the \code{live_view} object can f
         Spectrometer live view.
         The bottom plot shows the most recently acquired spectrum, while the top plot shows a waterfall plot of the most recent ones.
         Data acquisition runs in a background thread, keeping the interpreter responsive and available to interact with instruments, for example.
-        The icons in the bottom left and right corner allow interacting with the live view.
+        The icons in the bottom left and right corners allow interacting with the live view.
     }
     \label{fig:speck:software:live_view}
 \end{figure}
