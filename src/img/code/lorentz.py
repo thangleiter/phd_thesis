@@ -14,12 +14,14 @@ from qutil import functools, const, signal_processing as sp
 from common import PATH, MARGINWIDTH
 
 mpl.use('pgf')
+mpl.rcdefaults()
 mpl.style.use('margin.mplstyle')
 # %%
 
 
 def psd(f, σ, τ_c):
-    return 4 * σ ** 2 * τ_c / (1 + (2 * np.pi * f * τ_c) ** 2)
+    # two-sided definition
+    return 2 * σ ** 2 * τ_c / (1 + (2 * np.pi * f * τ_c) ** 2)
 
 
 def corr(τ, σ, τ_c):
@@ -123,15 +125,15 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         ax = axes[2]
         f = np.insert(np.geomspace(1e-4 * τ_cs[1], (L - 1) / (τ_cs[1] * 2 * np.pi), L), 0, 0)
         ln, = ax.plot(f * 2 * np.pi,
-                      psd(f, σ, τ_c) / (4 * τ_cs[1] * σs[1] ** 2))
+                      psd(f, σ, τ_c) / (2 * τ_cs[1] * σs[1] ** 2))
 
         fx, Sx = sc.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False)
         # select only a few of the data points
         log_indices = np.logspace(0, np.log10(len(fx)), num=15, endpoint=True) - 1
         idx = np.unique(np.round(log_indices).astype(int))
         ax.errorbar(fx[idx]*2*np.pi,
-                    Sx.mean(0)[idx] / (4 * τ_cs[1] * σs[1] ** 2),
-                    Sx.std(0)[idx] / (np.sqrt(N_MC) * 4 * τ_cs[1] * σs[1] ** 2),
+                    Sx.mean(0)[idx] / (2 * τ_cs[1] * σs[1] ** 2),
+                    Sx.std(0)[idx] / (np.sqrt(N_MC) * 2 * τ_cs[1] * σs[1] ** 2),
                     color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
                     marker='.',
@@ -172,7 +174,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         label.set_verticalalignment('bottom')
     ax.set_yticks([1e-6, 1e-3, 1, 1e3])
     ax.set_xlabel(r'$\omega\tau_c$')
-    ax.set_ylabel(r'$\flatfrac{S(\omega)}{4\tau_c\sigma^2}$')
+    ax.set_ylabel(r'$\flatfrac{S(\omega)}{2\tau_c\sigma^2}$')
     ax.grid()
 
     fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psdcorr.pdf', backend='pgf')

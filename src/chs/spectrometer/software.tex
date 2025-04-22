@@ -45,7 +45,7 @@ In the following, I will go over the the design of these aspects of the package 
 \subsection{Data acquisition}\label{subsec:speck:software:design:daq}
 \Cref{fig:speck:software:tree} shows the directory structure of the source code.
 The \code{daq} subpackage contains on the one hand the declaration of the \code{DAQ} abstract base class (\code{base.py}) and its child class implementations (\code{qcodes.py}, \etc), and on the other the \code{settings.py} module, which defines the \code{DAQSettings} class.
-This class is used in the background to validate data acquisition settings both for consistency (see \cref{subsec:speck:theory:welch:parameters}) and hardware constraints.
+This class is used in the background to validate data acquisition settings both for consistency (see \cref{sec:speck:theory:welch:parameters}) and hardware constraints.
 
 \begin{margintable}
     \footnotesize
@@ -88,7 +88,7 @@ It is instantiated with any subset of the parameters listed in \cref{tab:speck:s
     \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:speck:software:parameters}.
     However, automatic validation of parameter consistency is only performed for these special keys.
 }
-and attempts to resolve the parameter interdependencies lined out in \cref{subsec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
+and attempts to resolve the parameter interdependencies lined out in \cref{sec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
     Since the graph spanned by the parameters is not acyclic, this only works \emph{most} of the time.
 }
 This either infers those parameters that were not given from those that were or, if not possible, uses a default value.
