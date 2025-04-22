@@ -2,13 +2,14 @@
 - The most recent version of the compiled document is automatically placed at `review/main.pdf`.
 - Reviews should be placed in `reviews/`, preferably by branching off at the commit at which the review starts :)
 - The TeX style is included as a git submodule at `lib/kaobook`. 
-- There are two concurrent branches, `kaobook` and `kaobook_tectonic`, which use different project layouts for different TeX engines, `latexmk` and `tectonic`, respectively. 
+- Fonts not available from CTAN are included as a git submodule at `lib/fonts`.
+- There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively. 
   To automatically switch to the correct submodule branch when switching branches in the main repository, run 
   ```
   git config core.hooksPath .githooks
   ```
 
-# To Do's
+# To Dos
 ## Content
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
@@ -135,6 +136,12 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
   - Finally, it replaces `_` underscores.
 - Alternatively, import BBT settings from `lib/bbt_settings.json`.
 
+# Fonts
+If fonts are not found, download and install them in your system:
+- Libertinus [here](https://github.com/alerque/libertinus).
+- and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
+- NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
+
 # XeTeX
  
 ## `luaotfload-tool`
@@ -176,15 +183,7 @@ See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-
      ```
      because `\refeq` is already defined by `mathtools`.
 
-## Fonts
-- Download Libertinus [here](https://github.com/alerque/libertinus).
-- Download and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
-- Download NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
-
-
 ## TeXLive Integration
 **IMPORTANT**
 
 Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
-
-
