@@ -138,6 +138,7 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 
 # Fonts
 If fonts are not found, download and install them in your system:
+
 - Libertinus [here](https://github.com/alerque/libertinus).
 - and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
 - NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
@@ -148,10 +149,11 @@ If fonts are not found, download and install them in your system:
 Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
 
 To make latex find the submodules, perform the following steps:
+
 - Linux:
   - Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
-  - Soft link `lib/fonts/LiberationMono/*.sty` to `$HOME/texmf/tex/latex/LiberationMono`.
-  - Soft link `lib/fonts/LiberationMono/*.ttf` to `$HOME/texmf/fonts/truetype/LiberationMono`.
+  - **Hard** link `lib/fonts/LiberationMono/*.sty` to `$HOME/texmf/tex/latex/LiberationMono`.
+  - **Hard** link `lib/fonts/LiberationMono/*.ttf` to `$HOME/texmf/fonts/truetype/LiberationMono`.
 - Windows:
   - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
 ## XeTeX
