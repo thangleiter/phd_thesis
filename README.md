@@ -142,10 +142,23 @@ If fonts are not found, download and install them in your system:
 - and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
 - NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
 
-# XeTeX
+# TeXLive Integration
+**IMPORTANT**
+
+Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
+
+To make latex find the submodules, perform the following steps:
+- Linux:
+  - Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
+  - Soft link `lib/fonts/LiberationMono/*.sty` to `$HOME/texmf/tex/latex/LiberationMono`.
+  - Soft link `lib/fonts/LiberationMono/*.ttf` to `$HOME/texmf/fonts/truetype/LiberationMono`.
+- Windows:
+  - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
+## XeTeX
  
-## `luaotfload-tool`
+### `luaotfload-tool`
 - Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
+
 
 # Tectonic
 - Build from source using `cargo install --path .`
@@ -156,12 +169,8 @@ If fonts are not found, download and install them in your system:
 - The font size in `minted` also does not seem to adjust.
 
 # Kaobook
-- Linux:
-  - Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
-- Windows:
-  - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
 
-## Kaobook diffs
+## Diffs
 These diffs should already be applied in the submodule shipped with this repository.
 
 - `kaorefs.sty`
@@ -182,8 +191,3 @@ See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-
      \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
      ```
      because `\refeq` is already defined by `mathtools`.
-
-## TeXLive Integration
-**IMPORTANT**
-
-Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
