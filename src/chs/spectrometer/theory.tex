@@ -124,10 +124,10 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
     \includegraphics{pdf/spectrometer/lorentzian_psdcorr}
     \caption{
         Ornstein-Uhlenbeck process.
-        Simulated time traces (top), auto-correlation function (middle), \gls{psd} (bottom) of the Ornstein-Uhlenbeck process.
+        Simulated time traces (top), autocorrelation function (middle), \gls{psd} (bottom) of the Ornstein-Uhlenbeck process.
         Top: Simluated time traces using the algorithm presented in \cref{ch:ff:time_domain_methods}.
         The data are normalized to the computed \gls{rms} (equal to $\sigma$ in the continuous case).
-        Middle: Theoretical auto-correlation function (\cref{eq:speck:ou:autocorrelation}, solid lines) and computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
+        Middle: Theoretical autocorrelation function (\cref{eq:speck:ou:autocorrelation}, solid lines) and computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
         Error bars indicate the standard error of the mean and axes are scaled with respect to the parameters of the magenta data, and data are plotted on an $\asinh$-scale.
         Bottom: Theoretical \gls{psd} (\cref{eq:speck:ou:psd}, solid lines) and periodograms computed from the simulated data averaged over \num{e3} traces using \code{scipy.signal.periodogram()}, \cf \cref{eq:speck:periodogram} (circles, subset of points).
         Axes are again scaled with respect to the parameters of the magenta data and plotted on an $\asinh$-scale.
@@ -137,7 +137,7 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
 \end{marginfigure}
 
 To become familiar with the quantities $C(\tau)$ and $S(\omega)$, consider the Ornstein-Uhlenbeck process~\cite{Uhlenbeck1930}, the only stationary Gaussian Markovian stochastic process~\cite{VanKampen1976}.
-The auto-correlation function of the Ornstein-Uhlenbeck process is given by
+The autocorrelation function of the Ornstein-Uhlenbeck process is given by
 \begin{align}\label{eq:speck:ou:autocorrelation}
     C(\tau) = \sigma^2\e^{-\flatfrac{\tau}{\tau_c}},
 \end{align}
@@ -146,9 +146,9 @@ with $\sigma$ the \gls{rms} and $\tau_c$ the correlation time of the process, an
     S(\omega) = \frac{2\sigma^2\tau_c}{1 + (\omega\tau_c)^2}.
 \end{align}
 For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\flatfrac{\dt}{\tau_c}\to 0, S(\omega)=\text{const.}$) and correlated, pink noise ($\flatfrac{\dt}{\tau_c}\to\infty, S(\omega)\propto\omega^{-2}$).
-\Cref{fig:speck:psdcorr} depicts simulated data and its auto-correlation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \num{e0}\dt$, magenta), and in the correlated limit ($\tau_c = \num{e+2}\dt$, green).
+\Cref{fig:speck:psdcorr} depicts simulated data and its autocorrelation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \num{e0}\dt$, magenta), and in the correlated limit ($\tau_c = \num{e+2}\dt$, green).
 From the time series plot at the top it becomes clear that the \gls{rms} alone is insufficient to describe the properties of noisy signals as the curves differ significantly despite being normalized to their \gls{rms}.
-The auto-correlation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{1}{4}$.
+The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{1}{4}$.
 For the white noise limit (blue), correlations are too short to be resolved with the given time discretization.
 The correlations decay to $\e\inverse$ at $\flatfrac{\tau}{\tau_c}=\num{e-2},\num{e0},\num{e+2}$, respectively.
 Finally, the bottom panel shows the \gls{psd}, \cref{eq:speck:ou:psd}, and its periodogram estimate, again averaged over \num{e3} realizations of the signal and normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{1}{4}$.
