@@ -11,8 +11,8 @@ DEST_FILE="review/main.pdf"
 
 # Check if the source file exists
 if [ ! -f "$SRC_FILE" ]; then
-    echo "Error: Source file '$SRC_FILE' not found. Aborting commit."
-    exit 1
+    echo "Warning: Source file '$SRC_FILE' not found. Not copying '$SRC_FILE'."
+    exit 0
 fi
 
 # Perform the copy operation
