@@ -2,3 +2,6 @@
 	path = lib/kaobook
 	url = git@git.rwth-aachen.de:tobias.hangleiter/kaobook.git
 	branch = tectonic
+[submodule "lib/fonts"]
+	path = lib/fonts
+	url = https://git.nsa.his.se/latex/fonts

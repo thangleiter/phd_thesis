@@ -17,7 +17,7 @@ bundle = "https://data1.fullyjustified.net/tlextras-2022.0r0.tar"
 #  └── doc2/
 #      ├── src/
 #      └── Tectonic.toml  <-- Contains `extra_paths = ["../resources"]`
-extra_paths = ["lib", "lib/kaobook"]
+extra_paths = ["lib", "lib/kaobook", "lib/fonts/LiberationMono"]
 
 
 # The doc.metadata table may contain arbitrary data.
