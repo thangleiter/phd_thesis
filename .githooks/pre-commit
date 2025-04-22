@@ -1,6 +1,11 @@
 #!/bin/sh
 # pre-commit hook: Copy a file from one location to another
 
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "tectonic" ]; then
+  # Skip this hook if we're not on main
+  exit 0
+fi
+
 SRC_FILE="build/default/default.pdf"
 DEST_FILE="review/main.pdf"
 
@@ -11,7 +16,6 @@ if [ ! -f "$SRC_FILE" ]; then
 fi
 
 # Perform the copy operation
-cp "$SRC_FILE" "$DEST_FILE"
 if ! cp "$SRC_FILE" "$DEST_FILE"; then
     echo "Error: Failed to copy '$SRC_FILE' to '$DEST_FILE'. Aborting commit."
     exit 1
