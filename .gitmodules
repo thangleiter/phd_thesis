@@ -1,4 +1,7 @@
 [submodule "lib/kaobook"]
 	path = lib/kaobook
 	url = git@git.rwth-aachen.de:tobias.hangleiter/kaobook.git
-	branch = lualatex
+	branch = main
+[submodule "lib/fonts"]
+	path = lib/fonts
+	url = https://git.nsa.his.se/latex/fonts
