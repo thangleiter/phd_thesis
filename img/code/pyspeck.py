@@ -14,15 +14,15 @@ mpl.use('pgf')
 
 
 def rect(x, T=1):
-    arg = .5 * x * T / np.pi
-    return T * np.sinc(arg)
+    arg = .5 * x * T
+    return T * np.sinc(arg / np.pi)
 
 
 def hann(x, T=1):
-    arg = .5 * x * T / np.pi
+    arg = .5 * x * T
     with np.errstate(invalid='ignore', divide='ignore'):
-        y = np.atleast_1d(T * np.sinc(arg) / (2 * (1 - arg) * (1 + arg)))
-    y[(arg == 1) | (arg == -1)] = T / 4
+        y = .5 * np.atleast_1d(rect(x, T)) / (1 - (arg / np.pi)**2)
+    y[(arg == np.pi) | (arg == -np.pi)] = T / 4
     return y
 
 
