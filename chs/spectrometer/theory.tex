@@ -123,7 +123,7 @@ Similarly, the power contained in a band of frequencies $[\omega_1, \omega_2]$ i
 where $\rms_S\left(\omega_1, \omega_2\right)$ is the \acrlong{rms} within this frequency band.
 These relations are helpful when analyzing noise \glspl{psd} to gauge the relative weight of contributions from different frequency bands to the total noise power.
 
-\begin{marginfigure}[*-9]
+\begin{marginfigure}[*-6]
     \centering
     \includegraphics{pdf/spectrometer/lorentzian_psdcorr}
     \caption{
@@ -290,7 +290,7 @@ One can show~\cite{Welch1967} that the correlation between the periodograms of a
 The overlap naturally depends on the choice of window; a typical value for the Hann window $K = \flatfrac{N}{2}$ with which one would obtain $M = \flatfrac{2L}{N} - 1$ windows for data of length $L$.\sidenote{
     Again neglecting integer arithmetic issues.
 }
-\begin{figure}[tphb]
+\begin{figure}
     \centering
     \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
     \caption{
@@ -361,7 +361,7 @@ While not directly related to Welch's method, choosing $O > 1$ can, for instance
 \Cref{fig:speck:theory:parameters} shows the relationships of the various parameters among each other.
 In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependencies are implemented in software.
 
-\begin{figure}[htpb]
+\begin{figure}
     \centering
     \input{img/tikz/spectrometer/daq_settings}
     \caption{
