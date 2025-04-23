@@ -2,9 +2,22 @@
 \chapter{Conclusion and outlook}\label{ch:speck:conclusion}
 \AutoLettrine{In} this part of the thesis, I presented the \pyspeck \python package for interactive, backend-agnostic noise spectroscopy.
 I first introduced the theory behind spectral noise estimation based on time-series analysis in \cref{ch:speck:theory}.
-There, I discussed 
+There, I showed how, by the Wiener-Khinchin theorem, the \gls{psd} $S(\omega)$ is related to a time-dependent signal by the Fourier transform of its autocorrelation function $C(\tau)$.
+After discretizing the problem, I discussed how the arising spectral windowing introduces distortions in the estimated \gls{psd} through effects such as spectral leakage and scalloping loss.
+The introduction of windowing naturally led to the need for a more efficient method of spectrum estimation to avoid data wastefulness.
+This is addressed by Welch's method, which trades spectral resolution for estimation accuracy for a given input size by dividing the input into segments and letting them overlap.
+Finally, I discussed the various parameters that influence the properties of the spectrum estimate produced by Welch's method.
 
-\paragraph{Outlook.\label{par:speck:outlook}}
+In \cref{ch:speck:software}, I then introduced the \pyspeck package that facilitates noise spectroscopy based on the theory developed in the previous chapter.
+While in principle agnostic to the specific technique (simple periodogram, Bartlett's method, \etc), it employs Welch's method by default to perform efficient estimation of noise \acrlongpl{psd}.
+To make noise spectroscopy as approachable as possible, the package provides a unified interface to various hardware and software backends to manage \acrlong{daq}.
+Furthermore, it incorporates rich plotting features to ease data analysis and thereby expedite the feedback loop with the lab.
+I first outlined the design choices underlying the source code and explained the mechanism employed to infer \gls{daq} settings from, for example, the physical parameters of the resulting spectrum estimate.
+I described the interface to drivers for different hardware instruments that makes it possible to use the same user code for spectrum acquisition independent of the specific instrument used for \acrlong{daq} while at the same time keeping the amount of required driver code at a minimum.
+Finally, I showcased the interactive features by means of a typical workflow.
+Here, the serial approach of recording single spectra that are saved to disk at a time stands in contrast to the non-persistent live mode, where data is continuously acquired and displayed in a separate thread or process.
+
+%\paragraph{Outlook.\label{par:speck:outlook}}
 There are several possible avenues for future development of the \pyspeck package.
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.

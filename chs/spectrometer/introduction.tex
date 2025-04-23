@@ -1,7 +1,45 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:speck:introduction}
-Hence, characterizing (and subsequently mitigating) noise is an essential task for the experimentalist.
-But noise comes in as many different forms as there are types of signal sources and detectors, whether it be a voltage source or a photodetector, and while some instruments have built-in solutions for noise analysis, they vary in functionality and capability.
-Moreover, the measured signal often does not directly correspond to the noisy physical quantity of interest, making it desirable to be able to manipulate the raw data before processing.
 \AutoLettrine{Noise} is ubiquitous in condensed matter physics experiments, and in mesoscopic systems in particular it can easily drown out the sought-after signal.
+In solid-state quantum technology research, devices on the length scale of the Fermi wavelength -- say tens of nanometers -- are embedded in a crystalline matrix of \num{e23} atoms.
+These devices host single quantum objects such as electrons or quasiparticles---collective many-body excitations.
+They are controlled and measured by classical signals routed to the device through macroscopic connections like cables and fibers.
+The signals, in turn, are generated and analyzed by electronic (\eg, transistors) or optical instruments (\eg, lasers) that, in all likelihood, are again based on solid-state technology driven by the first quantum revolution~\cite{Dowling2003,Aspect2024}.
+Ultimately, then, the experiments take place in an environment full of external influences from trams passing by, shaking the ground, to cosmic rays creating electron-hole or breaking up Cooper pairs.
 
+All of these different layers to such experiments are inherently -- and in fact often fundamentally -- \emph{noisy}, and it is the physicist's challenge to measure their desired effects in spite of this noise.
+A well-thought-out experimental setup is hence one that has been designed taking the various noise sources into consideration, and state-of-the-art experiments often need to push the frontier in order to be successful.
+From material choice in the sample to the signal path and the specs of the measurement equipment, many aspects need to be optimized and, in particular, characterized in order to assess the noise.
+Indeed, the assessment of noise might even be the entire \emph{goal} of the experiment, for instance to evaluate material properties.
+In this case, the quantity being measured might not be the same quantity whose noise one is interested in but rather some function of it, and the resulting data still needs to be transformed before one is able to make any practical statements about those properties.
+
+Noise, in the sense that we are concerned with in the present thesis,\sidenote{
+    Quantum noise does not fall under this scope as it may -- disregarding vacuum fluctuations for the sake of argument -- be considered \emph{emergent}; it arises from a system entangled with a (not necessarily large) number of quantum degrees of freedom being observed, \ie, tracing out the environment's degrees of freedom.
+    Our lack of knowledge about this environment then appears as noise in our observations.
+    See \citer{Clerk2010} for a comprehensive review of the quantum case.
+}
+is a stochastic process, meaning that we cannot predict with certainty a dynamical system's time evolution; it \emph{fluctuates} randomly around its noise-free value.\sidenote{
+    Quantum measurements are also noisy in this sense as we cannot predict the outcome of a single-shot measurement, but here the stochasticity is over the outcomes of an ensemble rather than the sequence of values in time.
+    The two are, however, closely related through ergodicity, which we will require in \cref{sec:speck:theory:time_series_estimation}.
+    % TODO: basically the same statement as the previous footnote?
+}
+Only by obtaining statistics, \ie, repeated observations, either by preparing the system in the same initial state or measuring for a certain amount of time, can we make any statements about the underlying stochastic process.
+Two questions are key to assessing these statistics: first, what is the amplitude of the fluctuations?
+And second, at which frequency do the fluctuations occur?
+If the amplitude is small enough, we might not need to care, and if the frequency is large enough, we might be able to average out the fluctuations while if it is small enough, it might appear \emph{quasistatic} and we might be able to subtract them.
+Although numerous other techniques for measuring and estimating a noise's properties exist, analyzing noise in frequency space by means of the Fourier transform imposes itself when considering these two notions.
+
+This approach is the central topic of this part of the present thesis.
+However, we will not be too much concerned with the theoretical side of the subject matter.
+Rather, I will focus on making these techniques readily and easily accessible to experimentalists in the lab.
+
+% TODO:
+% - ergodicity
+% - spectrogram
+% - rms
+
+
+
+%Hence, characterizing (and subsequently mitigating) noise is an essential task for the experimentalist.
+%But noise comes in as many different forms as there are types of signal sources and detectors, whether it be a voltage source or a photodetector, and while some instruments have built-in solutions for noise analysis, they vary in functionality and capability.
+%Moreover, the measured signal often does not directly correspond to the noisy physical quantity of interest, making it desirable to be able to manipulate the raw data before processing.
