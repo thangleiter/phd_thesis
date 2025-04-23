@@ -1,6 +1,9 @@
-\makeatletter
-\newcommand{\printFontSize}{\f@size\ pt}
-\makeatother
+\ExplSyntaxOn
+\NewDocumentCommand{\printFontSize}{}
+{
+  \f@size \pt
+}
+\ExplSyntaxOff
 
 \newcommand{\Ie}{\textit{I.\nobreak\hairsp{}e.}\xspace}
 \newcommand{\Eg}{\textit{E.\nobreak\hairsp{}g.}\xspace}
@@ -31,6 +34,16 @@
 \newcommand{\mylettrine}[2]{
   \lettrine[lines=3, lhang=0.33, loversize=0.25]{#1}{#2}
 }
+% https://genai.rwth-aachen.de/app/conversations/6808e87d0255ddb6ed2421f3
+\ExplSyntaxOn
+\NewDocumentCommand{\AutoLettrine}{m}
+ {
+  % Set the input word to a token list variable.
+  \tl_set:Nn \l_tmpa_tl { #1 }
+  % Use the head (first token) and tail (remaining tokens) to call \lettrine.
+  \mylettrine{\tl_head:N \l_tmpa_tl}{\tl_tail:N \l_tmpa_tl}
+ }
+\ExplSyntaxOff
 
 \newcommand{\python}{Python\xspace}
 \newcommand{\package}[1]{\nohyphens{\code{#1}}\xspace}
