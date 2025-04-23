@@ -14,18 +14,21 @@
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
+- [ ] split up `prr.tex`
  
 ## Layout
 - [ ] Tune the bibliography style
 - [ ] Chapters instead of parts?
 	- [ ] Else numbered parts
+- [ ] Part title page design
+- [ ] `\margintoc`?
 
 ## `latexmk`
 - [ ] ?
 
 ## `tectonic`
 - [ ] `\underbrace{}`
-- [ ] marginfigure placement
+- [ ] margin placements
 
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
