@@ -12,11 +12,11 @@ if [ "$is_branch_checkout" = "1" ]; then
     # Copy to ~/texmf on windows only (on linux the soft link works
     case "$(uname -s)" in
       *MINGW*|*MSYS*)
-        mkdir -p "$HOME"/texmf/tex/latex
-        mkdir -p "$HOME"/texmf/fonts/truetype/LiberationMono
+        mkdir -p "$USERPROFILE"/texmf/tex/latex
+        mkdir -p "$USERPROFILE"/texmf/fonts/truetype/LiberationMono
 
-        cp --recursive --update ./lib/kaobook "$HOME"/texmf/tex/latex
-        cp --recursive --update ./lib/fonts/LiberationMono/*.ttf "$HOME"/texmf/fonts/truetype/LiberationMono
+        cp --recursive --update ./lib/kaobook "$USERPROFILE"/texmf/tex/latex
+        cp --recursive --update ./lib/fonts/LiberationMono/*.ttf "$USERPROFILE"/texmf/fonts/truetype/LiberationMono
       ;;
         *)
       ;;
