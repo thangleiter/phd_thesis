@@ -34,7 +34,8 @@ def noise(σ, τ_c, N, method='lmt'):
             return fast_colored_noise(functools.partial(psd, σ=σ, τ_c=τ_c), Δt, L, (N,))
         case 'lmt':
             return FFTSpectralSampler(
-                (N,), functools.partial(psd, σ=σ, τ_c=τ_c), dt=np.full(L, Δt), seed=SEED,
+                (N,), functools.partial(functools.scaled(2)(psd), σ=σ, τ_c=τ_c),
+                dt=np.full(L, Δt), seed=SEED,
             ).values.squeeze()
         case 'bartosch':
             Z = np.empty((N, L))
@@ -101,7 +102,6 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         # Correlation
         ax = axes[1]
         τ = np.insert(np.geomspace(1e-3, L, L), 0, 0)
-        # τ = np.insert(np.geomspace(1e-2, L, 1000), 0, 0)
         ln, = ax.plot(τ / τ_cs[1], corr(τ, σ, τ_c) / σs[1] ** 2, '-')
 
         C = np.array([sc.signal.correlate(*[x]*2) for x in X])
@@ -111,8 +111,8 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         idx = np.unique(np.round(log_indices).astype(int))
 
         ax.errorbar(τ[τ >= 0][idx] / τ_cs[1],
-                    (C.mean(0)[τ >= 0] / np.arange(L, 0, -1))[idx] / σs[1] ** 2,
-                    (C.std(0)[τ >= 0] / np.arange(L, 0, -1))[idx] / σs[1] ** 2 / np.sqrt(N_MC),
+                    (C.mean(0)[τ >= 0] / L)[idx] / σs[1] ** 2,
+                    (C.std(0)[τ >= 0] / L)[idx] / σs[1] ** 2 / np.sqrt(N_MC),
                     color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
                     marker='.',
@@ -127,7 +127,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         ln, = ax.plot(f * 2 * np.pi,
                       psd(f, σ, τ_c) / (2 * τ_cs[1] * σs[1] ** 2))
 
-        fx, Sx = sc.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False)
+        fx, Sx = sc.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False, return_onesided=False)
         # select only a few of the data points
         log_indices = np.logspace(0, np.log10(len(fx)), num=15, endpoint=True) - 1
         idx = np.unique(np.round(log_indices).astype(int))
