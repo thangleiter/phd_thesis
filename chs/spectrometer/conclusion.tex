@@ -1,7 +1,7 @@
 % mainfile: ../../main.tex
 \chapter{Conclusion and outlook}\label{ch:speck:conclusion}
-\AutoLettrine{In} this part of the thesis, I presented the \pyspeck \python package for interactive, backend-agnostic noise spectroscopy.
-I first introduced the theory behind spectral noise estimation based on time-series analysis in \cref{ch:speck:theory}.
+\AutoLettrine{In} \thispart, I introduced the \pyspeck \python package for interactive, backend-agnostic noise spectroscopy.
+I first presented the theory behind spectral noise estimation based on time series analysis in \cref{ch:speck:theory}.
 There, I showed how, by the Wiener-Khinchin theorem, the \gls{psd} $S(\omega)$ is related to a time-dependent signal by the Fourier transform of its autocorrelation function $C(\tau)$.
 After discretizing the problem, I discussed how the arising spectral windowing introduces distortions in the estimated \gls{psd} through effects such as spectral leakage and scalloping loss.
 The introduction of windowing naturally led to the need for a more efficient method of spectrum estimation to avoid data wastefulness.
@@ -23,7 +23,7 @@ An obvious case is adding support for more \gls{daq} hardware instruments by imp
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
 Another valuable addition would be to add support for generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
-\qumada is a \qcodes-based measurement framework that provides a unified interface to instruments to, in a similar spirit to \pyspeck's \code{DAQ} interface, abstract away internals of individual instruments and provide users with a standardized way to interact with them.
+\qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
 Next, incorporating noise spectroscopy into the standard measurement workflow of quantum device experiments would allow experimentalists to quickly gauge noise levels as they are performing measurements.
@@ -156,4 +156,7 @@ Further code adaptations would involve minor changes such as replacing the spect
 and make the plotting conform to complex data.\sidenote{
     It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
 }
-\todo{improve this part.}
+% TODO:
+%  - improve this part?
+%  - spectrogram?
+%  - rms plot in live view?

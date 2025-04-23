@@ -5,7 +5,7 @@
 }
 A simple metric quantifying the average noise amplitude of the signal observed from time $t=0$ to $t=T$ is the \gls{rms}~\cite{RMSMathworld},
 \begin{align}\label{eq:speck:rms:timedomain}
-    \rms_x = \sqrt{\frac{1}{T}\int_{0}^{T}\dd{t}x(t)^2}.
+    \rms_x = \sqrt{\frac{1}{T}\int_{0}^{T}\dd{t}\abs{x(t)}^2}.
 \end{align}
 While this already tells us \emph{something} about the noise, it is evident that a single number does not provide many clues if we were to attempt to mitigate the noise or say something qualitative about it beyond \enquote{small} and \enquote{large}.
 In cases such as these, physics has often turned to the \emph{spectral} representation of the function of interest.
@@ -38,23 +38,23 @@ Second, and crucially, it is not always possible to excite the system at a certa
 For example, it is generally considered hard\sidenote{
     And also unpopular with colleagues.
 }
-to -- deliberately -- excite vibrations of a specific frequency in a cryostat.
+to -- deliberately -- excite vibrations of a specific frequency in a cryostat, yet we might still be interested in the displacement spectrum inside of it.
 A related method is available if one has access to a frequency-tunable probe, that is, a physical system whose behavior -- typically its time evolution or some measurable property after letting the system evolve -- under noise is well understood within a given noise model, and that can be controlled to be sensitive to a certain frequency.
 One example for such methods is \gls{dd}-based noise spectroscopy using a qubit~\cite{Alvarez2011,Szankowski2017,Dial2013,Connors2022}, a protocol based on insights gained from the filter-function formalism---see \cref{part:ff}.
 These protocols are especially well-suited for high but less so for low frequencies as they rely on observing the coherence of a qubit and hence the visibility on long time scales.
 
 In a sense the most straight-forward way of measuring the noise spectrum presents itself as a consequence of the Wiener-Khinchin theorem~\cite{Wiener1930,Khintchine1934} that relates the noise spectrum to the Fourier transform of a time-dependent signal.
-This makes it possible to estimate the noise spectrum by simply observing a signal for a certain amount of time and performing some post-processing!\sidenote[][*-5]{
+This makes it possible to estimate the noise spectrum by simply observing a signal for a certain amount of time and performing some post-processing!\sidenote{
     An interesting combination of the Fourier-transform-based and the qubit-based spectroscopy methods was recently proposed in \citer{Vezvaee2024}, where they compute the spectrum by Fourier-transforming the second derivative of the coherence function.
 }
 This method will be the topic of the present chapter.
 It is laid out as follows.
-I will first derive the Wiener-Khinchin theorem for continuous processes and introduce the central quantity of interest in noise spectroscopy; the \gls{psd}.
+I will first derive the Wiener-Khinchin theorem for continuous stochastic processes and introduce the central quantity of interest in noise spectroscopy; the \gls{psd}.
 Then, I will discretize the method and discuss resulting side-effects before describing an efficient way of obtaining the spectrum from a finite amount of data.
 Finally, I elaborate on relevant parameters and properties.
 
 \section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
-To see how spectral noise properties may be estimated from time-series data, consider a continuous wide-sense stationary\sidenote{
+To see how spectral noise properties may be estimated from time series data, consider a continuous wide-sense stationary\sidenote{
     \label{sidenote:speck:autocorrelation}
     For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the autocorrelation function $C(t, t') = \ev{x(t)\conjugate x(t^\prime)}$ simplifies to $\ev{x(t)\conjugate x(t + \tau)} = \ev{x(0)\conjugate x(\tau)}$ with $\tau = t^\prime - t$.
     That is, it is a function of only the time lag $\tau$ and not the absolute point in time.
@@ -132,8 +132,8 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
         Top: Simluated time traces using the algorithm presented in \cref{ch:ff:time_domain_methods}.
         The data are normalized to the computed \gls{rms} (equal to $\sigma$ in the continuous case).
         Middle: Theoretical autocorrelation function (\cref{eq:speck:ou:autocorrelation}, solid lines) and computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
-        Error bars indicate the standard error of the mean and axes are scaled with respect to the parameters of the magenta data, and data are plotted on an $\asinh$-scale.
-        Bottom: Theoretical \gls{psd} (\cref{eq:speck:ou:psd}, solid lines) and periodograms computed from the simulated data averaged over \num{e3} traces using \code{scipy.signal.periodogram()}, \cf \cref{eq:speck:periodogram} (circles, subset of points).
+        Error bars indicate the standard error of the mean, axes are scaled with respect to the parameters of the magenta data, and data are plotted on an $\asinh$-scale.
+        Bottom: Theoretical \gls{psd} (\cref{eq:speck:ou:psd}, solid lines) and periodograms computed from the simulated data using \code{scipy.signal.periodogram()}, \cf \cref{eq:speck:periodogram}, averaged over \num{e3} traces (circles, subset of points).
         Axes are again scaled with respect to the parameters of the magenta data and plotted on an $\asinh$-scale.
         Parameters are $\tau_c = \dt\times\{\num{e-2},\num{e0},\num{e2}\}$ and $\sigma^2=\sqrt{\tau_c}/4$ for blue, magenta, and green data, respectively.
     }
@@ -151,16 +151,16 @@ The \gls{psd} in turn is the Lorentzian function
     S(\omega) = \frac{2\sigma^2\tau_c}{1 + (\omega\tau_c)^2}.
 \end{align}
 For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\flatfrac{\dt}{\tau_c}\to 0, S(\omega) = 2\tau_c\sigma^2$), correlated, pink noise ($\flatfrac{\dt}{\tau_c}\gg 1, S(\omega) = \flatfrac{2\sigma^2}{\tau_c\omega^2}$), and perfectly correlated, quasistatic noise ($\flatfrac{\dt}{\tau_c}\to\infty, S(\omega) = \sigma^2\delta(\omega)$).
-\Cref{fig:speck:psdcorr} depicts simulated data and its autocorrelation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \dt$, magenta), and in the correlated limit ($\tau_c = \num{e+2}\dt$, green).
+\Cref{fig:speck:psdcorr} depicts simulated data and its autocorrelation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \dt$, magenta), and in the correlated regime ($\tau_c = \num{e+2}\dt$, green).
 From the time series plot at the top it becomes clear that the \gls{rms} alone is insufficient to describe the properties of noisy signals as the curves differ significantly despite being normalized to their \gls{rms}.
-The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{1}{4}$.
+The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{\dt}{4}$.
 For the white noise limit (blue), correlations are too short to be resolved with the given time discretization.
 The correlations decay to $\e\inverse$ at $\flatfrac{\tau}{\tau_c}=\num{e-2},\num{e0},\num{e+2}$, respectively.
 Finally, the bottom panel shows the \gls{psd}, \cref{eq:speck:ou:psd}, and its periodogram estimate, again averaged over \num{e3} realizations of the signal and normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{\dt}{4}$.
 The cross-over from white to pink \gls{psd} occurs at $\omega = \tau_c$.
 While the simulated data for $\tau_c = \num{e-2}\dt$ appears perfectly white, that for $\tau_c = \num{e2}\dt$ appears perfectly \oneoverf-like because the spectrum is only white below the smallest resolvable frequency $\df = T\inverse$.
 
-Having gotten an intuition for the quantities $C(\tau)$ and $S(\omega)$, let us move on to see how the latter may be obtained from time-series data.
+Having gotten an intuition for the quantities $C(\tau)$ and $S(\omega)$, let us move on to see how the latter may be obtained from time series data.
 \Cref{eq:speck:psd:definition} represents the starting point for the experimental spectrum estimation procedure.
 Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized version\sidenote{
     We only discuss the problem of equally spaced samples here.
@@ -170,7 +170,11 @@ Instead of a continuous signal $x(t), t\in [0, T]$, consider its discretized ver
     x_n \qc n\in\lbrace 0, 1, \dotsc, N - 1\rbrace
 \end{align}
 defined at times $t_n = n\dt$ with $T = N\dt$ and where $\dt = \fs\inverse$ is the sampling interval (the inverse of the sampling frequency \fs).
-Invoking the ergodic theorem, we can replace the long-term average in \cref{eq:speck:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
+Invoking the ergodic theorem,\sidenote{
+    Note that the limit of perfectly correlated noise, $S(\omega)\propto\delta(\omega)$, technically does \emph{not} correspond to an ergodic process because $C(\tau)=\text{const.}\,\forall\tau\in(-\infty,\infty)$.
+    In practice, this is always a mathematical idealization and the spectrum is actually better described by a nascent $\delta$-function with a small but finite width.
+}
+we can replace the long-term average in \cref{eq:speck:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
 \begin{align}\label{eq:speck:psd:bartlett}
     S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{m}}^2 \\
         &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{m}
@@ -202,7 +206,7 @@ Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n
 In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
 It becomes clear, then, that the Bartlett average (\cref{eq:speck:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\dt$.
 
-An improvement in data efficiency can be obtained using Welch's method~\cite{Welch1967}.
+An improvement in data efficiency can be achieved using Welch's method~\cite{Welch1967}.
 To see how, we first need to discuss spectral windowing.
 
 \section{Window functions}\label{sec:speck:theory:windows}
@@ -260,16 +264,15 @@ A window frequently used in spectral analysis is the Hann window~\cite{Nuttall19
 \begin{align}\label{eq:speck:window:hann}
     w_n\gth{m} =
     \begin{dcases}
-        \cos^2\left(\frac{\pi n}{N}\right) &\qif* (m - 1)N\leq n < mN\qand \\
+        \sin^2\left(\frac{\pi n}{N}\right) &\qif* (m - 1)N\leq n < mN\qand \\
         0 &\text{else},
     \end{dcases}
 \end{align}
 with the Fourier representation of the unshifted window,
 \begin{align}\label{eq:speck:window:hann:fourier_unshifted}
-%    \hat{w}_n &= \frac{2T\pi^2\sinc(\flatfrac{\omega_n T}{2})}{4\pi^2 - \omega_n^2 T^2},
-%    \hat{w}_n &= \frac{2\pi^2 T\sinc(\flatfrac{\omega_n T}{2})}{(2\pi - \omega_n T)(2\pi + \omega_n T)},
-    \hat{w}_n &=  T\sinc\left(\frac{\omega_n T}{2}\right)\times
-                    \frac{1}{2(1 - \flatfrac{\omega_n T}{2\pi})(1 + \flatfrac{\omega_n T}{2\pi})},
+    \hat{w}_n &= \frac{T}{2}\sinc\left(\frac{\omega_n T}{2}\right)\times
+                 %  \frac{1}{2(1 - \flatfrac{\omega_n T}{2\pi})(1 + \flatfrac{\omega_n T}{2\pi})},
+                    \frac{1}{1 - \left(\flatfrac{\omega_n T}{2\pi}\right)^2}
 \end{align}
 shown in \cref{fig:speck:hann_fourier}.
 The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{eq:speck:window:boxcar:fourier:unshifted} and \cref{fig:speck:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is only slightly broadened.
@@ -307,7 +310,7 @@ Choosing the Hann window and an overlap of \qty{50}{\percent} results in $M=5$ s
 The data in the second window is highlighted.
 
 \section{Parameters \& Properties of the \acrshort{psd}}\label{sec:speck:theory:welch:parameters}
-\begin{margintable}[*-6]
+\begin{margintable}[*-7]
     \centering
     \footnotesize
     \caption[Overview of spectrum estimation parameters]{
@@ -352,7 +355,7 @@ To acquire data using some form of (digital) \gls{daq}, one usually needs to spe
 This results in a measurement of duration $T = L\dt$ where $\dt = \fs\inverse$ as previously mentioned.
 The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:speck:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
 Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
-In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote[][*-2]{
+In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote[][*-3]{
     Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
 }
 % TODO: be consistent in use of segment vs partition?
