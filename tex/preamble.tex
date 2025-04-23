@@ -105,7 +105,16 @@
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 %! end preamble = math
 %----------------------------------------------------------------------------------------
+% Config
+%----------------------------------------------------------------------------------------
+% Margin TOC
+%\setcounter{margintocdepth}{\sectiontocdepth}
+% Use like so:
+% \setchapterpreamble[u]{\margintoc}
+% \chapter{foo}
+% This would be nice to have for parts, but those don't have margins atm.
 
+%----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
 
@@ -120,7 +129,6 @@
 \input{tex/glossary} % Include the glossary definitions
 
 % \makenomenclature % Make LaTeX produce the files required to compile the nomenclature
-
 %----------------------------------------------------------------------------------------
 % DEBUG
 %----------------------------------------------------------------------------------------

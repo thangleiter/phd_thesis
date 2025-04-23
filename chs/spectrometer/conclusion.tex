@@ -37,16 +37,16 @@ But of course the strength of the \pyspeck package stems from its capacity to be
         @dataclasses.dataclass
         class TeeDAQ(DAQ):
             settings: mp.managers.DictProxy
-            data_queue: mp.JoinableQueue
-            stop_event: threading.Event
+            queue: mp.JoinableQueue
+            event: threading.Event
 
             def setup(self, **_):
                 settings = self.DAQSettings(self.settings)
                 return settings.to_consistent_dict()
 
             def acquire(self, **_):
-                while not self.stop_event.is_set():
-                    yield self.data_queue.get(block=True)
+                while not self.event.is_set():
+                    yield self.queue.get(block=True)
     \end{py}
     \caption[\code{TeeDAQ} template]{
         Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
@@ -61,7 +61,7 @@ Because the live view mode runs in the background, the external measurement fram
 
 \Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
-Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{data_queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
+Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
 \begin{py}
     daq = TeeDAQ(...)
@@ -70,7 +70,7 @@ A measurement framework would then interact with the \code{TeeDAQ} object as exe
     ...
     data = measure(fs, n_pts)
     daq.settings.update(fs=fs, n_pts=n_pts)
-    daq.data_queue.put(data)
+    daq.queue.put(data)
 \end{py}
 Measurement frameworks integrating with this interface could thus provide experimentalists live feedback on current noise levels with negligible overhead and minimal code adaptation.
 

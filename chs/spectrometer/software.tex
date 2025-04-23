@@ -35,7 +35,7 @@ The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather
     }
     \label{fig:speck:software:tree}
 \end{marginfigure}
-The \pyspeck package provides a central class, \code{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
+The \pyspeck package provides a central class, \pyinline[breakanywhere]{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
 It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.\sidenote[][*10]{
     Actually \emph{drivers} to be more precise.
 }
@@ -88,7 +88,7 @@ It is instantiated with any subset of the parameters listed in \cref{tab:speck:s
     \code{DAQSettings} inherits from the builtin \code{dict} and as such can contain arbitrary other keys besides those listed in \cref{tab:speck:software:parameters}.
     However, automatic validation of parameter consistency is only performed for these special keys.
 }
-and attempts to resolve the parameter interdependencies lined out in \cref{sec:speck:theory:welch:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
+and attempts to resolve the parameter interdependencies laid out in \cref{sec:speck:theory:welch:parameters} and depicted in \cref{fig:speck:theory:parameters} upon calling \code{DAQSettings.to_consistent_dict()}.\sidenote{
     Since the graph spanned by the parameters is not acyclic, this only works \emph{most} of the time.
 }
 This either infers those parameters that were not given from those that were or, if not possible, uses a default value.
@@ -254,7 +254,7 @@ Here, the keyword \code{fourier_procfn} should be a callable with signature \cod
 }
 That is, it should take the frequency-space data, the corresponding frequencies, and arbitrary keyword arguments and return a tuple of the processed data and the corresponding frequencies.
 
-\begin{marginlisting}
+\begin{marginlisting}[*2]
     \begin{py}[fontsize=\footnotesize]
         def comp_gain(x, gain=1.0, **_):
             return x / gain
@@ -267,12 +267,19 @@ That is, it should take the frequency-space data, the corresponding frequencies,
     \label{lst:speck:procfn}
 \end{marginlisting}
 
-The latter are required in case the function modifies the frequencies.\sidenote{
+The latter are required in case the function modifies the frequencies.\sidenote[][*13]{
     One example is the \code{octave_band_rms()} function from the \code{qutil.signal_processing} subpackage~\cite{OctaveBandRmsQutil} that decimates frequencies to fractions of octave bands. See \cref{part:setup} for a use-case.
     % TODO: ref
 }
 A simple example for a processing function in Fourier space is shown in \cref{lst:speck:fourier_procfn}, which computes the \mbox{(anti-)}derivative of the data using the fact that
-\begin{marginlisting}
+\begin{align}\label{eq:speck:fourier_derivative}
+    \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
+\end{align}
+under the Fourier transform.
+In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
+% TODO: ref
+
+\begin{marginlisting}[*8]
     \begin{py}[fontsize=\footnotesize]
         def derivative(xf, f, n=0, **_):
             return xf / (2j * pi * f)**n
@@ -280,12 +287,6 @@ A simple example for a processing function in Fourier space is shown in \cref{ls
     \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
 \end{marginlisting}
-\begin{align}\label{eq:speck:fourier_derivative}
-    \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
-\end{align}
-under the Fourier transform.
-In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
-% TODO: ref
 
 \section{Feature overview}\label{sec:speck:software:features}
 Now that we have a basic understanding of the design choices underlying \pyspeck, let us discuss the typical workflow of using the package.
@@ -501,7 +502,9 @@ Moreover, each time a spectrum is captured, data is saved to disk, potentially a
 For these reasons, the \pyspeck package also offers a non-persistent live mode for displaying spectra continuously.
 
 This mode is facilitated by the \code{qutil.plotting.live_view} module that provides asynchronous plotting functionality based on \matplotlib.
-The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.
+The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote{
+    Note that technically, data is also recorded in a background thread in serial mode by default.
+}
 In the former case, the window hosting the figure runs in the main thread and is kept responsive using \matplotlib's GUI event loop mechanisms.
 In the latter, the plotting takes place in a separate process, resulting in true parallelism.
 
