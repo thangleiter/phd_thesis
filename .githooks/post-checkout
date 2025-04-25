@@ -12,22 +12,25 @@ if [ "$is_branch_checkout" = "1" ]; then
     # Copy to ~/texmf on windows only (on linux the soft link works
     case "$(uname -s)" in
       *MINGW*|*MSYS*)
-        HOMEDIR="$USERPROFILE"
+        TEXMF_HOME="$USERPROFILE"
         COMMAND="cp --recursive --update"
-      ;; Linux|Darwin)
-        HOMEDIR="$HOME"
+      ;; Linux)
+        TEXMF_HOME="$HOME"
+        COMMAND="ln --symbolic --force --backup"
+      ;; Darwin)
+        TEXMF_HOME="$HOME/Library"
         COMMAND="ln --symbolic --force --backup"
       ;; *)
       ;;
     esac
 
-    TEXMF_DIR="$HOMEDIR/texmf/tex/latex"
-    FONT_DIR="$HOMEDIR/texmf/fonts/truetype/LiberationMono"
+    TEX_DIR="$TEXMF_HOME/texmf/tex/latex"
+    FONT_DIR="$TEXMF_HOME/texmf/fonts/truetype/LiberationMono"
 
-    mkdir -p "$TEXMF_DIR"
+    mkdir -p "$TEX_DIR"
     mkdir -p "$FONT_DIR"
 
-    $COMMAND ./lib/kaobook "$TEXMF_DIR"
+    $COMMAND ./lib/kaobook "$TEX_DIR"
     $COMMAND ./lib/fonts/LiberationMono/*.ttf "$FONT_DIR"
 fi
 
