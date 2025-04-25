@@ -1,4 +1,7 @@
 # %%
+import pathlib
+import sys
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +10,9 @@ from qopt.noise import fast_colored_noise
 from qutil import itertools
 from qutil.plotting.colors import RWTH_COLORS
 
-from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+
+from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH  # noqa
 
 mpl.use('pgf')
 # %%

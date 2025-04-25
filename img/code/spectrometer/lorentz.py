@@ -1,4 +1,7 @@
 # %%
+import pathlib
+import sys
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numba as nb
@@ -10,7 +13,9 @@ from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
 from qutil import functools, const, signal_processing as sp
 
-from common import PATH, MARGINWIDTH
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+
+from common import PATH, MARGINWIDTH  # noqa
 
 mpl.use('pgf')
 mpl.rcdefaults()
@@ -160,4 +165,3 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
     ax.grid()
 
     fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psdcorr.pdf', backend='pgf')
-
