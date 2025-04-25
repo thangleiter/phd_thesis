@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 echo "Installing git hooks."
 git config core.hooksPath .githooks
