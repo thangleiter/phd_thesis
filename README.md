@@ -1,13 +1,15 @@
 # Repository layout
 - The most recent version of the compiled document is automatically placed at `review/main.pdf`.
 - Reviews should be placed in `reviews/`, preferably by branching off at the commit at which the review starts :)
-- The TeX style is included as a git submodule at `lib/kaobook`. 
-- Fonts not available from CTAN are included as a git submodule at `lib/fonts`.
-- There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively. 
-  To automatically switch to the correct submodule branch when switching branches in the main repository, run 
-  ```
-  git config core.hooksPath .githooks
-  ```
+
+# Compiling
+- There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively.
+- Dependencies are included as git submodules
+	- The TeX style is at `lib/kaobook`. 
+	- Fonts not available from CTAN are at `lib/fonts`.
+- To automatically set up the repository to compile with `latexmk`, run `shell/init.{sh,ps1}`. 
+  This creates symlinks (copies on Windows) to `$HOME/texmf/tex/latex/kaobook` and `$HOME/texmf/fonts/truetype/LiberationMono/`.
+- Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
 
 # To Dos
 ## Content
@@ -151,13 +153,6 @@ If fonts are not found, download and install them in your system:
 
 Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
 
-To make latex find the submodules, perform the following steps:
-
-- Linux:
-  - Soft link `lib/kaobook` to `$HOME/texmf/tex/latex/kaobook`.
-  - **Hard** link `lib/fonts/LiberationMono/*.ttf` to `$HOME/texmf/fonts/truetype/LiberationMono`.
-- Windows:
-  - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
 ## XeTeX
  
 ### `luaotfload-tool`
