@@ -72,7 +72,9 @@ One way to implement such functionality would be to introduce a proxy \code{DAQ}
 This proxy class would serve as an interface to external measurement software and expose two attributes; first, a data queue, into which the external code could place arbitrary time series data that was obtained during some measurement, and second, a shared dictionary to hold acquisition parameters as these might change between measurements.
 Because the live view mode runs in the background, the external measurement framework could push data to the queue whenever new data was taken without obstructing the measurement workflow.
 
-\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.
+\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.\sidenote{
+    The UNIX shell command \texttt{data = \$(measure(**settings) | tee daq)} should give an indication as to the naming.
+}
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
 Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
