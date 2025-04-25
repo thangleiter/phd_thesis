@@ -1,4 +1,7 @@
 # %%
+import pathlib
+import sys
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,22 +10,24 @@ from qopt.noise import fast_colored_noise
 from qutil import itertools
 from qutil.plotting.colors import RWTH_COLORS
 
-from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+
+from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH  # noqa
 
 mpl.use('pgf')
 # %%
 
 
 def rect(x, T=1):
-    arg = .5 * x * T / np.pi
-    return T * np.sinc(arg)
+    arg = .5 * x * T
+    return T * np.sinc(arg / np.pi)
 
 
 def hann(x, T=1):
-    arg = .5 * x * T / np.pi
+    arg = .5 * x * T
     with np.errstate(invalid='ignore', divide='ignore'):
-        y = np.atleast_1d(T * np.sinc(arg) / (2 * (1 - arg) * (1 + arg)))
-    y[(arg == 1) | (arg == -1)] = T / 4
+        y = .5 * np.atleast_1d(rect(x, T)) / (1 - (arg / np.pi)**2)
+    y[(arg == np.pi) | (arg == -np.pi)] = T / 4
     return y
 
 

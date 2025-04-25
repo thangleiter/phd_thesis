@@ -8,8 +8,5 @@
         <option name="SMART_TABS" value="true" />
       </value>
     </option>
-    <editorconfig>
-      <option name="ENABLED" value="false" />
-    </editorconfig>
   </code_scheme>
 </component>

@@ -1,16 +1,29 @@
 % mainfile: ../../main.tex
 \chapter{Conclusion and outlook}\label{ch:speck:conclusion}
-\mylettrine{I}{n} this part, I presented the \pyspeck \python package for interactive, backend-agnostic spectrum acquisition.
-I first introduced the theory behind spectral noise estimation in \cref{ch:speck:theory}.
-There, I discussed
+\AutoLettrine{In} \thispart, I introduced the \pyspeck \python package for interactive, backend-agnostic noise spectroscopy.
+I first presented the theory behind spectral noise estimation based on time series analysis in \cref{ch:speck:theory}.
+There, I showed how, by the Wiener-Khinchin theorem, the \gls{psd} $S(\omega)$ is related to a time-dependent signal by the Fourier transform of its autocorrelation function $C(\tau)$.
+After discretizing the problem, I discussed how the arising spectral windowing introduces distortions in the estimated \gls{psd} through effects such as spectral leakage and scalloping loss.
+The introduction of windowing naturally led to the need for a more efficient method of spectrum estimation to avoid data wastefulness.
+This is addressed by Welch's method, which trades spectral resolution for estimation accuracy for a given input size by dividing the input into segments and letting them overlap.
+Finally, I discussed the various parameters that influence the properties of the spectrum estimate produced by Welch's method.
 
-\paragraph{Outlook.\label{par:speck:outlook}}
+In \cref{ch:speck:software}, I then introduced the \pyspeck package that facilitates noise spectroscopy based on the theory developed in the previous chapter.
+While in principle agnostic to the specific technique (simple periodogram, Bartlett's method, \etc), it employs Welch's method by default to perform efficient estimation of noise \acrlongpl{psd}.
+To make noise spectroscopy as approachable as possible, the package provides a unified interface to various hardware and software backends to manage \acrlong{daq}.
+Furthermore, it incorporates rich plotting features to ease data analysis and thereby expedite the feedback loop with the lab.
+I first outlined the design choices underlying the source code and explained the mechanism employed to infer \gls{daq} settings from, for example, the physical parameters of the resulting spectrum estimate.
+I described the interface to drivers for different hardware instruments that makes it possible to use the same user code for spectrum acquisition independent of the specific instrument used for \acrlong{daq} while at the same time keeping the amount of required driver code at a minimum.
+Finally, I showcased the interactive features by means of a typical workflow.
+Here, the serial approach of recording single spectra that are saved to disk at a time stands in contrast to the non-persistent live mode, where data is continuously acquired and displayed in a separate thread or process.
+
+%\paragraph{Outlook.\label{par:speck:outlook}}
 There are several possible avenues for future development of the \pyspeck package.
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
 Another valuable addition would be to add support for generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
-\qumada is a \qcodes-based measurement framework that provides a unified interface to instruments to, in a similar spirit to \pyspeck's \code{DAQ} interface, abstract away internals of individual instruments and provide users with a standardized way to interact with them.
+\qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
 Next, incorporating noise spectroscopy into the standard measurement workflow of quantum device experiments would allow experimentalists to quickly gauge noise levels as they are performing measurements.
@@ -37,16 +50,16 @@ from .base import DAQ
 @dataclasses.dataclass
 class TeeDAQ(DAQ):
     settings: mp.managers.DictProxy
-    data_queue: mp.JoinableQueue
-    stop_event: threading.Event
+    queue: mp.JoinableQueue
+    event: threading.Event
 
     def setup(self, **_):
         settings = self.DAQSettings(self.settings)
         return settings.to_consistent_dict()
 
     def acquire(self, **_):
-        while not self.stop_event.is_set():
-            yield self.data_queue.get(block=True)
+        while not self.event.is_set():
+            yield self.queue.get(block=True)
     \end{minted}
     \caption[\code{TeeDAQ} template]{
         Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
@@ -59,9 +72,11 @@ One way to implement such functionality would be to introduce a proxy \code{DAQ}
 This proxy class would serve as an interface to external measurement software and expose two attributes; first, a data queue, into which the external code could place arbitrary time series data that was obtained during some measurement, and second, a shared dictionary to hold acquisition parameters as these might change between measurements.
 Because the live view mode runs in the background, the external measurement framework could push data to the queue whenever new data was taken without obstructing the measurement workflow.
 
-\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.
+\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.\sidenote{
+    The UNIX shell command \texttt{data = \$(measure(**settings) | tee daq)} should give an indication as to the naming.
+}
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
-Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{data_queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
+Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
 \begin{minted}{python}
 daq = TeeDAQ(...)
@@ -70,7 +85,7 @@ view = spect.live_view()
 ...
 data = measure(fs, n_pts)
 daq.settings.update(fs=fs, n_pts=n_pts)
-daq.data_queue.put(data)
+daq.queue.put(data)
 \end{minted}
 Measurement frameworks integrating with this interface could thus provide experimentalists live feedback on current noise levels with negligible overhead and minimal code adaptation.
 
@@ -143,4 +158,7 @@ Further code adaptations would involve minor changes such as replacing the spect
 and make the plotting conform to complex data.\sidenote{
     It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
 }
-\todo{improve this part.}
+% TODO:
+%  - improve this part?
+%  - spectrogram?
+%  - rms plot in live view?

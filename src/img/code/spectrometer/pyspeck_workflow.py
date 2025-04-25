@@ -1,3 +1,5 @@
+import pathlib
+import sys
 import tempfile
 
 import IPython
@@ -8,7 +10,9 @@ import scipy as sc
 from python_spectrometer import daq, Spectrometer
 from qutil import const, domains, functools
 
-from common import PATH, TEXTWIDTH
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+
+from common import PATH, TEXTWIDTH  # noqa
 
 if (ipy := IPython.get_ipython()) is not None:
     ipy.run_line_magic('matplotlib', 'qt')

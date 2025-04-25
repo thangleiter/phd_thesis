@@ -1,31 +1,35 @@
 # Repository layout
 - The most recent version of the compiled document is automatically placed at `review/main.pdf`.
 - Reviews should be placed in `reviews/`, preferably by branching off at the commit at which the review starts :)
-- The TeX style is included as a git submodule at `lib/kaobook`. 
-- Fonts not available from CTAN are included as a git submodule at `lib/fonts`.
-- There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively. 
-  To automatically switch to the correct submodule branch when switching branches in the main repository, run 
-  ```
-  git config core.hooksPath .githooks
-  ```
+
+# Compiling
+- There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively.
+- Dependencies are included as git submodules
+	- The TeX style is at `lib/kaobook`. 
+	- Fonts not available from CTAN are at `lib/fonts`.
+- To automatically set up the repository to compile with `tectonic`, run `shell/init.{sh,ps1}`.
+- Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
 
 # To Dos
 ## Content
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
+- [ ] split up `prr.tex`
  
 ## Layout
 - [ ] Tune the bibliography style
 - [ ] Chapters instead of parts?
 	- [ ] Else numbered parts
+- [ ] Part title page design
+- [ ] `\margintoc`?
 
 ## `latexmk`
 - [ ] ?
 
 ## `tectonic`
 - [ ] `\underbrace{}`
-- [ ] marginfigure placement
+- [ ] margin placements
 
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
@@ -138,14 +142,21 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 
 # Fonts
 If fonts are not found, download and install them in your system:
+
 - Libertinus [here](https://github.com/alerque/libertinus).
-- and follow instructions [here](https://git.nsa.his.se/latex/fonts/-/tree/master) for Liberation Mono.
+- Liberation Mono [here](https://git.nsa.his.se/latex/fonts/-/tree/master).
 - NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
 
-# XeTeX
+# TeXLive Integration
+**IMPORTANT**
+
+Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
+
+## XeTeX
  
-## `luaotfload-tool`
+### `luaotfload-tool`
 - Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
+
 
 # Tectonic
 - Build from source using `cargo install --path .`
@@ -162,12 +173,8 @@ If fonts are not found, download and install them in your system:
   Likely a TL 2022 issue.
 
 # Kaobook
-- Linux:
-  - Soft link `lib/kaobook` to `$HOME/texmf/src.tex/latex/kaobook`.
-- Windows:
-  - No extra setup is needed. Because latex does not follow soft links, the `post-checkout` hook copies the folder.
 
-## Kaobook diffs
+## Diffs
 These diffs should already be applied in the submodule shipped with this repository.
 
 - `kaorefs.sty`
@@ -188,8 +195,3 @@ See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-
      \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
      ```
      because `\refeq` is already defined by `mathtools`.
-
-## TeXLive Integration
-**IMPORTANT**
-
-Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!

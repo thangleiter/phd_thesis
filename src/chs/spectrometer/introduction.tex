@@ -1,7 +1,58 @@
 % mainfile: ../../main.src.tex
 \chapter{Introduction}\label{ch:speck:introduction}
-\mylettrine{N}{oise} is ubiquitous in condensed matter physics experiments, and in mesoscopic systems in particular it can easily drown out the sought-after signal.
-Hence, characterizing (and subsequently mitigating) noise is an essential task for the experimentalist.
-But noise comes in as many different forms as there are types of signal sources and detectors, whether it be a voltage source or a photodetector, and while some instruments have built-in solutions for noise analysis, they vary in functionality and capability.
-Moreover, the measured signal often does not directly correspond to the noisy physical quantity of interest, making it desirable to be able to manipulate the raw data before processing.
+\AutoLettrine{Noise} is ubiquitous in condensed matter physics experiments, and in mesoscopic systems in particular it can easily drown out the sought-after signal.
+In solid-state quantum technology research, devices on the length scale of the Fermi wavelength -- say tens of nanometers -- are embedded in a crystalline matrix of \num{e23} atoms.
+These devices host single quantum objects such as electrons or quasiparticles---collective many-body excitations.
+They are controlled and measured by classical signals routed to the device through macroscopic connections like cables and fibers.
+The signals, in turn, are generated and analyzed by electronic (\eg, transistors) or optical instruments (\eg, lasers) that, in all likelihood, are again based on solid-state technology driven by the first quantum revolution~\cite{Dowling2003,Aspect2024}.
+Ultimately, then, the experiments take place in an environment full of external influences from trams passing by, shaking the ground, to cosmic rays creating electron-hole or breaking up Cooper pairs.
 
+All of these different layers to such experiments are inherently -- and in fact often fundamentally\sidenote{
+    Consider Johnson-Nyquist noise in a resistor, for example.
+}
+-- \emph{noisy}, and it is the physicist's challenge to measure their desired effects in spite of this noise.
+A well-thought-out experimental setup is hence one that has been designed taking the various noise sources into consideration, and state-of-the-art experiments often need to push the frontier in order to be successful.
+From material choice in the sample to the signal path and the specs of the measurement equipment, many aspects need to be optimized and, in particular, characterized in order to assess the noise.
+Indeed, the assessment of noise might even be the entire \emph{goal} of the experiment, for instance to evaluate material properties.
+In this case, the quantity being measured might not be the same quantity whose noise one is interested in but rather some function of it, and the resulting data still needs to be transformed before one is able to make any practical statements about those properties.
+
+Noise, in the sense that we are concerned with in \thethesis,\sidenote{
+    Quantum noise does not fall under this scope as it may -- disregarding vacuum fluctuations for the sake of argument -- be considered \emph{emergent}; it arises from a system entangled with a (not necessarily large) number of quantum degrees of freedom being observed, \ie, tracing out the environment's degrees of freedom.
+    Our lack of knowledge about this environment then appears as noise in our observations.
+    See \citer{Clerk2010} for a comprehensive review of the quantum case.
+}
+is a stochastic process, meaning that we cannot predict with certainty a dynamical system's time evolution; it \emph{fluctuates} randomly around its noise-free value.\sidenote{
+    Quantum measurements are also noisy in this sense as we cannot predict the outcome of a single-shot measurement, but here the stochasticity is in the outcomes of an ensemble rather than the sequence of values in time.
+    The two are, however, closely related through ergodicity, which we will require in \cref{sec:speck:theory:time_series_estimation}.
+    % TODO: basically the same statement as the previous footnote?
+}
+Only by obtaining statistics, \ie, repeated observations, either by preparing the system in the same initial state or measuring for a certain amount of time, can we make any statements about the underlying stochastic process.
+Two questions are key to assessing these statistics: first, what is the amplitude of the fluctuations?
+And second, at which frequency do the fluctuations occur?
+If the amplitude is small enough, we might not need to care, and if the frequency is large enough, we might be able to average out the fluctuations while if it is small enough, it might appear \emph{quasistatic} and we might be able to subtract them.
+Although numerous other techniques for measuring and estimating a noise's properties exist, analyzing noise in frequency space by means of the Fourier transform imposes itself when considering these two notions.
+
+This approach is the central topic of \thispart.
+However, we will not be too much concerned with the theoretical side of the subject matter.
+Rather, I will focus on making these techniques readily and easily accessible to experimentalists in the lab.
+Given the arguments laid out above, noise spectroscopy should be an essential item in an experimentalists toolbelt.
+In practice, though, we are faced with several challenges.
+First, different experiments require different \gls{daq} hardware, all of which have both varying capabilities and software interfaces.
+Hence, transferring a spectroscopy code from one device or setup to another is a non-trivial task and can inhibit adoption of the technique.
+Albeit some instruments come with built-in spectroscopy solutions, they vary in functionality and are not easily transferred to different systems.
+Second, while probably everyone finding themselves in the situation is capable of computing the noise spectrum when presented with a set of time series data, inferring the correct parameters for \acrlong{daq} given the desired parameters of the resulting spectrum can, while not difficult, be cumbersome to do.\sidenote{
+    Although it is of course a good exercise, and, as a physicist, one should always strive to understand the tools one is using and the underlying principles at work.
+    \Thispart is intended to provide a starting point for that.
+}
+Lastly, noise spectroscopy is most effective when proper visualization tools are employed.
+Again, this is not a difficult task per se, but such things always incur overhead costs that can deter users from employing these essential techniques.
+
+Here, I address these points by introducing a \python software package, \pyspeck, that tackles the entire processing chain of practical noise spectroscopy in a physics laboratory.
+By abstracting \gls{daq} hardware into a unified interface, it is portable between different setups.
+With the goal to make noise spectroscopy as accessible as possible and lower the entry barrier, it automatically handles parameter inference and hardware constraints.
+Finally, it provides a comprehensive plotting solution that allows for interactively analyzing the data using various different data visualization methods.
+
+The rest of this part is structured as follows.
+In \cref{ch:speck:theory}, I review the mathematical groundwork underpinning noise spectroscopy by means of Fourier transforms of time series and discuss parameters and properties of the central quantity of interest, the \gls{psd}.
+In \cref{ch:speck:software}, I then present the software package by going over its design choices and giving a walkthrough of its features using a typical workflow as an example.
+I conclude by giving an outlook on future directions in \cref{ch:speck:conclusion}.
