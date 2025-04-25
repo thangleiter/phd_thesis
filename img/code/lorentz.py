@@ -8,7 +8,6 @@ from matplotlib import colors
 
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
-from qopt.noise import fast_colored_noise
 from qutil import functools, const, signal_processing as sp
 
 from common import PATH, MARGINWIDTH
@@ -30,8 +29,6 @@ def corr(τ, σ, τ_c):
 
 def noise(σ, τ_c, N, method='lmt'):
     match method:
-        case 'qopt':
-            return fast_colored_noise(functools.partial(psd, σ=σ, τ_c=τ_c), Δt, L, (N,))
         case 'lmt':
             return FFTSpectralSampler(
                 (N,), functools.partial(functools.scaled(2)(psd), σ=σ, τ_c=τ_c),
@@ -41,26 +38,11 @@ def noise(σ, τ_c, N, method='lmt'):
             Z = np.empty((N, L))
             mrng = MultithreadedRNG(SEED)
             mrng.fill(Z)
-            return bartosch_2001_I_nb_mt(Z, Δt, σ, τ_c).squeeze()
-
-
-@nb.njit
-def bartosch_2001_I_nb_st(rng, t, σ=1, τ=1):
-    ρ = np.exp(-(t[1] - t[0])/τ)
-    ξ = np.sqrt(1 - ρ ** 2) * σ
-
-    N = len(t)
-    Z = rng.standard_normal(N)
-    X = np.empty_like(Z)
-    X[0] = σ * Z[0]
-    for n in range(1, N):
-        X[n] = ρ * X[n-1] + ξ * Z[n]
-
-    return X
+            return bartosch_2001_I(Z, Δt, σ, τ_c).squeeze()
 
 
 @nb.njit(parallel=True)
-def bartosch_2001_I_nb_mt(Z, dt, σ=1, τ=1):
+def bartosch_2001_I(Z, dt, σ=1, τ=1):
     ρ = np.exp(-dt/τ)
     ξ = np.sqrt(1 - ρ ** 2) * σ
 
@@ -75,7 +57,7 @@ def bartosch_2001_I_nb_mt(Z, dt, σ=1, τ=1):
 
 # %% Parameters
 SEED = 1
-N_MC = 1000
+O = 1000
 L = 1000
 Δt = 1
 T = L * Δt
@@ -92,7 +74,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
                              layout='constrained')
 
     for σ, τ_c in zip(σs, τ_cs):
-        X = noise(σ, τ_c, N_MC, method='lmt')
+        X = noise(σ, τ_c, O, method='lmt')
 
         # Timetrace
         ax = axes[0]
@@ -112,7 +94,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
 
         ax.errorbar(τ[τ >= 0][idx] / τ_cs[1],
                     (C.mean(0)[τ >= 0] / L)[idx] / σs[1] ** 2,
-                    (C.std(0)[τ >= 0] / L)[idx] / σs[1] ** 2 / np.sqrt(N_MC),
+                    (C.std(0)[τ >= 0] / L)[idx] / σs[1] ** 2 / np.sqrt(O),
                     color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
                     marker='.',
@@ -133,7 +115,7 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
         idx = np.unique(np.round(log_indices).astype(int))
         ax.errorbar(fx[idx]*2*np.pi,
                     Sx.mean(0)[idx] / (2 * τ_cs[1] * σs[1] ** 2),
-                    Sx.std(0)[idx] / (np.sqrt(N_MC) * 2 * τ_cs[1] * σs[1] ** 2),
+                    Sx.std(0)[idx] / (np.sqrt(O) * 2 * τ_cs[1] * σs[1] ** 2),
                     color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
                     marker='.',
@@ -178,3 +160,4 @@ with mpl.style.context(['./margin.mplstyle'], after_reset=True):
     ax.grid()
 
     fig.savefig(PATH / 'pdf/spectrometer/lorentzian_psdcorr.pdf', backend='pgf')
+
