@@ -33,13 +33,13 @@ mathtext.fontset: custom  # Should be 'dejavusans' (default),
 ## "mathtext.fontset: custom" is defined by the mathtext.bf, .cal, .it, ...
 ## settings which map a TeX font name to a fontconfig font pattern.  (These
 ## settings are not used for other font sets.)
-#mathtext.bf:  Libertinus Math:bold
-#mathtext.bfit: Libertinus Math:italic:bold
-#mathtext.cal: Libertinus Math:cursive
-#mathtext.it:  Libertinus Math:italic
-#mathtext.rm:  Libertinus Sans
+mathtext.bf:  Libertinus Math:bold
+mathtext.bfit: Libertinus Math:italic:bold
+#mathtext.cal: Libertinus Math
+mathtext.it:  Libertinus Math:italic
+mathtext.rm:  Libertinus Sans
 #mathtext.sf:  Libertinus Math
-#mathtext.tt:  Liberation Mono
+mathtext.tt:  Liberation Mono
 #mathtext.fallback: cm  # Select fallback font from ['cm' (Computer Modern), 'stix'
                         # 'stixsans'] when a symbol cannot be found in one of the
                         # custom math fonts. Select 'None' to not perform fallback
