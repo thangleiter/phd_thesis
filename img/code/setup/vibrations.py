@@ -22,7 +22,7 @@ from python_spectrometer import Spectrometer
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TEXTWIDTH, MARGINWIDTH  # noqa
+from common import PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -33,9 +33,7 @@ SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
 
 backend = 'qt'
-MAIN_STYLE = PATH / 'code/main.mplstyle'
-MARGIN_STYLE = PATH / 'code/margin.mplstyle'
-mpl.style.use(MAIN_STYLE)
+mpl.style.use(MAINSTYLE)
 
 if (ipy := IPython.get_ipython()) is not None:
     ipy.run_line_magic('matplotlib', backend)
@@ -64,6 +62,7 @@ def to_relative_paths(spect, file, *keys):
 
 
 # %%% Accelerometer
+
 
 def sensitivity_deviation(temp_in_kelvin):
     return 1 - 0.05 / 325 * (const.convert_temperature(temp_in_kelvin, 'K', 'F') - 75)
@@ -166,7 +165,7 @@ popt_posvdc, pcov_posvdc = np.polyfit(vdc, unp.nominal_values(position), 1,
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 
-with mpl.style.context([MARGIN_STYLE, {'axes.xmargin': 0.05}]):
+with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]):
     fig, ax = plt.subplots(layout='constrained')
     ax.errorbar(vdc, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
@@ -207,7 +206,7 @@ errorcolor = RWTH_COLORS['blue']
 xx = pos_vs_vdc(x, *popt_posvdc)
 xxerr = pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx
 
-with mpl.style.context([MARGIN_STYLE, {'axes.formatter.offset_threshold': 1}]):
+with mpl.style.context([MARGINSTYLE, {'axes.formatter.offset_threshold': 1}]):
     fig, ax = plt.subplots(layout='constrained',
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.5))
     ax.fill_between(xx - xx.min(), y1.min('counter_time_axis'), y1.max('counter_time_axis'),
@@ -254,7 +253,7 @@ figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.5))
 legend_kw = dict(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
                  ncols=2, mode="expand", borderaxespad=0., frameon=False)
 settings = dict(
-    plot_style=PATH / 'code/main.mplstyle',
+    plot_style=MAINSTYLE,
     prop_cycle=get_rwth_color_cycle(100),
     plot_timetrace=False,
 )

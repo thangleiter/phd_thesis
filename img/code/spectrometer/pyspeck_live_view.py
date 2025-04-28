@@ -15,13 +15,13 @@ from qutil.plotting import make_sequential_colormap
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TEXTWIDTH  # noqa
+from common import PATH, TEXTWIDTH, MAIN_STYLE  # noqa
 
 if (ipy := IPython.get_ipython()) is not None:
     ipy.run_line_magic('matplotlib', 'qt')
 
 mpl.rcdefaults()
-mpl.style.use('main.mplstyle')
+mpl.style.use(MAIN_STYLE)
 
 SEED = 1
 rng = np.random.default_rng(SEED)
@@ -101,7 +101,7 @@ view, = speck.live_view(
     in_process=False,
     live_view_kw=dict(
         event_source=timer,
-        style=['fast', 'main.mplstyle',
+        style=['fast', MAIN_STYLE,
                {'axes.prop_cycle': (2 * mpl.rcParams['axes.prop_cycle'])[0:]}],
         img_kw=dict(cmap=make_sequential_colormap('blue').reversed()),
         fig_kw=dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))

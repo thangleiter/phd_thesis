@@ -19,10 +19,10 @@ import xarray as xr
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TOTALWIDTH # noqa
+from common import PATH, TOTALWIDTH, MAINSTYLE, MARGINSTYLE # noqa
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
-DATA_PATH = PATH.parent / 'data / transport'
+DATA_PATH = PATH.parent / 'data/transport'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
@@ -31,7 +31,7 @@ with np.errstate(divide='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('red', endpoint='blackwhite')
 
 backend = 'pgf'
-mpl.style.use('main.mplstyle')
+mpl.style.use(MAINSTYLE)
 
 if (ipy := IPython.get_ipython()) is not None:
     ipy.run_line_magic('matplotlib', backend)
@@ -91,7 +91,7 @@ tia_current = dmm_voltage / dmm_voltage.attrs['gain'] * 1e12
 tia_current.attrs.update(units='pA', long_name='TIA Current')
 
 # %%% GL
-with mpl.style.context(['margin.mplstyle', {'patch.linewidth': 0.25}], after_reset=True):
+with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=True):
     gl = GateLayout(DATA_PATH / 'gl_005d.dxf',
                     foreground_color=RWTH_COLORS_25['black'],
                     cmap=SEQUENTIAL_CMAP,
