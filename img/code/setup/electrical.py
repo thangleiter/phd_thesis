@@ -22,7 +22,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 from common import PATH, TOTALWIDTH # noqa
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
-DATA_PATH = PATH.parent / 'data'
+DATA_PATH = PATH.parent / 'data / transport'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
