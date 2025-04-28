@@ -26,12 +26,13 @@ if [ "$is_branch_checkout" = "1" ]; then
 
     TEX_DIR="$TEXMF_HOME/texmf/tex/latex"
     FONT_DIR="$TEXMF_HOME/texmf/fonts/truetype/LiberationMono"
+    ROOT_DIR="$(git rev-parse --show-toplevel)"
 
     mkdir -p "$TEX_DIR"
     mkdir -p "$FONT_DIR"
 
-    $COMMAND ./lib/kaobook "$TEX_DIR"
-    $COMMAND ./lib/fonts/LiberationMono/*.ttf "$FONT_DIR"
+    $COMMAND "$ROOT_DIR"/lib/kaobook "$TEX_DIR"
+    $COMMAND "$ROOT_DIR"/lib/fonts/LiberationMono/*.ttf "$FONT_DIR"
 fi
 
 exit $?
