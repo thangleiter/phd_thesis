@@ -9,6 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import ImageGrid
+from scipy import optimize
 
 from qutil.plotting.colors import RWTH_COLORS_25, make_diverging_colormap, make_sequential_colormap
 from qutil import const
@@ -56,23 +57,27 @@ def load_and_sanitize(file, resave=False):
                     'units': 'a.u.' if len(loaded[f'{d}_params']) > 1 else 'V',
                 }
             )
-            for d in ('y', 'x')
+            for d in ('y', 'x')[2-loaded['data'].ndim:]
         }
+
+        attrs = {
+            'voltages': loaded['voltages'].item(),
+            'timestamp': loaded['timestamp'].item(),
+            'ohmics': loaded['ohmics'].item(),
+            'gain': loaded['gain'].item(),
+            'fcut': loaded['fcut'].item(),
+            'bias_at': loaded['bias_at'].item(),
+            'long_name': 'DMM voltage',
+            'units': 'V'
+        }
+        if 'bias' in loaded:
+            attrs['bias'] = loaded['bias'].item()
 
         data = xr.DataArray(
             loaded['data'],
             coords=coords,
             name='dmm_voltage',
-            attrs={
-                'voltages': loaded['voltages'].item(),
-                'timestamp': loaded['timestamp'].item(),
-                'ohmics': loaded['ohmics'].item(),
-                'gain': loaded['gain'].item(),
-                'fcut': loaded['fcut'].item(),
-                'bias_at': loaded['bias_at'].item(),
-                'long_name': 'DMM voltage',
-                'units': 'V'
-            }
+            attrs=attrs
         )
 
     if resave:
@@ -80,13 +85,19 @@ def load_and_sanitize(file, resave=False):
                 'voltages': json.dumps(data.attrs['voltages']),
                 'timestamp': str(data.attrs['timestamp'])
         }):
-            data.to_netcdf((PATH.parent / 'data' / file).with_suffix('.h5'), engine='h5netcdf')
+            data.to_netcdf((DATA_PATH / file).with_suffix('.h5'), engine='h5netcdf')
 
     return data
 
 
+def dfermi(x, A, V_0, T, offset):
+    return A/np.cosh(const.e*(alpha*x - V_0)/(2*const.k*T))**2/(4*const.k*T)*const.e**2/2/const.h + offset
+
+
 # %% Diamonds
-dmm_voltage = xr.load_dataarray(DATA_PATH / 'coulomb_diamonds_2022-07-13_17-56-52.h5')
+file = 'coulomb_diamonds_2022-07-13_17-56-52.npz'
+# dmm_voltage = load_and_sanitize(file)
+dmm_voltage = xr.load_dataarray((DATA_PATH / file).with_suffix('.h5'))
 tia_current = dmm_voltage / dmm_voltage.attrs['gain'] * 1e12
 tia_current.attrs.update(units='pA', long_name='TIA Current')
 
@@ -149,3 +160,38 @@ for ax, cax, img, label, width in zip(grid, grid.cbar_axes, image_data, image_la
 
 fig.tight_layout()
 fig.savefig(SAVE_PATH / 'diamonds.pdf', backend='pdf' if backend == 'qt' else backend)
+
+# %% Plunger sweep
+file = 'plunger_1d_2022-07-13_15-40-33.npz'
+# dmm_voltage = load_and_sanitize(file, resave=True)
+dmm_voltage = xr.load_dataarray((DATA_PATH / file).with_suffix('.h5'))
+tia_current = dmm_voltage / dmm_voltage.attrs['gain'] * 1e12
+tia_current.attrs.update(dmm_voltage.attrs)
+tia_current.attrs.update(units='pA', long_name='TIA Current')
+conductance = (tia_current / tia_current.attrs['bias']
+               * 1e-12 / const.physical_constants['conductance quantum'][0] * 1e3)
+conductance.attrs.update(tia_current.attrs)
+conductance.attrs.update(units='m$G_0$', long_name='$G$')
+# %%% Fit
+alpha = 0.07974104  # coulomb_diamonds_2022-07-13_12-33-31.npz
+bias = conductance.attrs['bias']
+gain = conductance.attrs['gain']
+
+x = conductance['NBC_TBC']
+y = conductance
+
+# Linear response, equal baths
+ix = slice(0, None)
+
+V_0 = alpha*x[ix][y[ix].argmax()]
+T = 100e-3
+A = np.ptp(y[ix]) / (1/(4*const.k*T)*const.e**2/(2*const.h))
+off = np.median(y[ix])
+
+bounds = (
+    [A/2, x[ix].min(), 1e-3, y[ix].min()],
+    [A*2, x[ix].max(), 1e+1, y[ix].max()],
+)
+p0 = [A, V_0, T, off]
+
+popt, pcov = optimize.curve_fit(dfermi, x[ix], y[ix], p0=p0, bounds=bounds)
