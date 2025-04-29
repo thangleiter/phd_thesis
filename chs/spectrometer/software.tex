@@ -267,10 +267,7 @@ That is, it should take the frequency-space data, the corresponding frequencies,
     \label{lst:speck:procfn}
 \end{marginlisting}
 
-The latter are required in case the function modifies the frequencies.\sidenote[][*13]{
-    One example is the \code{octave_band_rms()} function from the \code{qutil.signal_processing} subpackage~\cite{OctaveBandRmsQutil} that decimates frequencies to fractions of octave bands. See \cref{part:setup} for a use-case.
-    % TODO: ref
-}
+The latter are required in case the function modifies the frequencies.
 A simple example for a processing function in Fourier space is shown in \cref{lst:speck:fourier_procfn}, which computes the \mbox{(anti-)}derivative of the data using the fact that
 \begin{align}\label{eq:speck:fourier_derivative}
     \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
