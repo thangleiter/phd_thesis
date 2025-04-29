@@ -15,7 +15,7 @@ import xarray as xr
 from qcodes.utils.json_utils import NumpyJSONEncoder
 
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import get_rwth_color_cycle, RWTH_COLORS_50, RWTH_COLORS
+from qutil.plotting.colors import get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50
 from qutil import const, functools, io
 from qutil.misc import filter_warnings
 from qutil.signal_processing import fourier_space, real_space
@@ -23,7 +23,7 @@ from python_spectrometer import Spectrometer
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE  # noqa
+from common import PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, MARKERSTYLE  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -106,14 +106,13 @@ def pos_vs_cps(cps, a, b):
     return (cps*1e-6 - b)/a
 
 
-def procfn(x, fs, pos_vs_cps_calibration, **_):
+def cps_calib(x, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(x*fs, *pos_vs_cps_calibration)
 
 
 # %% Calibrations
 # %%% Accelerometer
-fourier_procfn = (sensitivity, fourier_space.derivative)
-
+# This is for the PCB 351B42
 f_calib = np.array([10, 15, 30, 50, 100, 300, 500, 1000, 2000])  # Hz
 s_calib = np.array([0.995, 0.997, 0.998, 0.999, 1, 1.001, 1.002, 1.005, 1.012])*9.99e-3  # V/(m/s²)
 _spline = interpolate.interp1d(np.log10(f_calib), s_calib, 'quadratic', fill_value='extrapolate')
@@ -121,7 +120,7 @@ _spline = interpolate.interp1d(np.log10(f_calib), s_calib, 'quadratic', fill_val
 f_calib_cond = np.array([1, 10, 100, 1000, 10000])
 v_calib_cond = np.array([1.3, 0.1, 0.08, 0.07, 0.07])*1e-6  # V/sqrt(Hz)
 x_calib_cond = abs(functools.chain(sensitivity, fourier_space.derivative, n_args=2)(
-    v_calib_cond, f_calib_cond, order=-2, sensor='Wilcoxon Research 731-207'
+    v_calib_cond, f_calib_cond, order=-2, sensor='PCB 351B42'
 )[0])
 
 f_noise_floor = np.array([1, 10, 100, 1000])
@@ -202,7 +201,7 @@ with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]), changed_plotting_
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
                 marker='o',
                 ls='',
-                markersize=4,
+                markersize=5,
                 markeredgecolor=errorcolor,
                 markerfacecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,))
     ax.plot(vdc, np.polyval(popt_posvdc, vdc)*1e6, zorder=5)
@@ -282,10 +281,12 @@ spects = [spect_accel, spect_optic]
 
 # %%% Apply settings
 spect_accel.procfn = functools.chain(comp_gain, functools.scaled(1e6))
-spect_accel.psd_estimator = functools.partial(real_space.welch, fourier_procfn=fourier_procfn)
+spect_accel.psd_estimator = functools.partial(
+    real_space.welch, fourier_procfn=(sensitivity, fourier_space.derivative)
+)
 spect_accel.processed_unit = 'μm'
 
-spect_optic.procfn = procfn
+spect_optic.procfn = cps_calib
 spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta)
 
 figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.5))
@@ -295,9 +296,11 @@ settings = dict(
     plot_style=MAINSTYLE,
     prop_cycle=get_rwth_color_cycle(100),
     plot_timetrace=False,
+    plot_cumulative=True
 )
 
-for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+
+def apply_settings(spect, settings, figure_kw, legend_kw):
     pm = spect._plot_manager
 
     spect.hide('all')
@@ -311,8 +314,50 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     spect.show('all')
     pm._leg = spect.ax[0].legend(labels=[com for _, com in spect.keys()], **pm.legend_kw)
 
+
+for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+    apply_settings(spect, settings, figure_kw, legend_kw)
     spect.fig.savefig(SAVE_PATH / f'{typ}.pdf', backend='pdf' if backend == 'qt' else backend)
 
 # %%% Resave
 # to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
 # to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06', *spect_optic.keys())
+
+# %%% Vibration criterion
+with mpl.style.context([MAINSTYLE, MARKERSTYLE]), changed_plotting_backend('pgf'):
+    for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+        fig, ax = plt.subplots(layout='constrained')
+
+        for key, sty in zip(spect.keys(), get_rwth_color_cycle(100)):
+            S = np.sqrt(spect[key]['S_processed'].mean(0))
+            f = spect[key]['f_processed']
+
+            vc, vc_f = fourier_space.octave_band_rms(*fourier_space.derivative(S, f, order=1),
+                                                     fraction=3)
+
+            ax.loglog(vc_f, vc, label=key[1], ls='--', zorder=5,
+                      color=sty['color'],
+                      markeredgecolor=sty['color'],
+                      markerfacecolor=mpl.colors.to_rgb(sty['color']) + (0.5,))
+
+        lim = ax.get_xlim()
+        ax.plot([8, lim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
+        ax.plot([lim[0], 8], [200/lim[0], 25], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='-')
+        ax.plot([8, lim[1]], [50, 50], marker='', ls='--', color=RWTH_COLORS_50['black'])
+        ax.plot([lim[0], 8], [400/lim[0], 50], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='--')
+        ax.plot([8, lim[1]], [100, 100], marker='', ls='-.', color=RWTH_COLORS_50['black'])
+        ax.plot([lim[0], 8], [800/lim[0], 100], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='-.')
+        ax.plot([8, lim[1]], [200, 200], marker='', ls=':', color=RWTH_COLORS_50['black'])
+        ax.plot([lim[0], 8], [1600/lim[0], 200], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls=':')
+
+        ax.grid()
+        ax.set_xlim(lim)
+        ax.set_xlabel(r'$f_\mathrm{center}$ (Hz)')
+        ax.set_ylabel(r'$1/3$ octave band $\mathrm{RMS}$ (μm/s)')
+        ax.legend(**legend_kw)
+
+        fig.savefig(SAVE_PATH / f'{typ}_vc.pdf')
