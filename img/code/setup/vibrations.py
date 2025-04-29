@@ -14,6 +14,7 @@ from uncertainties import ufloat
 import xarray as xr
 from qcodes.utils.json_utils import NumpyJSONEncoder
 
+from qutil.plotting import changed_plotting_backend
 from qutil.plotting.colors import get_rwth_color_cycle, RWTH_COLORS_50, RWTH_COLORS
 from qutil import const, functools, io
 from qutil.misc import filter_warnings
@@ -134,38 +135,68 @@ seq = tifffile.FileSequence(tifffile.imread, str(DATA_PATH / 'vdc_mapping/*.tif'
                             sort=sort_files).asarray()[..., 0] / 255
 row = 470
 col = np.arange(480, 540)
+
 I_min = 94 / 255
 I_max = 121 / 255
-seq[(I_min > seq) | (I_max < seq)] = np.nan
+seqnan = np.copy(seq)
+seqnan[(I_min > seq) | (I_max < seq)] = np.nan
 
-popt = np.empty((len(vdc), 11, 2))
-pcov = np.empty((len(vdc), 11, 2, 2))
+popt = np.empty((len(vdc), vdc.size, 2))
+pcov = np.empty((len(vdc), vdc.size, 2, 2))
 for j, r in enumerate(np.arange(-5, 6) + row):
-    for i, line in enumerate(seq[:, r, col]):
+    for i, line in enumerate(seqnan[:, r, col]):
         x = col[~np.isnan(line)]
         y = line[~np.isnan(line)]
         popt[i, j], pcov[i, j] = np.polyfit(x, y, 1, cov=True)
 
-pavg = np.average(popt, axis=1)
-perr = np.average(np.sqrt(pcov[..., range(2), range(2)]), axis=1) / np.sqrt(11)
+pavg, sow = np.average(popt, axis=1, weights=1/pcov[..., range(2), range(2)], returned=True)
+perr = 1 / np.sqrt(sow)
 a, b = unp.uarray(pavg, perr).T
-# We don't care about an absolute pixel offset
-# b = b - unp.nominal_values(b).min()
 
 gate_width_camera = ufloat(116, 3)  # px
 gate_width_actual = 14e-6  # m
 magnification = gate_width_camera / gate_width_actual  # px/m
 I_set = ufloat((I_max + I_min) / 2, 1/255/np.sqrt(12))  # normalized intensity
 position = (I_set - b) / a / magnification  # m
+position -= position.mean()  # we don't know anything about absolute positions
 
-popt_posvdc, pcov_posvdc = np.polyfit(vdc, unp.nominal_values(position), 1,
-                                      w=1 / unp.std_devs(position), cov=True)
+popt_posvdc, pcov_posvdc = np.polyfit(vdc, unp.nominal_values(position), 1, cov=True,
+                                      w=1/unp.std_devs(position))
 
 # %%%%% Plot
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 
-with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]):
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, axs = plt.subplots(nrows=3, sharex=True, figsize=(MARGINWIDTH, 2.25),
+                            gridspec_kw={'height_ratios': [2*const.golden, 1, 1]})
+    ax = axs[0]
+    ax.imshow(seq[0, row-75:row+75, 400:600], cmap='binary', aspect='equal')
+    ax.axis('off')
+
+    ax = axs[1]
+    ax.plot(seq[0, row, 400:600], color='k')
+    ax.fill_betweenx(lim := ax.get_ylim(),
+                     *(np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400)),
+                     color='tab:gray', alpha=0.3)
+    ax.set_ylim(lim)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    ax = axs[2]
+    ax.plot(np.gradient(seq[0, row, 400:600], 1), color='k')
+    ax.fill_betweenx(lim := ax.get_ylim(),
+                     *(np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400)),
+                     color='tab:gray', alpha=0.3)
+    ax.set_ylim(lim)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    fig.tight_layout()
+    fig.subplots_adjust(hspace=0)
+    fig.savefig(SAVE_PATH / 'knife_edge.pdf')
+
+with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
     ax.errorbar(vdc, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
@@ -177,7 +208,10 @@ with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]):
     ax.plot(vdc, np.polyval(popt_posvdc, vdc)*1e6, zorder=5)
     ax.grid()
     ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel(r'Position (μm)')
+    ax.set_ylabel(r'$x - \langle x\rangle$ (μm)')
+
+    fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
+
 # %%%% Count rate calibration
 ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
 count_rate = ds.counter_countrate
@@ -185,7 +219,7 @@ x = count_rate['positioners_y_axis_voltage']
 y1 = count_rate * 1e-6
 
 v_min = 0.5
-v_max = 6.5
+v_max = 7.0
 mask = (v_min <= x) & (x <= v_max)
 
 vdc = x[mask]
@@ -200,18 +234,19 @@ fit = odr.ODR(data, model, beta0=[5, 0])
 output = fit.run()
 
 # %%%%% Plot
-
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 xx = pos_vs_vdc(x, *popt_posvdc)
-xxerr = pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx
+xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+         pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
 
-with mpl.style.context([MARGINSTYLE, {'axes.formatter.offset_threshold': 1}]):
+with (
+        mpl.style.context([MARGINSTYLE, {'axes.formatter.offset_threshold': 1}]),
+        changed_plotting_backend('pgf')
+):
     fig, ax = plt.subplots(layout='constrained',
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.5))
-    ax.fill_between(xx - xx.min(), y1.min('counter_time_axis'), y1.max('counter_time_axis'),
-                    alpha=0.3, color=RWTH_COLORS_50['black'], label='Extrema')
-    ax.errorbar(xx - xx.min(), y1.mean('counter_time_axis'),
+    ax.errorbar(xx, y1.mean('counter_time_axis'),
                 y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
                 xerr=xxerr, label='Data',
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
@@ -220,24 +255,28 @@ with mpl.style.context([MARGINSTYLE, {'axes.formatter.offset_threshold': 1}]):
                 markersize=5,
                 markeredgecolor=errorcolor,
                 markerfacecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,))
-    ax.plot(pos - xx.min(), model.fcn(output.beta, pos), zorder=5, label='Fit')
+    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
         'top',
-        functions=(functools.partial(vdc_vs_pos, a=popt_posvdc[0], b=0),
-                   functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=0))
+        functions=(functools.partial(vdc_vs_pos, a=popt_posvdc[0], b=popt_posvdc[1]),
+                   functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
     ax2.set_xlabel(r'$V_\mathrm{DC}$ (V)')
     ax.set_ylabel('Count rate (MHz)')
-    ax.set_xlabel('Relative position (μm)')
+    ax.set_xlabel(r'$x - \langle x\rangle$ (μm)')
 
-    ax.set_xlim(*(pos_vs_vdc(x, *popt_posvdc)[[0, -1]] - xx.min()))
+    ax.set_xlim(*xx[[0, -1]])
+    ax.set_ylim(2, 4)
     ax.grid()
+
+    fig.savefig(SAVE_PATH / 'sensor_slope.pdf')
 
 # %% Load spects
 with io.changed_directory(DATA_PATH):
-    spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck')
-    spect_optic = Spectrometer.recall_from_disk('spectrometer_photon_counting_23-09-06')
+    spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
+    spect_optic = Spectrometer.recall_from_disk('spectrometer_photon_counting_23-09-06',
+                                                savepath='.')
 
 spects = [spect_accel, spect_optic]
 
@@ -257,6 +296,7 @@ settings = dict(
     prop_cycle=get_rwth_color_cycle(100),
     plot_timetrace=False,
 )
+
 for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     pm = spect._plot_manager
 
@@ -267,17 +307,9 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     pm.figure_kw.update(figure_kw)
     for key, val in settings.items():
         setattr(spect, key, val)
-    spect.show('PTR on, susp. off')
-    spect.show('PTR on, susp. on')
-    spect.show('PTR off, susp. off')
-    spect.show('PTR off, susp. on')
 
-    labels, handles = zip(*sorted(zip(pm.shown,
-                                      [val['main']['processed']['line']
-                                       for val in pm.lines.values()
-                                       if val['main']['processed']['line'] is not None])))
-    labels = [label[1] for label in labels]
-    pm._leg = spect.ax[0].legend(handles=handles, labels=labels, **pm.legend_kw)
+    spect.show('all')
+    pm._leg = spect.ax[0].legend(labels=[com for _, com in spect.keys()], **pm.legend_kw)
 
     spect.fig.savefig(SAVE_PATH / f'{typ}.pdf', backend='pdf' if backend == 'qt' else backend)
 
