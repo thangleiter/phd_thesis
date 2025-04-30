@@ -157,7 +157,7 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
 
     cb = gl.fig.colorbar(
         mpl.cm.ScalarMappable(gl.norm, gl.cmap), ax=gl.ax, label='$V$ (V)',
-        shrink=.33, panchor=(1.0, 0.0), pad=-0.05, aspect=7.5
+        shrink=.33, panchor=(1.0, 1.0), anchor=(0.0, 1.0), pad=0.0, aspect=7.5
     )
 
     gl.update(json.loads(dmm_voltage_diamonds.attrs['voltages']))

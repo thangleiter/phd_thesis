@@ -165,28 +165,35 @@ popt_posvdc, pcov_posvdc = np.polyfit(vdc, unp.nominal_values(position), 1, cov=
 # %%%%% Plot
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
+ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
 
 with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
-    fig, axs = plt.subplots(nrows=3, sharex=True, figsize=(MARGINWIDTH, 2.25),
+    fig, axs = plt.subplots(nrows=3, sharex=True, figsize=(MARGINWIDTH, 2.35),
                             gridspec_kw={'height_ratios': [2*const.golden, 1, 1]})
     ax = axs[0]
     ax.imshow(seq[0, row-75:row+75, 400:600], cmap='binary', aspect='equal')
+    ax.plot([0, 200], [75-5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([0, 200], [75+5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[0]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
     ax.axis('off')
 
     ax = axs[1]
     ax.plot(seq[0, row, 400:600], color='k')
-    ax.fill_betweenx(lim := ax.get_ylim(),
-                     *(np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400)),
-                     color='tab:gray', alpha=0.3)
+    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
+                     linewidth=0.0)
+    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
     ax.set_ylim(lim)
     ax.set_xticks([])
     ax.set_yticks([])
 
     ax = axs[2]
     ax.plot(np.gradient(seq[0, row, 400:600], 1), color='k')
-    ax.fill_betweenx(lim := ax.get_ylim(),
-                     *(np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400)),
-                     color='tab:gray', alpha=0.3)
+    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
+                     linewidth=0.0)
+    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
     ax.set_ylim(lim)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -239,12 +246,9 @@ xx = pos_vs_vdc(x, *popt_posvdc)
 xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
          pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
 
-with (
-        mpl.style.context([MARGINSTYLE, {'axes.formatter.offset_threshold': 1}]),
-        changed_plotting_backend('pgf')
-):
+with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained',
-                           figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.5))
+                           figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.35))
     ax.errorbar(xx, y1.mean('counter_time_axis'),
                 y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
                 xerr=xxerr, label='Data',
@@ -267,9 +271,8 @@ with (
 
     ax.set_xlim(*xx[[0, -1]])
     ax.set_ylim(2, 4)
-    ax.grid()
 
-    fig.savefig(SAVE_PATH / 'sensor_slope.pdf')
+    fig.savefig(SAVE_PATH / 'knife_edge_slope.pdf')
 
 # %% Load spects
 with io.changed_directory(DATA_PATH):
