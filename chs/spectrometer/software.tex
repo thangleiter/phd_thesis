@@ -275,7 +275,7 @@ under the Fourier transform.
 In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
 % TODO: ref
 
-\begin{marginlisting}[*8]
+\begin{marginlisting}[*4]
     \begin{py}[fontsize=\footnotesize]
         def derivative(xf, f, n=0, **_):
             return xf / (2j * pi * f)**n
@@ -336,7 +336,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_baseline}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after acquiring the (here: synthetic) baseline spectrum.
         By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
         Each spectrum is assigned a unique identifier key consisting of an incrementing integer and the user comment, and can be refered to by either (or both) when interacting with the object.
@@ -356,7 +356,7 @@ Every time he changes something, he acquires another spectrum using \code{take()
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_spectra}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after acquiring additional (synthetic) spectra.
         Each spectrum is uniquely identified by a two-tuple of \code{(index, comment)}.
     }
@@ -383,7 +383,7 @@ Since his \gls{daq} returns complex data, the absolute value $R = X + \i Y$ is p
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_timetrace}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_timetrace = True}.
         This adds a subplot that shows the time series data from which the \gls{psd} was computed akin to what an oscilloscope would show.
         For complex time series, the absolute value $R = X + \i Y$ is plotted.
@@ -405,7 +405,7 @@ and the band power (\cref{eq:speck:psd:bandpower}) otherwise.
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_cumulative}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_cumulative = True}.
         This adds a subplot that shows the \gls{rms} (see \cref{eq:speck:psd:bandpower}) which can be helpful in evaluating the contribution of individual peaks in the spectrum to the total noise power.
         Both the oscilloscope subplot (\cref{fig:speck:software:workflow:timetrace}) and the \gls{rms} subplot can also be shown at the same time.
@@ -429,7 +429,7 @@ by applying the following settings, which changes the plot to the layout shown i
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_db}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot in relative mode.
         Starting from the state in \cref{fig:speck:software:workflow:spectra}, we set \code{spect.plot_dB_scale = True} as well as \code{spect.plot_amplitude = False} and \code{spect.plot_density = False} to compare the relative noise powers with respect to the baseline.
     }
@@ -461,7 +461,7 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_success}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after multiple additional spectra were acquired and hidden.
         Hiding spectra that one is not interested in anymore is achieved through \code{spect.hide(*range(2, 10))}.
         This is reversed by \code{spect.show(*range(2, 10))}.
@@ -527,7 +527,7 @@ Dictionaries with customization parameters for the \code{live_view} object can f
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/live_view}
-    \caption[\imgsource{img/code/spectrometer/pyspeck_live_view.py}]{
+    \caption[\imgsource{img/py/spectrometer/pyspeck_live_view.py}]{
         Spectrometer live view.
         The bottom plot shows the most recently acquired spectrum, while the top plot shows a waterfall plot of the most recent ones.
         Data acquisition runs in a background thread, keeping the interpreter responsive and available to interact with instruments, for example.

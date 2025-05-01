@@ -4,9 +4,9 @@ TEXTWIDTH = 4.2134
 MARGINWIDTH = 1.87831
 TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
 PATH = pathlib.Path(__file__).parents[1]
-MAINSTYLE = PATH / 'code/main.mplstyle'
-MARGINSTYLE = PATH / 'code/margin.mplstyle'
-MARKERSTYLE = PATH / 'code/markers.mplstyle'
+MAINSTYLE = PATH / 'py/main.mplstyle'
+MARGINSTYLE = PATH / 'py/margin.mplstyle'
+MARKERSTYLE = PATH / 'py/markers.mplstyle'
 
 
 def apply_sketch_style(ax):
