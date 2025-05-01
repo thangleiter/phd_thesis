@@ -47,7 +47,7 @@ def load_and_sanitize(file, resave=False):
         for d in ('y', 'x')[2-loaded['data'].ndim:]:
             if len(loaded[f'{d}_params']) > 1:
                 # Virtual gate. We define V = A + x B with a mixing factor x
-                # I.e., the A "leverarm" is 1, and that of B is x.
+                # I.e., the A "leverarm" is 1, and that of B is x, then normalize.
                 x = np.divide(*np.diff(loaded[f'{d}_rngs']).squeeze()[::-1])
                 X = np.array([1, x]) / np.linalg.norm([1, x])
                 long_name = ' + '.join([
@@ -175,7 +175,7 @@ image_data = [tia_current_diamonds - np.median(tia_current_diamonds),
               1e-3 * tia_current_diamonds.differentiate('NBC_TBC')]
 match backend:
     case 'pgf':
-        image_labels = ["$I$ (pA)", r"$\pdv*{I}{V}$ ($\flatfrac{\mathrm{pA}}{\mathrm{mV}}$)"]
+        image_labels = [r"$I$ (\unit{pA})", r"$\pdv*{I}{V}$ (\unit{pA\per mV})"]
     case 'qt':
         image_labels = ["$I$ (pA)", r"$\partial I/\partial V$ (pA/mV)"]
 
