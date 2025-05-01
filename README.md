@@ -13,6 +13,14 @@
 
 # To Dos
 ## Content
+### pyspeck
+- [ ] More representative cumulative spectra
+- [ ] Discuss cumulative with dB scale?
+
+### Setup
+- [ ] Vibration spectra on lab floors?
+- [ ] Indicate noise floor from accelerometer signal conditioner?
+
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
@@ -21,16 +29,16 @@
 ## Layout
 - [ ] Tune the bibliography style
 - [ ] Chapters instead of parts?
-	- [ ] Else numbered parts
+	- [x] Else numbered parts
 - [ ] Part title page design
 - [ ] `\margintoc`?
 
 ## `latexmk`
-- [ ] ?
 
 ## `tectonic`
 - [ ] `\underbrace{}`
 - [ ] margin placements
+- [ ] minted line wraps
 
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.
