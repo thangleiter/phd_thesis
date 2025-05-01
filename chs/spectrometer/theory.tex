@@ -15,7 +15,7 @@ But how can we learn how a system behaves as a function of frequency?
 \begin{marginfigure}[*-6]
     \centering
     \input{img/tikz/spectrometer/lockin_dut}
-    \caption{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
+    \caption[\imgsource{img/tikz/spectrometer/lockin_dut.tex}]{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
     \label{fig:speck:theory:lockin_dut}
 \end{marginfigure}
 
@@ -125,8 +125,8 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
 
 \begin{marginfigure}[*-6]
     \centering
-    \includegraphics{pdf/spectrometer/lorentzian_psdcorr}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/lorentzian_psdcorr}
+    \caption[\imgsource{img/code/spectrometer/lorentz.py}]{
         Ornstein-Uhlenbeck process.
         Simulated time traces (top), autocorrelation function (middle), \gls{psd} (bottom) of the Ornstein-Uhlenbeck process.
         Top: Simluated time traces using the algorithm presented in \cref{ch:ff:time_domain_methods}.
@@ -234,8 +234,8 @@ where the Fourier representation of the rectangular window\sidenote{
 \end{align}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/spectrometer/rect}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/rect}
+    \caption[\imgsource{img/code/spectrometer/pyspeck.py}]{
         The Fourier representation of the rectangular window in continuous time (solid line) and for discrete frequencies $\omega_n = \flatfrac{2\pi n}{T}$ (circles).
         Introducing a phase shift, that is, shifting the window with respect to the signal in time, effectively shifts $\omega_n \to \omega_{n+\eta}$ as indicated for $\eta=\flatfrac{1}{2}$ (diamonds).
         This incurs scalloping loss.
@@ -244,8 +244,8 @@ where the Fourier representation of the rectangular window\sidenote{
 \end{marginfigure}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/spectrometer/hann}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/hann}
+    \caption[\imgsource{img/code/spectrometer/pyspeck.py}]{
         The Fourier representation of the Hann window in continuous time (solid line) and for discrete frequencies $\omega_n$ (circles).
         Diamonds indicate discrete sampling when the window completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
     }
@@ -295,8 +295,8 @@ The overlap naturally depends on the choice of window; a typical value for the H
 }
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
-    \caption{
+    \includegraphics[width=\textwidth]{img/pdf/spectrometer/welch}
+    \caption[\imgsource{img/code/spectrometer/pyspeck.py}]{
         Illustration of Welch's method for spectrum estimation.
         The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
         Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
@@ -367,7 +367,7 @@ In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependenci
 \begin{figure}
     \centering
     \input{img/tikz/spectrometer/daq_settings}
-    \caption{
+    \caption[\imgsource{img/tikz/spectrometer/daq_settings.tex}]{
         Relationships of data acquisition parameters (\cf \cref{tab:speck:theory:parameters,tab:speck:software:parameters}, with arrows indicating dependencies.
         $N$, \fs, and \df are the central quantities defining the estimated spectrum's properties.
         From \fs and \df follow (bounds for) \fmax and \fmin.

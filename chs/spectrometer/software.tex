@@ -28,7 +28,7 @@ The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather
 \section{Package design and implementation}\label{sec:speck:software:design}
 \begin{marginfigure}[*-10]
     \input{img/tikz/spectrometer/speck_tree}
-    \caption[Source tree structure of the \pyspeck package.]{
+    \caption[\imgsource{img/tikz/spectrometer/speck_tree.tex}]{
         Source tree structure of the \pyspeck package.
         Driver wrappers are placed in the \code{daq} subpackage.
         \code{core.py} exports the \code{Spectrometer} class.
@@ -335,8 +335,8 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 \end{listing}
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_baseline}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/workflow_baseline}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after acquiring the (here: synthetic) baseline spectrum.
         By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
         Each spectrum is assigned a unique identifier key consisting of an incrementing integer and the user comment, and can be refered to by either (or both) when interacting with the object.
@@ -355,8 +355,8 @@ He then proceeds by tweaking things on his setup, testing out different paramete
 Every time he changes something, he acquires another spectrum using \code{take()}, labeling each with a meaningful comment for identification.
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_spectra}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/workflow_spectra}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after acquiring additional (synthetic) spectra.
         Each spectrum is uniquely identified by a two-tuple of \code{(index, comment)}.
     }
@@ -382,8 +382,8 @@ Since his \gls{daq} returns complex data, the absolute value $R = X + \i Y$ is p
 \end{listing}
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_timetrace}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/workflow_timetrace}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_timetrace = True}.
         This adds a subplot that shows the time series data from which the \gls{psd} was computed akin to what an oscilloscope would show.
         For complex time series, the absolute value $R = X + \i Y$ is plotted.
@@ -404,8 +404,8 @@ and the band power (\cref{eq:speck:psd:bandpower}) otherwise.
 
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_cumulative}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/workflow_cumulative}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_cumulative = True}.
         This adds a subplot that shows the \gls{rms} (see \cref{eq:speck:psd:bandpower}) which can be helpful in evaluating the contribution of individual peaks in the spectrum to the total noise power.
         Both the oscilloscope subplot (\cref{fig:speck:software:workflow:timetrace}) and the \gls{rms} subplot can also be shown at the same time.
@@ -428,8 +428,8 @@ by applying the following settings, which changes the plot to the layout shown i
 \end{py}
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_db}
-    \caption[The \pyspeck plot in relative mode.]{
+    \includegraphics{img/pdf/spectrometer/workflow_db}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot in relative mode.
         Starting from the state in \cref{fig:speck:software:workflow:spectra}, we set \code{spect.plot_dB_scale = True} as well as \code{spect.plot_amplitude = False} and \code{spect.plot_density = False} to compare the relative noise powers with respect to the baseline.
     }
@@ -460,8 +460,8 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
 
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/workflow_success}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/workflow_success}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after multiple additional spectra were acquired and hidden.
         Hiding spectra that one is not interested in anymore is achieved through \code{spect.hide(*range(2, 10))}.
         This is reversed by \code{spect.show(*range(2, 10))}.
@@ -526,8 +526,8 @@ Dictionaries with customization parameters for the \code{live_view} object can f
 
 \begin{figure}
     \centering
-    \includegraphics{pdf/spectrometer/live_view}
-    \caption[Spectrometer live view]{
+    \includegraphics{img/pdf/spectrometer/live_view}
+    \caption[\imgsource{img/code/spectrometer/pyspeck_live_view.py}]{
         Spectrometer live view.
         The bottom plot shows the most recently acquired spectrum, while the top plot shows a waterfall plot of the most recent ones.
         Data acquisition runs in a background thread, keeping the interpreter responsive and available to interact with instruments, for example.
