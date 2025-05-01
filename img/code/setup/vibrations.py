@@ -288,9 +288,11 @@ spect_accel.psd_estimator = functools.partial(
     real_space.welch, fourier_procfn=(sensitivity, fourier_space.derivative)
 )
 spect_accel.processed_unit = 'μm'
+spect_accel.reprocess_data(*spect_accel.keys(), detrend='constant')
 
 spect_optic.procfn = cps_calib
-spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta)
+spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta,
+                           detrend='constant')
 
 figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.5))
 legend_kw = dict(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
@@ -305,8 +307,9 @@ settings = dict(
 
 def apply_settings(spect, settings, figure_kw, legend_kw):
     pm = spect._plot_manager
+    shown = pm.shown
 
-    spect.hide('all')
+    spect.hide(*shown)
     plt.close(spect.fig)
 
     pm.legend_kw.update(legend_kw)
@@ -314,13 +317,17 @@ def apply_settings(spect, settings, figure_kw, legend_kw):
     for key, val in settings.items():
         setattr(spect, key, val)
 
-    spect.show('all')
+    spect.show(*shown)
     pm._leg = spect.ax[0].legend(labels=[com for _, com in spect.keys()], **pm.legend_kw)
 
 
 for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     apply_settings(spect, settings, figure_kw, legend_kw)
-    spect.fig.savefig(SAVE_PATH / f'{typ}.pdf', backend='pdf' if backend == 'qt' else backend)
+
+# %%% Plot
+for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+    with changed_plotting_backend('pgf'):
+        spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
 
 # %%% Resave
 # to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
@@ -364,3 +371,15 @@ with mpl.style.context([MAINSTYLE, MARKERSTYLE]), changed_plotting_backend('pgf'
         ax.legend(**legend_kw)
 
         fig.savefig(SAVE_PATH / f'{typ}_vc.pdf')
+
+# %%% Relative dB
+settings['plot_dB_scale'] = True
+settings['plot_amplitude'] = False
+
+for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+    spect.hide('PTR off, susp. off', 'PTR off, susp. on')
+    spect.set_reference_spectrum('PTR on, susp. off')
+    apply_settings(spect, settings, figure_kw, legend_kw)
+
+    with changed_plotting_backend('pgf'):
+        spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
