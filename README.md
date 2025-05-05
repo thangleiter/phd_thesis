@@ -13,6 +13,11 @@
 
 # To Dos
 ## Content
+### How to read this thesis
+- [ ] PDF viewer
+- [ ] Image sources
+- [ ] Disjunct parts
+
 ### pyspeck
 - [ ] More representative cumulative spectra
 - [ ] Discuss cumulative with dB scale?
