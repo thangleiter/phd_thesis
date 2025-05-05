@@ -5,7 +5,6 @@ import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-
 from qopt.noise import fast_colored_noise
 from qutil import itertools
 from qutil.plotting.colors import RWTH_COLORS
@@ -47,15 +46,11 @@ with plt.style.context(MARGIN_STYLE, after_reset=True):
 
         ax.plot(x, window(x, T), color=colors[0])
         for xnn in xn:
-            ax.vlines(xnn, *itertools.minmax(0, window(xnn, T).item()),
-                      color=mpl.colors.to_rgba(colors[1], alpha))
             ax.plot([xnn], window(xnn, T), 'o',
                     markersize=5,
                     markeredgecolor=colors[1],
                     markerfacecolor=mpl.colors.to_rgba(colors[1], alpha))
         for xmm in xm:
-            ax.vlines(xmm, *itertools.minmax(0, window(xmm, T).item()),
-                      color=mpl.colors.to_rgba(colors[2], alpha))
             ax.plot([xmm], window(xmm, T), 'D',
                     markersize=4,
                     markeredgecolor=colors[2],

@@ -1,23 +1,21 @@
 # %% Imports
+import json
 import pathlib
 import sys
-import json
 from unittest import mock
 
 import IPython
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import xarray as xr
 from mpl_toolkits.axes_grid1 import ImageGrid
-
-from qutil.plotting.colors import (RWTH_COLORS_25, RWTH_COLORS,
-                                   make_diverging_colormap, make_sequential_colormap)
-from qutil.plotting import changed_plotting_backend
 from qutil import const
 from qutil.itertools import absmax
+from qutil.plotting import changed_plotting_backend
+from qutil.plotting.colors import (RWTH_COLORS_25, RWTH_COLORS,
+                                   make_diverging_colormap, make_sequential_colormap)
 from qutil.ui.gate_layout import GateLayout
-
-import xarray as xr
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
@@ -152,6 +150,8 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
         else:
             txt.set_visible(False)
 
+    gl.ax.text(1.29 + 0.9, +1.15, 'SA', horizontalalignment='center', verticalalignment='bottom')
+    gl.ax.text(1.29 - 0.9, +1.15, 'SD', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, +1.15, 'NBC', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, -0.15, 'TBC', horizontalalignment='center', verticalalignment='top')
 

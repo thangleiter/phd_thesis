@@ -100,6 +100,7 @@
 \usepackage{dsfont}
 \RequirePackage{mathtools}
 %\usepackage{mathrsfs}
+\usepackage{chemformula}
 \usepackage{physics}
 \usepackage{siunitx}
 \sisetup{per-mode = single-symbol}
@@ -114,6 +115,11 @@
 % \setchapterpreamble[u]{\margintoc}
 % \chapter{foo}
 % This would be nice to have for parts, but those don't have margins atm.
+%\counterwithin*{chapter}{part}
+
+% Make cleveref use "Appendix" instead of "Chapter" after \appendix
+% https://github.com/latex3/hyperref/issues/362
+\AddToHook{cmd/appendix/before}{\crefalias{chapter}{appendix}}
 
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
@@ -154,4 +160,5 @@
     chs/setup/optical,
     chs/setup/vibrations,
     chs/setup/conclusion,
+    chs/appendices/setup/vibrations,
 }

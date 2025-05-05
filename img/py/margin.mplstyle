@@ -25,7 +25,7 @@ text.usetex         : False # use latex for all text handling. The following fon
                      # zapf chancery, charter, serif, sans-serif, helvetica,
                      # avant garde, courier, monospace, computer modern roman,
                      # computer modern sans serif, computer modern typewriter
-text.latex.preamble : \usepackage[T1]{fontenc}\usepackage{amssymb}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode = single-symbol}
+text.latex.preamble : \usepackage[T1]{fontenc}\usepackage{amssymb}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}
 # The following settings allow you to select the fonts in math mode.
 mathtext.fontset: custom  # Should be 'dejavusans' (default),
                                # 'dejavuserif', 'cm' (Computer Modern), 'stix',
@@ -83,5 +83,5 @@ savefig.transparent: True  # setting that controls whether figures are saved wit
 
 ### pgf parameter
 pgf.rcfonts : False
-pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setsansfont[Scale=1]{Libertinus Sans}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode = single-symbol}
+pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}
 pgf.texsystem : lualatex

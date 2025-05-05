@@ -8,7 +8,6 @@ import IPython
 import matplotlib as mpl
 import numpy as np
 import scipy as sc
-
 from python_spectrometer import daq, Spectrometer
 from qutil import const, domains, functools
 from qutil.plotting import make_sequential_colormap

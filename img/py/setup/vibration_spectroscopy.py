@@ -7,23 +7,26 @@ import IPython
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import interpolate, odr
 import tifffile
 import uncertainties.unumpy as unp
-from uncertainties import ufloat
 import xarray as xr
+from python_spectrometer import Spectrometer
 from qcodes.utils.json_utils import NumpyJSONEncoder
-
-from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50
 from qutil import const, functools, io
 from qutil.misc import filter_warnings
+from qutil.plotting import changed_plotting_backend
+from qutil.plotting.colors import (
+    get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75
+)
 from qutil.signal_processing import fourier_space, real_space
-from python_spectrometer import Spectrometer
+from scipy import interpolate, odr, special
+from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, MARKERSTYLE  # noqa
+from common import (
+    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, MARKERSTYLE
+)  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -46,6 +49,7 @@ def to_relative_paths(spect, file, *keys):
         spect.savepath = '.'
         spect.relative_paths = True
         for key in keys:
+            # 'x' in the metadata corresponds to 'y' in the thesis.
             spect[key]['comment'] = spect[key]['comment'].replace('x Valhalla puck ', '')
             spect[key]['comment'] = spect[key]['comment'].replace('Optical gate x ', '')
             spect[key]['comment'] = spect[key]['comment'].replace('cold head resting ', '')
@@ -77,7 +81,7 @@ def sensitivity(x, f, temperatures: dict[str: float] | None = None, sensor=None,
         case 'PCB 351B42':
             if (T_MC := temperatures.get('MC Plate Cernox', 293)) < 50:
                 T_MC = temperatures.get('MC RuO2', 293)
-            with filter_warnings('ignore', RuntimeWarning):
+            with filter_warnings(action='ignore', category=RuntimeWarning):
                 return x / (_spline(np.log10(f) * sensitivity_deviation(T_MC))), f
         case None:
             raise RuntimeError
@@ -108,6 +112,10 @@ def pos_vs_cps(cps, a, b):
 
 def cps_calib(x, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(x*fs, *pos_vs_cps_calibration)
+
+
+def erf_theory(x, I0, w0, r):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf(x*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -214,13 +222,14 @@ with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]), changed_plotting_
     ax.plot(vdc, np.polyval(popt_posvdc, vdc)*1e6, zorder=5)
     ax.grid()
     ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel(r'$x - \langle x\rangle$ (μm)')
+    ax.set_ylabel(r'$y - \langle y\rangle$ (μm)')
 
     fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
 
 # %%%% Count rate calibration
 ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
 count_rate = ds.counter_countrate
+# 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
 x = count_rate['positioners_y_axis_voltage']
 y1 = count_rate * 1e-6
 
@@ -266,16 +275,47 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
                    functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
     ax2.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel('Count rate (MHz)')
-    ax.set_xlabel(r'$x - \langle x\rangle$ (μm)')
+    ax.set_ylabel('Count rate (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.grid()
 
     ax.set_xlim(*xx[[0, -1]])
     ax.set_ylim(2, 4)
 
     fig.savefig(SAVE_PATH / 'knife_edge_slope.pdf')
 
+# %%%% Theory plot
+x = np.linspace(-1.5, 1.5, 1001)
+I0 = 2
+w0 = .3
+r = 0.2
+N = I0*w0*np.sqrt(0.5*np.pi)
+
+with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+
+    ax.plot(x, erf_theory(x*w0, I0, w0, r) / N)
+
+    ylim = ax.get_ylim()
+    ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
+    ax.set_ylim(ylim)
+
+    ax.grid()
+    ax.margins(x=0)
+    ax.set_yticks([r/2, 0.5, 1-r/2], [r'$\frac{r}{2}$', r'$\frac{1}{2}$', r'$1-\frac{r}{2}$'],
+                  va='center')
+    ax.set_ylabel(r'$P_R(y) / (I_0 w_0 \sqrt{\pi/2})$')
+
+    match mpl.get_backend():
+        case 'pgf':
+            ax.set_xlabel(r'$\flatfrac{y}{w_0}$')
+        case 'qtagg':
+            ax.set_xlabel(r'$y/w_0$')
+
+    fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
+
 # %% Load spects
-with io.changed_directory(DATA_PATH):
+with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
     spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
     spect_optic = Spectrometer.recall_from_disk('spectrometer_photon_counting_23-09-06',
                                                 savepath='.')
@@ -324,16 +364,22 @@ def apply_settings(spect, settings, figure_kw, legend_kw):
 for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     apply_settings(spect, settings, figure_kw, legend_kw)
 
-# %%% Plot
-for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
-    with changed_plotting_backend('pgf'):
-        spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
+
+# spect_accel.ax[1].set_yscale('asinh', linear_width=1.5e-2)
+# spect_optic.ax[1].set_yscale('asinh', linear_width=1.65e-3)
+# spect_accel.ax[1].set_ylim(0)
+# spect_optic.ax[1].set_ylim(0)
 
 # %%% Resave
 # to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
 # to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06', *spect_optic.keys())
 
-# %%% Vibration criterion
+# %% Plot
+for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+    with changed_plotting_backend('pgf'):
+        spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
+
+# %% Vibration criterion
 with mpl.style.context([MAINSTYLE, MARKERSTYLE]), changed_plotting_backend('pgf'):
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         fig, ax = plt.subplots(layout='constrained')
@@ -372,14 +418,42 @@ with mpl.style.context([MAINSTYLE, MARKERSTYLE]), changed_plotting_backend('pgf'
 
         fig.savefig(SAVE_PATH / f'{typ}_vc.pdf')
 
-# %%% Relative dB
+# %% Relative dB
 settings['plot_dB_scale'] = True
 settings['plot_amplitude'] = False
 
-for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
-    spect.hide('PTR off, susp. off', 'PTR off, susp. on')
-    spect.set_reference_spectrum('PTR on, susp. off')
-    apply_settings(spect, settings, figure_kw, legend_kw)
+with mpl.style.context([MARGINSTYLE], after_reset=True):
+    fig, ax = plt.subplots(nrows=2, sharex=True, layout='constrained',
+                           gridspec_kw=dict(height_ratios=[3, 2]),
+                           figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2))
+    ax[0].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
+    ax[1].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
+    ax[0].axhline(color='black')
+    ax[1].axhline(color='black')
+
+    for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
+        spect.hide('PTR off, susp. off', 'PTR off, susp. on')
+        spect.set_reference_spectrum('PTR on, susp. off')
+        apply_settings(spect, settings, figure_kw, legend_kw)
+
+        ln = spect._plot_manager.lines[1, 'PTR on, susp. on']['main']['processed']['line']
+        ax[0].semilogx(*ln.get_data(),
+                       label='Accelerometer' if typ == 'spect_accel' else 'Optical')
+        ln = spect._plot_manager.lines[1, 'PTR on, susp. on']['cumulative']['processed']['line']
+        ax[1].semilogx(*ln.get_data())
+
+        with changed_plotting_backend('pgf'):
+            spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
+
+    ax[0].set_yticks([20, 0, -20, -40, -60])
+    ax[1].set_yticks([0, -20])
+    ax[0].set_xlim(spect.ax[-1].get_xlim())
+    ax[1].set_xlabel(spect.ax[-1].get_xlabel())
+    ax[0].set_ylabel('Power (dB)')
+    ax[1].set_ylabel('Integrated (dB)')
+    ax[0].grid()
+    ax[1].grid()
+    ax[0].legend(**(legend_kw | dict(ncols=1)))
 
     with changed_plotting_backend('pgf'):
-        spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
+        fig.savefig(SAVE_PATH / 'spect_dB.pdf')

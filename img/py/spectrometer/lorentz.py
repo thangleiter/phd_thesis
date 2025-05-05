@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 import numba as nb
 import numpy as np
 import scipy as sc
-from matplotlib import colors
-
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
+from matplotlib import colors
 from qutil import functools, const, signal_processing as sp
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
