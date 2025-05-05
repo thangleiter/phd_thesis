@@ -1,10 +1,11 @@
-**/__pycache__/*
-**/.ipynb_checkpoints/*
+**/__pycache__/
+**/.ipynb_checkpoints/
+**/.spyproject/
 
 .idea/shelf/
 .idea/workspace.xml
 
-img/py/.idea
+img/py/.idea/
 
-build/*
+build/
 
