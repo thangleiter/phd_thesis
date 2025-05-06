@@ -2,9 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$USER_HOME$/Documents/Uni/Physik/Promotion/thesis" vcs="Git" />
-    <mapping directory="$USER_HOME$/Documents/Uni/Physik/Promotion/thesis/lib/fonts" vcs="Git" />
-    <mapping directory="$USER_HOME$/Documents/Uni/Physik/Promotion/thesis/lib/kaobook" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/fonts" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/kaobook" vcs="Git" />
   </component>

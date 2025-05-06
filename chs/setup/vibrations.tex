@@ -264,10 +264,7 @@ The first challenge is obtaining a proper length reference scale.
 While the nanopositioners on which the sample is mounted do in principle have a resistive position readout, it is extremely unreliable at small displacements.
 Therefore, I calibrated the relative position using the imaging arm of the optical head.
 \Cref{fig:setup:vibrations:calibration:length_scale} depicts the procedure.
-I illuminated the sample with the white light, positioned the spot on the edge of the optical gate, and imaged the sample with the \gls{cmos} camera.\sidenote{
-    Thorlabs DCC1545M with \qty{5.2}{\micro\meter} square pixels.
-    % TODO: check Model no
-}
+I illuminated the sample with the white light, positioned the spot on the edge of the optical gate, and imaged the sample with the \cmoscam camera.
 I then extracted the position of the edge, in pixels, for several rows to obtain some statistics by fitting a linear function to the edge profile in a small region between two refraction maxima.
 Repeating this step for different DC voltages applied to the nanopositioner,
 %\sidenote{
