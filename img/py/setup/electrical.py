@@ -4,7 +4,6 @@ import pathlib
 import sys
 from unittest import mock
 
-import IPython
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,7 +18,9 @@ from qutil.ui.gate_layout import GateLayout
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops # noqa
+from common import (  # noqa
+    init, markerprops, PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE
+)
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
 DATA_PATH = PATH.parent / 'data/transport'
@@ -30,11 +31,7 @@ DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'))
 with np.errstate(divide='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('red', endpoint='blackwhite')
 
-backend = 'pgf'
-mpl.style.use(MAINSTYLE)
-
-if (ipy := IPython.get_ipython()) is not None:
-    ipy.run_line_magic('matplotlib', backend)
+init(MAINSTYLE, backend := 'pgf')
 
 # %% Definitions
 

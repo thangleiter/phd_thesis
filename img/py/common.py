@@ -1,5 +1,6 @@
 import pathlib
 
+import IPython
 import matplotlib as mpl
 
 TEXTWIDTH = 4.2134
@@ -8,6 +9,16 @@ TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
 PATH = pathlib.Path(__file__).parents[1]
 MAINSTYLE = PATH / 'py/main.mplstyle'
 MARGINSTYLE = PATH / 'py/margin.mplstyle'
+
+
+def init(style, backend):
+    mpl.rcdefaults()
+    mpl.style.use(style)
+
+    if (ipy := IPython.get_ipython()) is not None:
+        ipy.run_line_magic('matplotlib', backend)
+    else:
+        mpl.use('qtagg' if backend == 'qt' else backend)
 
 
 def apply_sketch_style(ax):

@@ -2,7 +2,6 @@
 import pathlib
 import sys
 
-import IPython
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,11 +10,9 @@ from qutil.plotting.colors import (
     RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_25
 )
 
-sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import (
-    PATH, MARGINSTYLE
-)  # noqa
+from common import PATH, MARGINSTYLE, init
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -25,12 +22,7 @@ DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
 
-backend = 'pgf'
-mpl.style.use(MARGINSTYLE)
-
-if (ipy := IPython.get_ipython()) is not None:
-    ipy.run_line_magic('matplotlib', backend)
-
+init(MARGINSTYLE, backend := 'pgf')
 # %% Functions
 
 

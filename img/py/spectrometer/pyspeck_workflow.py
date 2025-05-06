@@ -2,8 +2,6 @@ import pathlib
 import sys
 import tempfile
 
-import IPython
-import matplotlib as mpl
 import numpy as np
 import scipy as sc
 from python_spectrometer import daq, Spectrometer
@@ -11,13 +9,9 @@ from qutil import const, domains, functools
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TEXTWIDTH, MAIN_STYLE  # noqa
+from common import init, PATH, TEXTWIDTH, MAINSTYLE  # noqa
 
-if (ipy := IPython.get_ipython()) is not None:
-    ipy.run_line_magic('matplotlib', 'qt')
-
-mpl.rcdefaults()
-mpl.style.use(MAIN_STYLE)
+init(MAINSTYLE, backend='qt')
 
 SEED = 1
 rng = np.random.default_rng(SEED)
@@ -65,7 +59,7 @@ speck = Spectrometer(qopt_daq, savepath=tempfile.mkdtemp(),
                      threaded_acquisition=False, purge_raw_data=False,
                      plot_negative_frequencies=False,
                      procfn=functools.scaled(1e6), processed_unit='μV',
-                     plot_style=MAIN_STYLE,
+                     plot_style=MAINSTYLE,
                      figure_kw=dict(layout='constrained'), legend_kw=dict(loc='lower left'))
 settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False,
                 freq=0, filter_order=3)

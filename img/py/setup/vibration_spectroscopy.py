@@ -3,7 +3,6 @@ import json
 import pathlib
 import sys
 
-import IPython
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,7 +24,7 @@ from uncertainties import ufloat
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
 from common import (
-    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops
+    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops, init
 )  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
@@ -36,11 +35,7 @@ DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
 
-backend = 'qt'
-mpl.style.use(MAINSTYLE)
-
-if (ipy := IPython.get_ipython()) is not None:
-    ipy.run_line_magic('matplotlib', backend)
+init(MAINSTYLE, backend := 'qt')
 # %% Functions
 
 

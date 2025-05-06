@@ -14,11 +14,9 @@ from qutil import functools, const, signal_processing as sp
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, MARGINWIDTH, MARGIN_STYLE, markerprops  # noqa
+from common import PATH, MARGINWIDTH, MARGINSTYLE, markerprops, init  # noqa
 
-mpl.use('pgf')
-mpl.rcdefaults()
-mpl.style.use(MARGIN_STYLE)
+init(MARGINSTYLE, backend := 'pgf')
 # %%
 
 
@@ -73,7 +71,7 @@ alpha = 0.5
 rng = np.random.default_rng(SEED)
 np.random.seed(SEED)
 
-with mpl.style.context([MARGIN_STYLE], after_reset=True):
+with mpl.style.context([MARGINSTYLE], after_reset=True):
     fig, axes = plt.subplots(3, 1, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 3),
                              layout='constrained')
 

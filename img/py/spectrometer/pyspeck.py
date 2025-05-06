@@ -12,10 +12,10 @@ from qutil.plotting.colors import RWTH_COLORS
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
 from common import (  # noqa
-    apply_sketch_style, markerprops, MARGINWIDTH, PATH, TEXTWIDTH, MARGIN_STYLE, MAIN_STYLE
+    init, apply_sketch_style, markerprops, MARGINWIDTH, PATH, TEXTWIDTH, MARGINSTYLE, MAINSTYLE
 )
 
-mpl.use('pgf')
+init(MARGINSTYLE, backend='pgf')
 # %%
 
 
@@ -42,7 +42,7 @@ xm = np.arange(-4.5, 5.5)*2*np.pi/T
 
 colors = mpl.color_sequences['rwth'][1:]
 
-with plt.style.context(MARGIN_STYLE, after_reset=True):
+with plt.style.context(MARGINSTYLE, after_reset=True):
     for window in (rect, hann):
         fig, ax = plt.subplots(figsize=(MARGINWIDTH, 1.4))
 
@@ -91,7 +91,7 @@ M = int(2*L/N - 1)
 np.random.seed(0)
 noise = fast_colored_noise(lambda f: 1/f, 1, L, ())
 
-with plt.style.context(MAIN_STYLE, after_reset=True):
+with plt.style.context(MAINSTYLE, after_reset=True):
     fig, ax = plt.subplots(figsize=(TEXTWIDTH, 2))
 
     n = np.arange(N)
