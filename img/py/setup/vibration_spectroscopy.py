@@ -378,10 +378,8 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
             vc, vc_f = fourier_space.octave_band_rms(*fourier_space.derivative(S, f, order=1),
                                                      fraction=3)
 
-            ax.loglog(vc_f, vc, label=key[1], ls='--', zorder=5,
-                      color=sty['color'],
-                      markeredgecolor=sty['color'],
-                      markerfacecolor=mpl.colors.to_rgb(sty['color']) + (0.5,))
+            ax.loglog(vc_f, vc, label=key[1], zorder=5, color=sty['color'],
+                      **(markerprops(sty['color'], markersize=4) | dict(ls='--')))
 
         lim = ax.get_xlim()
         ax.plot([8, lim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])

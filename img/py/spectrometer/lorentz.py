@@ -9,7 +9,6 @@ import numpy as np
 import scipy as sc
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
-from matplotlib import colors
 from qutil import functools, const, signal_processing as sp
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
@@ -41,6 +40,8 @@ def noise(σ, τ_c, N, method='lmt'):
             mrng = MultithreadedRNG(SEED)
             mrng.fill(Z)
             return bartosch_2001_I(Z, Δt, σ, τ_c).squeeze()
+        case _:
+            raise ValueError(f'Unknown method {method}')
 
 
 @nb.njit(parallel=True)
@@ -97,7 +98,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ax.errorbar(τ[τ >= 0][idx] / τ_cs[1],
                     (C.mean(0)[τ >= 0] / L)[idx] / σs[1] ** 2,
                     (C.std(0)[τ >= 0] / L)[idx] / σs[1] ** 2 / np.sqrt(O),
-                    ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
+                    color=ln.get_color(),
+                    ecolor=mpl.colors.to_rgb(ln.get_color()) + (alpha,),
                     **markerprops(ln.get_color(), marker='.'))
 
         # PSD
@@ -113,7 +115,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ax.errorbar(fx[idx]*2*np.pi,
                     Sx.mean(0)[idx] / (2 * τ_cs[1] * σs[1] ** 2),
                     Sx.std(0)[idx] / (np.sqrt(O) * 2 * τ_cs[1] * σs[1] ** 2),
-                    ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
+                    color=ln.get_color(),
+                    ecolor=mpl.colors.to_rgb(ln.get_color()) + (alpha,),
                     **markerprops(ln.get_color(), marker='.'))
 
     ax = axes[0]
