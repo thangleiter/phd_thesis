@@ -1,42 +1,54 @@
 import argparse
 import concurrent.futures
+import os
 import pathlib
-import subprocess
 import sys
+import time
 
-import tqdm
 from tqdm import tqdm
 
 
-def execute_file(file):
+def execute_file(file, timeout=None):
     """
     Execute a Python file in a separate process using sys.executable.
     Returns a tuple with the file path, exit code, stdout, and stderr.
     """
+    import subprocess
+    import time
+
+    start = time.perf_counter()
     result = subprocess.run(
-        # [sys.executable, file],
-        [sys.executable, '-c', 'import time; time.sleep(1)'],
+        [sys.executable, file],
+        # [sys.executable, '-c', 'import time; time.sleep(1)'],
+        timeout=timeout,
         capture_output=True,
         text=True
     )
-    return file, result.returncode, result.stdout, result.stderr
+    ptime = time.perf_counter() - start
+    return file, ptime, result.returncode, result.stdout, result.stderr
 
 
 def gather_files(root, args):
+    def select(p):
+        if p.parent == root:
+            return False
+        for parent in p.relative_to(root).parents:
+            if parent.name.startswith('.'):
+                return False
+        return True
+
     # If neither option is provided, default to running all subdirectories.
     if not args.all and not args.dirs:
         args.all = True
 
     if args.all:
-        # Gather all Python files in subdirectories (excluding those directly in the root).
-        files = [p for p in root.rglob('*.py') if p.parent != root]
+        files = list(filter(select, root.rglob('*.py')))
     else:
         # Calculate absolute paths for the selected directories.
         selected_dirs = {(root / d).resolve() for d in args.dirs}
         files = []
         for p in root.rglob('*.py'):
-            # Exclude files in the root.
-            if p.parent == root:
+            if not select(p):
                 continue
             # Check if the file is located in one of the selected subdirectories.
             # We use p.relative_to(selected_dir) to see if p is under that directory.
@@ -68,32 +80,75 @@ def main():
         nargs="+",
         help="List of subdirectories (relative to the project root) to run."
     )
+    parser.add_argument(
+        "--parallel",
+        action="store_true",
+        help="Run scripts in parallel processes."
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        help="Timeout in seconds for jobs."
+    )
     args = parser.parse_args()
 
     files = gather_files(root := pathlib.Path(__file__).parent.resolve(), args)
+    results = {}
 
-    # Execute files in parallel using a process pool.
-    with (
-            concurrent.futures.ProcessPoolExecutor() as executor,
-            tqdm(total=len(files), unit='files') as pbar
-    ):
-        futures = {executor.submit(execute_file, file): file for file in files}
-        for future in concurrent.futures.as_completed(futures):
-            file, returncode, stdout, stderr = future.result()
+    if args.parallel:
+        workers = min(len(files), os.cpu_count())
+        with (
+                concurrent.futures.ThreadPoolExecutor(workers) as executor,
+                tqdm(total=len(files), unit='files') as pbar
+        ):
+            futures = {executor.submit(execute_file, file, args.timeout): file for file in files}
+            pbar.set_description(f'Running {len(files)} scripts')
+            pbar.update(n=0)
 
-            if returncode == 0:
-                pbar.set_description(f'{(file.relative_to(root))} ran successfully.')
-                if stdout:
-                    print(stdout)
-            else:
-                print(f"\nFile {file} failed with exit code {returncode}.")
-                pbar.set_description(f'{(file.relative_to(root))} failed with exit code '
-                                     f'{returncode}.')
-                if stderr:
-                    print(stderr)
+            for future in concurrent.futures.as_completed(futures):
+                results[future] = future.result()
+                file, ptime, returncode, stdout, stderr = results[future]
 
-            pbar.update()
+                if returncode == 0:
+                    pbar.set_description(f'{(file.relative_to(root))} ran successfully in '
+                                         f'{ptime:.2g} s')
+                    if stdout:
+                        print(stdout)
+                else:
+                    pbar.set_description(f'{(file.relative_to(root))} failed with exit code '
+                                         f'{returncode} after {ptime:.2g} s')
+                    if stderr:
+                        print(stderr)
+
+                pbar.update()
+
+        total = pbar.format_dict['elapsed']
+        ptimes = sum(result[1] for result in results.values())
+        print(f'Processed {len(files)} scripts with {workers} processes in {total:.2g} seconds. '
+              f'Speedup: {round(ptimes/total*100)} %')
+    else:
+        with tqdm(total=len(files), unit='files') as pbar:
+            for file in files:
+                pbar.set_description(f'Running {(file.relative_to(root))}')
+                pbar.update()
+
+                results[file] = execute_file(file)
+                file, utime, returncode, stdout, stderr = results[file]
+
+                if returncode == 0:
+                    if stdout:
+                        print(stdout)
+                else:
+                    print(f'{(file.relative_to(root))} failed with exit code {returncode} after '
+                          f'{utime:.2g} s.')
+                    if stderr:
+                        print(stderr)
+
+        total = pbar.format_dict['elapsed']
+        print(f'Processed {len(files)} scripts in {total:.2g} seconds.')
+
+    return results
 
 
 if __name__ == '__main__':
-    main()
+    results = main()
