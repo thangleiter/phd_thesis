@@ -5,6 +5,7 @@ import threading
 import time
 
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sc
 from python_spectrometer import daq, Spectrometer
@@ -57,19 +58,16 @@ class MockMFLIDAQ(daq.simulator.DemodulatorQoptColoredNoise):
         return MFLIDAQSettings
 
 
-def stop(timer, stop_flag, max_callbacks: int):
+def stop(timer, fig, path, max_callbacks: int):
     global CALLED_BACK
-    if CALLED_BACK >= max_callbacks:
-        timer.stop()
-        stop_flag.set()
-    else:
+    if CALLED_BACK < max_callbacks:
         CALLED_BACK += 1
+        return
 
-
-def savefig(fig, path, stop_flag):
-    stop_flag.wait()
+    timer.stop()
     time.sleep(1)  # for good measure
     fig.savefig(path)
+    plt.close(fig)
 
 
 # %%
@@ -82,10 +80,11 @@ speck = Spectrometer(qopt_daq, savepath=tempfile.mkdtemp(),
 settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=2e-16, exp=1, A=1e-13, npeaks=50,
                 freq=0, filter_order=3)
 # %%
-stop_flag = threading.Event()
 CALLED_BACK = 1
-timer = mpl.backends.backend_qt.TimerQT(1)
-timer.add_callback(stop, timer, stop_flag, max_callbacks=12)
+
+fig = plt.figure(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
+timer = fig.canvas.new_timer(interval=1)
+timer.add_callback(stop, timer, fig, PATH / 'pdf/spectrometer/live_view.pdf', max_callbacks=12)
 
 # bordeaux has the largest dynamic range. at index 9 in the cycle
 view, = speck.live_view(
@@ -95,12 +94,11 @@ view, = speck.live_view(
     in_process=False,
     live_view_kw=dict(
         event_source=timer,
+        fig=fig,
         style=['fast', MAINSTYLE, {'axes.prop_cycle': (2 * mpl.rcParams['axes.prop_cycle'])[0:]}],
         img_kw=dict(cmap=make_sequential_colormap('blue').reversed()),
-        fig_kw=dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
     )
 )
 
-thread = threading.Thread(target=savefig,
-                          args=(view.fig, PATH / 'pdf/spectrometer/live_view.pdf', stop_flag))
-thread.start()
+# Required for script execution mode
+plt.show(block=True)
