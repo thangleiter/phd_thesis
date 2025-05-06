@@ -19,7 +19,7 @@ from qutil.ui.gate_layout import GateLayout
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, MARKERSTYLE # noqa
+from common import PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops # noqa
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
 DATA_PATH = PATH.parent / 'data/transport'
@@ -244,13 +244,8 @@ with (
     fig, ax = plt.subplots(layout='constrained',
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.1))
 
-    ax.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1], ls='',
-            color=RWTH_COLORS['blue'],
-            marker='o',
-            markersize=3,
-            markeredgewidth=0.5,
-            markeredgecolor=RWTH_COLORS['blue'],
-            markerfacecolor=mpl.colors.to_rgb(RWTH_COLORS['blue']) + (0.5,))
+    ax.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1],
+            **markerprops(RWTH_COLORS['blue'], markersize=3, markeredgewidth=0.5))
 
     ax.plot(x[ix] * 1e3, dfermi(x[ix], *fit.curvefit_coefficients) - fit.curvefit_coefficients[-1],
             color=RWTH_COLORS['magenta'], marker='')
@@ -283,13 +278,8 @@ with (
     xlim = conductance_plunger['NBC_TBC'][[0, -1]] * 1e3
     axins = ax.inset_axes([0.075, 0.5, 0.425, 0.425], xlim=xlim)
 
-    axins.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1], ls='',
-               color=RWTH_COLORS['blue'],
-               marker='o',
-               markersize=3,
-               markeredgewidth=0.5,
-               markeredgecolor=RWTH_COLORS['blue'],
-               markerfacecolor=mpl.colors.to_rgb(RWTH_COLORS['blue']) + (0.5,))
+    axins.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1],
+               **markerprops(RWTH_COLORS['blue'], markersize=3, markeredgewidth=0.5))
 
     axins.plot(x[ix] * 1e3,
                dfermi(x[ix], *fit.curvefit_coefficients) - fit.curvefit_coefficients[-1],

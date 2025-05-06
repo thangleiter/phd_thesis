@@ -11,7 +11,9 @@ from qutil.plotting.colors import RWTH_COLORS
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import apply_sketch_style, MARGINWIDTH, PATH, TEXTWIDTH, MARGIN_STYLE, MAIN_STYLE  # noqa
+from common import (  # noqa
+    apply_sketch_style, markerprops, MARGINWIDTH, PATH, TEXTWIDTH, MARGIN_STYLE, MAIN_STYLE
+)
 
 mpl.use('pgf')
 # %%
@@ -46,15 +48,9 @@ with plt.style.context(MARGIN_STYLE, after_reset=True):
 
         ax.plot(x, window(x, T), color=colors[0])
         for xnn in xn:
-            ax.plot([xnn], window(xnn, T), 'o',
-                    markersize=5,
-                    markeredgecolor=colors[1],
-                    markerfacecolor=mpl.colors.to_rgba(colors[1], alpha))
+            ax.plot([xnn], window(xnn, T), **markerprops(colors[1], marker='o', markersize=5))
         for xmm in xm:
-            ax.plot([xmm], window(xmm, T), 'D',
-                    markersize=4,
-                    markeredgecolor=colors[2],
-                    markerfacecolor=mpl.colors.to_rgba(colors[2], alpha))
+            ax.plot([xmm], window(xmm, T), **markerprops(colors[2], marker='D', markersize=4))
 
         ax.set_xlim(-12.5*np.pi, 12.5*np.pi)
         ax.set_xticks([-10 * np.pi / T, 10 * np.pi / T])

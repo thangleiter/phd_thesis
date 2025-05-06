@@ -25,7 +25,7 @@ from uncertainties import ufloat
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
 from common import (
-    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, MARKERSTYLE
+    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops
 )  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
@@ -214,11 +214,7 @@ with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]), changed_plotting_
     fig, ax = plt.subplots(layout='constrained')
     ax.errorbar(vdc, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                marker='o',
-                ls='',
-                markersize=5,
-                markeredgecolor=errorcolor,
-                markerfacecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,))
+                **markerprops(errorcolor))
     ax.plot(vdc, np.polyval(popt_posvdc, vdc)*1e6, zorder=5)
     ax.grid()
     ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
@@ -262,11 +258,7 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
                 y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
                 xerr=xxerr, label='Data',
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                marker='.',
-                ls='',
-                markersize=5,
-                markeredgecolor=errorcolor,
-                markerfacecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,))
+                **markerprops(errorcolor, marker='.'))
     ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
@@ -380,7 +372,7 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
 
 # %% Vibration criterion
-with mpl.style.context([MAINSTYLE, MARKERSTYLE]), changed_plotting_backend('pgf'):
+with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         fig, ax = plt.subplots(layout='constrained')
 

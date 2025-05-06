@@ -14,7 +14,7 @@ from qutil import functools, const, signal_processing as sp
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import PATH, MARGINWIDTH, MARGIN_STYLE  # noqa
+from common import PATH, MARGINWIDTH, MARGIN_STYLE, markerprops  # noqa
 
 mpl.use('pgf')
 mpl.rcdefaults()
@@ -99,13 +99,8 @@ with mpl.style.context([MARGIN_STYLE], after_reset=True):
         ax.errorbar(τ[τ >= 0][idx] / τ_cs[1],
                     (C.mean(0)[τ >= 0] / L)[idx] / σs[1] ** 2,
                     (C.std(0)[τ >= 0] / L)[idx] / σs[1] ** 2 / np.sqrt(O),
-                    color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
-                    marker='.',
-                    ls='',
-                    markersize=5,
-                    markeredgecolor=ln.get_color(),
-                    markerfacecolor=colors.to_rgb(ln.get_color()) + (alpha,))
+                    **markerprops(ln.get_color(), marker='.'))
 
         # PSD
         ax = axes[2]
@@ -120,13 +115,8 @@ with mpl.style.context([MARGIN_STYLE], after_reset=True):
         ax.errorbar(fx[idx]*2*np.pi,
                     Sx.mean(0)[idx] / (2 * τ_cs[1] * σs[1] ** 2),
                     Sx.std(0)[idx] / (np.sqrt(O) * 2 * τ_cs[1] * σs[1] ** 2),
-                    color=ln.get_color(),
                     ecolor=colors.to_rgb(ln.get_color()) + (alpha,),
-                    marker='.',
-                    ls='',
-                    markersize=5,
-                    markeredgecolor=ln.get_color(),
-                    markerfacecolor=colors.to_rgb(ln.get_color()) + (alpha,))
+                    **markerprops(ln.get_color(), marker='.'))
 
     ax = axes[0]
     ax.margins(x=0)
