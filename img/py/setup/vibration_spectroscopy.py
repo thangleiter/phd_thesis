@@ -105,8 +105,8 @@ def pos_vs_cps(cps, a, b):
     return (cps*1e-6 - b)/a
 
 
-def cps_calib(x, fs, pos_vs_cps_calibration, **_):
-    return pos_vs_cps(x*fs, *pos_vs_cps_calibration)
+def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
+    return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
 def erf_theory(x, I0, w0, r):
