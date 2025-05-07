@@ -232,8 +232,8 @@ where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
     s = \frac{\Phi_0}{w_0}(1 - r).
 \end{equation}
-Hence, to obtain a more sensitive probe for vibrations, one could either improve the reflectance contrast $1-r$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
-    Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to w_0$.
+Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_R$, one could either improve the reflectance contrast $1-r$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
+    Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
 In our case, the former two are fixed by the setup and sample, whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
 
@@ -244,7 +244,6 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \tagger to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
-\clearpage
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/knife_edge}
@@ -296,13 +295,13 @@ Again performing a linear fit (shown in \cref{fig:setup:vibrations:calibration:p
     \includegraphics{img/pdf/setup/knife_edge_slope}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
         Photon count rate as function of DC voltage applied to the nanopositioner.
-        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields a slope of \qty{2.36+-0.02}{\mega\cps\per\micro\meter}.
+        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields a slope of $a\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$.
         Error bars on the count rate show the standard error on the mean over multiple observations and error bars on the position show the fit error from \cref{fig:setup:vibrations:calibration:pos_vs_vdc}.
     }
     \label{fig:setup:vibrations:calibration:pos_vs_cps}
 \end{marginfigure}
 
-Finally, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) of count rate over displacement.
+Finally, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) $a\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ of count rate over displacement.
 The data and fit are shown in \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
 Clearly, the count rate is linear in the displacement over a large range, indicating that for fluctuations with amplitude on the order of \qty{100}{\nano\meter} \gls{rms}, the measurement sensitivity should be sufficiently robust.
 
@@ -310,8 +309,78 @@ Clearly, the count rate is linear in the displacement over a large range, indica
     \centering
     \includegraphics{img/pdf/setup/spect_optic}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{}
-    \label{fig:setup:vibrations:optical}
+    \label{fig:setup:vibrations:optic}
 \end{figure}
+
+We are now at last able to measure the displacement noise using \pyspeck.
+Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the Time Tagger,\footnote{
+    Since the \glspl{apd} are arranged in a \gls{hbt} geometry, I combined the counts of both instruments using the virtual channel functionality of the Time Tagger.
+}
+I obtained the displacement noise \glspl{psd} shown in \cref{fig:setup:vibrations:optic}.
+A few things stand out.
+First, rather than the $f^{-2}$ background observed with the accelerometer in \cref{sec:setup:vibrations:accel}, the noise floor is white ($S(f)=\text{const.}$) at approximately $\qty{1}{\nano\meter\per\sqrt{\hertz}}$.
+To understand why we need to take a closer look at the counting statistics, which we will postpone for a bit in order to first finish our discussion of the noise spectra.
+
+\subsection{Noise floor}\label{subsec:setup:vibrations:optic:noise_floor}
+The noise floor in the optical vibration measurements shown in \cref{fig:setup:vibrations:optic} is qualitatively very different from that observed with the accelerometer.
+There, the \emph{acceleration} noise floor was white,\sidenote{
+    Remember that as acceleration is the second time derviative of displacement, in frequency space it is proportional to $f^2$ times the latter.
+}
+whereas with the optical method the \emph{displacement} noise floor is white, hinting at a different underlying mechanism.
+
+To elucidate this issue, we model the detection event of a single photon (a \enquote{click}) arriving at the detector at a random time $t_i$ as a $\delta$-function so that the total flux as function of time is given by
+\begin{equation}\label{eq:setup:flux_comb}
+    \Phi(t) = \sum_i \delta(t-t_i).
+\end{equation}
+Assuming them to be uncorrelated, the time difference between subsequent clicks is exponentially distributed with average rate $\bar{\Phi}$, $\lvert t_{i+1}-t_i\rvert\sim\expdist(\bar{\Phi})$~\cite{ExponentialDistributionWiki}.
+From this it follows that the number of clicks $N(\dt)$ within a given time bin $t\in [s, u]$ of length $\dt = \lvert u - s\rvert$ is Poisson distributed, $N(\dt)\sim\poisson(\bar{N})$, with mean number of counts $\expval{N(\dt)} = \bar{N} = \bar{\Phi}\dt$~\cite{PoissonDistributionWiki}.
+Using the formalism developed in \cref{sec:speck:theory:time_series_estimation}, we can now compute the \gls{psd} of the stochastic process $\delta N(\dt) = N(\dt) - \bar{N}$.
+To this end, observe that because we assumed arrivals to be uncorrelated, $N_s(\dt)$ for a time bin starting at $t=s$ is independent of $N_u(\dt)$ for a time bin starting at $t=u$.
+In other words, the autocorrelation function of $\delta N(\dt)$ is nonzero only for the same time bins,
+\begin{equation}\label{eq:setup:poisson:autocorrelation}
+    C_{\delta N(\dt)}(\tau) = \expval{(N_s(\dt) - \bar{N})(N_u(\dt) - \bar{N})} = \variance(N(\dt))\delta(\tau),
+\end{equation}
+where $\tau = s-u$ and $\delta(\tau)$ is to be understood in a broad sense as zero if $\abs{\tau} > \dt$ and $\flatfrac{1}{2\dt}$ else.
+For the Poisson distribution the variance is equal to its mean so that we obtain
+\begin{equation}\label{eq:setup:poisson:autocorrelation:evaluated}
+    C_{\delta N(\dt)}(\tau) = \bar{N}\delta(\tau).
+\end{equation}
+In the limit of $\dt\to 0$, we can then perform the Fourier transform to obtain the \gls{psd} of $\delta N = \lim_{\dt\to 0}\delta N(\dt)$,\sidenote{
+    Despite appearances, $S_{\delta N}$ has units \unit{\cts\squared\per\hertz}.
+    The discrepancy stems from the difficulty in defining a continuous white noise process.
+}
+\begin{equation}\label{eq:setup:poisson:psd}
+    S_{\delta N}(\omega) = \bar{N},
+\end{equation}
+that is, $\delta N$ is a white noise without frequency dependence.
+$S_{\delta N}$ can be seen as the \emph{instantaneous} number noise \gls{psd}.
+To convert to the instantaneous displacement noise \gls{psd}, we can simply multiply with the sampling rate $\fs$ and divide by the slope $a$ of the calibration converting displacements to count rates (\cref{fig:setup:vibrations:calibration:pos_vs_cps}) because if $N\sim\poisson(\bar{N})$ then so $y\sim\poisson(\flatfrac{\bar{N}\fs}{a})$.
+Hence,
+\begin{equation}\label{eq:setup:poisson:psd:displ}
+    S_{\delta y}(\omega) = \frac{\bar{N}\fs}{a}
+\end{equation}
+with $\delta y = y - \expval{y}$.
+
+As a last step, we consider once again discretely sampling the \emph{continuous} process $\delta N$ with \gls{psd} $S_{\delta N}(\omega)$ at rate $\fs=\dt\inverse$ in order to find an expression for the \gls{psd} of the discrete process $\delta N(\dt)$, $S_{\delta N(\dt)}(\omega)$.
+We know from above that $\variance(\delta N(\dt)) = \bar{N}$.
+On the other hand, recall from \cref{sec:speck:theory:time_series_estimation} that also
+\begin{align}\label{eq:setup:shot_noise:var}
+    \variance(\delta N(\dt)) = \intinf\ddf{\omega} S_{\delta N(\dt)}(\omega) = \int_{-\flatfrac{\fs}{2}}^{\flatfrac{\fs}{2}}\dd{f} S_{\delta N(\dt)}(f)
+\end{align}
+where the last equation holds true because of the finite bandwidth of the discretely sampled signal.
+Since $S_{\delta N}$ is white, it follows that $S_{\delta N(\dt)}$ is, too, and we can directly evaluate \cref{eq:setup:shot_noise:var}, obtaining
+\begin{equation}\label{eq:setup:shot_noise:psd}
+    S_{\delta N(\dt)}(\omega) = \frac{\bar{N}}{\fs},
+\end{equation}
+or, for the flux noise $\delta\Phi=\flatfrac{\delta N(\dt)}{\dt}$,\sidenote{
+    Note that we could have also arrived at this result directly by explicitly computing the autocorrelation function $\expval{\delta\Phi(t)\delta\Phi(t-\tau)}$ from \cref{eq:setup:flux_comb}.
+}
+\begin{equation}\label{eq:setup:shot_noise:psd:flux}
+    S_{\delta\Phi}(\omega) = \frac{\bar{N}}{\fs\dt^2} = \bar{\Phi}.
+\end{equation}
+This type of noise is known as \emph{shot noise}.
+It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons~\cite{Blanter2000}.
+For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}) and $\fs=\qty{2}{\kilo\hertz}$, we obtain a shot noise floor of $S_{\delta\Phi} = $
 
 \section{Routes for improvement}\label{sec:setup:vibrations:outlook}
 Several improvements could be made to the system if the external conditions would allow it.
