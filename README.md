@@ -19,6 +19,9 @@
 - [ ] Disjunct parts
 
 ### pyspeck
+- [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
+- [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
+- [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
 - [ ] More representative cumulative spectra
 - [ ] Discuss cumulative with dB scale?
 
