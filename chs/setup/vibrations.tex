@@ -29,10 +29,10 @@ While the cold foot of the \gls{ptr} is not rigidly connected to the cryostat in
 }
 the entire cold head assembly rests with rubber feet on the cryostat top plate in the system's delivery status.
 Thus, our microscope does not only encounter passive environmental vibrations but also the active disturbance from the \gls{ptr}.
-To characterize and improve upon the vibration isolation, I performed vibration noise spectroscopy using the techniques and tools presented in \cref{part:speck}.\sidenote{
-    The endeavour was triggered by a sudden increase in visually observed vibrations in the microscope image.
-    As it turned out, the cause was a damaged nanopositioner bearing rather than environmental.
-}
+
+This chapter is laid out as follows.
+In \cref{sec:setup:vibrations:isolation}, I briefly discuss the theoretical underpinnings of vibration isolation to inform its optimization.
+To characterize and improve upon the isolation, I performed vibration noise spectroscopy using the techniques and tools presented in \cref{part:speck}.
 I employed two different approaches that I lay out in the following; first, using a commercial piezoelectric accelerometer (\cref{sec:setup:vibrations:accel}) and second, using the optical response of a spatial reflectance gradient (\cref{sec:setup:vibrations:optic}).
 As will become clear, the two approaches complement each other because they are sensitive to slightly different quantities.
 
@@ -71,25 +71,38 @@ The amplitude transfer function given by
     H(s) = \frac{x(s)}{u(s)} = \frac{1}{m}\frac{1}{s^2 + 2\gamma s + \omega_0^2}
 \end{equation}
 is drawn in \cref{fig:setup:vibrations:spring:tf} normalized to the DC response for $s=\i\omega$ (solid black line).
-Below $\omega=\sqrt{2}\omega_0$, the suspension in fact leads to amplification of external impulses.
+Below $\omega=\sqrt{2}\omega_0$ (vertical dotted line), the suspension in fact leads to amplification of external impulses.
 This is independent of the damping $\gamma$ and the reason why resonance frequencies as small as possible are desirable in vibration isolation.
 Above this frequency, the system attenuates with $\qty{40}{\decibel}$ per decade.
 A more accurate model results in the transfer function drawn as a dashed line~\sidecite{FabreekaAirSprings}.
 Here, the attenuation at high frequencies is only $\qty{20}{\decibel}$ per decade.
 
 From \cref{fig:setup:vibrations:spring:tf}, we can infer two possible approaches to isolating a mass from vibrations.
-The first is to make the system's resonance frequency $\omega_0$ as possible by resting it on a spring damping system.
+The first is to make the system's resonance frequency $\omega_0$ as small as possible by resting it on a spring damping system.
 This maximizes the region in which external influences are attenuated.
 The second is to do the opposite, \ie, make the entire system as stiff and thereby $\omega_0$ as large as possible.\sidenote{
     The stiffness $k$ is related to the resonance frequency by $k = m\omega_0^2$.
 }
 While this minimizes the attenuation region, it also moves the amplification region close to the resonance to higher frequencies, and possibly further away from the external excitation.
+Consequently, this approach makes most sense if it is known that low-frequency excitations are the dominant source of vibrations.
 
 What does this mean for our case of a dry \gls{dr}?
 The rotary valve motor of the \gls{ptr} generates pulses with frequency \qty{1.4}{\hertz}.
-Commercial damping systems that the space constraints in our lab allow to be accommodated, for example the CFM Schiller MAS 25~\cite{CFMSchiller}, have resonance frequencies around $f_0 = \qty{2.5}{\hertz}$, implying the first two harmonics of the \gls{ptr} excitation fall into the amplification area as discussed above.
-Hence, the initial isolation concept for the cryostat envisaged mounting the rotary valve motor rigidly to the stiff aluminium item profile frame, which was additionally filled with sand.
-% TODO: lay out suspension setup here
+Commercial damping systems that the space constraints in our lab allow to be accommodated, for example the CFM Schiller MAS 25~\cite{CFMSchiller}, have resonance frequencies around $f_0 = \qty{2.5}{\hertz}$, implying the first two harmonics of the \gls{ptr} excitation fall into the amplification regime as discussed above.
+We are thus right in-between the two regimes and it is a-priori unclear which isolation scheme to choose without detailed mechanics simulations.
+Hence, the initial isolation concept for the cryostat envisaged mounting the rotary valve motor rigidly to the stiff aluminium item profile frame, which was additionally filled with sand to increase the system's resonance frequency.
+
+However, prompted by a sudden increase in visually observed vibrations in the microscope image, I modified the cryostat frame to house three air springs~\sidecite{CFMSchiller} in the hopes of isolating the microscope from external disturbances.\sidenote{
+    As it turned out, the cause was a damaged nanopositioner bearing rather than environmental.
+    Fortuitiously, the endeavour still proved successful and resulted in an improved vibration performance as I show below.
+}
+To this end, I decoupled the frame from which the cryostat itself is suspended from the support frame standing on the lab ground.
+Extruding from the square footprint of the support frame at two adjacent corners and the center of the diametrically opposite side, the three air springs are mounted with the base on angle brackets connected to the support frame while their plunger is mounted to a second angle bracket connected to the cryostat frame.
+The springs are connected by pneumatic tubing to a central pressure regulation panel that is connected to the building's central air pressure line.
+The vertical placement of the springs is chosen such that when the air springs are deflated the cryostat frame rests on the support frame, establishing the same rigid connection that existed previously.
+This allows examining the influence of the air springs on the vibration isolation without modifying the setup by simply venting the pressurized air from the springs.
+
+In the following, I will characterize the performance of the system with and without the air springs active using two different methods.
 
 \section{Accelerometric vibration spectroscopy}\label{sec:setup:vibrations:accel}
 The most straightforward method of measuring vibration noise is an accelerometer.
@@ -128,8 +141,10 @@ Outside of the cryostat, the signal is routed to a signal conditioner that provi
     \centering
     \includegraphics{img/pdf/setup/spect_accel}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
-        Top: displacement noise spectra acquired at room temperature when the \gls{ptr} is switched on (blue, magenta) or off (green and orange), and when the air suspension is switched enabled (magenta, orange) or disabled (blue, green).
+        Top: displacement noise spectra acquired with the accelerometer at room temperature when the \gls{ptr} is switched on (blue, magenta) or off (green and orange), and when the air suspension is switched enabled (magenta, orange) or disabled (blue, green).
         Bottom: band-limited \gls{rms} computed from the \glspl{psd} in the upper panel (\cf \cref{eq:speck:psd:bandpower}).
+        Turning on the \gls{ptr} increases the \gls{rms} noise amplitude by more than an order of magnitude over the entire frequency spectrum.
+        The suspension slightly worsens the total noise because the low-frequency pulses excite the system close to the air springs' resonance frequency of \qty{2.5}{\hertz}.
     }
     \label{fig:setup:vibrations:accelerometer}
 \end{figure}
@@ -144,7 +159,7 @@ The measurements are shown in \cref{fig:setup:vibrations:accelerometer} together
 \end{equation}
 When the \gls{ptr} is switched off, the spectra with and without suspension are dominated by broadband vibration noise, although quite some structure around \qtylist{15;33;60}{\hertz} can be observed.\sidenote{
     Note the curious peaks slightly offset from the second and third harmonic of the \gls{ptr} frequency in the spectrum with suspension enabled and \gls{ptr} disabled.
-    We may speculate that these are due to the \glspl{ptr} of other cryostates in other labs in the vicinity that are transmitted through the floor.
+    We may speculate that these are due to the \glspl{ptr} of other cryostats in other labs in the vicinity that are transmitted through the floor.
     Two were running two rooms over at the time the data was acquired.
 }
 When it is switched on, the \gls{ptr} pulses at \qty{1.4}{\hertz} and a large number of its higher harmonics visually dominate the spectra.
@@ -224,9 +239,9 @@ Furthermore, for $y\in[-w_0/2, w_0/2]$ the function is well-approximated by
     P_R(y)\approx -I_0(1-r)y + \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}
 \end{equation}
 drawn as a dashed line.
-Since we measure the photon count rate rather than the power, $\Phi = \flatfrac{P}{h\nu}$ with $\nu$ the laser wavelength, we rewrite this as
+Since we measure the photon count rate rather than the power, $\Phi = \flatfrac{P\lambda}{hc}$ with $\lambda$ the laser wavelength, we rewrite this as
 \begin{equation}\label{eq:setup:knife_edge:linearized}
-    \Phi_R(y) = -sy + \frac{\Phi_0}{2}\sqrt{\frac{\pi}{2}}.%\Phi_{\mr{avg}},
+    \Phi_R(y) = -sy + \frac{\Phi_0}{2}\sqrt{\frac{\pi}{2}}.
 \end{equation}
 where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
@@ -241,7 +256,7 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 \begin{equation}\label{eq:setup:knife_edge:procfn}
      y(\Phi_R) = \frac{w_0}{1-r}\left[\frac{1}{2}\sqrt{\frac{\pi}{2}} - \frac{\Phi_R}{\Phi_0}\right].
 \end{equation}
-To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \tagger to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
+To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
 \begin{marginfigure}
@@ -249,7 +264,7 @@ Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a disp
     \includegraphics{img/pdf/setup/knife_edge}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
         Calibration of the length reference scale.
-        The top shows a \acrshort{cmos} camera image in (black corresponding to high intensity) of the white light spot on the edge of the optical gate as indicated in \cref{fig:setup:vibrations:knife_edge:sketch}.
+        The top shows a \acrshort{cmos} camera image (higher intensity darker) of the white light spot on the edge of the optical gate as indicated in \cref{fig:setup:vibrations:knife_edge:sketch}.
         Several diffraction lines can be seen parallel to the edge.
         The vertical dashed lines indicate the region in which the intensity slope was fitted.
         The horizontal dashed lines indicate the extent of rows averaged over.
@@ -263,7 +278,7 @@ The first challenge is obtaining a proper length reference scale.
 While the nanopositioners on which the sample is mounted do in principle have a resistive position readout, it is extremely unreliable at small displacements.
 Therefore, I calibrated the relative position using the imaging arm of the optical head.
 \Cref{fig:setup:vibrations:calibration:length_scale} depicts the procedure.
-I illuminated the sample with the white light, positioned the spot on the edge of the optical gate, and imaged the sample with the \cmoscam camera.
+I illuminated the sample with the white light, positioned the spot on the edge of the optical gate, and imaged the sample with the \cmoscam.
 I then extracted the position of the edge, in pixels, for several rows to obtain some statistics by fitting a linear function to the edge profile in a small region between two refraction maxima.
 Repeating this step for different DC voltages applied to the nanopositioner,
 %\sidenote{
@@ -277,49 +292,58 @@ Repeating this step for different DC voltages applied to the nanopositioner,
 this yields the proportionality factor between the nanopositioner DC voltage, $V_{\mr{DC}}$, and the position of the gate edge on the camera.
 By measuring the total width of the gate on the camera image, I obtained the magnification by referencing it to the design width,
 \begin{equation}\label{eq:setup:knife_edge:magnification}
-    M = \frac{W[\unit{\pixel}]}{W[\unit{\micro\meter}]}.
+    M = \frac{w[\unit{\pixel}]}{w[\unit{\micro\meter}]}.
 \end{equation}
-Again performing a linear fit (shown in \cref{fig:setup:vibrations:calibration:pos_vs_vdc}) to the data for different voltages then results in the linear transformation from DC voltage to position.
+Again performing a linear fit (shown in the upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}) to the data for different voltages then results in the linear transformation from DC voltage to position.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/knife_edge_fits}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
-        Linear fit of the edge positions extracted from the analysis in \cref{fig:setup:vibrations:calibration:length_scale} for different DC voltages applied to the nanopositioner.
+        Top: linear fit of the edge positions extracted from the analysis in \cref{fig:setup:vibrations:calibration:length_scale}.
         Error bars are propagated standard errors of the weighted average of edge positions extracted from different rows.
-    }
-    \label{fig:setup:vibrations:calibration:pos_vs_vdc}
-\end{marginfigure}
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/setup/knife_edge_slope}
-    \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
-        Photon count rate as function of DC voltage applied to the nanopositioner.
-        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields a slope of $a\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$.
-        Error bars on the count rate show the standard error on the mean over multiple observations and error bars on the position show the fit error from \cref{fig:setup:vibrations:calibration:pos_vs_vdc}.
+        Bottom: laser photon count rate as function of position set by the nanopositioner.
+        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ (\cf \cref{eq:setup:knife_edge:linearized
+        }).
+        Error bars on $\Phi_R$ show the standard error of the mean over multiple observations and error bars on $y$ show the fit error from the top panel.
     }
     \label{fig:setup:vibrations:calibration:pos_vs_cps}
 \end{marginfigure}
 
-Finally, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) $a\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ of count rate over displacement.
-The data and fit are shown in \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
+Finally, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ of count rate over displacement.
+The data and fit are shown in the bottom panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
 Clearly, the count rate is linear in the displacement over a large range, indicating that for fluctuations with amplitude on the order of \qty{100}{\nano\meter} \gls{rms}, the measurement sensitivity should be sufficiently robust.
 
 \begin{figure}
     \centering
     \includegraphics{img/pdf/setup/spect_optic}
-    \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{}
+    \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
+        Top: displacement noise spectra acquired with the optical \emph{in-situ} method at room temperature when the \gls{ptr} is switched on (blue, magenta) or off (green and orange), and when the air suspension is switched enabled (magenta, orange) or disabled (blue, green).
+        The dashed gray line indicates the theoretical noise floor derived in \cref{subsec:setup:vibrations:optic:noise_floor}.
+        Bottom: band-limited \gls{rms} computed from the \glspl{psd} in the upper panel (\cf \cref{eq:speck:psd:bandpower}).
+        The \gls{ptr} has a much smaller effect than when measuring the absolute displacement noise with the accelerometer, increasing the \gls{rms} only by a factor of two.
+        While the lowest-order \gls{ptr} harmonics are amplified by up to an order of magnitude in amplitude with the suspension enabled, they contribute relatively little to the total \gls{rms} and are compensated by the superior high-frequency attenuation behavior.
+        The total $\rms_S \approx \qty{100}{\nano\meter}$ in working mode is below the typical \unit{\micro\meter} feature size.
+    }
     \label{fig:setup:vibrations:optic}
 \end{figure}
 
 We are now at last able to measure the displacement noise using \pyspeck.
-Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the Time Tagger,\footnote{
-    Since the \glspl{apd} are arranged in a \gls{hbt} geometry, I combined the counts of both instruments using the virtual channel functionality of the Time Tagger.
+Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the \taggershort,\sidenote{
+    Since the \glspl{apd} are arranged in a \gls{hbt} geometry, I combined the counts of both instruments using the virtual channel functionality of the \taggershort.
 }
 I obtained the displacement noise \glspl{psd} shown in \cref{fig:setup:vibrations:optic}.
 A few things stand out.
 First, rather than the $f^{-2}$ background observed with the accelerometer in \cref{sec:setup:vibrations:accel}, the noise floor is white ($S(f)=\text{const.}$) at approximately $\qty{1}{\nano\meter\per\sqrt{\hertz}}$.
-To understand why we need to take a closer look at the counting statistics, which we will postpone for a bit in order to first finish our discussion of the noise spectra.
+To understand why, we need to take a closer look at the counting statistics, which we will postpone for a bit in order to first finish our discussion of the noise spectra.
+Second, the overall noise level is much -- by a factor of 20 \gls{rms} -- lower than with the accelerometer.
+We can attribute this to the fact that the optical method is sensitive to relative rather than absolute displacements.
+If the cryostat and the optical head were infinitely stiff we would measure no displacement noise with this method -- intrinsic noise floor notwithstanding -- whereas the accelerometer is still sensitive to oscillations of the cryostat on the air spring fulcrum.
+In that sense the optical method gives us the more pertinent results because only the displacements \enquote{experienced} by the light travelling through the microscope ultimately matter.
+Third, in contrast to the accelerometer measurements, the \gls{rms} amplitude is reduced by half when the suspension is active.
+Although the harmonics of the \gls{ptr} frequency of \qty{1.4}{\hertz} are again amplified by the suspension below \qty{10}{\hertz}, raising the band-limited \gls{rms} above that with the suspension disabled, there occurs a crossover at the eighth harmonic frequency beyond which the attenuation outweighs the amplification at low frequency.\sidenote{
+    It furthermore appears that even a measurement whose sole electronic device is a picosecond-resolution counting card cannot escape \qty{50}{\hertz} power line noise (or in this case its second harmonic).
+}
 
 \subsection{Noise floor}\label{subsec:setup:vibrations:optic:noise_floor}
 The noise floor in the optical vibration measurements shown in \cref{fig:setup:vibrations:optic} is qualitatively very different from that observed with the accelerometer.
@@ -335,12 +359,12 @@ To elucidate this issue, we model the detection event of a single photon (a \enq
 Assuming them to be uncorrelated, the time difference between subsequent clicks is exponentially distributed with average rate $\bar{\Phi}$, $\lvert t_{i+1}-t_i\rvert\sim\expdist(\bar{\Phi})$~\cite{ExponentialDistributionWiki}.
 From this it follows that the number of clicks $N(\dt)$ within a given time bin $t\in [s, u]$ of length $\dt = \lvert u - s\rvert$ is Poisson distributed, $N(\dt)\sim\poisson(\bar{N})$, with mean number of counts $\expval{N(\dt)} = \bar{N} = \bar{\Phi}\dt$~\cite{PoissonDistributionWiki}.
 Using the formalism developed in \cref{sec:speck:theory:time_series_estimation}, we can now compute the \gls{psd} of the stochastic process $\delta N(\dt) = N(\dt) - \bar{N}$.
-To this end, observe that because we assumed arrivals to be uncorrelated, $N_s(\dt)$ for a time bin starting at $t=s$ is independent of $N_u(\dt)$ for a time bin starting at $t=u$.
+To this end, observe that because we assumed arrivals to be uncorrelated, $N_{u^\prime}(\dt)$ for a time bin starting at $t=u^\prime$ is independent of $N_{s^\prime}(\dt)$ for a time bin starting at $t=s^\prime$.
 In other words, the autocorrelation function of $\delta N(\dt)$ is nonzero only for the same time bins,
 \begin{equation}\label{eq:setup:poisson:autocorrelation}
     C_{\delta N(\dt)}(\tau) = \expval{(N_s(\dt) - \bar{N})(N_u(\dt) - \bar{N})} = \variance(N(\dt))\delta(\tau),
 \end{equation}
-where $\tau = s-u$ and $\delta(\tau)$ is to be understood in a broad sense as zero if $\abs{\tau} > \dt$ and $\flatfrac{1}{2\dt}$ else.
+where $\tau = s^\prime - u^\prime$ and $\delta(\tau)$ is to be understood in a broad sense as zero if $\abs{\tau} > \dt$ and $\flatfrac{1}{2\dt}$ else.
 For the Poisson distribution the variance is equal to its mean so that we obtain
 \begin{equation}\label{eq:setup:poisson:autocorrelation:evaluated}
     C_{\delta N(\dt)}(\tau) = \bar{N}\delta(\tau).
@@ -352,14 +376,10 @@ In the limit of $\dt\to 0$, we can then perform the Fourier transform to obtain 
 \begin{equation}\label{eq:setup:poisson:psd}
     S_{\delta N}(\omega) = \bar{N},
 \end{equation}
-that is, $\delta N$ is a white noise without frequency dependence.
+that is, $\delta N$ is a white noise without frequency dependence.\sidenote{
+    Note that we could have also arrived at this result directly by computing the autocorrelation function $\expval{\delta N(t)\delta N(t-\tau)}$ from \cref{eq:setup:flux_comb} with $N(t) = \int\dd{t}\Phi(t)$.
+}
 $S_{\delta N}$ can be seen as the \emph{instantaneous} number noise \gls{psd}.
-To convert to the instantaneous displacement noise \gls{psd}, we can simply multiply with the sampling rate $\fs$ and divide by the slope $a$ of the calibration converting displacements to count rates (\cref{fig:setup:vibrations:calibration:pos_vs_cps}) because if $N\sim\poisson(\bar{N})$ then so $y\sim\poisson(\flatfrac{\bar{N}\fs}{a})$.
-Hence,
-\begin{equation}\label{eq:setup:poisson:psd:displ}
-    S_{\delta y}(\omega) = \frac{\bar{N}\fs}{a}
-\end{equation}
-with $\delta y = y - \expval{y}$.
 
 As a last step, we consider once again discretely sampling the \emph{continuous} process $\delta N$ with \gls{psd} $S_{\delta N}(\omega)$ at rate $\fs=\dt\inverse$ in order to find an expression for the \gls{psd} of the discrete process $\delta N(\dt)$, $S_{\delta N(\dt)}(\omega)$.
 We know from above that $\variance(\delta N(\dt)) = \bar{N}$.
@@ -368,29 +388,30 @@ On the other hand, recall from \cref{sec:speck:theory:time_series_estimation} th
     \variance(\delta N(\dt)) = \intinf\ddf{\omega} S_{\delta N(\dt)}(\omega) = \int_{-\flatfrac{\fs}{2}}^{\flatfrac{\fs}{2}}\dd{f} S_{\delta N(\dt)}(f)
 \end{align}
 where the last equation holds true because of the finite bandwidth of the discretely sampled signal.
-Since $S_{\delta N}$ is white, it follows that $S_{\delta N(\dt)}$ is, too, and we can directly evaluate \cref{eq:setup:shot_noise:var}, obtaining
-\begin{equation}\label{eq:setup:shot_noise:psd}
-    S_{\delta N(\dt)}(\omega) = \frac{\bar{N}}{\fs},
-\end{equation}
-or, for the flux noise $\delta\Phi=\flatfrac{\delta N(\dt)}{\dt}$,\sidenote{
-    Note that we could have also arrived at this result directly by explicitly computing the autocorrelation function $\expval{\delta\Phi(t)\delta\Phi(t-\tau)}$ from \cref{eq:setup:flux_comb}.
+Since $S_{\delta N}$ is white, it follows that $S_{\delta N(\dt)}$ is, too, and we can directly evaluate \cref{eq:setup:shot_noise:var}, obtaining\sidenote{
+    $S_{\delta N(\dt)}$ also has units \unit{\cts\squared\per\hertz}.
 }
-\begin{equation}\label{eq:setup:shot_noise:psd:flux}
-    S_{\delta\Phi}(\omega) = \frac{\bar{N}}{\fs\dt^2} = \bar{\Phi}.
+\begin{equation}\label{eq:setup:shot_noise:psd}
+    S_{\delta N(\dt)}(\omega) = \frac{\bar{N}}{\fs}.
 \end{equation}
+To convert to the displacement noise \gls{psd}, we can simply convert units using the calibration derived above because if $N\sim\poisson(\bar{N})$ then so $y\sim\poisson(\flatfrac{\bar{N}\fs}{a})$ where $a$ is the slope of the calibration converting displacements to count rates (\cref{fig:setup:vibrations:calibration:pos_vs_cps}).
+Hence,\sidenote{
+    Note that this is the two-sided \gls{psd}; to convert to the one-sided version used in this chapter, multiply by two.
+}
+\begin{equation}\label{eq:setup:poisson:psd:displ}
+   S_{\delta y(\dt)}(\omega) = \frac{\bar{N}}{\fs}\times\left(\frac{\fs}{a}\right)^2 = \frac{\bar{\Phi}}{a^2}
+\end{equation}
+with $\delta y = y - \expval{y}$.
 This type of noise is known as \emph{shot noise}.
-It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons~\cite{Blanter2000}.
-For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}) and $\fs=\qty{2}{\kilo\hertz}$, we obtain a shot noise floor of $S_{\delta\Phi} = $
+It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
+For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a grey dashed line.
 
 \section{Routes for improvement}\label{sec:setup:vibrations:outlook}
 Several improvements could be made to the system if the external conditions would allow it.
 First, the rotary valve motor should be moved further away from the cold head.\sidenote{
     Clearly, this will impact the performance of the \gls{ptr} to some extent and should therefore be considered carefully.
 }
-It is currently\sidenote{
-    As per the initial installation status.
-}
-connected to the cold head with a flexible hose at a right angle and a distance of roughly \qty{50}{\cm}, which is below the minimum bend radius recommended by \OI.\sidenote{
+As per the initial installation status, it is currently connected to the cold head with a flexible hose at a right angle and a distance of roughly \qty{50}{\cm}, which is below the minimum bend radius recommended by \oxinst.\sidenote{
     Note that the orientation of the motor, which is horizontal with the axis, is also not the recommended configuration.
 }
 Additionally, the term \enquote{flexible} is relative here given the pressure of \qty{20}{\bar}.
@@ -403,11 +424,11 @@ An intuitively obvious step, it has also been shown in the literature that decou
     Apologies to the institute on the floor above.
 }
 Acoustic insulation of the room and \gls{ptr} flex hoses could further improve the low-frequency response of the system~\cite{Schmoranzer2019,Oh2021}.
-Lastly, let me note that there also exist cryocoolers with variable operating frequency that can thus be tuned away from problematic resonances in the system~\sidecite{TransMitPTR}.
+Lastly, let me note that there also exist cryocoolers with variable operating frequency that can thus be tuned away from problematic resonances in the system~\cite{TransMitPTR}.
 
 %On the methodology side, a simple way to improve the sensitivity of the optical vibration spectroscopy method detailed in \cref{sec:setup:vibrations:optic} is to increase the laser power and therefore the count rate to raise the true vibration noise floor above the photon shot noise floor of \qty[power-half-as-sqrt]{1}{\cts\per\hertz\tothe{0.5}}.
 % TODO: think about this, simulate spectrum
 
-In \cref{ch:app:setup:vibrations}, I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability.
+In \cref{ch:app:setup:vibrations}, I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.
 
 \cite{Caparrelli2006,Pelliccione2013}
