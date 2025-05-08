@@ -19,7 +19,7 @@ from qutil.plotting.colors import (
 )
 from qutil.signal_processing import fourier_space, real_space
 from scipy import interpolate, odr, special
-from uncertainties import ufloat
+from uncertainties import ufloat, unumpy as unp
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
@@ -132,7 +132,7 @@ S_noise_floor = abs(fourier_space.derivative(np.array([980, 216, 58.9, 15.7])*1e
 
 # %%% Optical
 # %%%% Camera calibration
-vdc = np.arange(11)
+vdc_calib = np.arange(11)
 seq = tifffile.FileSequence(tifffile.imread, str(DATA_PATH / 'vdc_mapping/*.tif'),
                             sort=sort_files).asarray()[..., 0] / 255
 row = 470
@@ -143,8 +143,8 @@ I_max = 121 / 255
 seqnan = np.copy(seq)
 seqnan[(I_min > seq) | (I_max < seq)] = np.nan
 
-popt = np.empty((len(vdc), vdc.size, 2))
-pcov = np.empty((len(vdc), vdc.size, 2, 2))
+popt = np.empty((len(vdc_calib), len(vdc_calib), 2))
+pcov = np.empty((len(vdc_calib), len(vdc_calib), 2, 2))
 for j, r in enumerate(np.arange(-5, 6) + row):
     for i, line in enumerate(seqnan[:, r, col]):
         x = col[~np.isnan(line)]
@@ -162,10 +162,35 @@ I_set = ufloat((I_max + I_min) / 2, 1/255/np.sqrt(12))  # normalized intensity
 position = (I_set - b) / a / magnification  # m
 position -= position.mean()  # we don't know anything about absolute positions
 
-popt_posvdc, pcov_posvdc = np.polyfit(vdc, unp.nominal_values(position), 1, cov=True,
+popt_posvdc, pcov_posvdc = np.polyfit(vdc_calib, unp.nominal_values(position), 1, cov=True,
                                       w=1/unp.std_devs(position))
 
-# %%%%% Plot
+# %%%% Count rate calibration
+ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
+count_rate = ds.counter_countrate
+# 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
+x = count_rate['positioners_y_axis_voltage']
+y1 = count_rate * 1e-6
+
+v_min = 0.5
+v_max = 7.0
+mask = (v_min <= x) & (x <= v_max)
+
+vdc = x[mask]
+pos = pos_vs_vdc(vdc, *popt_posvdc)
+poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
+cps = y1[mask].mean('counter_time_axis')
+cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+data = odr.Data(pos, cps, wd=poserr, we=cpserr)
+model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
+fit = odr.ODR(data, model, beta0=[2.5, 0])
+output = fit.run()
+
+# s has units of Mcps/μm
+s, b = unp.uarray(output.beta, output.sd_beta)
+
+# %%%%% Plot camera image
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
@@ -205,50 +230,37 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     fig.subplots_adjust(hspace=0)
     fig.savefig(SAVE_PATH / 'knife_edge.pdf')
 
-with mpl.style.context([MARGINSTYLE, {'axes.xmargin': 0.05}]), changed_plotting_backend('pgf'):
-    fig, ax = plt.subplots(layout='constrained')
-    ax.errorbar(vdc, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
-                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                **markerprops(errorcolor))
-    ax.plot(vdc, np.polyval(popt_posvdc, vdc)*1e6, zorder=5)
-    ax.grid()
-    ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel(r'$y - \langle y\rangle$ (μm)')
-
-    fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
-
-# %%%% Count rate calibration
-ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
-count_rate = ds.counter_countrate
-# 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
-x = count_rate['positioners_y_axis_voltage']
-y1 = count_rate * 1e-6
-
-v_min = 0.5
-v_max = 7.0
-mask = (v_min <= x) & (x <= v_max)
-
-vdc = x[mask]
-pos = pos_vs_vdc(vdc, *popt_posvdc)
-poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
-cps = y1[mask].mean('counter_time_axis')
-cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
-
-data = odr.Data(pos, cps, wd=poserr, we=cpserr)
-model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
-fit = odr.ODR(data, model, beta0=[5, 0])
-output = fit.run()
-
-# %%%%% Plot
+# %%%% Plot fits
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
+ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
 xx = pos_vs_vdc(x, *popt_posvdc)
 xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
          pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
 
-with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
-    fig, ax = plt.subplots(layout='constrained',
-                           figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 1.35))
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, axs = plt.subplots(nrows=2, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2),
+                            gridspec_kw=dict(height_ratios=(2, 3)),
+                            layout='constrained')
+    fig.get_layout_engine().set(h_pad=0)
+
+    # pos vs vdc
+    ax = axs[0]
+    ax.errorbar(vdc_calib, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor))
+    ax.plot(vdc_calib, np.polyval(popt_posvdc, vdc_calib)*1e6, zorder=5)
+    ax.margins(x=0.05)
+    ax.grid()
+    ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
+    ax.set_ylabel(r'$y - \langle y\rangle$ (μm)')
+    ax.xaxis.set_ticks_position('both')
+    ax.xaxis.set_tick_params(which='both', labeltop=True, labelbottom=False)
+    ax.xaxis.set_label_position('top')
+    xlim = ax.get_xlim()
+
+    # cps vs pos
+    ax = axs[1]
     ax.errorbar(xx, y1.mean('counter_time_axis'),
                 y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
                 xerr=xxerr, label='Data',
@@ -261,15 +273,105 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
         functions=(functools.partial(vdc_vs_pos, a=popt_posvdc[0], b=popt_posvdc[1]),
                    functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
-    ax2.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel('Count rate (Mcps)')
+    ax2.sharex(axs[0])
+    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
-
-    ax.set_xlim(*xx[[0, -1]])
+    ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
     ax.set_ylim(2, 4)
 
-    fig.savefig(SAVE_PATH / 'knife_edge_slope.pdf')
+    fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
+
+# %%%% Plot all together
+erroralpha = 0.5
+errorcolor = RWTH_COLORS['blue']
+ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
+xx = pos_vs_vdc(x, *popt_posvdc)
+xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+         pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+
+with mpl.style.context(MAINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    mainfig = plt.figure(layout='constrained', figsize=(TEXTWIDTH, TEXTWIDTH / const.golden / 2))
+    subfigs = mainfig.subfigures(1, 2)
+
+    # position calibration
+    fig = subfigs[0]
+    fig.get_layout_engine().set(h_pad=0 / 72, hspace=0)
+    axs = fig.subplots(nrows=3, sharex=True, gridspec_kw={'height_ratios': [3.25, 1, 1]})
+
+    ax = axs[0]
+    ax.imshow(seq[0, row-75:row+75, 400:600], cmap='binary', aspect='equal')
+    ax.plot([0, 200], [75-5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([0, 200], [75+5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[0]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.axis('off')
+    ax.annotate('(a)', (0.025, 0.95), xycoords='axes fraction', va='top')
+
+    ax = axs[1]
+    ax.plot(seq[0, row, 400:600], color='k')
+    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
+                     linewidth=0.0)
+    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.set_ylim(lim)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.annotate('(b)', (0.025, 0.85), xycoords='axes fraction', va='top')
+
+    ax = axs[2]
+    ax.plot(np.gradient(seq[0, row, 400:600], 1), color='k')
+    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
+                     linewidth=0.0)
+    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
+    ax.set_ylim(lim)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.annotate('(c)', (0.025, 0.35), xycoords='axes fraction', va='top')
+
+    fig = subfigs[1]
+    axs = fig.subplots(nrows=2, gridspec_kw=dict(height_ratios=(2, 3)))
+
+    # pos vs vdc
+    ax = axs[0]
+    ax.errorbar(vdc_calib, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor))
+    ax.plot(vdc_calib, np.polyval(popt_posvdc, vdc_calib)*1e6, zorder=5)
+    ax.margins(x=0.05)
+    ax.grid()
+    ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
+    ax.set_ylabel(r'$y - \langle y\rangle$ (μm)')
+    ax.xaxis.set_ticks_position('both')
+    ax.xaxis.set_tick_params(which='both', labeltop=True, labelbottom=False)
+    ax.xaxis.set_label_position('top')
+    xlim = ax.get_xlim()
+    ax.annotate('(d)', (0.05, 1.), xycoords='subfigure fraction', va='top')
+
+    # cps vs pos
+    ax = axs[1]
+    ax.errorbar(xx, y1.mean('counter_time_axis'),
+                y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
+                xerr=xxerr, label='Data',
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.'))
+    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
+
+    ax2 = ax.secondary_xaxis(
+        'top',
+        functions=(functools.partial(vdc_vs_pos, a=popt_posvdc[0], b=popt_posvdc[1]),
+                   functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
+    )
+    ax2.sharex(axs[0])
+    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.grid()
+    ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
+    ax.set_ylim(2, 4)
+    ax.annotate('(e)', (0.05, 0.05), xycoords='subfigure fraction', va='top')
+
+    mainfig.savefig(SAVE_PATH / 'knife_edge_calibration.pdf')
 
 # %%%% Theory plot
 x = np.linspace(-1.5, 1.5, 1001)
@@ -351,7 +453,6 @@ def apply_settings(spect, settings, figure_kw, legend_kw):
 for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
     apply_settings(spect, settings, figure_kw, legend_kw)
 
-
 # spect_accel.ax[1].set_yscale('asinh', linear_width=1.5e-2)
 # spect_optic.ax[1].set_yscale('asinh', linear_width=1.65e-3)
 # spect_accel.ax[1].set_ylim(0)
@@ -362,8 +463,20 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
 # to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06', *spect_optic.keys())
 
 # %% Plot
-for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
-    with changed_plotting_backend('pgf'):
+data = spect_optic[0]
+cts = data['timetrace_raw']
+fs = data['settings']['fs']
+conversion_factor = fs / (s * 1e6)  # a has units Mcps/μm, so convert to cps/μm
+shot_noise_floor = 2 * cts.mean() / fs * conversion_factor ** 2  # factor two for one-sided
+# print(f'shot noise floor for {key} is {unp.sqrt(shot_noise_floor)}')
+
+spect_optic.ax[0].axhline(np.sqrt(shot_noise_floor.nominal_value), ls='--',
+                          color=RWTH_COLORS_50['black'], zorder=5)
+spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
+spect_accel.ax[1].set_yticks([0, 5, 10])
+
+with changed_plotting_backend('pgf'):
+    for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
 
 # %% Vibration criterion

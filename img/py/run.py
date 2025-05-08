@@ -111,12 +111,12 @@ def main():
 
                 if returncode == 0:
                     pbar.set_description(f'{(file.relative_to(root))} ran successfully in '
-                                         f'{ptime:.2g} s')
+                                         f'{ptime:.1f} s')
                     if stdout:
                         print(stdout)
                 else:
                     pbar.set_description(f'{(file.relative_to(root))} failed with exit code '
-                                         f'{returncode} after {ptime:.2g} s')
+                                         f'{returncode} after {ptime:.1f} s')
                     if stderr:
                         print(stderr)
 
@@ -124,7 +124,7 @@ def main():
 
         total = pbar.format_dict['elapsed']
         ptimes = sum(result[1] for result in results.values())
-        print(f'Processed {len(files)} scripts with {workers} processes in {total:.2g} seconds. '
+        print(f'Processed {len(files)} scripts with {workers} processes in {total:.1f} seconds. '
               f'Speedup: {round(ptimes/total*100)} %')
     else:
         with tqdm(total=len(files), unit='files') as pbar:
@@ -140,12 +140,12 @@ def main():
                         print(stdout)
                 else:
                     print(f'{(file.relative_to(root))} failed with exit code {returncode} after '
-                          f'{utime:.2g} s.')
+                          f'{utime:.1f} s.')
                     if stderr:
                         print(stderr)
 
         total = pbar.format_dict['elapsed']
-        print(f'Processed {len(files)} scripts in {total:.2g} seconds.')
+        print(f'Processed {len(files)} scripts in {total:.1f} seconds.')
 
     return results
 
