@@ -12,6 +12,22 @@
 
 # To Dos
 ## Content
+### How to read this thesis
+- [ ] PDF viewer
+- [ ] Image sources
+- [ ] Disjunct parts
+
+### pyspeck
+- [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
+- [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
+- [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
+- [ ] More representative cumulative spectra
+- [ ] Discuss cumulative with dB scale?
+
+### Setup
+- [ ] Vibration spectra on lab floors?
+- [ ] Indicate noise floor from accelerometer signal conditioner?
+
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
@@ -20,16 +36,16 @@
 ## Layout
 - [ ] Tune the bibliography style
 - [ ] Chapters instead of parts?
-	- [ ] Else numbered parts
+	- [x] Else numbered parts
 - [ ] Part title page design
 - [ ] `\margintoc`?
 
 ## `latexmk`
-- [ ] ?
 
 ## `tectonic`
 - [ ] `\underbrace{}`
 - [ ] margin placements
+- [ ] minted line wraps
 
 # IntelliJ IDEA
 Set the "Use single dictionary for saving words" setting to "project level" to sync the dictionary using git.

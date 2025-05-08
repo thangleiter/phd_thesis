@@ -15,7 +15,7 @@ But how can we learn how a system behaves as a function of frequency?
 \begin{marginfigure}[*-6]
     \centering
     \input{img/tikz/spectrometer/lockin_dut}
-    \caption{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
+    \caption[\imgsource{img/tikz/spectrometer/lockin_dut.tex}]{Measuring the conductance through a \gls{dut} using a \gls{lia}.}
     \label{fig:speck:theory:lockin_dut}
 \end{marginfigure}
 
@@ -112,7 +112,7 @@ with the \acrfull{psd}\sidenote{
 \Cref{eq:speck:wiener_khinchin} is the Wiener-Khinchin theorem~\cite{Wiener1930,Khintchine1934} that states that the autocorrelation function $C(\tau)$ and the \gls{psd} $S(\omega)$ are Fourier-transform pairs~\cite{Koopmans1995}.
 Furthermore, defining the latter through \cref{eq:speck:psd:definition} gives us an intuitive picture of the \gls{psd} if we recall Parseval's theorem,
 \begin{align}\label{eq:speck:parseval}
-    \intinf\ddf{\omega}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 = \frac{1}{T}\intinf\dd{t}\abs{x(t)}^2.
+    \intinf\ddf{\omega}\frac{1}{T}\abs{\hat{x}_T(\omega)}^2 = \frac{1}{T}\int_{0}^{T}\dd{t}\abs{x(t)}^2.
 \end{align}
 That is, the total power $P$ contained in the signal $x(t)$ is given by integrating over the \gls{psd}.
 Similarly, the power contained in a band of frequencies $[\omega_1, \omega_2]$ is given by
@@ -125,8 +125,8 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
 
 \begin{marginfigure}[*-6]
     \centering
-    \includegraphics{pdf/spectrometer/lorentzian_psdcorr}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/lorentzian_psdcorr}
+    \caption[\imgsource{img/py/spectrometer/lorentz.py}]{
         Ornstein-Uhlenbeck process.
         Simulated time traces (top), autocorrelation function (middle), \gls{psd} (bottom) of the Ornstein-Uhlenbeck process.
         Top: Simluated time traces using the algorithm presented in \cref{ch:ff:time_domain_methods}.
@@ -150,7 +150,7 @@ The \gls{psd} in turn is the Lorentzian function
 \begin{align}\label{eq:speck:ou:psd}
     S(\omega) = \frac{2\sigma^2\tau_c}{1 + (\omega\tau_c)^2}.
 \end{align}
-For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\flatfrac{\dt}{\tau_c}\to 0, S(\omega) = 2\tau_c\sigma^2$), correlated, pink noise ($\flatfrac{\dt}{\tau_c}\gg 1, S(\omega) = \flatfrac{2\sigma^2}{\tau_c\omega^2}$), and perfectly correlated, quasistatic noise ($\flatfrac{\dt}{\tau_c}\to\infty, S(\omega) = \sigma^2\delta(\omega)$).
+For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\flatfrac{\dt}{\tau_c}\to\infty, S(\omega) = 2\tau_c\sigma^2$), correlated, pink noise ($\flatfrac{\dt}{\tau_c}\gg 1, S(\omega) = \flatfrac{2\sigma^2}{\tau_c\omega^2}$), and perfectly correlated, quasistatic noise ($\flatfrac{\dt}{\tau_c}\to 0, S(\omega) = \sigma^2\delta(\omega)$).
 \Cref{fig:speck:psdcorr} depicts simulated data and its autocorrelation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \dt$, magenta), and in the correlated regime ($\tau_c = \num{e+2}\dt$, green).
 From the time series plot at the top it becomes clear that the \gls{rms} alone is insufficient to describe the properties of noisy signals as the curves differ significantly despite being normalized to their \gls{rms}.
 The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{\dt}{4}$.
@@ -174,10 +174,10 @@ Invoking the ergodic theorem,\sidenote{
     Note that the limit of perfectly correlated noise, $S(\omega)\propto\delta(\omega)$, technically does \emph{not} correspond to an ergodic process because $C(\tau)=\text{const.}\,\forall\tau\in(-\infty,\infty)$.
     In practice, this is always a mathematical idealization and the spectrum is actually better described by a nascent $\delta$-function with a small but finite width.
 }
-we can replace the long-term average in \cref{eq:speck:psd:definition} by the ensemble average over $M$ realizations $i$ of the noisy signal $x_n\gth{m}$ and write
+we can replace the long-term average in \cref{eq:speck:psd:definition} by the ensemble average over $M$ realizations of the noisy signal, $\left\lbrace x_n\gth{m}\right\rbrace_m$, and write
 \begin{align}\label{eq:speck:psd:bartlett}
-    S_n &= \frac{1}{M} \sum_{i=0}^{M-1} \abs{\hat{x}_n\gth{m}}^2 \\
-        &= \frac{1}{M} \sum_{i=0}^{M-1} S_n\gth{m}
+    S_n &= \frac{1}{M} \sum_{m=0}^{M-1} \abs{\hat{x}_n\gth{m}}^2 \\
+        &= \frac{1}{M} \sum_{m=0}^{M-1} S_n\gth{m}
 \end{align}
 where $\hat{x}_n\gth{m}$ is the discrete Fourier transform of $x_n\gth{m}$, we defined the \emph{periodogram} of $x_n\gth{m}$ by
 \begin{align}\label{eq:speck:periodogram}
@@ -234,8 +234,8 @@ where the Fourier representation of the rectangular window\sidenote{
 \end{align}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/spectrometer/rect}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/rect}
+    \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
         The Fourier representation of the rectangular window in continuous time (solid line) and for discrete frequencies $\omega_n = \flatfrac{2\pi n}{T}$ (circles).
         Introducing a phase shift, that is, shifting the window with respect to the signal in time, effectively shifts $\omega_n \to \omega_{n+\eta}$ as indicated for $\eta=\flatfrac{1}{2}$ (diamonds).
         This incurs scalloping loss.
@@ -244,8 +244,8 @@ where the Fourier representation of the rectangular window\sidenote{
 \end{marginfigure}
 \begin{marginfigure}
     \centering
-    \includegraphics{pdf/spectrometer/hann}
-    \caption{
+    \includegraphics{img/pdf/spectrometer/hann}
+    \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
         The Fourier representation of the Hann window in continuous time (solid line) and for discrete frequencies $\omega_n$ (circles).
         Diamonds indicate discrete sampling when the window completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
     }
@@ -295,8 +295,8 @@ The overlap naturally depends on the choice of window; a typical value for the H
 }
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
-    \caption{
+    \includegraphics[width=\textwidth]{img/pdf/spectrometer/welch}
+    \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
         Illustration of Welch's method for spectrum estimation.
         The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
         Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
@@ -367,7 +367,7 @@ In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependenci
 \begin{figure}
     \centering
     \input{img/tikz/spectrometer/daq_settings}
-    \caption{
+    \caption[\imgsource{img/tikz/spectrometer/daq_settings.tex}]{
         Relationships of data acquisition parameters (\cf \cref{tab:speck:theory:parameters,tab:speck:software:parameters}, with arrows indicating dependencies.
         $N$, \fs, and \df are the central quantities defining the estimated spectrum's properties.
         From \fs and \df follow (bounds for) \fmax and \fmin.

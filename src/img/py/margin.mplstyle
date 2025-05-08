@@ -1,0 +1,87 @@
+#### LINES
+lines.linewidth   : 1.0     ## line width in points
+
+#### FONT
+font.family         : sans-serif
+font.size           : 8
+font.serif          : Libertinus Serif
+font.sans-serif     : Libertinus Sans
+font.monospace      : Liberation Mono
+#font.cursive        : Libertinus Serif
+#font.serif:      DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+#font.sans-serif: DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
+#font.cursive:    Apple Chancery, Textile, Zapf Chancery, Sand, Script MT, Felipa, Comic Neue, Comic Sans MS, cursive
+#font.fantasy:    Chicago, Charcoal, Impact, Western, xkcd script, fantasy
+#font.monospace:  DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+
+#### FIGURE
+#figure.dpi       : 600
+figure.figsize   : 1.87831, 1.1608594214088148
+
+#### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
+text.usetex         : False # use latex for all text handling. The following fonts
+                     # are supported through the usual rc parameter settings:
+                     # new century schoolbook, bookman, times, palatino,
+                     # zapf chancery, charter, serif, sans-serif, helvetica,
+                     # avant garde, courier, monospace, computer modern roman,
+                     # computer modern sans serif, computer modern typewriter
+text.latex.preamble : \usepackage[T1]{fontenc}\usepackage{amssymb}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}
+# The following settings allow you to select the fonts in math mode.
+mathtext.fontset: custom  # Should be 'dejavusans' (default),
+                               # 'dejavuserif', 'cm' (Computer Modern), 'stix',
+                               # 'stixsans' or 'custom'
+## "mathtext.fontset: custom" is defined by the mathtext.bf, .cal, .it, ...
+## settings which map a TeX font name to a fontconfig font pattern.  (These
+## settings are not used for other font sets.)
+#mathtext.bf:  Libertinus Math:bold
+#mathtext.bfit: Libertinus Math:italic:bold
+#mathtext.cal: Libertinus Math
+#mathtext.it:  Libertinus Math:italic
+#mathtext.rm:  Libertinus Sans
+#mathtext.sf:  Libertinus Math
+#mathtext.tt:  Liberation Mono
+#mathtext.fallback: cm  # Select fallback font from ['cm' (Computer Modern), 'stix'
+                        # 'stixsans'] when a symbol cannot be found in one of the
+                        # custom math fonts. Select 'None' to not perform fallback
+                        # and replace the missing character by a dummy symbol.
+#mathtext.default: it  # The default font to use for math.
+                       # Can be any of the LaTeX font names, including
+                       # the special name "regular" for the same font
+                       # used in regular text.
+
+axes.formatter.use_locale : True  ## When True, format tick labels
+                                   ## according to the user's locale.
+                                   ## For example, use ',' as a decimal
+                                   ## separator in the fr_FR locale.
+axes.formatter.use_mathtext : True ## When True, use mathtext for scientific
+                                     ## notation.
+axes.formatter.useoffset      : True    ## If True, the tick label formatter
+                                         ## will default to labeling ticks relative
+                                         ## to an offset when the data range is
+                                         ## small compared to the minimum absolute
+                                         ## value of the data.
+axes.formatter.offset_threshold : 4     ## When useoffset is True, the offset
+                                         ## will be used when it can remove
+                                         ## at least this number of significant
+                                         ## digits from tick labels.
+axes.prop_cycle: cycler('color', ['00549f', 'e30066', '57ab27', 'f6a800', '0098a1', 'bdcd00', 'cc071e', '612158', '7a6fac', 'a11035', '006165', 'ffed00'])
+                  # color cycle for plot lines as list of string color specs:
+                  # single letter, long name, or web-style hex
+                  # As opposed to all other parameters in this file, the color
+                  # values must be enclosed in quotes for this parameter,
+                  # e.g. '1f77b4', instead of 1f77b4.
+                  # See also https://matplotlib.org/stable/tutorials/intermediate/color_cycle.html
+                  # for more details on prop_cycle usage.
+axes.xmargin : 0  # x margin. See `axes.Axes.margins`
+
+#### SAVING FIGURES
+savefig.dpi:         600   # figure dots per inch or 'figure'
+savefig.bbox:        tight # {tight, standard}
+                           # 'tight' is incompatible with generating frames
+                           # for animation
+savefig.transparent: True  # setting that controls whether figures are saved with a
+
+### pgf parameter
+pgf.rcfonts : False
+pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}
+pgf.texsystem : lualatex

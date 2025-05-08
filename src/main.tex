@@ -24,7 +24,7 @@
 \documentclass[
 	a4paper, % Page size
 	fontsize=10pt, % Base font size
-	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+	twoside=false, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
 	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
@@ -147,9 +147,16 @@
 
 \tableofcontents % Output the table of contents
 
-%\listoffigures % Output the list of figures
+%\renewcommand{\listfigurename}{
+%	\vspace*{-1.4cm}
+%	\begin{flushleft}
+%		List of Figures\par
+%		\normalfont\normalsize This list contains hyperlinks to the source files in the Git repository generating each figure shown in this thesis.
+%	\end{flushleft}
+%}
+\listoffigures % Output the list of figures
 
-% Comment both of the following lines to have the LOF and the LOT on 
+% Comment both of the following lines to have the LOF and the LOT on
 % different pages
 % \cleardoublepage\bigskip
 % \clearpage\bigskip
@@ -222,6 +229,7 @@
 \pagelayout{margin} % Restore margins
 
 \include{chs/appendices/filter_functions}
+\include{chs/appendices/setup/vibrations}
 
 %----------------------------------------------------------------------------------------
 

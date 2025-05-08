@@ -76,15 +76,15 @@ Inserting into \cref{eq:ff:filter_function:monochromatic}, we find
 If we evaluate \cref{eq:ff:filter_function:monte_carlo} for a set of frequencies $\lbrace\omega_i\rbrace_i$ sampling the true spectrum $S(\omega)$ sufficiently well, we thus obtain the exact filter function \FF (within the accuracy of \gls{mc}), allowing us to compare the accuracy of the formalism developed in\todo{ref}.
 
 So what does a single noise realization of \cref{eq:ff:psd:monochromatic} in the time domain look like? \todo{tikz sketch?}
-It's a sinusoid with amplitude $A_i \sim \text{Rayleigh}(\sigma_i)$,\sidenote{
-    $\text{Rayleigh}(\sigma)$ is the Rayleigh distribution with probability density function \cite{RayleighDistributionWiki}
+It's a sinusoid with amplitude $A_i \sim\rayleigh(\sigma_i)$,\sidenote{
+    $\rayleigh(\sigma)$ is the Rayleigh distribution with probability density function \cite{RayleighDistributionWiki}
     \begin{equation*}
         \rho(x) = \frac{x}{\sigma^2}\exp{-\frac{x^2}{2\sigma^2}}.
     \end{equation*}
     It describes the probability distribution of the distance from the origin of a point drawn from a bivariate normal distribution with mean $0$ and standard deviation $\sigma$.
 }
-frequency $\omega_i$, and phase $\phi \sim U(0, 2\pi)$,\sidenote{
-    The probability density function of the uniform distribution $U(a, b)$ is
+frequency $\omega_i$, and phase $\phi \sim \uniform(0, 2\pi)$,\sidenote{
+    The probability density function of the uniform distribution $\uniform(a, b)$ is
     \begin{equation*}
         \rho(y) = \begin{cases}
         (b - a)^{-1}    & \qif* a\leq y < b, \\

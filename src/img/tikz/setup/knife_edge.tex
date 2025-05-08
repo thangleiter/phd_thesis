@@ -1,0 +1,48 @@
+\begin{tikzpicture}[
+    round/.style={rounded corners=10pt},%
+    font=\footnotesize,%
+]
+
+    % Mesa edge
+    \draw[thick]
+        (-2,0)
+        -- ++(4.5,0)
+    ;
+    % Gate
+    \path[draw=black, thick, fill=RWTHblack10, round]
+        (-0.75,1)
+        -- ++(0,-2.5)
+        -- ++(1.5,0)
+        -- ++(0,2.5)
+    ;
+    \path[draw=black, thick, dashed]
+        (-0.75,1)
+        -- ++(1.5,0)
+    ;
+    % Scan direction
+    \draw[->, thick]
+        (0.25,-0.75)
+        -- ++(1,0) node[right] [align=center]{Scan \\ direction}
+    ;
+    % Laser spot
+    \draw[dashed]
+        (0.75,-0.75) circle (0.25)
+    ;
+    % Coordinate axes
+    \draw[->]
+        (1.75,0.3)
+        -- ++(0.5,0) node[above] {$y$}
+    ;
+    \draw[->]
+        (1.75,0.3)
+        -- ++(0,0.5) node[right] {$z$}
+    ;
+    \draw
+        (1.75,0.3) circle (0.1) node[left] {$x$}
+    ;
+
+    % Labels
+    \node (mesa) at (-1.5,-0.25) {Mesa};
+    \node (gate) at (0,0) [align=center]{Optical \\ gate};
+
+\end{tikzpicture}
