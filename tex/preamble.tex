@@ -148,17 +148,28 @@
 % Use:
 % \printlength{\marginparsep}
 
-%\makeatletter
-%\newcommand\thefontsize[1]{{#1 The current font size is: \f@size pt\par}}
-%\makeatother
+%\ExplSyntaxOn
+%\NewDocumentCommand{\thefontsize}{O{}}{#1 The current font size is:  \f@size \pt\par}
+%\ExplSyntaxOff
 % Use:
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
+    tex/publications,
+    tex/software,
+    %chs/spectrometer/introduction,
+    %chs/spectrometer/theory,
+    %chs/spectrometer/software,
+    %chs/spectrometer/conclusion,
     chs/setup/introduction,
     chs/setup/electrical,
     chs/setup/optical,
     chs/setup/vibrations,
     chs/setup/conclusion,
     chs/appendices/setup/vibrations,
+    %chs/filter_functions/introduction,
+    %chs/filter_functions/prr,
+    %chs/filter_functions/time_domain_methods,
+    %chs/filter_functions/validation,
+    %chs/appendices/filter_functions,
 }
