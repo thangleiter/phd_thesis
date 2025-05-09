@@ -52,7 +52,7 @@
 
 % Table macros
 \newcolumntype{C}{>{\collectcell\code}c<{\endcollectcell}} % makes the whole column texttt style
-\newcommand\tableheadline[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}}
+\newcommand{\tableheadline}[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}} % uses spacedlowsmallcaps borrowed from classicthesis
 
 % Maths
 \newcommand\mc[1]{\ensuremath{\mathcal{#1}}}
