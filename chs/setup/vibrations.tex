@@ -46,46 +46,78 @@ The connection to the fixed-volume damping chamber provides a flow impedance\sid
 }
 that manifests as a damping force to the spring chamber oscillations.
 
+\subsection{Damping theory}\label{subsec:setup:vibrations:isolation:theory}
+
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/spring_tf}
     \caption[\imgsource{img/pdf/setup/springs.py}]{
-        Force transmission function of a damped harmonic oscillator (solid black line).
-        Below $\omega=\sqrt{2}\omega_0$ (dotted vertical line), external excitations are amplified (shaded red area).
-        For larger damping $\gamma$, the amplification at resonance becomes smaller (not shown).
+        Force transmission function of a damped harmonic oscillator with $\gamma=\omega_0/100$ (solid black line) and $\gamma=\omega_0/2$ (dashed black line).
+        Below the break frequency $\omega=\sqrt{2}\omega_0$ (dotted vertical line), external excitations are amplified (shaded red area).
+        For larger damping $\gamma$, the amplification at resonance becomes smaller.
         Above $\omega=\sqrt{2}\omega_0$, excitations are attenuated (shaded green area).
-        The dashed line shows a more realistic model for an air spring~\cite{FabreekaAirSprings}, whose attenuation above the break frequency becomes smaller as the damping constant $\gamma$ is increased, whereas the harmonic oscillator's high-frequency behavior is independent of $\gamma$.
+        Both amplification below and attenuation above the break frequency become smaller as the damping rate $\gamma$ is increased.
     }
     \label{fig:setup:vibrations:spring:tf}
 \end{marginfigure}
 
 Let us adopt a simple toy model to gain an intuition for the behavior of a mass suspended on air springs as function of vibration frequency by modelling it as a damped harmonic oscillator.
-We can compute the transfer function $H(s)$ for external perturbations $u(t)$ from the Laplace transform of the Newtonian equation of motion
+Consider the displacement from equilibrium $x(t)$ of the test mass $m$ and switch on an external perturbation $u(t)$ acting on the \emph{base} of the spring, implying that the driving force experiences both the damping rate $\gamma$ and the spring stiffness $k=m\omega_0^2$ with $\omega_0$ the resonant frequency of the undamped system.
+We can then compute the transfer function $H(s)$ from the Laplace transform of the Newtonian equation of motion,
 \begin{equation}\label{eq:setup:spring:eom}
-    \ddot{x}(t) + 2\gamma\dot{x}(t) + \omega_0^2 x(t) = m\inverse u(t)
+    \ddot{x}(t) + 2\gamma[\dot{x}(t)-\dot{u}(t)] + \omega_0^2 [x(t)-u(t)] = 0,
 \end{equation}
-for the displacement from equilibrium $x(t)$.
-Here, $\gamma$ is the damping constant, $\omega_0$ the resonance frequency of the undamped system, and $m$ the oscillator mass.
-The amplitude transfer function given by
+yielding
 \begin{equation}\label{eq:setup:spring:tf}
-    H(s) = \frac{x(s)}{u(s)} = \frac{1}{m}\frac{1}{s^2 + 2\gamma s + \omega_0^2}
+    H(s) = \frac{\hat{x}(s)}{\hat{u}(s)} = \frac{2\gamma s + \omega_0^2}{s^2 + 2\gamma s + \omega_0^2}.
 \end{equation}
-is drawn in \cref{fig:setup:vibrations:spring:tf} normalized to the DC response for $s=\i\omega$ (solid black line).
-Below $\omega=\sqrt{2}\omega_0$ (vertical dotted line), the suspension in fact leads to amplification of external impulses.
-This is independent of the damping $\gamma$ and the reason why resonance frequencies as small as possible are desirable in vibration isolation.
-Above this frequency, the system attenuates with $\qty{40}{\decibel}$ per decade.
-A more accurate model results in the transfer function drawn as a dashed line~\sidecite{FabreekaAirSprings}.
-Here, the attenuation at high frequencies is only $\qty{20}{\decibel}$ per decade.
+The magnitude of the transfer function evaluated at $s=\i\omega$ is shown in \cref{fig:setup:vibrations:spring:tf} for two different dampings, $\gamma = \omega_0/200$ (solid black line) and $\gamma = \omega_0/2$ (dashed black line).
+Below $\omega=\sqrt{2}\omega_0$ (vertical dotted line), external impulses are in fact amplified.
+The maximum at the damped system's resonance $\omega_{\mr{r}} = [\omega_0^2 - \gamma^2]^{\flatfrac{1}{2}}$ becomes smoothed out and smaller as the damping $\gamma$ is increased but never drops below unity.
+This is the reason why resonance frequencies as small as possible are desirable in vibration isolation.
+Above this frequency, the system initially attenuates with \qty{40}{\decibel} per decade up to $\omega=\omega_0^2/(2\gamma)$ and with \qty{20}{\decibel} per decade beyond for $\gamma/\omega_0\to 0$ (the underdamped case).
+In the strongly damped case ($\gamma/\omega_0\to\infty$) the attenuation is only \qty{20}{\decibel} per decade starting at $\omega = 2\gamma$.
 
-From \cref{fig:setup:vibrations:spring:tf}, we can infer two possible approaches to isolating a mass from vibrations.
+From \cref{eq:setup:spring:tf,fig:setup:vibrations:spring:tf}, we can infer two possible approaches to isolating a mass from vibrations.
 The first is to make the system's resonance frequency $\omega_0$ as small as possible by resting it on a spring damping system.
 This maximizes the region in which external influences are attenuated.
-The second is to do the opposite, \ie, make the entire system as stiff and thereby $\omega_0$ as large as possible.\sidenote{
-    The stiffness $k$ is related to the resonance frequency by $k = m\omega_0^2$.
-}
+The second is to do the opposite, \ie, make the entire system as stiff (large $k$) and thereby $\omega_0$ as large as possible.
 While this minimizes the attenuation region, it also moves the amplification region close to the resonance to higher frequencies, and possibly further away from the external excitation.
 Consequently, this approach makes most sense if it is known that low-frequency excitations are the dominant source of vibrations.
 
+A widely used metric for the isolation demand of vibration-sensitive equipment are the so-called \acrfullpl{vc}~\cite{Gordon1992,Gordon1999}.
+These are design standard specifications for buildings housing, for example, lithography tools.
+The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what I have used in \thethesis (\cf \cref{eq:setup:vibrations:rms,eq:speck:psd:bandpower}).
+However, instead of computing the band-limited \gls{rms} with a fixed lower band edge, one uses bands of a fixed width, typically over one-third of an octave.
+To be specific, the one-third octave is defined in terms of its midband frequency $f_{\mr{m}}$ as the interval
+\begin{equation}\label{eq:setup:vibrations:third_octave}
+    f\in f_{\mr{m}}\times\left[2^{-\flatfrac{1}{6}},2^{\flatfrac{1}{6}}\right]
+\end{equation}
+whose bandwidth \df is approximately \qty{26}{\percent} larger than $f_{\mr{m}}$ and where the latter is defined referenced to \qty{1000}{\hertz}~\cite{ansi_octave_bands}.
+The criteria, given as velocities rather than displacements or accelerations because it is argued that the limit to photolithography resolution is image velocity, are reproduced from \citer{Gordon1999} in \cref{tab:setup:vibrations:vc}.
+I will use them below to classify the vibration isolation of the confocal microscope.
+
+\begin{margintable}[*-9]
+    %\centering
+    \footnotesize
+    \caption{\Glspl{vc}}
+    \label{tab:setup:vibrations:vc}
+    \begin{tabular}{ c @{}S@{} }
+        \toprule
+        \multicolumn{2}{l}{$\flatfrac{1}{3}$ \textsc{octave band \gls{rms} (\unit{\micro\meter\per\second})}} \\
+        \midrule
+        Residential day (ISO) & 200  \\
+        Op. theater (ISO)     & 100  \\
+        VC-A                  & 50   \\
+        VC-B                  & 25   \\
+        VC-C                  & 12.5 \\
+        VC-D                  & 6    \\
+        VC-E                  & 3    \\
+        \bottomrule
+    \end{tabular}
+\end{margintable}
+
+\subsection{Microscope isolation concept}\label{subsec:setup:vibrations:isolation:concept}
 What does this mean for our case of a dry \gls{dr}?
 The rotary valve motor of the \gls{ptr} generates pulses with frequency \qty{1.4}{\hertz}.
 Commercial damping systems that the space constraints in our lab allow to be accommodated, for example the CFM Schiller MAS 25~\cite{CFMSchiller}, have resonance frequencies around $f_0 = \qty{2.5}{\hertz}$, implying the first two harmonics of the \gls{ptr} excitation fall into the amplification regime as discussed above.
@@ -339,7 +371,7 @@ To understand why, we need to take a closer look at the counting statistics, whi
 Second, the overall noise level is much -- by a factor of 20 \gls{rms} -- lower than with the accelerometer.
 We can attribute this to the fact that the optical method is sensitive to relative rather than absolute displacements.
 If the cryostat and the optical head were infinitely stiff we would measure no displacement noise with this method -- intrinsic noise floor notwithstanding -- whereas the accelerometer is still sensitive to oscillations of the cryostat on the air spring fulcrum.
-In that sense the optical method gives us the more pertinent results because only the displacements \enquote{experienced} by the light travelling through the microscope ultimately matter.
+In that sense the optical method gives us the more pertinent results because only the displacements seen by the light travelling through the microscope ultimately matter.
 Third, in contrast to the accelerometer measurements, the \gls{rms} amplitude is reduced by half when the suspension is active.
 Although the harmonics of the \gls{ptr} frequency of \qty{1.4}{\hertz} are again amplified by the suspension below \qty{10}{\hertz}, raising the band-limited \gls{rms} above that with the suspension disabled, there occurs a crossover at the eighth harmonic frequency beyond which the attenuation outweighs the amplification at low frequency.\sidenote{
     It furthermore appears that even a measurement whose sole electronic device is a picosecond-resolution counting card cannot escape \qty{50}{\hertz} power line noise (or in this case its second harmonic).
@@ -394,17 +426,23 @@ Since $S_{\delta N}$ is white, it follows that $S_{\delta N(\dt)}$ is, too, and 
 \begin{equation}\label{eq:setup:shot_noise:psd}
     S_{\delta N(\dt)}(\omega) = \frac{\bar{N}}{\fs}.
 \end{equation}
-To convert to the displacement noise \gls{psd}, we can simply convert units using the calibration derived above because if $N\sim\poisson(\bar{N})$ then so $y\sim\poisson(\flatfrac{\bar{N}\fs}{a})$ where $a$ is the slope of the calibration converting displacements to count rates (\cref{fig:setup:vibrations:calibration:pos_vs_cps}).
+To convert to the displacement noise \gls{psd}, we can simply convert units using the calibration derived above because if $N\sim\poisson(\bar{N})$ then so $y\sim\poisson(\flatfrac{\bar{N}\fs}{s})$ where $s$ is the slope of the calibration converting displacements to count rates, \ie, the sensitivity (see \cref{fig:setup:vibrations:calibration:pos_vs_cps,eq:setup:knife_edge:linearized}).
 Hence,\sidenote{
     Note that this is the two-sided \gls{psd}; to convert to the one-sided version used in this chapter, multiply by two.
 }
-\begin{equation}\label{eq:setup:poisson:psd:displ}
-   S_{\delta y(\dt)}(\omega) = \frac{\bar{N}}{\fs}\times\left(\frac{\fs}{a}\right)^2 = \frac{\bar{\Phi}}{a^2}
+\begin{equation}\label{eq:setup:shot_noise:noise_floor}
+   S_{\delta y(\dt)}(\omega) = \frac{\bar{N}}{\fs}\times\left(\frac{\fs}{s}\right)^2 = \frac{\bar{\Phi}}{s^2}
 \end{equation}
 with $\delta y = y - \expval{y}$.
 This type of noise is known as \emph{shot noise}.
 It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
 For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a grey dashed line.
+
+Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:knife_edge:sensitivity}, into \cref{eq:setup:shot_noise:noise_floor}, we find that
+\begin{equation}\label{eq:setup:shot_noise:noise_floor2}
+    S_{\Delta y(\dt)}(\omega) = \frac{\epsilon}{\Phi_0}\left(\frac{w_0}{1-r}\right)^2
+\end{equation}
+if we identify $\bar{\Phi} = \epsilon\Phi_0$ for some (constant) setup efficiency \eps.\todo{work}
 
 \section{Routes for improvement}\label{sec:setup:vibrations:outlook}
 Several improvements could be made to the system if the external conditions would allow it.
