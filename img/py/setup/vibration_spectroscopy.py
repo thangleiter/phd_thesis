@@ -12,7 +12,7 @@ import xarray as xr
 from cycler import cycler
 from python_spectrometer import Spectrometer
 from qcodes.utils.json_utils import NumpyJSONEncoder
-from qutil import const, functools, io, itertools
+from qutil import const, functools, io
 from qutil.misc import filter_warnings
 from qutil.plotting import changed_plotting_backend
 from qutil.plotting.colors import (
@@ -455,6 +455,14 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
             ln, = ax.loglog(vc_f, vc, zorder=5, **(markerprops(sty['color']) | sty))
             lines.append(ln)
 
+        vc_sn, vc_sn_f = fourier_space.octave_band_rms(
+            *fourier_space.derivative(np.full_like(f, np.sqrt(shot_noise_floor.nominal_value)),
+                                      f, order=1),
+            fraction=3
+        )
+
+        ax.loglog(vc_sn_f, vc_sn, ls=(0, (5, 10)), color=RWTH_COLORS_75['black'])
+
         xlim = spect[key]['settings']['f_min'], spect[key]['settings']['f_max']
         ax.plot([8, xlim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
         ax.plot([xlim[0], 8], [200/xlim[0], 25], color=RWTH_COLORS_50['black'], marker='',
@@ -469,7 +477,6 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
         ax.plot([xlim[0], 8], [1600/xlim[0], 200], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls=':')
 
-    ax.grid()
     ax.set_yticks([1e-3, 1e-1, 1e1, 1e3])
     ax.set_xlim(xlim)
     ax.set_ylim(1e-3, 1e3)

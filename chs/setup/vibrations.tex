@@ -34,7 +34,7 @@ This chapter is laid out as follows.
 In \cref{sec:setup:vibrations:isolation}, I briefly discuss the theoretical underpinnings of vibration isolation to inform its optimization.
 To characterize and improve upon the isolation, I performed vibration noise spectroscopy using the techniques and tools presented in \cref{part:speck}.
 I employed two different approaches that I lay out in the following; first, using a commercial piezoelectric accelerometer (\cref{sec:setup:vibrations:accel}) and second, using the optical response of a spatial reflectance gradient (\cref{sec:setup:vibrations:optic}).
-As will become clear, the two approaches complement each other because they are sensitive to slightly different quantities.
+As will become clear, the two approaches complement each other because they are sensitive to slightly different quantities.\todo{improve}
 
 \section{Vibration isolation}\label{sec:setup:vibrations:isolation}
 A simple yet effective method of vibration isolation is to suspend the system on passive air springs.
@@ -91,21 +91,24 @@ The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to 
 However, instead of computing the band-limited \gls{rms} with a fixed lower band edge, one uses bands of a fixed width, typically over one-third of an octave.
 To be specific, the one-third octave is defined in terms of its midband frequency $f_{\mr{m}}$ as the interval
 \begin{equation}\label{eq:setup:vibrations:third_octave}
-    f\in f_{\mr{m}}\times\left[2^{-\flatfrac{1}{6}},2^{\flatfrac{1}{6}}\right]
+    f\in f_{\mr{m}}\times\left[10^{-\flatfrac{1}{20}},10^{\flatfrac{1}{20}}\right] \approx f_{\mr{m}}\times\left[2^{-\flatfrac{1}{6}},2^{\flatfrac{1}{6}}\right]
 \end{equation}
 whose bandwidth \df is approximately \qty{26}{\percent} larger than $f_{\mr{m}}$ and where the latter is defined referenced to \qty{1000}{\hertz}~\cite{ansi_octave_bands}.
 The criteria, given as velocities rather than displacements or accelerations because it is argued that the limit to photolithography resolution is image velocity, are reproduced from \citer{Gordon1999} in \cref{tab:setup:vibrations:vc}.
+For the typical feature sizes we would like our microscope to resolve, the VC-B criterion is a fair target.
 I will use them below to classify the vibration isolation of the confocal microscope.
 
-\begin{margintable}[*-9]
-    %\centering
+\begin{margintable}[*-10]
+    \centering
     \footnotesize
-    \caption{\Glspl{vc}}
+    \caption{\Glspl{vc} and \gls{iso} guidelines}
     \label{tab:setup:vibrations:vc}
     \begin{tabular}{ c @{}S@{} }
         \toprule
         \multicolumn{2}{l}{$\flatfrac{1}{3}$ \textsc{octave band \gls{rms} (\unit{\micro\meter\per\second})}} \\
         \midrule
+        Workshop (ISO)        & 800  \\
+        Office (ISO)          & 400  \\
         Residential day (ISO) & 200  \\
         Op. theater (ISO)     & 100  \\
         VC-A                  & 50   \\
@@ -142,13 +145,14 @@ These are devices that convert translational forces, for example by means of a l
 They are mounted rigidly to the \gls{dut} and typically connected to some sort of signal conditioner providing a constant current bias to the sensor and putting out a voltage proportional to the acceleration.
 The most sensitive and low-frequency designs use piezoelectric materials like Quartz crystals for sensitivities in the range of \qty{10}{\volt\per\gaccel} with a broadband noise floor of \qty{2}{\micro\gaccel}~\sidecite{WilcoxonAccel}.
 
-To assess the vibration level in the sample position, I designed a small angle bracket onto which the accelerometer\sidenote{
+In order to evaluate the vibration level at the sample position, I designed a small angle bracket onto which the accelerometer\sidenote{
     Wilcoxon 731-207 kindly lent by Marcus Eßer~\cite{WilcoxonAccel}.
 }
-can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, allowing measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
-The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from 10-32 to \gls{sma} connector.
+can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, enabling measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
+The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \gls{sma} connector.
 Outside of the cryostat, the signal is routed to a signal conditioner that provides the necessary current bias and outputs a voltage which is digitized by a \dmm connected to the measurement computer.
-% TODO tense
+Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
+Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
 
 \begin{marginlisting}
     \begin{py}[
@@ -167,7 +171,7 @@ Outside of the cryostat, the signal is routed to a signal conditioner that provi
         )
     \end{py}
     \caption{Functionality to transform the conditioned voltage to displacement in Fourier space.}
-    \label{lst:setup:vibrations:accelerometer}
+    \label{lst:setup:vibrations:accel}
 \end{marginlisting}
 \begin{figure}
     \centering
@@ -178,14 +182,12 @@ Outside of the cryostat, the signal is routed to a signal conditioner that provi
         Turning on the \gls{ptr} increases the \gls{rms} noise amplitude by more than an order of magnitude over the entire frequency spectrum.
         The suspension slightly worsens the total noise because the low-frequency pulses excite the system close to the air springs' resonance frequency of \qty{2.5}{\hertz}.
     }
-    \label{fig:setup:vibrations:accelerometer}
+    \label{fig:setup:vibrations:accel}
 \end{figure}
 
-Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
-Leveraging the \code{fourier_procfn} argument, I transformed the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accelerometer}.
 To assess the impact of the \gls{ptr} and the suspension, I measured the displacement noise \gls{psd} for each combination of the two being switched on and off.
 The cryostat was closed, its vacuum chamber evacuated, and the magnet, a significant seismic mass, mounted as usual.
-The measurements are shown in \cref{fig:setup:vibrations:accelerometer} together with the band-limited \gls{rms} (\cf \cref{eq:speck:psd:bandpower}),
+The measurements are shown in \cref{fig:setup:vibrations:accel} together with the band-limited \gls{rms} (\cf \cref{eq:speck:psd:bandpower}),
 \begin{equation}\label{eq:setup:vibrations:rms}
     \rms_S(f) = \sqrt{\int_{f_\mr{min}}^{f}\dd{f^\prime}S^2(f^\prime)}.
 \end{equation}
@@ -199,13 +201,13 @@ Clearly, the suspension has a larger impact in this case, matching qualitatively
 At high frequencies, it manages to almost completely suppress the broadband excitation observed without the suspension.
 At low frequencies, on the other hand, the \gls{ptr} harmonics are amplified to the degree that the band-limited \gls{rms} is dominated by their contribution.
 Only at around \qty{10}{\hertz}, the attenuation starts to take effect.
-Overall, the \gls{ptr} is found to raise the displacement noise amplitude from \qty{0.5}{\micro\meter} \gls{rms} to \qty{10}{\micro\meter} \gls{rms}, while the suspension, over the entire frequency range, has at best no positive influence.
+Overall, the \gls{ptr} is found to raise the displacement noise \gls{rms} amplitude from \qty{0.5}{\micro\meter} to \qty{10}{\micro\meter} while the suspension, over the entire frequency range, has at best no positive influence.
 
 This result is less than encouraging.
 At that level of \gls{rms}-fluctuations, we'd have a slim chance of resolving micrometer-scale features using the microscope.
 But is the \emph{absolute} magnitude of displacement noise at the sample position really the correct measure for the microscope performance?
 Indeed, if the sample oscillates in phase with the objective and ocular lenses as well as the \gls{smf}, we will still obtain a perfect imaging fidelity.
-So actually only the \emph{relative} displacements of sample, lenses, and detection fiber affect the microscope's performance.
+So actually only the \emph{relative} displacements of sample, lenses, and detection fiber affect the achievable resolution of the microscope.
 To characterize these, I developed an optical \emph{in-situ} technique to measure the displacement noise based on knife-edge reflectance fluctuations that I will present in the following section.
 % TODO: gaussian beam diameter to first order in z and x
 %  Spot size: sqrt(1 + (z/z_r)^2) = 1 + .5(z/z_r)^2
@@ -215,8 +217,8 @@ To characterize these, I developed an optical \emph{in-situ} technique to measur
 The gate electrodes on our samples are fabricated using two separate lithography processes; first, the smallest structures are written using \gls{ebl} in two steps.
 Then, larger structures on the order of \qty{1}{\micro\meter} and above are written using optical lithography.
 In the region where the two overlap on the mesa to establish electrical contact, the highly reflective \ch{Ti/Au} optical gates have a width of \qty{14}{\micro\meter} and a height of \qty{160}{\nano\meter} and lie on top of the poorly reflecting \ch{GaAs} surface, resulting in a step-like reflectance profile.
-Scanning perpendicularly across such a straight edge between a poorly and a highly reflecting material is known as a knife-edge measurement and is typically used to measure the spatial extent of a laser spot~\cite{Arnaud1971,Skinner1972,Khosrofian1983}.
-We can use the same setup to measure the displacement noise; instead of manually shifting our knife edge across the beam spot, though, we measure the reflectance fluctuations induced by the knife edge fluctuating relative to the spot.
+Scanning perpendicularly across such a straight edge between a poorly and a highly reflecting material is known as a knife-edge measurement and is frequently used to measure the spatial extent of a laser spot~\cite{Arnaud1971,Skinner1972,Khosrofian1983}.
+We can use the same setup to measure the displacement noise; instead of manually shifting our knife edge across the beam spot, though, we measure the reflectance fluctuations induced by the knife edge fluctuating relative to the spot due to external perturbations.
 
 \begin{marginfigure}
     \centering
@@ -234,7 +236,7 @@ Focusing the laser (indicated by a dashed circle) onto the edge of the optical g
 This gradient in reflected intensity can be inverted to obtain the vibration noise along $y$ by monitoring the intensity as a function of time.
 
 Let us take a closer look at the reflected intensity when the laser spot has a finite overlap with the edge of the gate.
-Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
+Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the Gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
 \begin{equation}\label{eq:setup:reflectance_step}
     R(y) = \begin{dcases}
         1, & y \leq 0 \\
@@ -242,7 +244,7 @@ Under the simplifying assumption of a perfectly sharp drop-off and taking the re
     \end{dcases}
 \end{equation}
 where $r$ is the reflectance of the bare \ch{GaAs} surface.
-Assuming a perfect Gaussian (\gls{temmode}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by
+Assuming a perfect Gaussian (\gls{temmode}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by\todo{is the result the same for 2D? if yes, argue why 1D is sufficient!}
 \begin{equation}\label{eq:setup:gaussian}
     I(y) = I_0\exp(-\frac{2y^2}{w_0^2}),
 \end{equation}
@@ -282,7 +284,7 @@ where we defined the \emph{sensitivity}
 Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_R$, one could either improve the reflectance contrast $1-r$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
     Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
-In our case, the former two are fixed by the setup and sample, whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
+In our case, the former two are fixed by the sample and the setup, respectively , whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
 
 Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to obtain the displacement in the vicinity of $y=0$ as function of photon flux,
 \begin{equation}\label{eq:setup:knife_edge:procfn}
@@ -310,7 +312,7 @@ The first challenge is obtaining a proper length reference scale.
 While the nanopositioners on which the sample is mounted do in principle have a resistive position readout, it is extremely unreliable at small displacements.
 Therefore, I calibrated the relative position using the imaging arm of the optical head.
 \Cref{fig:setup:vibrations:calibration:length_scale} depicts the procedure.
-I illuminated the sample with the white light, positioned the spot on the edge of the optical gate, and imaged the sample with the \cmoscam.
+Illuminating the sample with the white light, I positioned the spot on the edge of the optical gate and imaged the sample with the \cmoscam.
 I then extracted the position of the edge, in pixels, for several rows to obtain some statistics by fitting a linear function to the edge profile in a small region between two refraction maxima.
 Repeating this step for different DC voltages applied to the nanopositioner,
 %\sidenote{
@@ -324,9 +326,9 @@ Repeating this step for different DC voltages applied to the nanopositioner,
 this yields the proportionality factor between the nanopositioner DC voltage, $V_{\mr{DC}}$, and the position of the gate edge on the camera.
 By measuring the total width of the gate on the camera image, I obtained the magnification by referencing it to the design width,
 \begin{equation}\label{eq:setup:knife_edge:magnification}
-    M = \frac{w[\unit{\pixel}]}{w[\unit{\micro\meter}]}.
+    M = \frac{w[\unit{\pixel}]}{w[\unit{\micro\meter}]} = \frac{\qty{116}{\pixel}}{\qty{14}{\micro\meter}} \approx \qty{8.3}{\pixel\per\micro\meter}.
 \end{equation}
-Again performing a linear fit (shown in the upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}) to the data for different voltages then results in the linear transformation from DC voltage to position.
+Again performing a linear fit to the data for different voltages then results in the linear transformation from DC voltage to position (upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}).
 
 \begin{marginfigure}
     \centering
@@ -342,7 +344,7 @@ Again performing a linear fit (shown in the upper panel of \cref{fig:setup:vibra
     \label{fig:setup:vibrations:calibration:pos_vs_cps}
 \end{marginfigure}
 
-Finally, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ of count rate over displacement.
+Lastly, I switched from white light illumination to the laser, focused it onto the edge of a gate, and measured the photon count rate reflected off the sample as a function of $V_{\mr{DC}}$, from which we can finally extract the desired sensitivity (slope) $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ of count rate over displacement.
 The data and fit are shown in the bottom panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
 Clearly, the count rate is linear in the displacement over a large range, indicating that for fluctuations with amplitude on the order of \qty{100}{\nano\meter} \gls{rms}, the measurement sensitivity should be sufficiently robust.
 
@@ -355,7 +357,7 @@ Clearly, the count rate is linear in the displacement over a large range, indica
         Bottom: band-limited \gls{rms} computed from the \glspl{psd} in the upper panel (\cf \cref{eq:speck:psd:bandpower}).
         The \gls{ptr} has a much smaller effect than when measuring the absolute displacement noise with the accelerometer, increasing the \gls{rms} only by a factor of two.
         While the lowest-order \gls{ptr} harmonics are amplified by up to an order of magnitude in amplitude with the suspension enabled, they contribute relatively little to the total \gls{rms} and are compensated by the superior high-frequency attenuation behavior.
-        The total $\rms_S \approx \qty{100}{\nano\meter}$ in working mode is below the typical \unit{\micro\meter} feature size.
+        The total $\rms_S \approx \qty{100}{\nano\meter}$ with the cryostat in operation is below the typical \unit{\micro\meter} feature size.
     }
     \label{fig:setup:vibrations:optic}
 \end{figure}
@@ -436,13 +438,40 @@ Hence,\sidenote{
 with $\delta y = y - \expval{y}$.
 This type of noise is known as \emph{shot noise}.
 It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
-For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a grey dashed line.
+For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a gray dashed line.
 
 Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:knife_edge:sensitivity}, into \cref{eq:setup:shot_noise:noise_floor}, we find that
 \begin{equation}\label{eq:setup:shot_noise:noise_floor2}
     S_{\Delta y(\dt)}(\omega) = \frac{\epsilon}{\Phi_0}\left(\frac{w_0}{1-r}\right)^2
 \end{equation}
-if we identify $\bar{\Phi} = \epsilon\Phi_0$ for some (constant) setup efficiency \eps.\todo{work}
+if we identify $\bar{\Phi} = \epsilon\Phi_0$ for some (fixed) setup efficiency \eps.
+This shows a clear path towards improving the \gls{snr} of the method.
+Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-r$ and by decreasing $w_0$, so is the shot noise floor, albeit \emph{quadratically} in $w_0$ and $1-r$.
+For example, for a reduction in spot size by a factor of two from inserting a different objective lens and a tenfold increase in maximum count rate achieved by replacing the counting card with a more powerful model,\sidenote{
+    \swinst offers models with up to \qty{1.2}{\giga\sample\per\second}, although at that rate the jitter and dead time of the \glspl{apd} would start to become the limiting factors~\cite{SwabianTimeTagger}.
+}
+our simple model predicts a noise floor of $\qty{25}{\pico\meter\per\sqrt{\hertz}}$, a reduction by a factor of \num{40}.
+
+To conclude this section, let us come back to the \acrlongpl{vc} defined in \cref{subsec:setup:vibrations:isolation:theory} and evaluate the microscope based on the two different measurement methods presented in this chapter.
+The $\flatfrac{1}{3}$ octave band \gls{rms} velocities computed for the vibration spectra with \gls{ptr} enabled shown in \cref{fig:setup:vibrations:accel,fig:setup:vibrations:optic} are plotted in \cref{fig:setup:vibrations:vc}.
+Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (VC-B, solid gray line) over three octaves.\sidenote{
+    The sample effectively sits at the end of a large pendulum, so it does not come as a huge surprise the absolute level of vibrations is large.
+}
+\todo{finish this}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/setup/vc}
+    \caption[\imgsource{img/pdf/setup/vibration_spectroscopy.py}]{
+        $\flatfrac{1}{3}$ octave band \gls{rms} velocity computed for vibration measurements with the \gls{ptr} enabled and the suspension disabled (magenta) or enabled (green).
+        Circles (diamonds) show data obtained with the accelerometer (optical method).
+        The \glspl{vc} VC-B, VC-A and first two \gls{iso} levels are indicated as gray lines (solid, dashed, dash-dotted, dotted); see \cref{tab:setup:vibrations:vc}.
+        Accelerometer data are above the VC-B criterion for about three octaves centered around $f_{\mr{m}}=\qty{10}{\hertz}$, where even the \gls{iso} \enquote{residential day} level is breached.
+        Optical data are more favorable, in particular with the suspension enabled (green).
+        Towards high frequencies, the data are dominated by the wideband shot noise floor indicated by the loosely dashed dark gray line, suggesting the true displacement \gls{rms} is well below the VC-B criterion.
+    }
+    \label{fig:setup:vibrations:vc}
+\end{figure}
 
 \section{Routes for improvement}\label{sec:setup:vibrations:outlook}
 Several improvements could be made to the system if the external conditions would allow it.
