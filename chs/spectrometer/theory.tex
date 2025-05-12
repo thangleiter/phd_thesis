@@ -51,7 +51,7 @@ This method will be the topic of the present chapter.
 It is laid out as follows.
 I will first derive the Wiener-Khinchin theorem for continuous stochastic processes and introduce the central quantity of interest in noise spectroscopy; the \gls{psd}.
 Then, I will discretize the method and discuss resulting side-effects before describing an efficient way of obtaining the spectrum from a finite amount of data.
-Finally, I elaborate on relevant parameters and properties.
+I will conclude by elaborating on relevant parameters and properties.
 
 \section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
 To see how spectral noise properties may be estimated from time series data, consider a continuous wide-sense stationary\sidenote{
@@ -225,7 +225,7 @@ Now recall that multiplication and convolution are duals under the Fourier trans
 \begin{align}\label{eq:speck:window:ft_pairs}
     \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m},
 \end{align}
-where the Fourier representation of the rectangular window\sidenote{
+where the Fourier representation of the rectangular window is given by\sidenote{
     $\sinc(x) = \flatfrac{\sin(x)}{x}$.
 }
 \begin{align}
@@ -247,7 +247,7 @@ where the Fourier representation of the rectangular window\sidenote{
     \includegraphics{pdf/spectrometer/hann}
     \caption{
         The Fourier representation of the Hann window in continuous time (solid line) and for discrete frequencies $\omega_n$ (circles).
-        Diamonds indicate discrete sampling when the window completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
+        Diamonds indicate discrete sampling when the window is completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
     }
     \label{fig:speck:hann_fourier}
 \end{marginfigure}
@@ -298,7 +298,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
     \includegraphics[width=\textwidth]{pdf/spectrometer/welch}
     \caption{
         Illustration of Welch's method for spectrum estimation.
-        The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
+        The data (magenta) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
         Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
         A finite overlap $K$ between adjacent windows (gray) ensures efficient sample use.
     }
