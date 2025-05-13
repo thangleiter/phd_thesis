@@ -134,11 +134,9 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
     gl = GateLayout(DATA_PATH / 'gl_005d.dxf',
                     foreground_color=RWTH_COLORS_25['black'],
                     cmap=SEQUENTIAL_CMAP,
-                    # cmap=mpl.colormaps.get_cmap('afmhot'),
                     v_min=-1)
     gl.ax.set_aspect('equal')
     gl.ax.set_axis_off()
-    # gl.ax.grid()
     for txt in gl.ax.texts:
         if not any(
                 txt.get_text().startswith(dim) for dim in dmm_voltage_diamonds.dims[-1].split("_")
@@ -163,20 +161,21 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
     gl.fig.savefig(SAVE_PATH / 'diamonds_gl.pdf', backend='pdf' if backend == 'qt' else backend)
 
 # %%% Plot
-# TODO: double-check units!
 fig = plt.figure(figsize=(TOTALWIDTH, TOTALWIDTH / const.golden / 1.5))
 grid = ImageGrid(fig, 111, nrows_ncols=(1, 2), share_all=True, aspect=False, cbar_mode='each',
                  cbar_location="top", axes_pad=(.2, .05))
 
-image_data = [tia_current_diamonds - np.median(tia_current_diamonds),
-              1e-3 * tia_current_diamonds.differentiate('NBC_TBC')]
+image_data = [
+    tia_current_diamonds - np.median(tia_current_diamonds),
+    1e-3 * tia_current_diamonds.differentiate('NBC_TBC')  # pA/mV
+]
 match backend:
     case 'pgf':
         image_labels = [r"$I$ (\unit{pA})", r"$\pdv*{I}{V}$ (\unit{pA\per mV})"]
     case 'qt':
         image_labels = ["$I$ (pA)", r"$\partial I/\partial V$ (pA/mV)"]
 
-widths = [0.045e3, 40]
+widths = [0.045e3, 37.5]
 
 x = tia_current_diamonds['NBC_TBC']
 y = tia_current_diamonds['Bias']
@@ -209,9 +208,9 @@ dmm_voltage_plunger = xr.load_dataarray((DATA_PATH / file).with_suffix('.h5'))
 conductance_plunger = (dmm_voltage_plunger
                        / dmm_voltage_plunger.attrs['gain']
                        / dmm_voltage_plunger.attrs['bias']
-                       / const.physical_constants['conductance quantum'][0])
+                       / (const.physical_constants['conductance quantum'][0] / 2))
 conductance_plunger.attrs.update(dmm_voltage_plunger.attrs)
-conductance_plunger.attrs.update(units='$G_0$', long_name='$G$')
+conductance_plunger.attrs.update(units='$e^2/h$', long_name='$G$')
 # %%% Fit
 x = conductance_plunger['NBC_TBC']
 y = conductance_plunger
@@ -257,9 +256,9 @@ conductance_diamonds = dmm_voltage_diamonds.sel(Bias=0, method='nearest')
 conductance_diamonds = (conductance_diamonds
                         / conductance_diamonds.Bias
                         / dmm_voltage_plunger.attrs['gain']
-                        / const.physical_constants['conductance quantum'][0])
+                        / (const.physical_constants['conductance quantum'][0] / 2))
 conductance_diamonds.attrs.update(conductance_diamonds.attrs)
-conductance_diamonds.attrs.update(units='$G_0$', long_name='$G$')
+conductance_diamonds.attrs.update(units='$e^2/h$', long_name='$G$')
 
 with (
         mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-3, 6)}], after_reset=True),

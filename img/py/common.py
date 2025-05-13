@@ -12,13 +12,13 @@ MARGINSTYLE = PATH / 'py/margin.mplstyle'
 
 
 def init(style, backend):
-    mpl.rcdefaults()
-    mpl.style.use(style)
-
     if (ipy := IPython.get_ipython()) is not None:
         ipy.run_line_magic('matplotlib', backend)
     else:
         mpl.use('qtagg' if backend == 'qt' else backend)
+
+    mpl.rcdefaults()
+    mpl.style.use(style)
 
 
 def apply_sketch_style(ax):
@@ -34,12 +34,13 @@ def apply_sketch_style(ax):
     ax.set_ylabel(ax.get_ylabel(), rotation='horizontal')
 
 
-def markerprops(color, marker='o', markersize=5, markerfacealpha=0.5, markeredgewidth=None):
+def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerfacealpha=0.5,
+                markeredgewidth=None):
     return dict(
         ls='',
         marker=marker,
         markersize=markersize,
         markeredgewidth=markeredgewidth or mpl.rcParams['lines.markeredgewidth'],
-        markeredgecolor=color,
+        markeredgecolor=mpl.colors.to_rgba(color, markeredgealpha),
         markerfacecolor=mpl.colors.to_rgba(color, markerfacealpha)
     )

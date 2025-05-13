@@ -1,0 +1,5 @@
+# Window dependence
+Windows			MXC Temperature (mK)
+None			30
+Cold			11
+PT1,PT2,Still	7.9
