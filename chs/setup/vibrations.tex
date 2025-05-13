@@ -28,7 +28,10 @@ While the cold foot of the \gls{ptr} is not rigidly connected to the cryostat in
     There exist commercial systems that use gas exchange instead, for example the \mbox{CryoConcept} HEXA-DRY series~\cite{CryoConceptHexaDry}.
 }
 the entire cold head assembly rests with rubber feet on the cryostat top plate in the system's delivery status.
-Thus, our microscope does not only encounter passive environmental vibrations but also the active disturbance from the \gls{ptr}.
+Thus, our microscope does not only encounter passive environmental vibrations but also the active perturbation from the \gls{ptr}.
+
+\todo{review literature}
+\cite{Caparrelli2006,Pelliccione2013}
 
 This chapter is laid out as follows.
 In \cref{sec:setup:vibrations:isolation}, I briefly discuss the theoretical underpinnings of vibration isolation to inform its optimization.
@@ -454,10 +457,15 @@ our simple model predicts a noise floor of $\qty{25}{\pico\meter\per\sqrt{\hertz
 
 To conclude this section, let us come back to the \acrlongpl{vc} defined in \cref{subsec:setup:vibrations:isolation:theory} and evaluate the microscope based on the two different measurement methods presented in this chapter.
 The $\flatfrac{1}{3}$ octave band \gls{rms} velocities computed for the vibration spectra with \gls{ptr} enabled shown in \cref{fig:setup:vibrations:accel,fig:setup:vibrations:optic} are plotted in \cref{fig:setup:vibrations:vc}.
-Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (VC-B, solid gray line) over three octaves.\sidenote{
-    The sample effectively sits at the end of a large pendulum, so it does not come as a huge surprise the absolute level of vibrations is large.
+Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (VC-B, solid gray line) over three octaves.
+Because this method of measuring the vibration noise is sensitive to absolute changes, we can understand qualitatively why this is the case if we view the accelerometer at the sample position as the end of a large pendulum whose fulcrum is in the center of the plane spanned by the three air springs.
+A rough estimate gives a resonant frequency of \qty{0.5}{\hertz},\sidenote{
+    The center of mass sits close to the magnet approximately $l = \qty{1}{\meter}$ below the springs so that we have $f = (2\pi)\inverse\sqrt{\flatfrac{g}{l}}\approx\qty{0.5}{\hertz}$.
 }
-\todo{finish this}
+implying frequencies in the considered range, $[4, 32]\,\unit{\hertz}$, are fairly effective at exciting motion in the pendulum (\cf \cref{subsec:setup:vibrations:isolation:theory}).
+By contrast, with the optical method we do not pick up on such motion because the ocular lens focusing the light into the \gls{smf} is fixed in the co-rotating frame with respect to our imagined pendulum.
+Indeed, the \gls{vc} velocities computed for this method show that they are orders of magnitude smaller at low frequencies in particular since only deviations from the rigid body picture established above induce a change in signal.
+Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indicated by the loosely dashed dark gray line, implying that the true vibration-induced \gls{rms} is well below our targeted VC-B criterion.
 
 \begin{figure}
     \centering
@@ -497,5 +505,4 @@ Lastly, let me note that there also exist cryocoolers with variable operating fr
 % TODO: think about this, simulate spectrum
 
 In \cref{ch:app:setup:vibrations}, I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.
-
-\cite{Caparrelli2006,Pelliccione2013}
+\todo{appendix plots}
