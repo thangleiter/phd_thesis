@@ -252,7 +252,7 @@ with (
 
     fig.savefig(SAVE_PATH / 'coulomb_resonance.pdf')
 
-# %%%
+# %%% With inset axes (unused)
 conductance_diamonds = dmm_voltage_diamonds.sel(Bias=0, method='nearest')
 conductance_diamonds = (conductance_diamonds
                         / conductance_diamonds.Bias
