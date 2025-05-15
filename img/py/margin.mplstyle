@@ -83,5 +83,5 @@ savefig.transparent: True  # setting that controls whether figures are saved wit
 
 ### pgf parameter
 pgf.rcfonts : False
-pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}
+pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}\usepackage{hyperref}\hypersetup{colorlinks=false}
 pgf.texsystem : lualatex
