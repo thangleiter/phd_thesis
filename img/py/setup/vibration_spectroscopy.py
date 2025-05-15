@@ -15,18 +15,14 @@ from qcodes.utils.json_utils import NumpyJSONEncoder
 from qutil import const, functools, io
 from qutil.misc import filter_warnings
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import (
-    get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75
-)
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75, get_rwth_color_cycle
 from qutil.signal_processing import fourier_space, real_space
 from scipy import interpolate, odr, special
 from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (
-    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops, init
-)  # noqa
+from common import MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops  # noqa
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -110,8 +106,8 @@ def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
-def erf_theory(x, I0, w0, r):
-    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf(x*np.sqrt(2)/w0))
+def erf_theory(x, I0, w0, x0, r):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf((x - x0)*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -183,7 +179,7 @@ poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
 cps = y1[mask].mean('counter_time_axis')
 cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
-data = odr.Data(pos, cps, wd=poserr, we=cpserr)
+data = odr.RealData(pos, cps, sx=poserr, sy=cpserr)
 model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
 fit = odr.ODR(data, model, beta0=[2.5, 0])
 output = fit.run()
@@ -236,8 +232,10 @@ erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
 xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
 xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
          pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+yyerr = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
 with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
     fig, axs = plt.subplots(nrows=2, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2),
@@ -262,11 +260,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     # cps vs pos
     ax = axs[1]
-    ax.errorbar(xx, y1.mean('counter_time_axis'),
-                y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
-                xerr=xxerr, label='Data',
-                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                **markerprops(errorcolor, marker='.'))
+    ax.errorbarax(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
+                  ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                  **markerprops(errorcolor, marker='.'))
     ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
@@ -283,17 +279,69 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
 
+# %%%% Knife edge fit
+xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
+sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+# GaAs @ 800 nm
+# https://refractiveindex.info/?shelf=other&book=AlAs-GaAs&page=Papatryfonos-0
+n0 = 3.6520 + 1j*0.075663
+# https://doi.org/10.1063/1.114204
+n = n0 - 2.67e-4 * (25 + const.zero_Celsius - 30e-3)
+r = abs((n - 1) / (n + 1))**2  # at 30 mK
+
+data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
+model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
+
+fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+output = fit.run()
+if 'Sum of squares convergence' not in output.stopreason:
+    output = fit.restart(100)
+
+fitpar = unp.uarray(output.beta, output.sd_beta)
+
+fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 0])
+output = fit.run()
+if 'Sum of squares convergence' not in output.stopreason:
+    output = fit.restart(100)
+
+fitpar_fix = unp.uarray(output.beta, output.sd_beta)
+
+# %%%%% Plot
+
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+
+    ax.errorbar(xx, yy, yerr=syy, xerr=sxx, alpha=0.75,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.', markersize=2.5))
+    ax.plot(x := np.linspace(-1, 1, 1001), erf_theory(-x, *unp.nominal_values(fitpar)))
+    ax.set_ylim(ax.get_ylim())
+    ax.plot(x, erf_theory(-x, *unp.nominal_values(fitpar_fix)), ls='--',
+            color=RWTH_COLORS_75['magenta'])
+
+    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.set_yticks([2, 3, 4])
+    ax.grid()
+
+    fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
+
 # %%%% Theory plot
 x = np.linspace(-1.5, 1.5, 1001)
 I0 = 2
 w0 = .3
+x0 = 0
 r = 0.2
 N = I0*w0*np.sqrt(0.5*np.pi)
 
 with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
 
-    ax.plot(x, erf_theory(x*w0, I0, w0, r) / N)
+    ax.plot(x, erf_theory(x*w0, I0, w0, x0, r) / N)
 
     ylim = ax.get_ylim()
     ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
