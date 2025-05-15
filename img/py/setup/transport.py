@@ -12,15 +12,14 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from qutil import const
 from qutil.itertools import absmax
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import (RWTH_COLORS_25, RWTH_COLORS,
-                                   make_diverging_colormap, make_sequential_colormap)
+from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_25, make_diverging_colormap,
+                                   make_sequential_colormap)
 from qutil.ui.gate_layout import GateLayout
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (  # noqa
-    init, markerprops, PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE
-)
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, TOTALWIDTH, init,  # noqa
+                    markerprops)
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
 DATA_PATH = PATH.parent / 'data/transport'

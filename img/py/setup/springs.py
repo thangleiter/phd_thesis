@@ -5,13 +5,11 @@ import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from qutil.plotting.colors import (
-    RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50, RWTH_COLORS_25
-)
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_25, RWTH_COLORS_50, RWTH_COLORS_75
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import PATH, MARGINSTYLE, init
+from common import MARGINSTYLE, PATH, init
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
