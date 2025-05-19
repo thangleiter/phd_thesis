@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 from cycler import cycler
+from qutil import const
 from qutil.plotting.colors import RWTH_COLORS
 from scipy import interpolate, optimize
 
@@ -31,29 +32,9 @@ def Qdot(T, a, b):
     return a * T**2 + b
 
 
-# %% ANC readout heating
-temp = pd.read_table(DATA_PATH / 'anc_readout_heating.txt', skiprows=1, sep='\t+', engine='python',
-                     index_col=0)['MXC Temperature (mK)'].to_xarray()
-volt = temp.coords['Voltage (mV)']
-fit = temp.polyfit('Voltage (mV)', 2).polyfit_coefficients
-x = volt.interp({'Voltage (mV)': np.linspace(0, 300*1.05, 1001)},
-                kwargs={"fill_value": "extrapolate"})
+def P_AC(V, R, P_0):
+    return V**2/R + P_0
 
-fig, ax = plt.subplots(layout='constrained')
-ax.margins(x=0.05, y=0.1)
-temp.plot(ax=ax, **markerprops(RWTH_COLORS['blue']))
-ax.set_xlim(ax.get_xlim())  # freezes them
-ax.plot(x, xr.polyval(x, fit))
-ax.grid()
-match backend:
-    case 'pgf':
-        ax.set_xlabel(r'$V_{\mathrm{AC}}$ (\unit{\milli\volt})')
-        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (\unit{\milli\kelvin})')
-    case 'qt':
-        ax.set_xlabel(r'$V_{\mathrm{AC}}$ (mV)')
-        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (mK)')
-
-fig.savefig(SAVE_PATH / 'anc_readout_heating.pdf')
 
 # %% Window heating
 temp = pd.read_table(DATA_PATH / 'window_heating.txt', skiprows=1, sep='\t+', engine='python',
@@ -63,7 +44,7 @@ x = [0, 1, 2]
 cycle = cycler(color=mpl.color_sequences['rwth'][:3], marker=['o', 'D', 'v'], markersize=[5, 5, 6])
 
 
-fig, ax = plt.subplots(layout='constrained')
+fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1))
 ax.margins(x=0.05, y=0.1)
 ax.grid(axis='y')
 
@@ -113,8 +94,8 @@ ax.plot(Qdot(x, *popt_laser), x, color=RWTH_COLORS['green'])
 
 # Fit quadratic smoothing spline to laser data and scale to fit heater data
 spline = interpolate.make_splrep(T, P, k=2, s=1)
-popt_spline, _ = optimize.curve_fit(lambda x, A: A * spline(x),
-                                    heater.data * 1e3, heater["Power (uW)"].data)
+popt_spline, pcov_spline = optimize.curve_fit(lambda x, A: A * spline(x),
+                                              heater.data * 1e3, heater["Power (uW)"].data)
 
 ax.plot(spline(x), x, color=RWTH_COLORS['green'], ls='--')
 ax.plot(spline(x) * popt_spline, x, color=RWTH_COLORS['magenta'], ls='--')
@@ -125,6 +106,13 @@ ax.set_yscale('log')
 ax.set_xlim(3e-1)
 ax.set_ylim(5, 40)
 
+ax.xaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:.0f}'))
+ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:.0f}'))
+ax.yaxis.set_minor_formatter(mpl.ticker.StrMethodFormatter('{x:.0f}'))
+for loc, txt in zip(ax.yaxis.get_ticklocs(minor=True), ax.yaxis.get_ticklabels(minor=True)):
+    if loc not in (5, 20, 40):
+        txt.set_visible(False)
+
 match backend:
     case 'pgf':
         ax.set_xlabel(r'Power (\unit{\micro\watt})')
@@ -134,3 +122,41 @@ match backend:
         ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (mK)')
 
 fig.savefig(SAVE_PATH / 'laser_heating.pdf')
+
+# %% ANC readout heating
+temp = pd.read_table(DATA_PATH / 'anc_readout_heating.txt', skiprows=1, sep='\t+', engine='python',
+                     index_col=0)['MXC Temperature (mK)'].to_xarray()
+volt = temp.coords['Voltage (mV)']
+fit = temp.curvefit('Voltage (mV)', P_AC).curvefit_coefficients
+x = volt.interp({'Voltage (mV)': np.linspace(0, 300*1.05, 1001)},
+                kwargs={"fill_value": "extrapolate"})
+
+fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.1))
+ax.margins(x=0.05, y=0.1)
+temp.plot(ax=ax, **markerprops(RWTH_COLORS['blue']))
+ax.set_xlim(ax.get_xlim())  # freezes them
+ax.plot(x, P_AC(x, *fit))
+ax.grid()
+ax.set_xticks([0, 100, 200, 300])
+
+# Use splines to convert temperature to power from the heater measurements
+T = heater.data * 1e3  # mK
+P = heater["Power (uW)"].data  # μW
+
+ax2 = ax.secondary_yaxis(
+    'right',
+    (interpolate.make_splrep(T, P, k=2, s=1),
+     interpolate.make_splrep(P, T, k=2, s=1))
+)
+
+match backend:
+    case 'pgf':
+        ax.set_xlabel(r'$V_{\mathrm{AC}}$ (\unit{\milli\volt})')
+        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (\unit{\milli\kelvin})')
+        ax2.set_ylabel(r'$P$ (\unit{\micro\watt})')
+    case 'qt':
+        ax.set_xlabel(r'$V_{\mathrm{AC}}$ (mV)')
+        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (mK)')
+        ax2.set_ylabel(r'$P$ (μW)')
+
+fig.savefig(SAVE_PATH / 'anc_readout_heating.pdf')

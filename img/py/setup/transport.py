@@ -233,7 +233,7 @@ fit = conductance_plunger[ix].curvefit('NBC_TBC', dfermi, p0=p0, bounds=bounds)
 
 # %%% Plot
 with (
-        mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-3, 6)}], after_reset=True),
+        mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-2, 3)}], after_reset=True),
         changed_plotting_backend('pgf')
 ):
     fig, ax = plt.subplots(layout='constrained',
@@ -242,7 +242,9 @@ with (
     ax.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1],
             **markerprops(RWTH_COLORS['blue'], markersize=3, markeredgewidth=0.5))
 
-    ax.plot(x[ix] * 1e3, dfermi(x[ix], *fit.curvefit_coefficients) - fit.curvefit_coefficients[-1],
+    xx = np.linspace(*x[ix][[0, -1]].data, 1001)
+    ax.plot(xx * 1e3,
+            dfermi(xx, *fit.curvefit_coefficients.data) - fit.curvefit_coefficients[-1].data,
             color=RWTH_COLORS['magenta'], marker='')
 
     ax.set_xlabel(f"{x.attrs['long_name']} (m{x.attrs['units']})")

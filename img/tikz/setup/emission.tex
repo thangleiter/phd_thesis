@@ -1,0 +1,75 @@
+\begin{tikzpicture}[
+    scale=2,%
+    font=\footnotesize,%
+    thick,%
+    axis/.style={RWTHblack75,text=black},%
+]
+    % requires libraries angle,quotes,calc
+
+    \newlength\CA
+    \setlength\CA{1cm}
+    \newlength\tick
+    \setlength\tick{0.1cm}
+
+    \coordinate (origin) at (0,0);
+    \coordinate (dipole) at (0,-0.5);
+    \coordinate (interfacemargin) at (0.25,0);
+    \coordinate (lens) at (0,1);
+    \coordinate (lensmargin) at ($(\CA,1)$);
+
+    % Coordinate axes
+    \draw[->,axis]
+        (origin)
+        -- ($(\CA,0) + (0.4,0)$) node[right] {$x$}
+    ;
+    \draw[->,axis]
+        (0.0,-0.75)
+        -- ($(lens) + (0,0.25)$) node[above] {$z$}
+    ;
+    % Xticks
+    \draw[axis]
+        (\CA,0)
+        -- ++(0,-\tick) node[below] {$w$}
+    ;
+    % Yticks
+    \draw[axis]
+        (lens)
+        -- ++(-\tick,0) node[left] {\fob}
+        (origin)
+        -- ++(-\tick,0) node[left] {$0$}
+        (dipole)
+        -- ++(-\tick,0) node[left] {$-d$}
+    ;
+    % Angles
+    \draw[thin,axis]
+        ($(interfacemargin) - (0,0.1)$)
+        -- ++(0,0.5) node (beta) {}
+    ;
+    \pic[draw,"$\alpha$",angle eccentricity=1.5,axis]
+        {angle = interfacemargin--dipole--origin}
+    ;
+    \pic[draw,"$\beta$",angle eccentricity=1.5,axis]
+        {angle = lensmargin--interfacemargin--beta}
+    ;
+
+    % Lens and QW
+    \draw[very thick]
+        (lens)
+        -- ++(1.25,0) node[right] {Ob.}
+    ;
+    \draw[dashed,RWTHblack75]
+        ($(dipole) + (0,0.05)$)
+        -- ++(1.25,0)
+        ($(dipole) - (0,0.05)$)
+        -- ++(1.25,0)
+    ;
+    \node[anchor=west] at ($(dipole) + (1.25,0)$) {\acrshort{qw}};
+
+    % Margin beam
+    \draw[->,RWTHred100]
+        (dipole)
+        -- (interfacemargin)
+        -- (lensmargin)
+        -- ++(0,0.25)
+    ;
+\end{tikzpicture}

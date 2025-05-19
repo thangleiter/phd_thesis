@@ -77,7 +77,14 @@
 
 %! begin preamble = tikz
 % graphs
-\usetikzlibrary{arrows, positioning, calc, shadows}
+\usetikzlibrary{
+    arrows,
+    positioning,
+    calc,
+    angles,
+    quotes,
+    shadows,
+}
 % tree structures
 \usepackage[edges]{forest}
 % electric circuits
@@ -157,19 +164,19 @@
 \includeonly{
     tex/publications,
     tex/software,
-    %chs/spectrometer/introduction,
-    %chs/spectrometer/theory,
-    %chs/spectrometer/software,
-    %chs/spectrometer/conclusion,
+%chs/spectrometer/introduction,
+%chs/spectrometer/theory,
+%chs/spectrometer/software,
+%chs/spectrometer/conclusion,
     chs/setup/introduction,
-    chs/setup/electrical,
-    chs/setup/optical,
+    chs/setup/cooling.tex,
+    chs/setup/optics.tex,
     chs/setup/vibrations,
     chs/setup/conclusion,
     chs/appendices/setup/vibrations,
-    %chs/filter_functions/introduction,
-    %chs/filter_functions/prr,
-    %chs/filter_functions/time_domain_methods,
-    %chs/filter_functions/validation,
-    %chs/appendices/filter_functions,
+%chs/filter_functions/introduction,
+%chs/filter_functions/prr,
+%chs/filter_functions/time_domain_methods,
+%chs/filter_functions/validation,
+%chs/appendices/filter_functions,
 }

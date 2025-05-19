@@ -6,7 +6,7 @@
 Various types of aberrations exist, and modern microscopes usually include a complex assembly of optics to compensate for these errors.
 The second factor is vibration noise.
 This becomes more significant the higher the resolution of the microscope simply because ambient, environmental vibrations within the range of human civilization is typically on the order of $\qty{100}{\micro\meter\per\second}$ \gls{rms}~\cite{Gordon1999}.
-Comparing that to \glspl{tem} with atomic resolution, it is clear that these instruments require purpose-built rooms to reduce the vibration level to acceptable levels.
+Comparing that to transmission electron microscopes with atomic resolution, it is clear that these instruments require purpose-built rooms to reduce the vibration level to acceptable levels.
 
 %Due to space constraints, the complexity of optics in our microscope is limited.
 %Since we do not require the microscope to cover a wide range of wavelengths, chromatic aberrations do not play a significant role.\sidenote{
@@ -247,7 +247,7 @@ Under the simplifying assumption of a perfectly sharp drop-off and taking the re
     \end{dcases}
 \end{equation}
 where $r$ is the reflectance of the bare \ch{GaAs} surface.
-Assuming a perfect Gaussian (\gls{temmode}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by\todo{is the result the same for 2D? if yes, argue why 1D is sufficient!}
+Assuming a perfect Gaussian (\gls{tem}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by\todo{is the result the same for 2D? if yes, argue why 1D is sufficient!}
 \begin{equation}\label{eq:setup:gaussian}
     I(y) = I_0\exp(-\frac{2y^2}{w_0^2}),
 \end{equation}
@@ -340,8 +340,7 @@ Again performing a linear fit to the data for different voltages then results in
         Top: linear fit of the edge positions extracted from the analysis in \cref{fig:setup:vibrations:calibration:length_scale}.
         Error bars are propagated standard errors of the weighted average of edge positions extracted from different rows.
         Bottom: laser photon count rate as function of position set by the nanopositioner.
-        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ (\cf \cref{eq:setup:knife_edge:linearized
-        }).
+        Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ (\cf \cref{eq:setup:knife_edge:linearized}).
         Error bars on $\Phi_R$ show the standard error of the mean over multiple observations and error bars on $y$ show the fit error from the top panel.
     }
     \label{fig:setup:vibrations:calibration:pos_vs_cps}

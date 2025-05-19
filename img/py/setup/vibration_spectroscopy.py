@@ -22,7 +22,9 @@ from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops  # noqa
+from common import (  # noqa
+    MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops, n_GaAs
+)
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -287,10 +289,7 @@ sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
 syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
 # GaAs @ 800 nm
-# https://refractiveindex.info/?shelf=other&book=AlAs-GaAs&page=Papatryfonos-0
-n0 = 3.6520 + 1j*0.075663
-# https://doi.org/10.1063/1.114204
-n = n0 - 2.67e-4 * (25 + const.zero_Celsius - 30e-3)
+n = n_GaAs(30e-3)
 r = abs((n - 1) / (n + 1))**2  # at 30 mK
 
 data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)

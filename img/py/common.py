@@ -3,6 +3,8 @@ import pathlib
 import IPython
 import matplotlib as mpl
 
+from qutil import const
+
 TEXTWIDTH = 4.2134
 MARGINWIDTH = 1.87831
 TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
@@ -44,3 +46,11 @@ def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerface
         markeredgecolor=mpl.colors.to_rgba(color, markeredgealpha),
         markerfacecolor=mpl.colors.to_rgba(color, markerfacealpha)
     )
+
+
+def n_GaAs(T=0):
+    # 800 nm
+    # https://refractiveindex.info/?shelf=other&book=AlAs-GaAs&page=Papatryfonos-0
+    n0 = 3.6520 + 1j*0.075663
+    # https://doi.org/10.1063/1.114204, we assume they measured at 25C
+    return n0 - 2.67e-4 * (25 + const.zero_Celsius - T)
