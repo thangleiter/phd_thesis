@@ -322,7 +322,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
                              plot_negative_frequencies=False,
                              processed_unit='μV')
 
-        settings = {'f_min': 1e1, 'f_max': 1e5', 'freq': 0}
+        settings = {'f_min': 1e1, 'f_max': 1e5, 'freq': 0}
         spect.take('baseline', daq='grounded', **settings)
     \end{py}
     \caption[\pyspeck serial workflow]{
