@@ -45,96 +45,107 @@ Consider the situation sketched in \cref{fig:setup:optics:coupling:emission}.
 A dipole oriented along $x$ in the plane of a \ch{GaAs} \gls{qw} with refractive index $n$ buried at a depth $d$ beneath the surface of the sample emits light into the halfspace above it.
 The emitted radiation has the electric field distribution
 \begin{equation}\label{eq:setup:optics:coupling:efield}
-    E(x,y,z) = E_0\cos\alpha\frac{\e^{\i k r}}{r}
+    E(x,y,z) = E_{0}\frac{\exp(\i k r)}{r}\cos\theta
 \end{equation}
-where $\alpha=\arctan{\flatfrac{x}{z}}$, $r$ is the distance from the point dipole and $k=\flatfrac{2\pi n}{\lambda}$ is the wavenumber.
-We collect and collimate the emitted light with an objective lens (labelled \enquote{Ob.}) with $\mr{\acrshort{na}}=\sin\beta_\mr{m}$ at distance \fob above the surface of the sample, where \fob is the focal length and $\beta_\mr{m}$ the angle of the marginal ray.
-The \gls{na} determines the maximum amount of light the objective lens can collect, and using Snell's law we can relate the angle of a ray outside the sample $\beta$ to the angle inside the sample $\alpha$,
+where $\theta=\arctan{\flatfrac{x}{z}}$, $r$ is the distance from the point dipole and $k=\flatfrac{2\pi}{\lambda}=\flatfrac{2\pi n}{\lambda_0}$ is the wavenumber in the medium.
+
+The emitted light is refracted at the surface and we collect and collimate it with an objective lens (labelled \enquote{Ob.}) with $\mr{\acrshort{na}}=\sin\theta^\prime_\mr{m}$ at distance \fob above the surface of the sample, where \fob is the focal length and $\theta^\prime_\mr{m}$ the angle of the marginal ray.
+The \gls{na} determines the maximum amount of light the objective lens can collect, and using Snell's law we can relate the angle of a ray outside the sample $\theta^\prime$ to the angle inside the sample $\theta$,
 \begin{equation}\label{eq:setup:optics:coupling:snell}
-    \sin\beta = n\sin\alpha,
+    \sin\theta^\prime = n\sin\theta,
 \end{equation}
-with $n\approx 3.57$ at $\lambda=\qty{800}{\nano\meter}$ and $T=\qty{0}{\kelvin}$.
-To determine the electric field amplitude as a function of position in the disk bounded by the \gls{ca} of the objective lens, $2w$, let us relate the coordinates $x$ and $y$ to $\alpha$.
-The lateral offset where the marginal ray exits the sample can be neglected because $d \sim \qty{100}{\nano\meter}\ll \fob\sim\qty{1}{\milli\meter}$.\sidenote{
-    For the same reason we can neglect that the sample is actually a heterostructure with different refractive indices.
-    We only need to take care to correctly choose the value at the semiconductor-air interface (\ch{GaAs}) as well as rely on the fact that the \gls{qw} is the same material as the cap.
-}
-We therefore have
-\begin{equation}
-    x = \fob\tan\beta = \frac{fn\sin\alpha}{\sqrt{1-n^2\sin^2\alpha}},
-\end{equation}
-which yields upon inverting
-\begin{equation}
-    \alpha = \arcsin(\frac{1}{n\sqrt{1 + (\fob/x)^2}}).
-\end{equation}
-Defining $r_{x}=\sqrt{x^2 + \fob^2}$, it follows that
-\begin{equation}
-    \cos\alpha = \sqrt{1 - \left(\frac{x}{n r_{x}}\right)^2}
-\end{equation}
-using standard trigonometric identities.
-
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/setup/modes_2d}
-    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{}
-    \label{fig:setup:optics:coupling:modes_2d}
-\end{marginfigure}
-
-With the distance of a point in the lens plane from the dipole to good approximation (remember that $d\ll\fob$) given by $r = \sqrt{r_{x}^2 + y^2}$, we can then write the electric field amplitude in the lens plane as
-\begin{equation}
-    E(x, y) = E_0\e^{\i k \sqrt{r_{x}^2 + y^2}}\sqrt{\frac{1 - \left(\frac{x}{n r_{x}}\right)^2}{r_{x}^2 + y^2}}.
-\end{equation}
-The normalized intensity $I(x, y) = \abs{E(x, y)}^2$ is shown in the lower panel of \cref{fig:setup:optics:coupling:modes_2d}.
-For comparison, the upper panel shows a Gaussian \acrshort{tem}$_{00}$ mode with waist radius $w_0=w\sqrt{2}$ and electric field profile at the focus~\cite{Yariv1989}
-\begin{equation}\label{eq:setup:optics:coupling:tem00}
-    E(\rho) = E_0\e^{-\flatfrac{\rho^2}{w_0^{2}}},
-\end{equation}
-with the distance from the beam axis $\rho = \sqrt{x^2 + y^2}$.
-The dipole intensity profile is close to circular because the marginal angle $\alpha_\mr{m}=\arcsin(\flatfrac{\mr{\acrshort{na}}}{n})\approx\qty{11}{\degree}$ inside the semiconductor is small and hence the angular dependence of the electric field (\cf \cref{eq:setup:optics:coupling:efield}) is at most $\cos\alpha_\mr{m}\approx 1 - \alpha_{\mr{m}}^2/2 \approx 1$.
-Indeed, the fraction of the emitted light cone being collected, the \emph{collection efficiency}, is
+with $n\approx 3.57$ at $\lambda_0=\qty{800}{\nano\meter}$ and $T=\qty{0}{\kelvin}$.
+This yields $\theta_{\mr{m}} = \arcsin(\flatfrac{\mr{\acrshort{na}}}{n}) \approx\qty{11}{\degree}$ for the emission angle of the marginal ray inside the semiconductor, suggesting that \cref{eq:setup:optics:coupling:efield} is well approximated as a spherical wave since $\cos\theta_{\mr{m}}\approx 1-\theta_{\mr{m}}^2/2\approx 1$.
+Indeed, the fraction of the emitted intensity $I(\theta)\propto\abs{E(\theta)}^2$ being collected by the objective lens, the \emph{collection efficiency}, is
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:collection}
-    \begin{split}
-        \eta_{\mr{c}} &= \frac{\iint_{\alpha_{\mr{m}}}\dd{\Omega} I(\alpha)}{\iint\dd{\Omega} I(\alpha)} \\
-                      &= \frac{\int_{0}^{\alpha_{\mr{m}}}\dd{\alpha}\sin\alpha\cos^2\alpha}{\int_{0}^{\pi}\dd{\alpha}\sin\alpha\cos^2\alpha} \\
-                      &= \frac{1}{2}\left(1 - \left[1 - \left(\frac{\mr{\acrshort{na}}}{n}\right)^2\right]^{\flatfrac{3}{2}}\right)
-    \end{split}
+\begin{split}
+    \eta_{\mr{c}} &= \frac{\iint_{\theta_{\mr{m}}}\dd{\Omega} I(\theta)}{\iint\dd{\Omega} I(\theta)} \\
+                  &= \frac{\int_{0}^{\theta_{\mr{m}}}\dd{\theta}\sin\theta\cos^2\theta}{\int_{0}^{\pi}\dd{\theta}\sin\theta\cos^2\theta} \\
+                  &= \frac{1}{2}\left(1 - \left[1 - \left(\frac{\mr{\acrshort{na}}}{n}\right)^2\right]^{\flatfrac{3}{2}}\right)
+\end{split}
 \end{equation}
 which evaluates to only $\eta_{\mr{c}}\approx\qty{2.8}{\percent}$ for the objective lens's $\mr{\acrshort{na}}=\num{0.7}$.
-
-The light collected and collimated by the objective lens next passes through the ocular lens in the detection arm which focuses it into the \gls{smf}.
-The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the ocular lens aperture.\sidenote{
-    We can safely neglect diffraction effects from the objective lens aperture.
-    The Fraunhofer criterion $\flatfrac{b^2}{\lambda}$ with $b$ the aperture diameter is $\approx\qty{30}{\meter}$, implying the ocular lens at a distance of $\sim\qty{1}{\meter}$ is in the near field with many Fresnel zones where diffraction does not yet play a significant role~\cite{Hecht2017}.
+Moreover, since $d\sim\qty{100}{\nano\meter}\ll\fob\sim\qty{1}{\milli\meter}$ and also $kd\ll 1$, the lateral extent of the light source as viewed from the objective lens is negligibly small and is well approximated by a point source right below the surface.\sidenote{
+    Note that I use $f = \flatfrac{\mr{\acrshort{ca}}}{2\mr{\acrshort{na}}}$ rather than the effective focal length quoted by the manufacturer in this section.
 }
-As the dipole mode clearly falls off much more slowly with distance from the beam axis than the \gls{smf}'s guiding \acrshort{tem}$_{00}$ mode as seen in \cref{fig:setup:optics:coupling:modes_2d}, the coupling efficiency might be limited, thus warranting a more detailed look.
-To this end, we approximate the dipole mode as circular -- corresponding to isotropic emission -- so that \cref{eq:setup:optics:coupling:efield} becomes
-\begin{equation}\label{eq:setup:optics:coupling:efield:isotropic}
-    E(\rho) = E_0\frac{\e^{\i k r_\rho}}{r_\rho}
+
+In order to determine the electric field amplitude as a function of position inside the lens with radius $w$, consider a light ray impinging on the surface at lateral position $x_0$.
+Taking two points of the light ray at $(x_0-\Delta x, -\epsilon)$ some $\epsilon > 0$ below the surface and $(x_0 + \Delta x^\prime, +\epsilon)$ above, we can express the lateral shift due to refraction as
+\begin{equation}
+    \Delta x^{\prime} = \epsilon\tan\theta^{\prime} = \Delta x \frac{n\cos\theta}{\sqrt{1 - n^2\sin^2\theta}}
 \end{equation}
-with $r_\rho = \sqrt{\rho^2 + \fob^2}$.
-Circular symmetry simplifies the Fraunhofer diffraction integral to~\cite{Hecht2017}
-\begin{equation}\label{eq:setup:optics:coupling:huygens_fresnel}
-    E(q) = \int_{0}^{w}\dd{\rho} \rho J_0(k\rho q/R) E(\rho)
+with $\theta^{(\prime)} = \arctan(\Delta x^{(\prime)}/\epsilon)$ using standard trigonometric identities.
+Thus, the coordinate $x$ of the electric field inside the semiconductor transforms to the coordinate $x^\prime$ outside the semiconductor as
+\begin{equation}
+    x\to x^{\prime} = x n \left[1 + \left(\frac{x}{z}\right)^2 - \left(\frac{nx}{z}\right)^2\right]^{-\frac{1}{2}},
 \end{equation}
-with $J_0(x)$ the Bessel function of order zero, $q$ the radial coordinate on the image screen, \ie, the fiber end face, and $R$ the distance from the aperture to the screen.
-Plugging \cref{eq:setup:optics:coupling:efield:isotropic} into \cref{eq:setup:optics:coupling:huygens_fresnel} and setting $R=\foc$, the focal length of the ocular lens, we obtain
-\begin{equation}\label{eq:setup:optics:coupling:huygens_fresnel:evaluated}
-    E(q) = E_0\int_{0}^{w}\dd{\rho}\rho J_0(k\rho q/\foc)\frac{\e^{\i k r_\rho}}{r_\rho}.
+which we invert to obtain
+\begin{equation}\label{eq:setup:optics:coupling:coordinate_trafo}
+    x = \frac{z}{\sqrt{n^2\left[1 + (z/x^{\prime})^2\right] - 1}}.
 \end{equation}
 
-The coupling efficiency is then given by the normalized spatial overlap of the light field ($E_{\mr{l}}$, \cref{eq:setup:optics:coupling:efield:isotropic}) and the fiber's guiding mode ($E_{\mr{f}}$, \cref{eq:setup:optics:coupling:tem00}),
-\begin{equation}\label{eq:setup:optics:coupling:overlap}
-    \begin{split}
-        \eta_{\mr{o}} &= \frac{\int\dd{S}\abs{E_{\mr{f}}(x, y)}^2\int\dd{S}\abs{E_{\mr{l}}(x, y)}^2}{\abs{\int\dd{S} E_{\mr{f}}(x, y) E_{\mr{l}}(x, y)}^2} \\
-                      &= \frac{\int_{0}^{\infty}\dd{\rho}\rho\abs{E_{\mr{f}}(\rho)}^2\int_{0}^{\infty}\dd{\rho}\rho\abs{E_{\mr{l}}(\rho)}^2}{\abs{\int_{0}^{\infty}\dd{\rho}\rho E_{\mr{f}}(\rho) E_{\mr{l}}(\rho)}^2},
-    \end{split}
+We now approximate the light source as a point source at $z=-\epsilon < 0$ emitting a spherical wave as discussed above and introduce cylindrical coordinates with $\rho^{\prime} = \sqrt{x^{\prime 2} + y^2}$ so that $r = \sqrt{\rho^{\prime 2} + z^2}$.
+Plugging \cref{eq:setup:optics:coupling:coordinate_trafo} into \cref{eq:setup:optics:coupling:efield} then yields
+\begin{equation}\label{eq:setup:optics:coupling:efield:lens}
+    E(\rho^\prime,z) = E_0\frac{\exp(\i k z\zeta(\rho^{\prime}))}{z\zeta(\rho^{\prime})}
 \end{equation}
-where we used the surface element in cylindrical coordinates, $\dd{S}=\rho\dd{\rho}\dd{\phi}$, and already cancelled the angular dependence that is common to all integrals.
+with
+\begin{equation}
+    \zeta(\rho^{\prime}) = \sqrt{1 + \left(n^2\left[1 + (z/\rho^{\prime})^2\right] - 1\right)\inverse}
+\end{equation}
+for the electric field outside the semiconductor.
+At the lens $\zeta\approx 1$ so that the field is actually more closely resembled by a plane rather than the original spherical wave.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/modes_1d}
-    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{}
+    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{
+        Electric field modes.
+        Top: mode intensity of the light collected from the semiconductor at the objective lens plane (blue) in comparison to a flattop (green) and Gaussian \acrshort{tem}$_{00}$ mode with theoretical beam diameter after collimating with the ocular lens.
+        $w$ is the lens \gls{ca} radius.
+        Middle: diffraction pattern of the collimated beam approximated as a flattop when focusing onto the \gls{smf} end face with the ocular lens (green) and the fiber's guiding mode (magenta).
+        The curves are scaled with the radial coordinate $\rho$ to highlight the Airy rings.
+        Bottom: power encased by a circle with radius $\rho$, $P(\rho)\propto\int_0^{\rho}\dd{\rho^\prime} \rho^{\prime} I(\rho^{\prime})$.
+    }
     \label{fig:setup:optics:coupling:modes_1d}
 \end{marginfigure}
+
+The radial intensity profile given by the absolute value square of \cref{eq:setup:optics:coupling:efield:lens} is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_1d} together with a flattop (green) and a Gaussian (magenta) beam profile for comparison.
+The intensity drops only by about \qty{2}{\percent} at the edge of the lens aperture, $\rho=w$.
+We may thus expect non-negligible loss when coupling this beam into a \gls{smf} with a guiding mode very closely approximating the Gaussian \acrshort{tem}$_{00}$ mode~\cite{Yariv1989,Kowalevicz2006}
+\begin{equation}\label{eq:setup:optics:coupling:efield:tem00}
+    E(\rho, z) = E_0\frac{w_0}{w(z)}\exp\left\lbrace -\i\left[kz - \arctan(\frac{z}{z_0})\right] - \rho^2\left[\frac{1}{w(z)^2} + \frac{ik}{2 R(z)}\right]\right\rbrace
+\end{equation}
+with the fiber's \gls{mfd} $2 w_0$, the beam's $1/\e$-radius
+\begin{equation}
+    w(z)^2 = w_0^2\left(1 + \frac{z^2}{z_0^2}\right),
+\end{equation}
+the wavefront radius of curvature
+\begin{equation}
+    R(z) = z\left(1 + \frac{z_0^2}{z^2}\right),
+\end{equation}
+the Rayleigh range
+\begin{equation}
+    z_0 = \frac{\pi w_0^2 n}{\lambda},
+\end{equation}
+and where $z=0$ in the fiber end face.
+
+The light collected and collimated by the objective lens next passes through the ocular lens in the detection arm which focuses it into the \gls{smf}.
+The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the (approximately) plane wave incident on the ocular lens aperture,\sidenote{
+    We can safely neglect diffraction effects from the objective lens aperture.
+    The Fraunhofer criterion $\flatfrac{b^2}{\lambda}$ with $b$ the aperture diameter is $\approx\qty{30}{\meter}$, implying the ocular lens at a distance of $\sim\qty{1}{\meter}$ is in the near field with many Fresnel zones where diffraction does not yet play a significant role~\cite{Hecht2017}.
+}
+resulting in the Airy disk~\cite{Hecht2017}
+\begin{equation}\label{eq:setup:optics:coupling:airy}
+    E(q) = E_0 2\pi w^2\frac{\exp(\i k \foc)}{\foc} \frac{J_1(\flatfrac{kwq}{\foc})}{\flatfrac{kwq}{\foc}},
+\end{equation}
+where $J_1(x)$ is Bessel function of order one and $q$ the radial coordinate in the image plane, \ie, the fiber end face.
+\Cref{eq:setup:optics:coupling:airy} scaled with the radius $\rho$ is plotted in the middle panel of \cref{fig:setup:optics:coupling:modes_1d} together with the \gls{smf}'s guiding Gaussian mode.
+While within the \gls{mfd} the two modes match quite well, a relevant amount of the power $P(\rho)\propto \int_0^{\rho}\dd{\rho^{\prime}} \rho^{\prime} I(\rho^{\prime})$ resides outside that radius as shown in the bottom panel of the same figure.
+
+The mode matching efficiency is then given by the normalized spatial overlap of the light field ($E_{\mr{l}}$, \cref{eq:setup:optics:coupling:efield:lens}) and the fiber's guiding mode ($E_{\mr{f}}$, \cref{eq:setup:optics:coupling:efield:tem00})~\cite{Paschotta2005},
+\begin{equation}\label{eq:setup:optics:coupling:efficiency:mode_matching}
+    \eta_{\mr{m}} = \frac{\int\dd{S}\abs{E_{\mr{f}}(\rho)}^2\int\dd{S}\abs{E_{\mr{l}}(\rho)}^2}{\abs{\int\dd{S} E_{\mr{f}}(\rho) E_{\mr{l}}(\rho)}^2} \approx\qty{77}{\percent}
+\end{equation}
+for our parameters.
 

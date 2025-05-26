@@ -437,166 +437,6 @@ def plot_lens_choosing(df, D_min=1.5, D_max=5.3, f_max=30, dipole: bool = True, 
 fig, axes, leg = plot_lens_choosing(df_all, ylog=False, fill_cbar=True, cbar_loc='top', D_min=1.25)
 fig.savefig(SAVE_PATH / 'choosing.pdf')
 
-# %% Light emission from a point-like dipole in GaAs (820 nm)
-n_GaAs = 3.59  # 4K, see Wu 2023
-n_AlGaAs = 3.38
-d = np.array([10, 90, 10])*1e-6
-dx = 0
-# WD = 2.1e-3
-# CA = 5.5e-3
-WD = df_all.loc['354330']['Working Distance']['Mounted']
-CA = df_all.loc['354330']['Clear Aperture of Unmounted Lens']['S1']
-NA = df_all.loc['354330']['NA']['NA']
-T = 0.7
-T = 0.7
-
-
-def δ(ρ, z):
-    # Acceptance cone for lens
-    return np.arctan(ρ/z)
-
-
-def α(δ, n):
-    # Approximates source of point-dipole dz below surface of the device.
-    # Good since:
-    #   - QW and cap << barrier thickness ==> approximately constant angle of emission along z
-    #   - HS thickness << WD ==> source is basically point-like from that POV
-    return np.arcsin(np.sin(δ)/n)
-
-
-def η(α):
-    # Fraction of light emitted into solid half angle α
-    return (np.sin(α) + np.sin(3*α)) / 16
-
-
-print("Theoretical maximum collection efficiency by objective lens: "
-      f"{η(α(δ(CA/2, WD), n_GaAs))*100*T:.2g}%")
-
-
-# %% Coupling dipole-light into a single mode fiber
-# Everything is in units of the mode field radius MFD/2
-
-MFD = 5e-3
-# D = df_all.loc['354330']['Clear Aperture of Unmounted Lens']['S2']/MFD*2
-# f = df_all.loc['354330']['Effective Focal Length']['Effective Focal Length']/MFD*2
-D = 5/MFD*2
-f = 3.1/MFD*2
-magnification = D/2
-ρ = np.linspace(-D*2, D*2, 1001)
-ρp = ρ/magnification
-
-aperture = (-1, 1)
-# aperture = (-np.inf, np.inf)
-
-
-def normalized(lower=-np.inf, upper=np.inf):
-    def wrap(func):
-        @wraps(func)
-        def wrapped(x, *args):
-            def abs2(x, *args):
-                return np.square(func(x, *args))
-            norm, _ = np.sqrt(integrate.quad(abs2, lower, upper, args))
-            return func(x, *args) / norm
-        return wrapped
-    return wrap
-
-
-def magnified(magnification=1):
-    def wrap(func):
-        @wraps(func)
-        def wrapped(x, *args):
-            return func(x*magnification, *args)
-        return wrapped
-    return wrap
-
-
-def truncated(lower=-np.inf, upper=np.inf):
-    def wrap(func):
-        @wraps(func)
-        def wrapped(x, *args):
-            result = func(x, *args)
-            if np.isscalar(x):
-                return result if lower <= x <= upper else 0
-            if (mask := (x < lower) & (x > upper)).any():
-                result[mask] = 0
-            return result
-        return wrapped
-    return wrap
-
-
-# @normalized(*aperture)
-@truncated(*aperture)
-@magnified(magnification)
-def radial_profile_dipole(ρ, f, n, d):
-    ξ = ρ/f
-    ell = d/np.sqrt(1 - (ξ/n)**2/(1 + ξ**2)) + f*np.sqrt(1 + ξ**2)
-    return np.sqrt(n**2 - ξ**2/(1 + ξ**2)) / (ell*n)
-
-
-# @normalized()
-def radial_profile_gaussian(ρ, ω):
-    return np.exp(-(ρ/ω)**2)
-
-
-def radial_profile_E_flattop_airy(ρ, d, R, λ):
-    # d aperture diameter
-    # R distance from aperture (ie f in focus)
-    a = d/2
-    k = 2*np.pi/λ
-    x = k*a*ρ/R
-    with np.errstate(invalid='ignore'):
-        E = 2 * special.j1(x) / x
-    E[np.isnan(E)] = 1
-    return E
-
-
-@np.vectorize(otypes=[np.dtype('c16')])
-def radial_profile_E_dipole_airy(q, a, R, λ, f, n, d):
-    def integrand(ρ):
-        return ρ*special.j0(k*q*ρ/R)*radial_profile_dipole(ρ, f, n, d)
-
-    # ρ is the radial quantity in the aperture (the lens)
-    # q is the radial quantity on the screen (the focus)
-    # R is the distance between screen and aperture
-    # f is the focal length of the objective lens
-    # d is the thickness of the heterostack
-    # n is the refractive index of the heterostack
-    k = 2*np.pi/λ
-    return integrate.quad(integrand, 0, a)[0]
-
-
-def overlap(ω, f, n, d, lower=0, upper=np.inf):
-    # https://www.rp-photonics.com/mode_matching.html
-    def integrand1(ρ, ω, f, n, d):
-        return 2*np.pi*ρ*radial_profile_dipole(ρ, f, n, d)*radial_profile_gaussian(ρ, ω)
-
-    def integrand2(ρ, f, n, d):
-        return 2*np.pi*ρ*radial_profile_dipole(ρ, f, n, d)**2
-
-    def integrand3(ρ, ω):
-        return 2*np.pi*ρ*radial_profile_gaussian(ρ, ω)**2
-
-    return (integrate.quad(integrand1, lower, upper, (ω, f, n, d))[0]**2
-            / integrate.quad(integrand2, lower, upper, (f, n, d))[0]
-            / integrate.quad(integrand3, lower, upper, (ω,))[0])
-
-
-dipole = (radial_profile_dipole(ρp, f, n_GaAs, d.sum())
-          / radial_profile_dipole(0, f, n_GaAs, d.sum()))
-gaussian = radial_profile_gaussian(ρp, 1)
-integral_str = r'$\eta=\frac{\left|\int\mathrm{d}\rho\, 2\pi\rho E_\mathrm{G}(\rho)E_\mathrm{D}(\rho)\right|^2}{\int\mathrm{d}\rho\,2\pi\rho\left|E_\mathrm{G}(\rho)\right|^2\int\mathrm{d}\rho\, 2\pi\rho\left|E_\mathrm{D}(\rho)\right|^2}$'
-
-fig, ax = plt.subplots(layout='constrained')
-ax.axhline(1/np.exp(1), ls='--', color='tab:grey')
-ax.axvline(-1, ls='--', color='tab:grey', label='Aperture\nMode field')
-ax.axvline(+1, ls='--', color='tab:grey')
-ax.plot(ρp, dipole, label='Dipole')
-ax.plot(ρp, gaussian, label='Gaussian')
-ax.set_xlabel(r'Radial distance $\rho/\omega_0$')
-ax.set_ylabel(r'Electric field $E(\rho/\omega_0)/E_0$')
-ax.set_title(f'{integral_str} = {overlap(1, f, n_GaAs, d.sum()):.2g}')
-ax.legend()
-
 # %% 3.1 mm lens (354330)
 lenses = {'ob': df_all.loc['354330'], 'oc': df_all.loc['A280']}
 f = {
@@ -608,93 +448,147 @@ f = {
     'oc': lenses['oc']['Effective Focal Length'].item()
 }
 n = n_GaAs(0).real
+w = lenses['ob']['Clear Aperture of Unmounted Lens', 'S2'].item() / 2
+w0 = MFD / 2
 
 
 def E_gaussian(x, y, w_0):
     return np.exp(-(x**2 + y**2)/w_0**2)
 
 
-def E_gaussian_circular(q, w_0):
-    return np.exp(-q**2/w_0**2)
+def E_gaussian_circular(q, w_0, k, z=0, n=1):
+    z = np.atleast_1d(z)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        λ = 2 * np.pi / k
+        z_0 = np.pi * w_0**2 * n / λ
+        w = w_0 * np.sqrt(1 + z**2 / z_0**2)
+        R = z * (1 + z_0**2 / z**2)
+    if np.size(z) > 1:
+        R[np.isnan(R)] = np.inf
+    elif np.isnan(R):
+        R = np.inf
+
+    return w_0 / w * np.exp(
+        -1j * (k * z - np.arctan(z / z_0))
+        - q**2 * (1 / w**2 + 1j * k / (2 * R))
+    )
 
 
-def E_dipole(x, y, f_ob):
-    r_x = np.hypot(x, f_ob)
-    E = np.sqrt((1 - (x/n/r_x)**2)/(r_x**2 + y**2)) * math.cexp(k * np.hypot(r_x, y))
-    E *= f_ob  # normalize to 1 at center
+
+def E_airy_flattop(q, f_oc, w, k):
+    with np.errstate(invalid='ignore'):
+        E = 2 * np.pi * w**2 / f_oc * math.cexp(k * f_oc) * special.j1(x := k*w*q/f_oc) / x
+    E /= np.pi * w**2 / f_oc  # normalize to 1 at center
+
+    if np.size(E) > 1:
+        E[np.isnan(E)] = 1
+    elif np.isnan(E):
+        E = 1
     return E
 
 
-def E_dipole_circular(rho, f_ob):
-    r = np.hypot(rho, f_ob)
-    E = math.cexp(k * r)/r
-    E *= f_ob  # normalize to 1 at center
+def E_spherical(q, z, k, n=1):
+    with np.errstate(divide='ignore', invalid='ignore'):
+        tmp = n**2*(1 + (z/q)**2) - 1
+        eta = np.hypot(1, 1 / np.sqrt(tmp))
+        eta[np.isinf(eta)] = np.nan
+        r = z * eta
+        E = math.cexp(k * r) / r
+    E *= z  # normalize to 1 at center
+    E[np.isnan(E)] = 1
     return E
 
 
-def _aperture(ρ, q, R):
-    # Hecht: Optics (2017) Sec. 10.2.5
-    # ρ is the radial dimension in the aperture
-    # q is the radial dimension on the screen
-    # R is the distance between screen and aperture
-    k = 2*np.pi/λ
-    return ρ*special.j0(k*q*ρ/R)
+def _fresnel_kirchoff_integrand(rho, q, f_oc, f_ob, k, n=1):
+    with np.errstate(divide='ignore', invalid='ignore'):
+        tmp = n**2*(1 + (f_ob/q)**2) - 1
+        eta = np.hypot(1, 1/np.sqrt(tmp))
+    if np.size(eta) > 1:
+        eta[np.isinf(eta)] = 1
+    elif np.isinf(eta):
+        eta = 1
+
+    amp = 1j*k/(2*f_oc*f_ob)*math.cexp(k*f_oc)
+    exp = math.cexp(k*eta*f_ob)
+    bes = special.j0(k*rho*q/f_oc)
+    bra = 1 + eta - (n*f_ob*rho/(n**2*(rho**2 + f_ob**2) - rho**2))**2/eta
+    return amp*rho*exp*bes*bra
 
 
-def E_airy(fn, q, R, *args):
-    return integrate.quad_vec(lambda rho: _aperture(rho, q, R)*fn(rho, *args), 0, a)[0]
-
-
-def fresnel_kirchoff_spherical():
-    ...
+def E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n=1):
+    return integrate.quad_vec(
+        partial(_fresnel_kirchoff_integrand, q=q, f_oc=f['oc'], f_ob=f['ob'], k=k, n=n), 0, w
+    )[0]
 
 
 def P_cumulative(fn, q, *args):
     E = fn(q, *args)
-    P = np.pi*q**2*abs(E)**2
-    return integrate.cumulative_simpson(P, x=q, initial=0)
+    return integrate.cumulative_simpson(q*np.abs(E)**2, x=q, initial=0)
 
 
-def overlap(s, f_ob, f_oc, lower=0, upper=np.inf):
+def overlap(w0, w, f_oc, k, shift=0, lower=0, upper=np.inf):
     # https://www.rp-photonics.com/mode_matching.html
-    def i1(rho, s):
-        return 2*np.pi*rho*E_gaussian_circular(rho, s)**2
+    def i1(q, w0, k):
+        return 2*np.pi*q*np.abs(E_gaussian_circular(q, w0, k).squeeze())**2
 
-    def i2(rho, f_ob, f_oc):
-        return 2*np.pi*rho*E_airy(E_dipole_circular, rho, f_oc, f_ob)**2
+    def i2(q, w, f_oc, k):
+        return 2*np.pi*q*np.abs(E_airy_flattop(q, f_oc, w, k).squeeze())**2
 
-    def i3(rho, s, f_ob, f_oc):
-        return 2*np.pi*rho*E_gaussian_circular(rho, s)*E_airy(E_dipole_circular, rho, f_oc, f_ob)
+    def i3(q, w0, w, f_oc, k):
+        return (
+            2*np.pi*q*E_gaussian_circular(q, w0, k)*E_airy_flattop(q, f_oc, w, k)
+        ).squeeze()
 
-    I1 = ufloat(*integrate.quad(i1, lower, upper, (s,)))
-    I2 = ufloat(*integrate.quad(i2, lower, upper, (f_ob, f_oc), epsabs=1e-5))
-    I3 = ufloat(*integrate.quad(i3, lower, upper, (s, f_ob, f_oc), epsabs=1e-5))
-    return I3**2 / I1 / I2
+    I1 = integrate.quad(i1, lower, upper, (w0, k))[0]
+    I2 = integrate.quad(i2, lower, upper, (w, f_oc, k,), limit=100)[0]
+    I3 = integrate.quad(i3, lower, upper, (w0, w, f_oc, k), limit=100, complex_func=True)[0]
+    return np.abs(I3)**2 / I1 / I2
 
 
+def overlap_fresnel_kirchoff(w0, w, f_oc, f_ob, k, n, N=1001):
+    # https://www.rp-photonics.com/mode_matching.html
+    def i1(q, w0, k):
+        return 2*np.pi*q*np.abs(E_gaussian_circular(q, w0, k)).squeeze()**2
+
+    def i2(q, w, f_oc, f_ob, k, n):
+        return 2*np.pi*q*np.abs(E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n)).squeeze()**2
+
+    def i3(q, w0, w, f_oc, f_ob, k, n):
+        return (
+            2*np.pi*q*E_gaussian_circular(q, w0, k)*E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n)
+        ).squeeze()
+
+    q = np.geomspace(1e-4, 1000*w0, N-1)
+    q = np.insert(q, 0, 0)
+    I1 = integrate.simpson(i1(q, w0, k), q)
+    I2 = integrate.simpson(i2(q, w, f_oc, f_ob, k, n), q)
+    I3 = integrate.simpson(i3(q, w0, w, f_oc, f_ob, k, n), q)
+    return np.abs(I3)**2 / I1 / I2
+
+
+# TODO: estimate decrease in overlap from lateral shift due to vibrations
 # %%% Plot mode profile in aperture and on screen
-a = lenses['ob']['Clear Aperture of Unmounted Lens', 'S2'].item() / 2
-s = MFD / 2
-
 fill_style = dict(alpha=0.5, color=RWTH_COLORS_25['black'], hatch='//')
 
-fig, axs = plt.subplots(nrows=3, sharex=True, layout='constrained', figsize=(MARGINWIDTH, 3))
+fig, axs = plt.subplots(nrows=3, layout='constrained', figsize=(MARGINWIDTH, 3))
 
 # radial intensity profile
-ρ = np.linspace(0, 3*a, 1001)
+ρ = np.linspace(0, 3*w, 1001)
 ax = axs[0]
-ax.plot(ρ[ρ <= a] / a,
-        (x := abs(E_dipole_circular(ρ, f['ob']))**2)[ρ <= a]/x[0], color=RWTH_COLORS['blue'])
-ax.plot(ρ[ρ > a] / a,
-        abs(E_dipole_circular(ρ, f['ob']))[ρ > a]**2/x[0], '--', color=RWTH_COLORS['blue'])
-ax.plot(ρ[ρ <= a] / a,
-        (x := abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ)/2)))[ρ <= a]/x[0],
-        color=RWTH_COLORS['magenta'])
-ax.plot(ρ[ρ > a] / a,
-        abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ)/2))[ρ > a]/x[0],
+ax.plot(ρ[ρ <= w] / w,
+        (x := abs(E_spherical(ρ, f['ob'], k, n))**2)[ρ <= w]/x[0], color=RWTH_COLORS['blue'])
+ax.plot(ρ[ρ > w] / w,
+        abs(E_spherical(ρ, f['ob'], k, n))[ρ > w]**2/x[0], '--', color=RWTH_COLORS['blue'])
+ax.plot(
+    ρ[ρ <= w] / w,
+    (x := abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ)/2, k)))[ρ <= w]/x[0],
+    color=RWTH_COLORS['magenta']
+)
+ax.plot(ρ[ρ > w] / w,
+        abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ)/2, k))[ρ > w]/x[0],
         '--', color=RWTH_COLORS['magenta'])
-ax.plot(ρ[ρ <= a] / a, ρ[ρ <= a] < a, color=RWTH_COLORS['green'])
-ax.plot(ρ[ρ > a] / a, ρ[ρ > a] <= a, '--', color=RWTH_COLORS['green'])
+ax.plot(ρ[ρ <= w] / w, ρ[ρ <= w] < w, color=RWTH_COLORS['green'])
+ax.plot(ρ[ρ > w] / w, ρ[ρ > w] <= w, '--', color=RWTH_COLORS['green'])
 
 ax.set_xlim(xlim := ax.get_xlim())
 ax.set_ylim(ylim := ax.get_ylim())
@@ -703,68 +597,33 @@ ax.set_xlabel(r'$\rho/w$')
 ax.set_ylabel(r'$I(\rho)/I(0)$')
 
 # diffraction pattern and gaussian mode
-q = np.linspace(0, 3*s, 1001)
+q = np.linspace(0, 3*w0, 1001)
 ax = axs[1]
-ax.plot(q / s,
-        2*np.pi*q*(x := abs(E_airy(E_dipole_circular, q, f['oc'], f['ob']))**2)/(x[0]*2*np.pi*s))
-ax.plot(q / s,
-        2*np.pi*q*(x := abs(E_gaussian_circular(q, s))**2)/(x[0]*2*np.pi*s))
-ax.plot(q / s,
-        2*np.pi*q*(x := abs(E_airy(lambda ρ: ρ <= a, q, f['oc']))**2)/(x[0]*2*np.pi*s))
+# ax.plot(q / w0, q*(x := abs(E_fresnel_kirchoff(q, f['oc'], f['ob'], w, k, n))**2)/(x[0]*w0))
+ax.plot(q / w0, q*(x := abs(E_gaussian_circular(q, w0, k))**2)/(x[0]*w0),
+        color=RWTH_COLORS['magenta'])
+ax.plot(q / w0, q*(x := abs(E_airy_flattop(q, f['oc'], w, k))**2)/(x[0]*w0),
+        color=RWTH_COLORS['green'])
 
 ax.set_xlim(xlim := ax.get_xlim())
 ax.set_ylim(ylim := ax.get_ylim())
-# ax.set_xticks([0, 1, 2], [])
+ax.set_xticks([0, 1, 2, 3], labels=[])
 ax.set_ylabel(r'$\rho I(\rho)/(w_0 I(0))$')
 
 # power included in circle of radius q
 q = np.linspace(0, MFD*10, 1001)
 ax = axs[2]
-ax.plot(q / s, (x := P_cumulative(partial(E_airy, E_dipole_circular), q, f['oc'], f['ob']))/x[-1])
-ax.plot(q / s, (x := P_cumulative(E_gaussian_circular, q, s))/x[-1])
-ax.plot(q / s, (x := P_cumulative(partial(E_airy, lambda ρ: 1), q, f['oc']))/x[-1])
+ax.sharex(axs[1])
+# ax.plot(q / w0, (x := P_cumulative(E_fresnel_kirchoff, q, f['oc'], f['ob'], w, k, n))/x[-1])
+ax.plot(q / w0, (x := P_cumulative(E_gaussian_circular, q, w0, k))/x[-1],
+        color=RWTH_COLORS['magenta'])
+ax.plot(q / w0, (x := P_cumulative(E_airy_flattop, q, f['oc'], w, k))/x[-1],
+        color=RWTH_COLORS['green'])
 
 ax.set_xlim(xlim)
 ax.set_ylim(ylim := ax.get_ylim())
 ax.set_xticks([0, 1, 2, 3])
 ax.set_xlabel(r'$\rho/w_0$')
-ax.set_ylabel(r'$\int_{0}^{\rho}\mathrm{d}x\,P(x)/P(\infty)$')
+ax.set_ylabel(r'$P(\rho)/P(\infty)$')
 
 fig.savefig(SAVE_PATH / 'modes_1d.pdf')
-
-# %%% Plot mode intensity
-fig = plt.figure(figsize=(MARGINWIDTH, 4))
-
-grid = ImageGrid(fig, 111, nrows_ncols=(2, 1), share_all=True, aspect=True, axes_pad=0.25,
-                 cbar_pad=0.25, cbar_mode='single', cbar_location="top", cbar_size='5%')
-
-xx, yy = np.meshgrid(*[x := np.linspace(-S2/2, S2/2, 101)]*2)
-fns = (
-   lambda x, y: E_gaussian(x, y, S2 / 2 * np.sqrt(2)),
-   lambda x, y: E_dipole(x, y, f['ob']),
-)
-titles = 'Gaussian', 'Dipole',
-
-levels = np.linspace(0, 1, 11)
-for ax, fn, title in zip(grid, fns, titles):
-    im = ax.contourf(xx / S2 * 2, yy / S2 * 2, abs(fn(xx, yy))**2, levels=levels,
-                     cmap=SEQUENTIAL_CMAPS['magenta'])
-    levels = im.levels
-
-    ax.set_title(title)
-    ax.set_xlabel('$x/w$')
-    ax.set_ylabel('$y/w$')
-    ax.label_outer()
-
-ax.set_xticks([-1, 0, 1])
-ax.set_yticks([-1, 0, 1])
-cb = grid.cbar_axes[0].colorbar(im)
-
-match backend:
-    case 'pgf':
-
-        cb.set_label(r'$\flatfrac{I(x, y)}{I(0, 0)}$')
-    case 'qt':
-        cb.set_label('$I(x, y)/I(0, 0)$')
-
-fig.savefig(SAVE_PATH / 'modes_2d.pdf')

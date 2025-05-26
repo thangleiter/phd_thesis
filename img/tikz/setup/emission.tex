@@ -43,13 +43,13 @@
     % Angles
     \draw[thin,axis]
         ($(interfacemargin) - (0,0.1)$)
-        -- ++(0,0.5) node (beta) {}
+        -- ++(0,0.5) node (theta) {}
     ;
-    \pic[draw,"$\alpha$",angle eccentricity=1.5,axis]
+    \pic[draw,"$\theta$",angle eccentricity=1.5,axis]
         {angle = interfacemargin--dipole--origin}
     ;
-    \pic[draw,"$\beta$",angle eccentricity=1.5,axis]
-        {angle = lensmargin--interfacemargin--beta}
+    \pic[draw,"$\theta^\prime$",angle eccentricity=1.5,axis]
+        {angle = lensmargin--interfacemargin--theta}
     ;
 
     % Lens and QW
