@@ -146,10 +146,10 @@ In the following, I will characterize the performance of the system with and wit
 The most straightforward method of measuring vibration noise is an accelerometer.
 These are devices that convert translational forces, for example by means of a loaded spring, into electrical signals.
 They are mounted rigidly to the \gls{dut} and typically connected to some sort of signal conditioner providing a constant current bias to the sensor and putting out a voltage proportional to the acceleration.
-The most sensitive and low-frequency designs use piezoelectric materials like Quartz crystals for sensitivities in the range of \qty{10}{\volt\per\gaccel} with a broadband noise floor of \qty{2}{\micro\gaccel}~\sidecite{WilcoxonAccel}.
+The most sensitive and low-frequency designs use piezoelectric materials like Quartz crystals for sensitivities in the range of \qty{10}{\volt\per\gaccel} with a broadband noise floor of \qty{2}{\micro\gaccel}~\cite{WilcoxonAccel}.
 
 In order to evaluate the vibration level at the sample position, I designed a small angle bracket onto which the accelerometer\sidenote{
-    Wilcoxon 731-207 kindly lent by Marcus Eßer~\cite{WilcoxonAccel}.
+    \accelerometer kindly lent by Marcus Eßer~\cite{WilcoxonAccel}.
 }
 can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, enabling measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
 The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \gls{sma} connector.
@@ -253,10 +253,9 @@ Assuming a perfect Gaussian (\gls{tem}$_{00}$ mode) beam characterized by its wa
 \end{equation}
 where $I_0 = \flatfrac{P_0}{w_0}$ with $P_0$ the total beam power.
 The power reflected when the spot partially overlaps with the reflectance step can then be expressed as the convolution
-\begin{align}\label{eq:setup:knife_edge}
-    P_R(y) &= R(y) \ast I(y) \\
-           &= \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}\left[ 1 - (1 - r)\erf\left(\frac{y\sqrt{2}}{w_0}\right) \right]
-\end{align}
+\begin{equation}\label{eq:setup:knife_edge}
+    P_R(y) = R(y) \ast I(y) = \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}\left[ 1 - (1 - r)\erf\left(\frac{y\sqrt{2}}{w_0}\right) \right]
+\end{equation}
 in the $yz$ focal plane, where $\erf(y)$ is the error function.
 
 \begin{marginfigure}

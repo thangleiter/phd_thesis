@@ -6,9 +6,15 @@
 ]
     % requires libraries angle,quotes,calc
 
-    \newlength\CA
+    \ifdefined\CA
+    \else
+        \newlength\CA
+    \fi
+    \ifdefined\tick
+    \else
+        \newlength\tick
+    \fi
     \setlength\CA{1cm}
-    \newlength\tick
     \setlength\tick{0.1cm}
 
     \coordinate (origin) at (0,0);
@@ -55,7 +61,7 @@
     % Lens and QW
     \draw[very thick]
         (lens)
-        -- ++(1.25,0) node[right] {Ob.}
+        -- ++(1.25,0) node[right] {O}
     ;
     \draw[dashed,RWTHblack75]
         ($(dipole) + (0,0.05)$)

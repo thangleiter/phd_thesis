@@ -174,7 +174,7 @@ match backend:
     case 'qt':
         image_labels = ["$I$ (pA)", r"$\partial I/\partial V$ (pA/mV)"]
 
-widths = [0.045e3, 37.5]
+widths = [45, 37.5]
 
 x = tia_current_diamonds['NBC_TBC']
 y = tia_current_diamonds['Bias']
@@ -186,6 +186,17 @@ for ax, cax, img, label, width in zip(grid, grid.cbar_axes, image_data, image_la
     cb.set_ticks(np.delete(ticks := cb.get_ticks(), len(ticks) // 2))
     ax.set_xlabel(f"{x.attrs['long_name']} (mV)")
     ax.set_ylabel(r"$V_\mathrm{bias}$ (mV)")
+
+    # Slightly shift central labels to avoid overlap
+    for txt in cax.xaxis.get_ticklabels():
+        dx = 0.045
+        match txt.get_position()[0]:
+            case 10:
+                txt.set_transform(txt.get_transform()
+                                  + mpl.transforms.ScaledTranslation(dx, 0, fig.dpi_scale_trans))
+            case -10:
+                txt.set_transform(txt.get_transform()
+                                  + mpl.transforms.ScaledTranslation(-dx, 0, fig.dpi_scale_trans))
 
 ax = grid[0]
 txt_kwargs = dict(horizontalalignment='center', verticalalignment='center', transform=ax.transData)

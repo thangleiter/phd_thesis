@@ -7,7 +7,7 @@ from qutil import const
 
 TEXTWIDTH = 4.2134
 MARGINWIDTH = 1.87831
-TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
+TOTALWIDTH = TEXTWIDTH + MARGINWIDTH + 0.24414
 PATH = pathlib.Path(__file__).parents[1]
 MAINSTYLE = PATH / 'py/main.mplstyle'
 MARGINSTYLE = PATH / 'py/margin.mplstyle'

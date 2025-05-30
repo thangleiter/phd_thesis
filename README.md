@@ -26,6 +26,8 @@
 - [ ] Discuss cumulative with dB scale?
 
 ### Setup
+- [ ] Knife edge fit
+- [ ] Spot image fits
 - [ ] Vibration spectra on lab floors?
 - [ ] Indicate noise floor from accelerometer signal conditioner?
 

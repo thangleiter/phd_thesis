@@ -189,6 +189,27 @@ output = fit.run()
 # s has units of Mcps/μm
 s, b = unp.uarray(output.beta, output.sd_beta)
 
+# %%%% Knife edge fit
+xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
+sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+# GaAs @ 800 nm
+n = n_GaAs(30e-3)
+r = abs((n - 1) / (n + 1))**2  # at 30 mK
+
+data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
+model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
+
+fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+output = fit.run()
+if 'Sum of squares convergence' not in output.stopreason:
+    output = fit.restart(100)
+
+fitpar = unp.uarray(output.beta, output.sd_beta)
+
 # %%%%% Plot camera image
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
@@ -258,13 +279,15 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.xaxis.set_ticks_position('both')
     ax.xaxis.set_tick_params(which='both', labeltop=True, labelbottom=False)
     ax.xaxis.set_label_position('top')
-    xlim = ax.get_xlim()
+    # xlim = ax.get_xlim()
 
     # cps vs pos
     ax = axs[1]
-    ax.errorbarax(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
-                  ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                  **markerprops(errorcolor, marker='.'))
+    ax.errorbar(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.'))
+    ax.plot(xtmp := np.linspace(-1, 1, 1001), erf_theory(-xtmp, *unp.nominal_values(fitpar)),
+            zorder=5)
     ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
@@ -276,58 +299,11 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.set_ylabel(r'$\Phi_R$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
-    ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
-    ax.set_ylim(2, 4)
+    ax.set_yticks([2, 3, 4])
+    # ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
+    # ax.set_ylim(2, 4)
 
     fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
-
-# %%%% Knife edge fit
-xx = pos_vs_vdc(x, *popt_posvdc)
-yy = y1.mean('counter_time_axis')
-sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
-       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
-syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
-
-# GaAs @ 800 nm
-n = n_GaAs(30e-3)
-r = abs((n - 1) / (n + 1))**2  # at 30 mK
-
-data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
-model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
-
-fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
-output = fit.run()
-if 'Sum of squares convergence' not in output.stopreason:
-    output = fit.restart(100)
-
-fitpar = unp.uarray(output.beta, output.sd_beta)
-
-fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 0])
-output = fit.run()
-if 'Sum of squares convergence' not in output.stopreason:
-    output = fit.restart(100)
-
-fitpar_fix = unp.uarray(output.beta, output.sd_beta)
-
-# %%%%% Plot
-
-with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
-    fig, ax = plt.subplots(layout='constrained')
-
-    ax.errorbar(xx, yy, yerr=syy, xerr=sxx, alpha=0.75,
-                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                **markerprops(errorcolor, marker='.', markersize=2.5))
-    ax.plot(x := np.linspace(-1, 1, 1001), erf_theory(-x, *unp.nominal_values(fitpar)))
-    ax.set_ylim(ax.get_ylim())
-    ax.plot(x, erf_theory(-x, *unp.nominal_values(fitpar_fix)), ls='--',
-            color=RWTH_COLORS_75['magenta'])
-
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
-    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
-    ax.set_yticks([2, 3, 4])
-    ax.grid()
-
-    fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
 
 # %%%% Theory plot
 x = np.linspace(-1.5, 1.5, 1001)

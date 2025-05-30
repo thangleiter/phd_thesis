@@ -232,6 +232,13 @@ where the Fourier representation of the rectangular window\sidenote{
     \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:speck:window:boxcar:fourier}\\
              \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:speck:window:boxcar:fourier:unshifted}
 \end{align}
+\Cref{fig:speck:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
+We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
+However, whereas in the continuum limit (see \cref{sidenote:continuum_limit}) \cref{eq:speck:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite sample rate $\fs$ of discrete signals and observation length $T$ induce finite frequency sampling and bandwidth of the probe as well as \emph{sidelobes}.\sidenote{
+    For the optically inclined: this is akin to Fraunhofer diffraction at an aperture.
+}
+These effects incur what is known as \emph{spectral leakage} and \emph{scalloping loss}, respectively, and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$~\cite{Harris1978,Koopmans1995}.
+
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/spectrometer/rect}
@@ -242,19 +249,6 @@ where the Fourier representation of the rectangular window\sidenote{
     }
     \label{fig:speck:boxcar_fourier}
 \end{marginfigure}
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/spectrometer/hann}
-    \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
-        The Fourier representation of the Hann window in continuous time (solid line) and for discrete frequencies $\omega_n$ (circles).
-        Diamonds indicate discrete sampling when the window completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
-    }
-    \label{fig:speck:hann_fourier}
-\end{marginfigure}
-\Cref{fig:speck:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
-We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
-However, while in the continuum limit (\cref{sidenote:continuum_limit}) \cref{eq:speck:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite frequency spacing $\df$ of discrete signals and finite observation length $T$ introduce a finite bandwidth of the probe as well as \emph{sidelobes}.
-These effects induce what is known as \emph{spectral leakage} and \emph{scalloping loss}~\cite{Harris1978,Koopmans1995} and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$.
 
 For this reason, a plethora of \emph{window functions} have been introduced to mitigate the effects of spectral leakage.
 Key properties of a window are the spectral bandwidth (center lobe width) and sidelobe amplitude between which there typically is a tradeoff.\sidenote{
@@ -270,12 +264,22 @@ A window frequently used in spectral analysis is the Hann window~\cite{Nuttall19
 \end{align}
 with the Fourier representation of the unshifted window,
 \begin{align}\label{eq:speck:window:hann:fourier_unshifted}
-    \hat{w}_n &= \frac{T}{2}\sinc\left(\frac{\omega_n T}{2}\right)\times
+    \hat{w}_n &= \frac{T}{2}\sinc\left(\frac{\omega_n T}{2}\right)
                  %  \frac{1}{2(1 - \flatfrac{\omega_n T}{2\pi})(1 + \flatfrac{\omega_n T}{2\pi})},
                     \frac{1}{1 - \left(\flatfrac{\omega_n T}{2\pi}\right)^2}
 \end{align}
 shown in \cref{fig:speck:hann_fourier}.
-The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{eq:speck:window:boxcar:fourier:unshifted} and \cref{fig:speck:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is only slightly broadened.
+The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{eq:speck:window:boxcar:fourier:unshifted} and \cref{fig:speck:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is broadened by a factor of two.
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/spectrometer/hann}
+    \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
+        The Fourier representation of the Hann window in continuous time (solid line) and for discrete frequencies $\omega_n$ (circles).
+        Diamonds indicate discrete sampling when the window completely out of phase with the signal (\cf \cref{fig:speck:boxcar_fourier}).
+    }
+    \label{fig:speck:hann_fourier}
+\end{marginfigure}
 
 Another favorable property of the Hann window is that $w_0\gth{0} = w_{N-1}\gth{0} = 0$.
 This suppresses detrimental effects arising from a possible discontinuity ($x_0\gth{0}\neq x_{N-1}\gth{0}$) at the edge of a data segment related to the discrete Fourier transform, which assumes periodic data.\sidenote{
@@ -298,7 +302,7 @@ The overlap naturally depends on the choice of window; a typical value for the H
     \includegraphics[width=\textwidth]{img/pdf/spectrometer/welch}
     \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
         Illustration of Welch's method for spectrum estimation.
-        The data (pink) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
+        The data (magenta) of length $L$ is partitioned into $K = \flatfrac{2L}{N} - 1$ segments of length $N$.
         Each segment is multiplied with a window function (gray) which reduces spectral leakage and other artifacts.
         A finite overlap $K$ between adjacent windows (gray) ensures efficient sample use.
     }
