@@ -6,6 +6,19 @@ I review the relevant relationships between optical parameters, estimate the max
 Furthermore, I characterize the cross-polarization extinction and outline various schemes I established to automatically control the motorized stages regulating the excitation power and rejection as well as the diffraction grating spectrometer and \gls{ccd}.
 Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a \g2 measurement on self-assembled quantum dots in \ch{InGaAs}.
 
+\begin{marginfigure}[*-6]
+    \input{img/tikz/setup/optical_path}
+    \caption[\imgsource{img/tikz/setup/optical_path.tex}]{
+        Reduced sketch of the microscope optical path.
+        A Gaussian beam is launched from a \gls{smf} and collimated by the excitation ocular (E).
+        It is polarized (P), passes \halfwave- and \quarterwave-plates, and is reflected into the cryostat by a 90:10 \acrfull{bs}.
+        An objective lens (O) focuses the beam onto the sample and collects and collimates the emitted light.
+        It exits the cryostat, is transmitted through the \gls{bs} and an analyzer (A) before being focused into the \gls{smf} by the detection ocular (D).
+        Another beam splitter can be inserted below the first to divert some of the light to a \gls{cmos} camera with ocular lens (C).
+    }
+    \label{fig:setup:optics:optical_path}
+\end{marginfigure}
+
 \section{Light coupling}\label{sec:setup:optics:coupling}
 While the microscope arrangement on top of and inside the cryostat is free space optics to enable imaging of the sample, illumination and collected light are routed to and from the optical table using \glspl{smf}.
 Convenience aside, for the illumination this is a natural choice since the guiding mode of these fibers very closely approximates the fundamental \TEM{00} laser mode~\cite{Kowalevicz2006}.
@@ -18,19 +31,6 @@ Despite these loss mechanisms, the single-mode character of the detection fiber 
 I discuss the cross-polarization extinction in more detail in \cref{subsec:setup:optics:coupling:rejection}.
 
 \subsection{Choosing lenses}\label{subsec:setup:optics:coupling:lenses}
-
-\begin{marginfigure}
-    \input{img/tikz/setup/optical_path}
-    \caption[\imgsource{img/tikz/setup/optical_path.tex}]{
-        Reduced sketch of the microscope optical path.
-        A Gaussian beam is launched from a \gls{smf} and collimated by the excitation ocular (E).
-        It is polarized (P), passes \halfwave- and \quarterwave-plates, and is reflected into the cryostat by a 90:10 \acrfull{bs}.
-        An objective lens (O) focuses the beam onto the sample and collects and collimates the emitted light.
-        It exits the cryostat, is transmitted through the \gls{bs} and an analyzer (A) before being focused into the \gls{smf} by the detection ocular (D).
-    }
-    \label{fig:setup:optics:optical_path}
-\end{marginfigure}
-
 \Cref{fig:setup:optics:optical_path} shows a sketch of the free space optical path.
 There are three lenses that need to fulfil different tasks.
 First, the excitation ocular (E), which collimates the Gaussian beam launched from the fiber.
@@ -285,11 +285,69 @@ Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficien
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
-    \eta_{\mr{o}} = T\eta_{\mr{c}}\eta_{\mr{m}}\approx\qty{1.0}{\percent}.
+    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} T \approx\qty{1.0}{\percent}.
 \end{equation}
+
+% TODO: compare to measured values
 
 \subsection{Imaging the laser spot}\label{subsec:setup:optics:coupling:imaging}
 As the confocal microscope is free space, we are in a position to image the sample using a white light source.
-We can also, however, use the imaging capabilities to inspect the laser spot focused onto the sample and compare it to the behavior expected from \cref{subsec:setup:optics:coupling:lenses}.
+We can also, though, use the imaging capabilities to inspect the laser spot focused onto the sample and compare it to the behavior expected from \cref{subsec:setup:optics:coupling:lenses}.
+To this end, I coupled the laser into both excitation and detection arm of the microscope and aligned their spots on top of each other on a gold gate fabricated using optical lithography -- ensuring close to perfect reflectivity -- by monitoring their image on the \cmoscam (\cf \cref{fig:setup:optics:optical_path}).
+A feature of known size, for example the width of the gate, can be used to calculate the magnification of the lens system defined by $O$ and $C$ (\cf \cref{sec:setup:vibrations:optic}).\sidenote{
+    Note that this varies slightly depending on the focal distance of sample and camera from their respective lenses.
+    Theoretically, we expect the magnification to be given by the ratio of their focal lengths, $M=\foc/\fob\approx\num{32}$.
+}
+Once aligned and blocking the beam from each arm in turn, I recorded a picture of the spots.
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/setup/spots}
+    \caption[\imgsource{img/py/setup/imaging.py}]{
+        Imaging of the laser spots using the free-space imaging capabilities of the confocal microscope.
+        Left column shows images of the spot on an optical gate taken with the \gls{cmos} camera, while the middle column shows the fit to \cref{eq:setup:optics:coupling:intensity:tem00} rotated by a variable amount.
+        Right column shows the residuals of the fit, highlighting non-Gaussian components in the beam.
+        Top row is the excitation, bottom the detection path.
+    }
+    \label{fig:setup:optics:coupling:imaging}
+\end{figure}
+
+From \cref{eq:setup:optics:coupling:efield:tem00}, we can deduce that a perfect, aberration-free spot would have the two-dimensional intensity distribution
+\begin{equation}\label{eq:setup:optics:coupling:intensity:tem00}
+    I(x, y) = I(0, 0) \exp\left\lbrace -\frac{2 x^2}{w_{0,x}^2} -\frac{2 y^2}{w_{0,y}^2} \right\rbrace,
+\end{equation}
+where $w_{0,\lbrace x,y\rbrace}$ are the beam waist radii in $x$ and $y$-direction, respectively, which are equal in the perfect case and introduce ellipticity else.
+Allowing for ellipticity as well as a rotation of the coordinate system with respect to the axes of the \gls{cmos} camera, we can fit \cref{eq:setup:optics:coupling:intensity:tem00} to the pictures obtained previously.
+The result is shown in \cref{fig:setup:optics:coupling:imaging} for the excitation path in the upper and the detection path in the lower row.
+The first column shows a cropped section of the recorded images, showing good alignment between both spots but also some sidelobes along perpendicular axes rotated by around \qty{45}{\degree} to the camera axes.
+This is also reflected in the relative residuals of the fitted spot that clearly shows that the spot is not described only by a Gaussian \TEM{00} mode.
+However, extracting the beam waist radii from the fits and scaling with the magnification factors, which display a slight asymmetry between the two axes, \num{30} to \num{27.4}, we obtain reasonable results between \num{1.4} and \num{2} times larger than the diffraction limit given by the lens geometries, \cf \cref{subsec:setup:optics:coupling:lenses}, as shown in \cref{tab:setup:optics:coupling:imaging}.
+
+\begin{margintable}
+    \centering
+    \footnotesize
+    \caption{
+        Beam waist radii extracted from the fits of \cref{eq:setup:optics:coupling:intensity:tem00} to the images recorded using the imaging path of the confocal microscope.
+    }
+    \label{tab:setup:optics:coupling:imaging}
+    \begin{tabular}{lSS}
+        \toprule
+        \textsc{Beam waist} (\unit{\micro\meter})    & $w_{0, x}$ & $w_{0, y}$ \\
+        \midrule
+        Detection path                                      & 0.58       & 0.75 \\
+        Excitation path                                     & 0.60       & 0.84 \\
+        Diffraction limit                                   & 0.42       & 0.42 \\
+        \bottomrule
+    \end{tabular}
+\end{margintable}
+
+From experience, the sidelobes present in \cref{fig:setup:optics:coupling:imaging} can be suppressed with better alignment and are most likely due to an imperfect focal distance of the fiber collimating lenses $D$ and $E$ resulting in a secondary (back) focal plane before the objective lens.
+The asymmetry resulting in elliptical spot cross sections, on the other hand, might be due to several factors including a tilt of the sample or alignment of the imaging arm of the microscope.\sidenote{
+    Notice that the asymmetry is due solely to the magnification factor rather than the image on the camera,
+}
+Finally, note that the excitation spot typically looks worse than the detection spot, likely because of the additional optical elements introducing beam distortions.
 
 \subsection{Cross-polarization extinction}\label{subsec:setup:optics:coupling:rejection}
+
+\section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
+

@@ -7,8 +7,8 @@
     optics/.style = {thick,black},%
     window/.style = {RWTHblue75,fill=RWTHblue25,text=black,opacity=0.75},%
     cryostat/.style = {RWTHblack75,thin,text=black},%
-    midarrow1/.style = {postaction=decorate, decoration={markings,mark=at position 0.18 with \arrow{stealth}}},%
-    midarrow2/.style = {postaction=decorate, decoration={markings,mark=at position 0.82 with \arrow{stealth}}},%
+    midarrow1/.style = {postaction=decorate, decoration={markings,mark=at position 0.15 with \arrow{stealth}}},%
+    midarrow2/.style = {postaction=decorate, decoration={markings,mark=at position 0.85 with \arrow{stealth}}},%
     midarrow/.style = {midarrow1, midarrow2},%
 ]    % requires libraries angle,quotes,calc,decorations.markings
 
@@ -20,28 +20,44 @@
     \else
         \newlength\f
     \fi
+    \ifdefined\dx
+    \else
+        \newlength\dx
+    \fi
     \setlength\CA{0.25cm}
     \setlength\f{0.4cm}
+    \setlength\dx{0.25cm}
 
     \coordinate (origin) at (0, 0);
-    \coordinate (window) at (0, -0.8);
-    \coordinate (objective) at (0, -2.5);
-    \coordinate (detection-ocular) at (0, 1.1);
-    \coordinate (detection-halfwave) at (0, 0.6);
-    \coordinate (analyzer) at (0, 0.85);
-    \coordinate (excitation-ocular) at (1.35, 0);
-    \coordinate (polarizer) at (1.1, 0);
-    \coordinate (excitation-halfwave) at (0.85, 0);
-    \coordinate (quarterwave) at (0.6, 0);
+    \coordinate (bs1) at (0, 0);
+    \coordinate (bs2) at (0, -1);
+    \coordinate (window) at ($(bs2) + (0, -0.8)$);
+    \coordinate (objective) at ($(window) + (0, -1.5)$);
+
+    \coordinate (detection-halfwave) at ($(bs1) + (0, 0.6)$);
+    \coordinate (analyzer) at ($(detection-halfwave) + (0, 1*\dx)$);
+    \coordinate (detection-ocular) at ($(detection-halfwave) + (0, 2*\dx)$);
+
+    \coordinate (quarterwave) at ($(bs1) + (0.6, 0)$);
+    \coordinate (excitation-halfwave) at ($(quarterwave) + (1*\dx, 0)$);
+    \coordinate (polarizer) at ($(quarterwave) + (2*\dx, 0)$);
+    \coordinate (excitation-ocular) at ($(quarterwave) + (3*\dx, 0)$);
+
+    \coordinate (cmos-ocular) at ($(bs2) + (0.6, 0) + (3*\dx, 0)$);
 
     \coordinate (source) at ($(objective) - (0, \f)$);
     \coordinate (detection-fiber) at ($(detection-ocular) + (0, \f)$);
     \coordinate (excitation-fiber) at ($(excitation-ocular) + (\f, 0)$);
+    \coordinate (cmos) at ($(cmos-ocular) + (\f, 0)$);
 
     % Symmetry axes
     \draw[symmetryaxis]
-        ($(origin) - (\CA*2,0)$)
+        ($(bs1) - (\CA*2,0)$)
         -- ($(excitation-fiber) + (\f/4,0)$)
+    ;
+    \draw[symmetryaxis]
+        ($(bs2) - (\CA*2,0)$)
+        -- ($(cmos) + (\f/4,0)$)
     ;
     \draw[symmetryaxis]
         ($(source) - (0, \f/4)$)
@@ -58,9 +74,13 @@
         -- ++($(-\f/2, 0)$)
     ;
 
-    % Beamsplitter
+    % Beamsplitters
     \draw
-        ($(origin) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}}
+        ($(bs1) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}1}
+        -- ++($(3*\CA, 3*\CA)$)
+    ;
+    \draw[dashed]
+        ($(bs2) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}2}
         -- ++($(3*\CA, 3*\CA)$)
     ;
 
@@ -76,6 +96,10 @@
     \draw[lens]
         ($(excitation-ocular) + (0, 1.5\CA)$)
         -- ++($(0, -3*\CA)$) node[below] {E}
+    ;
+    \draw[lens]
+        ($(cmos-ocular) + (0, 1.5\CA)$)
+        -- ++($(0, -3*\CA)$) node[below] {C}
     ;
 
     % Optical elements
@@ -100,21 +124,28 @@
         -- ++($(3*\CA, 0)$) node[right] {A}
     ;
 
+    % Excitation beam
+    \draw[midarrow,RWTHred100]
+        (excitation-fiber)
+        -- ++($(-\f, -\CA)$)
+        -- ($(bs1) - (\CA, \CA)$)
+        -- ($(-\CA, 0) + (objective)$)
+        -- (source)
+    ;
+    % CMOS beam
+    \draw[midarrow2,RWTHbordeaux100,dashed]
+        (source)
+        -- ++($(\CA, \f)$)
+        -- ($(bs2) + (\CA, \CA)$)
+        -- ($(cmos-ocular) + (0, \CA)$)
+        -- (cmos)
+    ;
     % Detection beam
     \draw[midarrow,RWTHbordeaux100]
         (source)
         -- ++($(\CA, \f)$)
         -- ($(\CA, 0) + (detection-ocular)$)
         -- ++($(-\CA, \f)$)
-    ;
-
-    % Excitation beam
-    \draw[midarrow,RWTHred100]
-        (excitation-fiber)
-        -- ++($(-\f, -\CA)$)
-        -- ($(origin) - (\CA, \CA)$)
-        -- ($(-\CA, 0) + (objective)$)
-        -- (source)
     ;
 
     % Windows

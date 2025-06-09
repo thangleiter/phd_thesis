@@ -27,7 +27,8 @@
 
 ### Setup
 - [ ] Knife edge fit
-- [ ] Spot image fits
+- [x] Spot image fits
+- [ ] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
 - [ ] Indicate noise floor from accelerometer signal conditioner?
 
