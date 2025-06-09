@@ -34,8 +34,12 @@
     ;
     % Xticks
     \draw[axis]
+        (interfacemargin)
+        -- ++(0,-\tick) node[below] {$w_i$}
+    ;
+    \draw[axis]
         (\CA,0)
-        -- ++(0,-\tick) node[below] {$w$}
+        -- ++(0,-\tick) node[below] {$w_f$}
     ;
     % Yticks
     \draw[axis]
@@ -48,7 +52,7 @@
     ;
     % Angles
     \draw[thin,axis]
-        ($(interfacemargin) - (0,0.1)$)
+        (interfacemargin)
         -- ++(0,0.5) node (theta) {}
     ;
     \pic[draw,"$\theta$",angle eccentricity=1.5,axis]
@@ -64,12 +68,17 @@
         -- ++(1.25,0) node[right] {O}
     ;
     \draw[dashed,RWTHblack75]
-        ($(dipole) + (0,0.05)$)
+        ($(dipole) + (0,0.06)$)
         -- ++(1.25,0)
-        ($(dipole) - (0,0.05)$)
+        ($(dipole) - (0,0.06)$)
         -- ++(1.25,0)
     ;
     \node[anchor=west] at ($(dipole) + (1.25,0)$) {\acrshort{qw}};
+
+    \draw[-stealth]
+        (dipole)
+        -- ++(0.15, 0) node[below,xshift=-1mm,yshift=-1mm] {$\bvec{p}$}
+    ;
 
     % Margin beam
     \draw[->,RWTHred100]

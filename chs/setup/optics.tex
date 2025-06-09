@@ -8,14 +8,14 @@ Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a 
 
 \section{Light coupling}\label{sec:setup:optics:coupling}
 While the microscope arrangement on top of and inside the cryostat is free space optics to enable imaging of the sample, illumination and collected light are routed to and from the optical table using \glspl{smf}.
-Convenience aside, for the illumination this is a natural choice since the guiding mode of these fibers very closely approximates the fundamental \tem{00} laser mode~\cite{Kowalevicz2006}.
+Convenience aside, for the illumination this is a natural choice since the guiding mode of these fibers very closely approximates the fundamental \TEM{00} laser mode~\cite{Kowalevicz2006}.
 For the collected light, it is less obvious that a \gls{smf} is the best choice.
 Coupling light -- of any mode profile -- in and out of fibers invariably incurs losses.
-Because of the small mode field diameters on the order of a few micrometers, aligning the optics for coupling is a sensitive task and subject to external disturbances.
+Because of the small mode field diameters on the order of a few micrometers, aligning the optics for coupling is a sensitive task and subject to external disturbances such as vibrations (\cf \cref{ch:setup:vibrations}).
 Moreover, even for perfect mode matching and alignment, there are reflection losses on the percent level.
-On \cpageref{par:setup:optics:coupling:detection}, I discuss the coupling of collected light into the \gls{smf} in more detail.
+In \cref{subsec:setup:optics:coupling:efficiency}, I discuss the coupling of collected light into the \gls{smf} in more detail.
 Despite these loss mechanisms, the single-mode character of the detection fiber is crucial to the microscope's operation because the cross-polarization extinction critically relies on the spatial filtering of the reflected mode by the fiber~\cite{Benelajla2021,Steindl2023}.
-I discuss the cross-polarization extinction in more detail in \cref{subsec:sec:optics:coupling:rejection}.
+I discuss the cross-polarization extinction in more detail in \cref{subsec:setup:optics:coupling:rejection}.
 
 \subsection{Choosing lenses}\label{subsec:setup:optics:coupling:lenses}
 
@@ -39,7 +39,7 @@ Finally, the collected light is focused by the detection ocular (D) into another
 Since Gaussian beams behave fundamentally differently to geometrical optics, there are different requirements for the lens specifications.
 In the following, I will review the different beam behaviors and outline the rationale behind the choices made for the lenses.
 
-The fundamental Gaussian \tem{00} mode has the rotationally symmetric electric field profile~\cite{Yariv1989}
+The fundamental Gaussian \TEM{00} mode has the rotationally symmetric electric field profile~\cite{Yariv1989}
 \begin{equation}\label{eq:setup:optics:coupling:efield:tem00}
 E(\rho, z) = E_0\frac{w_0}{w(z)}\exp\left\lbrace -\i\left[kz - \arctan(\frac{z}{z_0})\right] - \rho^2\left[\frac{1}{w(z)^2} + \frac{ik}{2 R(z)}\right]\right\rbrace
 \end{equation}
@@ -64,7 +64,7 @@ In the far field, the beam divergence is given by
 \begin{equation}\label{eq:setup:optics:coupling:gaussian:divergence}
     \theta_{\mr{beam}} = \arctan(\frac{w_0}{z_0}) \approx \frac{\lambda}{\pi w_0}.
 \end{equation}
-Collimating a Gaussian beam emerging from a \gls{smf} thus requires matching $\theta_{\mr{beam}}$ with the \gls{na} of the lens such that $\mr{\acrshort{na}}\geq\sin\theta_{\mr{beam}}$.
+Collimating a Gaussian beam emerging from a \gls{smf} thus requires matching $\theta_{\mr{beam}}$ with the \gls{na} of the lens such that $\NA\geq\sin\theta_{\mr{beam}}$.
 Conversely, coupling a beam into a \gls{smf} requires matching the fiber's \gls{mfd} to the spot size, which is constrained by diffraction.
 From \cref{eq:setup:optics:coupling:gaussian:divergence} we find, by setting $w = f\tan\theta_{\mr{beam}}$, the rule-of-thumb
 \begin{equation}\label{eq:setup:optics:coupling:gaussian:diffraction_limit}
@@ -73,11 +73,18 @@ From \cref{eq:setup:optics:coupling:gaussian:divergence} we find, by setting $w 
 where $w$ is the beam radius at the focusing lens.\sidenote{
     Note that this disregards diffraction at the aperture and is thus only a good approximation for a \acrshort{ca} well larger than $w$.
 }
-For non-Gaussian beams one typically quotes the radius of the first Airy disk assuming a flattop profile~\cite{Hecht2017},
-\begin{equation}\label{eq:setup:optics:coupling:flattop:diffraction_limit}
-    w_0 \approx 1.22\frac{\lambda f}{2 w},
+For non-Gaussian beams one typically assumes a flattop profile whose diffraction pattern is given by~\cite{Hecht2017},
+\begin{equation}\label{eq:setup:optics:coupling:flattop:diffraction_pattern}
+    E(\rho) = E_0 2\pi w^2 \frac{\exp(-\i k f)}{f} \frac{J_1(\flatfrac{kw\rho}{f})}{\flatfrac{kw\rho}{f}},
 \end{equation}
-where $w$ is the radius of the lens aperture.
+where $w$ is the radius of the lens aperture and $J_1(x)$ is the Bessel function of order one, and quotes the radius of the first Airy disk,
+\begin{equation}\label{eq:setup:optics:coupling:flattop:diffraction_limit}
+    w_0 \approx 1.22\frac{\lambda f}{2 w}.
+\end{equation}
+Finally, let us note that the efficiency with which two electric field modes $E_1$ and $E_2$ can be matched, the \emph{matching efficiency}, is given by the normalized spatial overlap integral~\cite{Paschotta2005},
+\begin{equation}\label{eq:setup:optics:coupling:efficiency:mode_matching}
+    \eta_{\mr{m}}(E_1, E_2) = \frac{\int\dd{S}\abs{E_1(\rho)}^2\int\dd{S}\abs{E_2(\rho)}^2}{\abs{\int\dd{S} E_1(\rho) E_2(\rho)}^2}.
+\end{equation}
 
 \paragraph{Excitation path}
 Now, for as small a spot on the sample as possible, we conclude from \cref{eq:setup:optics:coupling:gaussian:diffraction_limit} that we should choose an objective lens with a small focal length \fob (large \acrshort{na}) and illuminate it with a beam with a large diameter $2 w$.
@@ -85,27 +92,21 @@ As the lens diameter and hence the \acrfull{ca}\sidenote{
     The \gls{ca} is the diameter over which the lens specifications hold.
     Outside this diameter, light may still be transmitted but is not guaranteed to behave according to the lens design.
 }
-is constrained by the available space in the sample puck, the best lens was found to be \objectivelens~\cite{Thorlabs354330} with $\fob = \qty{3.1}{\milli\meter}$, $\mr{\acrshort{na}} = \num{0.7}$, and infinity-side $\mr{\acrshort{ca}} = \qty{5}{\milli\meter}$.\sidenote{
-    A lens with even higher \gls{na} exists~\cite{Lightpath355330} but I found it to have too short a \gls{wd} to put our flip-chipped samples into focus.
+is constrained by the available space in the sample puck, the best lens was found to be \objectivelens~\cite{Thorlabs354330} with $\fob = \qty{3.1}{\milli\meter}$, $\NA = \num{0.7}$, and infinity-side $\mr{\acrshort{ca}} = \qty{5}{\milli\meter}$.\sidenote{
+    A lens with even higher \gls{na} exists~\cite{LightPath355330} but I found it to have too short a \gls{wd} to put our flip-chipped samples into focus.
     Samples with a different mounting strategy might benefit from the slightly increased focusing power of that lens.
 }
 Having chosen the objective lens, we can next select the excitation ocular to match the beam diameter.
 For our typical excitation wavelengths around \qty{800}{\nano\meter}, the best-matching \gls{smf} has $\mr{\acrshort{mfd}} = 2 w_0 = \qty{5}{\micro\meter}$~\cite{Thorlabs780HP}.
 Again using \cref{eq:setup:optics:coupling:gaussian:diffraction_limit} and solving for $f$, we find $\foc = \flatfrac{\pi w_0 w}{\lambda} \approx \qty{24.5}{\milli\meter}$ when setting $w = \flatfrac{\mr{\acrshort{ca}}}{2}$.
 Since $w$ specifies the $\flatfrac{1}{e}$-radius of the beam, we should choose a lens resulting in a collimated beam diameter that is smaller than the \gls{ca}, \ie, a shorter focal length.
-The lens that best matches this requirement is \ocularlens~\cite{ThorlabsA280TM} with $\foc = \qty{18.4}{\milli\meter}$, resulting in a collimated beam diameter of $2 w \approx\qty{3.8}{\milli\meter}$.
-Collimating the Gaussian beam launched from a \gls{smf} may be viewed as transforming the beam waist $w_0\to w$, implying that the Rayleigh range after collimation is $z_0\approx\qty{13}{\meter}$ (\cref{eq:setup:optics:coupling:gaussian:rayleigh_range}), and the objective lens at a distance of $z\sim\qty{1.5}{\meter}$ is well in the beam's near field with negligible divergence (\cf \cref{eq:setup:optics:coupling:gaussian:radius}).
+The lens that best matches this requirement is \ocularlens~\cite{ThorlabsA280TM} with $\foc = \qty{18.4}{\milli\meter}$, resulting in a collimated beam diameter of $2 w \approx\qty{3.8}{\milli\meter}$.\sidenote{
+    A lens with larger focal length and hence wider beam diameter and resulting smaller spot size exists~\cite{LightPath354850} but its design wavelength is further off from our typical working wavelengths.
+    It is also unmounted, making its integration into the optical head more cumbersome.
+}
+Collimating the Gaussian beam launched from a \gls{smf} may be viewed as transforming the beam waist $w_0\to w$, implying that the Rayleigh range after collimation is $z_0\approx\qty{14}{\meter}$ (\cref{eq:setup:optics:coupling:gaussian:rayleigh_range}), and the objective lens at a distance of $z\sim\qty{1.5}{\meter}$ is well in the beam's near field with negligible divergence (\cf \cref{eq:setup:optics:coupling:gaussian:radius}).
 With the beam diameter and focal lengths set, we can compute the expected spot size to be $2 w_0\approx\qty{0.84}{\micro\meter}$.
 In \cref{subsec:setup:optics:coupling:imaging} and \cref{sec:setup:vibrations:optic}, I compare this value to measurements.
-
-\begin{figure*}
-    \centering
-    \includegraphics{img/pdf/setup/choosing}
-    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{
-        % TODO
-    }
-    \label{fig:setup:optics:coupling:lenses}
-\end{figure*}
 
 We have thus far addressed illumination of the sample with Gaussian laser light.
 What now remains to deal with is the reverse direction; that is, collection of the emitted photoluminescence and focusing it into a \gls{smf} using the detection ocular lens (\enquote{D} in \cref{fig:setup:optics:optical_path}).
@@ -115,6 +116,46 @@ With these parameters, we obtain a beam diameter of $2w \approx\qty{1.3}{\milli\
 This would result in a spot size of $2 w_0\approx\qty{1.3}{\micro\meter}$, roughly a factor of two larger than with the lenses we chose here.
 
 \paragraph{Detection path}\label{par:setup:optics:coupling:detection}
+To choose an appropriate lens for focusing light into the \gls{smf} for spectroscopic analysis, the detection ocular (\enquote{D} in \cref{fig:setup:optics:optical_path}), let us assume that the objective lens is fully illuminated by the emitted light.
+This results in a beam with diameter corresponding to the infinity-side \gls{ca} of the objective lens.
+Further neglecting beam divergence, we must then choose the focal length of the ocular such that the diffraction-limited spot size matches the \gls{mfd} of the \gls{smf}.
+Taking the beam to have a flattop profile, an assumption that I test more closely in \cref{subsec:setup:optics:coupling:efficiency}, the radius of the first Airy disk is given by \cref{eq:setup:optics:coupling:flattop:diffraction_limit}.
+For the objective lens chosen in the previous paragraph, inverting that equation leads to $f\approx\qty{12.8}{\milli\meter}$.
+However, the first Airy disk includes slightly less of the total power than the $1/e^2$ diameter of a Gaussian beam (\cf \cref{eq:setup:optics:coupling:efield:tem00}) corresponding to the \gls{smf}'s \gls{mfd}.
+I therefore chose a slightly larger focal length, leading to the same lens as used for the excitation ocular, \ocularlens with $\foc = \qty{18.4}{\milli\meter}$ and resulting in a mode matching efficiency for a hypothetical flattop beam of $\eta_{\mr{m}} = \qty{78}{\percent}$.\sidenote{
+    Numerical optimization of the mode overlap given by \cref{eq:setup:optics:coupling:efficiency:mode_matching} for \cref{eq:setup:optics:coupling:efield:tem00,eq:setup:optics:coupling:flattop:diffraction_pattern} results in $\foc=\qty{21.6}{\milli\meter}$ and $\eta_{\mr{m}}=\qty{82}{\percent}$, indicating the choice fits quite well.
+}
+Again comparing the lens chosen here with that by \citer{Descamps2021} with $\foc = \qty{6.2}{\milli\meter}$, we find that we expect only $\eta_{\mr{m}} = \qty{13}{\percent}$ of a flattop beam's intensity focused onto the fiber end face to couple into the fiber's \TEM{00} mode.
+
+\begin{figure*}
+    \centering
+    \includegraphics{img/pdf/setup/choosing}
+    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{
+        Performance of selected lenses from the Thorlabs and Edmund Optics catalogs for Gaussian (left) and geometric (right) optics.
+        The left panel shows the diameter $D$ of a Gaussian beam launched from a \gls{smf} with $\mr{\acrshort{mfd}} = \qty{5}{\micro\meter}$ and collimated by the given lens at the position $z = \qty{1.5}{\meter}$ behind the lens plotted for various lenses.
+        For lenses with different \acrlongpl{ca} on both sides, I assume a magnification of the beam by their ratio, resulting in the deviation from the theoretical beam diameter shown as a dashed gray line for some lenses, but note that this is a rough approximation for lens underfulling in particular.
+        The green contours show the theoretical spot size diffraction limit, $2w_0$ (\cref{eq:setup:optics:coupling:gaussian:diffraction_limit}), for a beam with diameter $2w=D$.
+        To the left of the minimum of the (apparent, note the logarithmic scale) parabola, the beam diameter increases with shorter focal length because the beam divergence after the collimating lens becomes relevant as the objective lens plane moves into the beam's far field.
+        The right panel shows the same lenses, this time plotting their (larger, if different) \gls{ca} diameter $D$ as well as the geometric \gls{na} calculated as $\NA = \sin\arctan(D/2f)$ (magenta contours).
+    % TODO
+    }
+    \label{fig:setup:optics:coupling:lenses}
+\end{figure*}
+
+The above considerations for choosing lenses are visualized in \cref{fig:setup:optics:coupling:lenses}, which plots selected lenses from the Thorlabs and Edmund Optics catalog for different scenarios to help selecting models for a specific task.
+The left panel deals with Gaussian optics and plots the collimated beam diameter $D$ of a Gaussian beam launched from the \gls{smf}, collimated by the given lens, and monitored at a distance of $z=\qty{1.5}{\meter}$ behind it.
+This takes into account beam expansion due to diffraction, which depends on the focal length of the collimating lens and results in the non-monotonous dependence $D(f)$.
+The contours indicate the expected spot size of the beam when the objective lens is illuminated by a beam of diameter $D$.
+The right panel deals with geometric optics and plots the \gls{na} computed from the \gls{ca} diameter $D$ and the focal length as $\NA = \sin\arctan(D/2f)$.\sidenote{
+    Note that for high \gls{na}, this value can deviate from the value quoted by the manufacturer.
+}
+To choose a pair of collimating and objective lenses, first pick the former from the left panel.
+Then choose an objective lens from the right panel to suit the focusing power needs.
+Identifying the objective lens in the left panel and drawing a vertical line from its focal length and a horizontal line from the collimator's beam diameter gives the expected spot size of the beam where the two lines cross.
+
+Having picked the lenses defining the characteristics of the microscope, let us now take a closer look at the expected efficiency.
+
+\subsection{Collection efficiency}\label{subsec:setup:optics:coupling:efficiency}
 In a confocal microscope geometry, light is collected using the same lens that is also used for illumination of the sample.
 For excitation with a Gaussian laser beam but non-Gaussian radiation being emitted, this means that two different beam behaviors need to be matched, a task that is likely not possible to achieve completely.
 In the case of photoluminescence in a pristine semiconductor \gls{qw}, the optical interband transitions are well described by in-plane dipole matrix elements~\cite{Gu2013}.
@@ -135,102 +176,120 @@ To this end, I model the light source as a point dipole beneath the surface of a
 \end{marginfigure}
 
 Consider the situation sketched in \cref{fig:setup:optics:coupling:emission}.
-A dipole oriented along $x$ in the plane of a \ch{GaAs} \gls{qw} with refractive index $n$ buried at a depth $d$ beneath the surface of the sample emits light into the halfspace above it.
-The emitted radiation has the electric field distribution~\cite{Griffiths2017}
-\begin{equation}\label{eq:setup:optics:coupling:efield}
-    E(x,y,z) = E_{0}\frac{\exp(\i k r)}{r}\cos\theta
-\end{equation}
-where $\theta=\arctan{\flatfrac{x}{z}}$, $r$ is the distance from the point dipole and $k=\flatfrac{2\pi}{\lambda}=\flatfrac{2\pi n}{\lambda_0}$ is the wavenumber in the medium.
+A dipole $\bvec{p}$ oriented along $x$ in the plane of a \ch{GaAs} \gls{qw} with refractive index $n$ buried at a depth $d$ beneath the surface of the sample emits light into the halfspace above it.
+In spherical coordinates $(r, \vartheta, \varphi)$ oriented along $x$, that is, embedded in the cartesian coordinate system $(y, z, x)$, the emitted radiation has the field components~\cite{Griffiths2017}
+\begin{align}
+    \bvec{E}(r, \vartheta) &= A(r)\left[E_r(r, \vartheta)\ubvec{r} + E_{\vartheta}(r, \vartheta)\ubvec{\vartheta}\right] \label{eq:setup:optics:coupling:dipole:efield}\\
+    \bvec{H}(r, \vartheta) &= \frac{\epsilon}{\mu} A(r) H_{\phi}(r, \vartheta)\ubvec{\phi} \label{eq:setup:optics:coupling:dipole:hfield}
+\end{align}
+with
+\begin{align}
+    A(r) &= \frac{\abs{\bvec{p}}k^2}{4\pi\epsilon}\frac{\exp(\i k r)}{r} \\
+    E_r(r, \vartheta) &= \left(\frac{2}{k^2 r^2} - \frac{2\i}{k r}\right)\cos\vartheta \\
+    E_{\vartheta}(r, \vartheta) &= \left(\frac{1}{k^2 r^2} - \frac{\i}{k r} - 1\right)\sin\vartheta \\
+    H_{\phi}(r, \vartheta) &= -\left(\frac{\i}{k r} + 1\right)\sin\vartheta
+\end{align}
+and where $\vartheta=\arctan\left(\sqrt{z^2 + y^2}/x\right)$, $r$ is the distance from the point dipole, and $k=2\pi/\lambda=2\pi n/\lambda_0$ and $\epsilon=\epsilon_\mr{r}\epsilon_0$ are the wavenumber and the permittivity in the medium, respectively.
+Since $kr$ is of order unity at $z=0$, the semiconductor surface is in the dipole's intermediate-field regime where all terms contribute roughly equally.
 
-The emitted light is refracted at the surface and we collect and collimate it with an objective lens (labelled \enquote{Ob.}) with $\mr{\acrshort{na}}=\sin\theta^\prime_\mr{m}$ at distance \fob above the surface of the sample, where \fob is the focal length and $\theta^\prime_\mr{m}$ the angle of the marginal ray.
-The \gls{na} determines the maximum amount of light the objective lens can collect, and using Snell's law we can relate the angle of a ray outside the sample $\theta^\prime$ to the angle inside the sample $\theta$,
+The emitted light is refracted at the surface and we collect and collimate it with an objective lens (labeled \enquote{O}) with $\NA=\sin\theta^\prime_\mr{m}$ at distance \fob above the surface of the sample, where \fob is the focal length and $\theta^\prime_\mr{m}$ the angle of the marginal ray.
+The \gls{na} determines the maximum amount of light the objective lens can collect, and using Snell's law we can relate the angle of a ray outside the sample $\theta^\prime$ to the angle inside the sample $\theta = \arctan(\sqrt{x^2 + y^2}/z)$,
 \begin{equation}\label{eq:setup:optics:coupling:snell}
     \sin\theta^\prime = n\sin\theta,
 \end{equation}
 with $n\approx 3.57$ at $\lambda_0=\qty{800}{\nano\meter}$ and $T=\qty{0}{\kelvin}$.
-This yields $\theta_{\mr{m}} = \arcsin(\flatfrac{\mr{\acrshort{na}}}{n}) \approx\qty{11}{\degree}$ for the emission angle of the marginal ray inside the semiconductor, suggesting that \cref{eq:setup:optics:coupling:efield} is well approximated as a spherical wave since $\cos\theta_{\mr{m}}\approx 1-\theta_{\mr{m}}^2/2\approx 1$.
-Indeed, the fraction of the emitted intensity $I(\theta)\propto\abs{E(\theta)}^2$ being collected by the objective lens, the \emph{collection efficiency}, is
+This yields $\theta_{\mr{m}} = \arcsin(\flatfrac{\mr{\acrshort{na}}}{n}) \approx\qty{11}{\degree}$ for the emission angle of the marginal ray inside the semiconductor, implying that only a small fraction of light escapes the sample.
+Indeed, according to Poynting's theorem the radiated power through the surface $\Sigma$ is given by
+\begin{equation}\label{eq:setup:optics:coupling:power}
+    \expval{P} = \int_{\Sigma}\dd{\bvec{\Sigma}}\cdot\expval{\bvec{S}(r, \vartheta)}
+\end{equation}
+with the time-averaged Poynting vector
+\begin{equation}\label{eq:setup:optics:coupling:poynting}
+    \expval{\bvec{S}(r, \vartheta)} = \frac{1}{2}\re(\bvec{E}(r, \vartheta)\times\bvec{H}^{\ast}(r, \vartheta)).
+\end{equation}
+As I show in \cref{sec:app:setup:optics:collection}, the fraction of the power radiated into the cone $\theta\in[0, \theta_{\mr{m}}]$ able to be collected by the objective lens, the \emph{collection efficiency}, is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:collection}
-    \begin{split}
-        \eta_{\mr{c}} &= \frac{\iint_{\theta_{\mr{m}}}\dd{\Omega} I(\theta)}{\iint\dd{\Omega} I(\theta)}
-                      = \frac{\int_{0}^{\theta_{\mr{m}}}\dd{\theta}\sin\theta\cos^2\theta}{\int_{0}^{\pi}\dd{\theta}\sin\theta\cos^2\theta} \\
-                      &= \frac{1}{2}\left(1 - \left[1 - \left(\frac{\mr{\acrshort{na}}}{n}\right)^2\right]^{\flatfrac{3}{2}}\right)
-    \end{split}
+    \eta_{\mr{c}} = \frac{1}{2} - \frac{1}{8 n^3}\left(4n^2 - \NA^2\right)\sqrt{n^2 - \NA^2} \approx \qty{1.4}{\percent}
 \end{equation}
-which evaluates to only $\eta_{\mr{c}}\approx\qty{2.8}{\percent}$ for the objective lens's $\mr{\acrshort{na}}=\num{0.7}$.
-Moreover, since $d\sim\qty{100}{\nano\meter}\ll\fob\sim\qty{1}{\milli\meter}$ and also $kd\ll 1$, the lateral extent of the light source as viewed from the objective lens is negligibly small and is well approximated by a point source right below the surface.
+with $\NA=\num{0.7}$ for the chosen objective lens (\cf \cref{subsec:setup:optics:coupling:lenses}).
 
-In order to determine the electric field amplitude as a function of position inside the lens with radius $w$, consider a light ray impinging on the surface at lateral position $x_0$.
-Taking two points of the light ray at $(x_0-\Delta x, -\epsilon)$ some $\epsilon > 0$ below the surface and $(x_0 + \Delta x^\prime, +\epsilon)$ above, we can express the lateral shift due to refraction as
-\begin{equation}
-    \Delta x^{\prime} = \epsilon\tan\theta^{\prime} = \Delta x \frac{n\cos\theta}{\sqrt{1 - n^2\sin^2\theta}}
-\end{equation}
-with $\theta^{(\prime)} = \arctan(\Delta x^{(\prime)}/\epsilon)$ using standard trigonometric identities.
-Thus, the coordinate $x$ of the electric field inside the semiconductor transforms to the coordinate $x^\prime$ outside the semiconductor as
-\begin{equation}
-    x\to x^{\prime} = x n \left[1 + \left(\frac{x}{z}\right)^2 - \left(\frac{nx}{z}\right)^2\right]^{-\frac{1}{2}},
-\end{equation}
-which we invert to obtain
-\begin{equation}\label{eq:setup:optics:coupling:coordinate_trafo}
-    x = \frac{z}{\sqrt{n^2\left[1 + (z/x^{\prime})^2\right] - 1}}.
-\end{equation}
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/setup/modes_2d}
+    \caption[\imgsource{img/py/setup/extraction.py}]{
+        Electric field at the sample surface (top) and the objective lens plane (bottom).
+        The white circle indicates the area from which light can be collected, corresponding to the marginal angle $w_i = d\tan\theta_{\mr{m}}$ for the upper and $w_f = \flatfrac{\mr{\acrshort{ca}}}{2}$ for the lower plot.
+        The arrows represent the projection of the vector-valued electric field onto the $xy$-plane.
+        At the interface, the polarization is mostly out-of-plane and along $y$, but in the far field, represented by the lens plane, it is almost perfectly polarized along $x$.
+        The intensity profile changes from a local minimum at the center to maximal with a roughly circular dependence.
+    }
+    \label{fig:setup:optics:coupling:modes_2d}
+\end{marginfigure}
 
-We now approximate the light source as a point source at $z=-\epsilon < 0$ emitting a spherical wave as discussed above and introduce cylindrical coordinates with $\rho^{\prime} = \sqrt{x^{\prime 2} + y^2}$ so that $r = \sqrt{\rho^{\prime 2} + z^2}$.
-Plugging \cref{eq:setup:optics:coupling:coordinate_trafo} into \cref{eq:setup:optics:coupling:efield} then yields
+In order to estimate the fiber coupling efficiency of the light escaping the sample and collected by the objective lens focused by the ocular lens \enquote{D}, we need to consider refraction and transmission of the electric field at the surface, collimation by the objective lens, as well as diffraction at the ocular lens aperture.
+A detailed accounting of these effects is beyond the scope of this thesis.
+However, let us at least gain an intuition for the degree of these effects.
+Since we observe the dipole, oriented in-plane inside the \gls{qw}, from the side, it is useful to rotate the spherical coordinate system so that it is embedded in the coordinate system $(x, y, z)$ as defined in \cref{fig:setup:optics:coupling:emission} with coordinates $(r, \theta, \phi)$.
+
+The magnitude of the electric field vector in the surface plane, which I derive in more detail in \cref{sec:app:setup:optics:modes}, is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_2d}.
+The circle delimits the cone of emission bounded by $\theta_\mr{m}$ (radius $w_i$) while the arrows indicate the projection of the electric field $\bvec{E}(x, y, z)$ onto the interface, indicating that the polarization in the plane points mostly along $y$ at this distance from the source.
+Accounting for refraction and modifying the perpendicular and parallel ($s$ and $p$) components of the electric field according to Fresnel's equations~\cite{Hecht2017} results in the electric field in the plane of the objective lens at a distance of $\fob$ shown in the lower panel.
+Here, the circle indicates the \gls{ca} of the lens with radius $w_f$.
+The picture is quite different from before.
+First, the field is almost exclusively polarized along $x$, the dipole axis, as we might have expected.
+Moreover, the intensity $\propto\abs{\bvec{E}}$ does not depend strongly on the azimuthal angle $\phi$ at this distance, allowing us to approximate the field as rotationally invariant to estimate the coupling efficiency into the \gls{smf}.\sidenote{
+    Note that, while a fairly good approximation for the amplitude, this is likely not a good approximation for the phase because $k w_i \sim 1$, meaning that when the light exits the sample the phase is not constant across the surface, and the approximation as a point source just below the surface emitting a spherical wave warrants further investigation, \cf \cref{sec:app:setup:optics:modes}.
+}
+As shown in \cref{sec:app:setup:optics:modes}, the field after collimation is thus to good approximation given by
 \begin{equation}\label{eq:setup:optics:coupling:efield:lens}
-    E(\rho^\prime,z) = E_0\frac{\exp(\i k z\zeta(\rho^{\prime}))}{z\zeta(\rho^{\prime})}
+    \bvec{E}(r, \theta) = \tilde{A}(r)E_x(\theta)
 \end{equation}
 with
-\begin{equation}
-    \zeta(\rho^{\prime}) = \sqrt{1 + \left(n^2\left[1 + (z/\rho^{\prime})^2\right] - 1\right)\inverse}
-\end{equation}
-for the electric field outside the semiconductor.
-At the lens $\zeta\approx 1$ so that the field is actually more closely resembled by a plane rather than the original spherical wave.
+\begin{align}
+    \tilde{A}(r) &= \frac{\abs{\bvec{p}}k^2}{4\pi\epsilon}\frac{\exp(\i k z)}{r} \\
+    E_x(\theta) &= \frac{2n\pi\cos\theta\left[\cos\theta + n\nu(\theta) + n\nu(\theta)\cos\theta + \nu(\theta)^2\right]}{[n\cos\theta + \nu(\theta)][\cos\theta + n\nu(\theta)]} \label{eq:setup:optics:coupling:efield:lens:x}
+\end{align}
+and where $\nu(\theta) = \sqrt{1 - n^2\sin^2\theta}$.
+For $\tilde{A}(r)$, we assumed a perfect lens that transforms a spherical wave front with constant phase at constant $r$ into a plane wave with constant phase at constant $z$.
+
+The radial intensity profile ($\rho = \fob\tan\theta$ and $r=\sqrt{\rho^2 + \fob^2}$) given by the absolute value square of \cref{eq:setup:optics:coupling:efield:lens} is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_1d} together with a flattop (magenta) and a Gaussian (green) beam profile for comparison.
+The intensity drops to about half its maximum at the edge of the lens aperture, $\rho=w$.
+We may thus expect the mode matching to be qualitatively different from the flattop behavior discussed previously when coupling this beam into a \gls{smf} with a guiding mode very closely approximating the Gaussian \TEM{00} mode.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/modes_1d}
-    \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{
+    \caption[\imgsource{img/py/setup/extraction.py}]{
         Electric field modes.
-        Top: mode intensity of the light collected from the semiconductor at the objective lens plane (blue) in comparison to a flattop (green) and Gaussian \tem{00} mode with theoretical beam diameter after collimating with the ocular lens.
-        $w$ is the lens \gls{ca} radius.
-        Middle: diffraction pattern of the collimated beam approximated as a flattop when focusing onto the \gls{smf} end face with the ocular lens (green) and the fiber's guiding mode (magenta).
+        Top: mode intensity of the light collected from the semiconductor at the objective lens plane (blue) in comparison to a flattop (magenta) and Gaussian \TEM{00} mode with theoretical beam diameter after collimating with the ocular lens (green).
+        $w_f$ is the lens \gls{ca} radius.
+        Middle: diffraction pattern of the collimated beam when focusing onto the \gls{smf} end face with the ocular lens (blue), the flattop approximation (magenta), and the fiber's guiding mode (green).
         The curves are scaled with the radial coordinate $\rho$ to highlight the Airy rings.
         Bottom: power encased by a circle with radius $\rho$, $P(\rho)\propto\int_0^{\rho}\dd{\rho^\prime} \rho^{\prime} I(\rho^{\prime})$.
     }
     \label{fig:setup:optics:coupling:modes_1d}
 \end{marginfigure}
 
-The radial intensity profile given by the absolute value square of \cref{eq:setup:optics:coupling:efield:lens} is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_1d} together with a flattop (green) and a Gaussian (magenta) beam profile for comparison.
-The intensity drops only by about \qty{2}{\percent} at the edge of the lens aperture, $\rho=w$.
-We may thus expect non-negligible loss when coupling this beam into a \gls{smf} with a guiding mode very closely approximating the Gaussian \tem{00} mode whose electric field profile is given in \cref{eq:setup:optics:coupling:efield:tem00}~\cite{Kowalevicz2006}.
-
 The light collected and collimated by the objective lens next passes through the ocular lens in the detection arm which focuses it into the \gls{smf}.
-The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the (approximately) plane wave incident on the ocular lens aperture,\sidenote{
-    We can safely neglect diffraction effects from the objective lens aperture.
-    The Fraunhofer criterion $\flatfrac{b^2}{\lambda}$ with $b$ the aperture diameter is $\approx\qty{30}{\meter}$, implying the ocular lens at a distance of $\sim\qty{1}{\meter}$ is in the near field with many Fresnel zones where diffraction does not yet play a significant role~\cite{Hecht2017}.
-}
-resulting in the Airy disk~\cite{Hecht2017}
-\begin{equation}\label{eq:setup:optics:coupling:airy}
-    E(q) = E_0 2\pi w^2\frac{\exp(\i k \foc)}{\foc} \frac{J_1(\flatfrac{kwq}{\foc})}{\flatfrac{kwq}{\foc}},
+The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the wave (\cref{eq:setup:optics:coupling:efield:lens}) incident on the ocular lens aperture, which I give in \cref{sec:app:setup:optics:diffraction}.
+The resulting diffraction pattern, \cref{eq:app:setup:optics:diffraction}, scaled with the radius $\rho$ is plotted in the middle panel of \cref{fig:setup:optics:coupling:modes_1d} together with the corresponding Airy disk result for a flattop beam (\cref{eq:setup:optics:coupling:flattop:diffraction_pattern}) and the \gls{smf}'s guiding Gaussian mode.
+The pattern of the flattop and the more accurate mode profile from \cref{eq:setup:optics:coupling:efield:lens} are quite similar, but noticeably differ from the Gaussian mode at higher radii $\rho$.
+The lower panel shows the fraction of power included in a circle of radius $\rho$, $P(\rho)\propto \int_0^{\rho}\dd{\rho^{\prime}} \rho^{\prime} I(\rho^{\prime})$, demonstrating that we can expect the mode matching to be fairly good.
+Indeed, evaluating \cref{eq:setup:optics:coupling:efficiency:mode_matching} for the light field ($E_{\mr{l}}$, \cref{eq:setup:optics:coupling:efield:lens}) and the fiber's guiding mode ($E_{\mr{g}}$, \cref{eq:setup:optics:coupling:efield:tem00}), results in
+\begin{equation}\label{eq:setup:optics:coupling:efficiency:mode_matching:eval}
+    \eta_{\mr{m}}(E_{\mr{l}}, E_{\mr{g}})\approx\qty{83}{\percent}
 \end{equation}
-where $J_1(x)$ is Bessel function of order one and $q$ the radial coordinate in the image plane, \ie, the fiber end face.
-\Cref{eq:setup:optics:coupling:airy} scaled with the radius $\rho$ is plotted in the middle panel of \cref{fig:setup:optics:coupling:modes_1d} together with the \gls{smf}'s guiding Gaussian mode.
-While within the \gls{mfd} the two modes match quite well, a relevant amount of the power $P(\rho)\propto \int_0^{\rho}\dd{\rho^{\prime}} \rho^{\prime} I(\rho^{\prime})$ resides outside that radius as shown in the bottom panel of the same figure.
-
-The mode matching efficiency is then given by the normalized spatial overlap of the light field ($E_{\mr{l}}$, \cref{eq:setup:optics:coupling:efield:lens}) and the fiber's guiding mode ($E_{\mr{f}}$, \cref{eq:setup:optics:coupling:efield:tem00})~\cite{Paschotta2005},
-\begin{equation}\label{eq:setup:optics:coupling:efficiency:mode_matching}
-    \eta_{\mr{m}} = \frac{\int\dd{S}\abs{E_{\mr{f}}(\rho)}^2\int\dd{S}\abs{E_{\mr{l}}(\rho)}^2}{\abs{\int\dd{S} E_{\mr{f}}(\rho) E_{\mr{l}}(\rho)}^2} \approx\qty{78}{\percent}
-\end{equation}
-for our parameters.
+for our parameters, slightly better than the naive result using the flattop beam.
 Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $T\approx\qty{87}{\percent}$,\sidenote{
     While the specifications of the beamsplitter are $T:R = \qty{90}{\percent}:\qty{10}{\percent}$, in reality $T:R\approx\qty{87}{\percent}:\qty{6}{\percent}$ which also varies slightly with polarization.
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
-\begin{equation}
-    \eta_{\mr{o}} = T\eta_{\mr{c}}\eta_{\mr{m}}\approx\qty{1.9}{\percent}.
+\begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
+    \eta_{\mr{o}} = T\eta_{\mr{c}}\eta_{\mr{m}}\approx\qty{1.0}{\percent}.
 \end{equation}
 
 \subsection{Imaging the laser spot}\label{subsec:setup:optics:coupling:imaging}
+As the confocal microscope is free space, we are in a position to image the sample using a white light source.
+We can also, however, use the imaging capabilities to inspect the laser spot focused onto the sample and compare it to the behavior expected from \cref{subsec:setup:optics:coupling:lenses}.
 
-\subsection{Cross-polarization extinction}\label{subsec:sec:optics:coupling:rejection}
+\subsection{Cross-polarization extinction}\label{subsec:setup:optics:coupling:rejection}

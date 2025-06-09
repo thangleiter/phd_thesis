@@ -8,12 +8,9 @@ import numpy as np
 import pandas as pd
 from matplotlib import ticker, colors as mcolors
 from matplotlib.lines import Line2D
-from qutil import math
-from qutil.functools import partial
 from qutil.misc import filter_warnings
 from qutil.plotting import colors
-from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_25
-from scipy import integrate, special
+from qutil.plotting.colors import RWTH_COLORS
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
@@ -45,18 +42,6 @@ AR_COATING = 'B'
 # %% Functions
 
 
-def sm_fiber_angle(MFD, λ):
-    # https://www.sukhamburg.com/support/technotes/fiberoptics/coupling/collimatingsm/divergence.html
-    # https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=14489
-    # Far field, z >> z_R
-    return np.arctan(2*λ/(np.pi*MFD))
-
-
-def lens_divergence_angle(D, f):
-    # Same as SM fiber angle with D == MFD
-    return lens_angle_geom(D, f)
-
-
 def lens_angle_geom(D, f):
     with np.errstate(divide='ignore'):
         return np.arctan(D/(2*f))
@@ -75,10 +60,6 @@ def lens_focal_length_diffraction(D, d, λ):
     return np.pi*D*d/(4*λ)
 
 
-def lens_focal_length_divergence_angle(D, θ):
-    return lens_focal_length_geom(D, np.sin(θ))
-
-
 def diffraction_limit(D, f, λ):
     return 4*λ*f/(np.pi*D)
 
@@ -92,29 +73,7 @@ def beam_diameter_gaussian(MFD, z, λ):
 
 
 def collimated_beam_diameter_gaussian(f, MFD, λ, z=0):
-    return beam_diameter_gaussian(diffraction_limit(MFD, f, λ), z, λ)
-
-
-def beam_diameter_geom(f, NA, z=None):
-    return 2*f*np.tan(np.arcsin(NA))
-
-
-def optimal_focal_length(D, MFD, λ):
-    return np.pi*D*MFD/(4*λ)
-
-
-def instantaneous_divergence_gaussian(MFD, f, λ, z=None):
-    w_0 = MFD/2
-    if z is None:
-        return λ*f/(np.pi*w_0)
-    return np.arctan(np.pi*z*w_0**3/(f**3*λ*np.sqrt(1 + np.pi**2*z**2*w_0**4/(f**4*λ**2))))
-
-
-def instantaneous_diameter_gaussian(θ, MFD, λ, z=None):
-    w_0 = MFD/2
-    if z is None:
-        return 2*λ/(np.pi*np.tan(θ))
-    return np.tan(f**3*θ*λ*np.sqrt(-1/((f*θ - w_0)*(f*θ + w_0)))/(np.pi*w_0**2))
+    return beam_diameter_gaussian(beam_diameter_gaussian(MFD, f, λ), z, λ)
 
 
 # %% Load catalogs
@@ -209,18 +168,6 @@ df_edmund_compat = pd.DataFrame({
 df_all = pd.concat([df_thorlabs, df_edmund_compat], verify_integrity=False)
 df_all = df_all[~df_all.index.duplicated(keep='first')]
 
-# %%% Select
-available_lenses = df_all[
-    df_all[('Clear Aperture of Unmounted Lens', 'S2')] <= collimated_beam_diameter_gaussian(
-        df_all['Effective Focal Length']['Effective Focal Length'].max(),
-        MFD, λ0
-    )
-]
-available_lenses[[('Effective Focal Length', 'Effective Focal Length'),
-                  ('Working Distance', 'Mounted'),
-                  ('Working Distance', 'Unmounted'),
-                  ('NA', 'NA')]].sort_values(by=('NA', 'NA'))
-
 # %% NA contours
 
 
@@ -246,15 +193,18 @@ def plot_lens_choosing(df, D_min=1.5, D_max=5.3, f_max=30, dipole: bool = True, 
                 ['Effective Focal Length', 'NA', 'Clear Aperture of Unmounted Lens',
                  'Working Distance']
             ]
-            # TODO
             if gaussian:
                 with filter_warnings(action='ignore', category=RuntimeWarning):
+                    # Collimated beam diameter at the lens
                     D0 = beam_diameter_gaussian(MFD, z=f, λ=λ0)
+                    # Clip by the smallest aperture
                     D1 = np.nanmin((D0, S1, S2))
                     if not np.isnan([S1, S2]).any():
+                        # Scale the beam by the ratio of the apertures
                         D2 = D1 / min(S1, S2) * max(S1, S2)
                     else:
                         D2 = D1
+                    # Account for beam divergence at the objective plane
                     D = beam_diameter_gaussian(D2, z=1.5e3, λ=λ0)
             else:
                 with filter_warnings(action='ignore', category=RuntimeWarning):
@@ -267,7 +217,7 @@ def plot_lens_choosing(df, D_min=1.5, D_max=5.3, f_max=30, dipole: bool = True, 
                 continue
 
             h = ax.scatter(f, D, label=model, zorder=5, marker=markers[i], color=colors[i],
-                           edgecolors=edgecolors)
+                           edgecolors=edgecolors, alpha=0.85)
             handles.append(h)
             labels.append(model)
         return handles, labels
@@ -386,194 +336,3 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
                                         D_min=1.25, figsize=(TOTALWIDTH, 3.4),
                                         legendfontsize='x-small')
     fig.savefig(SAVE_PATH / 'choosing.pdf')
-
-# %% Mode matching
-lenses = {'ob': df_all.loc['354330'],
-          'oc': df_all.loc['A280']}
-f = {'ob': lenses['ob']['Effective Focal Length'].item(),
-     'oc': lenses['oc']['Effective Focal Length'].item()}
-w = lenses['ob']['Clear Aperture of Unmounted Lens', 'S2'].item() / 2
-
-
-def E_gaussian(x, y, w_0):
-    return np.exp(-(x**2 + y**2)/w_0**2)
-
-
-def E_gaussian_circular(q, w_0, k, z=0, n=1):
-    z = np.atleast_1d(z)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        λ = 2 * np.pi / k
-        z_0 = np.pi * w_0**2 * n / λ
-        w = w_0 * np.sqrt(1 + z**2 / z_0**2)
-        R = z * (1 + z_0**2 / z**2)
-    if np.size(z) > 1:
-        R[np.isnan(R)] = np.inf
-    elif np.isnan(R):
-        R = np.inf
-
-    return w_0 / w * np.exp(
-        -1j * (k * z - np.arctan(z / z_0))
-        - q**2 * (1 / w**2 + 1j * k / (2 * R))
-    )
-
-
-def E_airy_flattop(q, f_oc, w, k):
-    with np.errstate(invalid='ignore'):
-        E = 2 * np.pi * w**2 / f_oc * math.cexp(k * f_oc) * special.j1(x := k*w*q/f_oc) / x
-    E /= np.pi * w**2 / f_oc  # normalize to 1 at center
-
-    if np.size(E) > 1:
-        E[np.isnan(E)] = 1
-    elif np.isnan(E):
-        E = 1
-    return E
-
-
-def E_spherical(q, z, k, n=1):
-    with np.errstate(divide='ignore', invalid='ignore'):
-        tmp = n**2*(1 + (z/q)**2) - 1
-        eta = np.hypot(1, 1 / np.sqrt(tmp))
-        eta[np.isinf(eta)] = np.nan
-        r = z * eta
-        E = math.cexp(k * r) / r
-    E *= z  # normalize to 1 at center
-    E[np.isnan(E)] = 1
-    return E
-
-
-def _fresnel_kirchoff_integrand(rho, q, f_oc, f_ob, k, n=1):
-    with np.errstate(divide='ignore', invalid='ignore'):
-        tmp = n**2*(1 + (f_ob/q)**2) - 1
-        eta = np.hypot(1, 1/np.sqrt(tmp))
-    if np.size(eta) > 1:
-        eta[np.isinf(eta)] = 1
-    elif np.isinf(eta):
-        eta = 1
-
-    amp = 1j*k/(2*f_oc*f_ob)*math.cexp(k*f_oc)
-    exp = math.cexp(k*eta*f_ob)
-    bes = special.j0(k*rho*q/f_oc)
-    bra = 1 + eta - (n*f_ob*rho/(n**2*(rho**2 + f_ob**2) - rho**2))**2/eta
-    return amp*rho*exp*bes*bra
-
-
-def E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n=1):
-    return integrate.quad_vec(
-        partial(_fresnel_kirchoff_integrand, q=q, f_oc=f['oc'], f_ob=f['ob'], k=k, n=n), 0, w
-    )[0]
-
-
-def P_cumulative(fn, q, *args):
-    E = fn(q, *args)
-    return integrate.cumulative_simpson(q*np.abs(E)**2, x=q, initial=0)
-
-
-def mode_overlap(w0, w, f_oc, k, shift=0, lower=0, upper=np.inf):
-    # https://www.rp-photonics.com/mode_matching.html
-    def i1(q, w0, k):
-        return 2*np.pi*q*np.abs(E_gaussian_circular(q, w0, k).squeeze())**2
-
-    def i2(q, w, f_oc, k):
-        return 2*np.pi*q*np.abs(E_airy_flattop(q, f_oc, w, k).squeeze())**2
-
-    def i3(q, w0, w, f_oc, k):
-        return (
-            2*np.pi*q*E_gaussian_circular(q, w0, k)*E_airy_flattop(q, f_oc, w, k)
-        ).squeeze()
-
-    I1 = integrate.quad(i1, lower, upper, (w0, k))[0]
-    I2 = integrate.quad(i2, lower, upper, (w, f_oc, k,), limit=100)[0]
-    I3 = integrate.quad(i3, lower, upper, (w0, w, f_oc, k), limit=100, complex_func=True)[0]
-    return np.abs(I3)**2 / I1 / I2
-
-
-def mode_overlap_fresnel_kirchoff(w0, w, f_oc, f_ob, k, n, N=1001):
-    def i1(q, w0, k):
-        return 2*np.pi*q*np.abs(E_gaussian_circular(q, w0, k)).squeeze()**2
-
-    def i2(q, w, f_oc, f_ob, k, n):
-        return 2*np.pi*q*np.abs(E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n)).squeeze()**2
-
-    def i3(q, w0, w, f_oc, f_ob, k, n):
-        return (
-            2*np.pi*q*E_gaussian_circular(q, w0, k)*E_fresnel_kirchoff(q, f_oc, f_ob, w, k, n)
-        ).squeeze()
-
-    # quadrature integration does not converge in a reasonable amount of time
-    q = np.geomspace(1e-4, 1000*w0, N-1)
-    q = np.insert(q, 0, 0)
-    I1 = integrate.simpson(i1(q, w0, k), q)
-    I2 = integrate.simpson(i2(q, w, f_oc, f_ob, k, n), q)
-    I3 = integrate.simpson(i3(q, w0, w, f_oc, f_ob, k, n), q)
-    return np.abs(I3)**2 / I1 / I2
-
-
-def collection_efficiency(NA, n):
-    return 0.5 * (1 - (1 - (NA / n)**2)**1.5)
-
-
-# TODO: estimate decrease in overlap from lateral shift due to vibrations
-# %%% Compute efficiencies
-print(f"Collection efficiency: η = {collection_efficiency(lenses['ob']['NA'].item(), n):.3g}")
-print(f"Mode matching overlap: η = {mode_overlap(w0, w, f['oc'], k0):.3g}")
-# %%% Plot mode profile in aperture and on screen
-fill_style = dict(alpha=0.5, color=RWTH_COLORS_25['black'], hatch='//')
-
-fig, axs = plt.subplots(nrows=3, layout='constrained', figsize=(MARGINWIDTH, 3))
-
-# radial intensity profile
-ρ = np.linspace(0, 3*w, 1001)
-ax = axs[0]
-ax.plot(ρ[ρ <= w] / w,
-        (x := abs(E_spherical(ρ, f['ob'], k0, n))**2)[ρ <= w]/x[0], color=RWTH_COLORS['blue'])
-ax.plot(ρ[ρ > w] / w,
-        abs(E_spherical(ρ, f['ob'], k0, n))[ρ > w]**2/x[0], '--', color=RWTH_COLORS['blue'])
-ax.plot(
-    ρ[ρ <= w] / w,
-    (x := abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ0)/2, k0)))
-    [ρ <= w]/x[0],
-    color=RWTH_COLORS['magenta']
-)
-ax.plot(ρ[ρ > w] / w,
-        abs(E_gaussian_circular(ρ, beam_diameter_gaussian(MFD, f['oc'], λ0)/2, k0))[ρ > w]/x[0],
-        '--', color=RWTH_COLORS['magenta'])
-ax.plot(ρ[ρ <= w] / w, ρ[ρ <= w] < w, color=RWTH_COLORS['green'])
-ax.plot(ρ[ρ > w] / w, ρ[ρ > w] <= w, '--', color=RWTH_COLORS['green'])
-
-ax.set_xlim(xlim := ax.get_xlim())
-ax.set_ylim(ylim := ax.get_ylim())
-ax.fill_between([1, xlim[1]], *ylim, **fill_style)
-ax.set_xlabel(r'$\rho/w$')
-ax.set_ylabel(r'$I(\rho)/I(0)$')
-
-# diffraction pattern and gaussian mode
-q = np.linspace(0, 3*w0, 1001)
-ax = axs[1]
-# ax.plot(q / w0, q*(x := abs(E_fresnel_kirchoff(q, f['oc'], f['ob'], w, k0, n))**2)/(x[0]*w0))
-ax.plot(q / w0, q*(x := abs(E_gaussian_circular(q, w0, k0))**2)/(x[0]*w0),
-        color=RWTH_COLORS['magenta'])
-ax.plot(q / w0, q*(x := abs(E_airy_flattop(q, f['oc'], w, k0))**2)/(x[0]*w0),
-        color=RWTH_COLORS['green'])
-
-ax.set_xlim(xlim := ax.get_xlim())
-ax.set_ylim(ylim := ax.get_ylim())
-ax.set_xticks([0, 1, 2, 3], labels=[])
-ax.set_ylabel(r'$\rho I(\rho)/(w_0 I(0))$')
-
-# power included in circle of radius q
-q = np.linspace(0, MFD*10, 1001)
-ax = axs[2]
-ax.sharex(axs[1])
-# ax.plot(q / w0, (x := P_cumulative(E_fresnel_kirchoff, q, f['oc'], f['ob'], w, k0, n))/x[-1])
-ax.plot(q / w0, (x := P_cumulative(E_gaussian_circular, q, w0, k0))/x[-1],
-        color=RWTH_COLORS['magenta'])
-ax.plot(q / w0, (x := P_cumulative(E_airy_flattop, q, f['oc'], w, k0))/x[-1],
-        color=RWTH_COLORS['green'])
-
-ax.set_xlim(xlim)
-ax.set_ylim(ylim := ax.get_ylim())
-ax.set_xticks([0, 1, 2, 3])
-ax.set_xlabel(r'$\rho/w_0$')
-ax.set_ylabel(r'$P(\rho)/P(\infty)$')
-
-fig.savefig(SAVE_PATH / 'modes_1d.pdf')

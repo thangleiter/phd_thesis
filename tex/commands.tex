@@ -74,7 +74,10 @@
 \newcommand\x[1]{\ensuremath{X_{\pi/2}^{(#1)}}\xspace}
 \newcommand\y[1]{\ensuremath{Y_{\pi/2}^{(#1)}}\xspace}
 \newcommand\vc[1]{\ensuremath{\vec{#1}}\xspace}
-\newcommand\mat[1]{\ensuremath{\mathbf{#1}}\xspace}
+\newcommand\mat[1]{\ensuremath{\symbf{#1}}\xspace}
+\newcommand\bvec[1]{\ensuremath{\symbf{#1}}\xspace}
+\newcommand\ubvec[1]{\ensuremath{\hat{\bvec{e}}_{#1}}\xspace}
+\newcommand\pbvec[1]{\ensuremath{\bvec{#1}}^{\prime}\xspace}
 % QI
 \newcommand\fid[0]{\ensuremath{F}\xspace}
 \newcommand\avgfid[0]{\ensuremath{\fid_\mr{avg}}\xspace}
@@ -84,9 +87,7 @@
 \newcommand\avginfid[0]{\ensuremath{\infid_\mr{avg}}\xspace}
 \newcommand\entinfid[0]{\ensuremath{\infid_\mr{e}}\xspace}
 \newcommand\oneoverf{\ensuremath{\flatfrac{1}{f}}\xspace}
-\newcommand\bvec[1]{\ensuremath{\mathbf{#1}}}
-\newcommand\pbvec[1]{\ensuremath{\mathbf{#1}}'}
-\newcommand\vecsig[0]{\ensuremath{\bm{\sigma}}\xspace}
+\newcommand\vecsig[0]{\ensuremath{\bvec{\sigma}}\xspace}
 \newcommand\sx[0]{\ensuremath{\sigma_x}\xspace}
 \newcommand\sy[0]{\ensuremath{\sigma_y}\xspace}
 \newcommand\sz[0]{\ensuremath{\sigma_z}\xspace}
@@ -184,7 +185,8 @@
 \newcommand\halfwave{\ensuremath{\flatfrac{\lambda}{2}}\xspace}
 \newcommand\quarterwave{\ensuremath{\flatfrac{\lambda}{4}}\xspace}
 \newcommand\g[1]{\ensuremath{g\gth{#1}}\xspace}
-\newcommand\tem[1]{\ensuremath{\mr{\acrshort{tem}}_{#1}}\xspace}
+\newcommand\TEM[1]{\ensuremath{\mr{\acrshort{tem}}_{#1}}\xspace}
+\newcommand\NA{\ensuremath{\mr{\acrshort{na}}}\xspace}
 
 % math operators
 \DeclareMathOperator\rms{RMS}
@@ -197,6 +199,8 @@
 \DeclareMathOperator\expdist{Exp}
 \DeclareMathOperator\variance{Var}
 \DeclareMathOperator\expectation{E}
+\DeclareMathOperator\re{Re}
+\DeclareMathOperator\im{Im}
 
 % Citation macros
 \DeclareCiteCommand\citenum
