@@ -14,7 +14,7 @@ Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a 
         It is polarized (P), passes \halfwave- and \quarterwave-plates, and is reflected into the cryostat by a 90:10 \acrfull{bs}.
         An objective lens (O) focuses the beam onto the sample and collects and collimates the emitted light.
         It exits the cryostat, is transmitted through the \gls{bs} and an analyzer (A) before being focused into the \gls{smf} by the detection ocular (D).
-        Another beam splitter can be inserted below the first to divert some of the light to a \gls{cmos} camera with ocular lens (C).
+        Another \halfwave-plate can be inserted below the analyzer to rotate the plane of polarization, and another beam splitter can be inserted below the first to divert some of the light to a \gls{cmos} camera with ocular lens (C).
     }
     \label{fig:setup:optics:optical_path}
 \end{marginfigure}
@@ -322,6 +322,9 @@ The result is shown in \cref{fig:setup:optics:coupling:imaging} for the excitati
 The first column shows a cropped section of the recorded images, showing good alignment between both spots but also some sidelobes along perpendicular axes rotated by around \qty{45}{\degree} to the camera axes.
 This is also reflected in the relative residuals of the fitted spot that clearly shows that the spot is not described only by a Gaussian \TEM{00} mode.
 However, extracting the beam waist radii from the fits and scaling with the magnification factors, which display a slight asymmetry between the two axes, \num{30} to \num{27.4}, we obtain reasonable results between \num{1.4} and \num{2} times larger than the diffraction limit given by the lens geometries, \cf \cref{subsec:setup:optics:coupling:lenses}, as shown in \cref{tab:setup:optics:coupling:imaging}.
+For a more faithful measurement of the spot size one typically performs a knife-edge measurement.
+This has the advantage that it does not depend on additional components of the optical path such as the beam splitter \acrshort{bs}2 and focusing lens.
+In \cref{sec:setup:vibrations:optic} I perform such a measurement in the context of vibration spectroscopy.
 
 \begin{margintable}
     \centering
@@ -334,9 +337,9 @@ However, extracting the beam waist radii from the fits and scaling with the magn
         \toprule
         \textsc{Beam waist} (\unit{\micro\meter})    & $w_{0, x}$ & $w_{0, y}$ \\
         \midrule
-        Detection path                                      & 0.58       & 0.75 \\
-        Excitation path                                     & 0.60       & 0.84 \\
-        Diffraction limit                                   & 0.42       & 0.42 \\
+        Detection path                               & 0.58       & 0.75 \\
+        Excitation path                              & 0.60       & 0.84 \\
+        Diffraction limit                            & 0.42       & 0.42 \\
         \bottomrule
     \end{tabular}
 \end{margintable}

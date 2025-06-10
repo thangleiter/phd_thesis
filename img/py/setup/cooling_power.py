@@ -4,13 +4,15 @@ import sys
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import mpmath as mpm
 import numpy as np
 import pandas as pd
 import xarray as xr
 from cycler import cycler
-from qutil import const
+from qutil import const, functools
 from qutil.plotting.colors import RWTH_COLORS
 from scipy import interpolate, optimize
+from tqdm import tqdm
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
@@ -36,6 +38,33 @@ def P_AC(V, R, P_0):
     return V**2/R + P_0
 
 
+@functools.cache
+def planck_mpm(E, kT):
+    return E**3 / mpm.expm1(E/kT)
+
+
+# %% Estimate BBR fraction
+T = np.linspace(1e-3, 300, 101)
+E_c = const.lambda2eV(mpm.mpf(4.5e-6))
+
+P_0, P_inf = [], []
+for t in tqdm(T):
+    kT = const.k * mpm.mpf(t) / const.e
+    P_0.append(mpm.quad(functools.partial(planck_mpm, kT=kT), [E_c, mpm.inf]))
+    P_inf.append(mpm.quad(functools.partial(planck_mpm, kT=kT), [0, mpm.inf]))
+
+F = np.array(P_0) / np.array(P_inf)
+
+fig, ax = plt.subplots(layout='constrained')
+ax.semilogy(T, F)
+ax.grid()
+ax.set_xlim(0)
+ax.set_ylim(1e-20, 1e1)
+ax.set_yticks([1e-20, 1e-10, 1e-0])
+ax.set_xlabel(r'$T$ (K)')
+ax.set_ylabel('Rel. radiance')
+
+fig.savefig(SAVE_PATH / 'black_body_radiance.pdf')
 # %% Window heating
 temp = pd.read_table(DATA_PATH / 'window_heating.txt', skiprows=1, sep='\t+', engine='python',
                      index_col=0)['MXC Temperature (mK)']
