@@ -65,30 +65,6 @@ ax.set_xlabel(r'$T$ (K)')
 ax.set_ylabel('Rel. radiance')
 
 fig.savefig(SAVE_PATH / 'black_body_radiance.pdf')
-# %% Window heating
-temp = pd.read_table(DATA_PATH / 'window_heating.txt', skiprows=1, sep='\t+', engine='python',
-                     index_col=0)['MXC Temperature (mK)']
-x = [0, 1, 2]
-
-cycle = cycler(color=mpl.color_sequences['rwth'][:3], marker=['o', 'D', 'v'], markersize=[5, 5, 6])
-
-
-fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1))
-ax.margins(x=0.05, y=0.1)
-ax.grid(axis='y')
-
-for i, (xx, sty) in enumerate(zip(x, cycle)):
-    ax.plot(xx, temp.to_numpy()[::-1][i], **markerprops(**sty))
-
-ax.set_yscale('linear')
-ax.set_xticks(x, labels=['PT1+PT2+Still', 'Cold', 'None'])
-match backend:
-    case 'pgf':
-        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (\unit{\milli\kelvin})')
-    case 'qt':
-        ax.set_ylabel(r'$T_{\mathrm{MXC}}$ (mK)')
-
-fig.savefig(SAVE_PATH / 'window_heating.pdf')
 
 # %% Laser heating
 heater = pd.read_table(DATA_PATH / 'mxc_heater_temperature.txt', skiprows=3, sep='\t+',
