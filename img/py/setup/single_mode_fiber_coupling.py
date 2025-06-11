@@ -21,6 +21,8 @@ DATA_PATH = PATH.parent / 'data/lenses'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
+SAVE_PATH_PGF = PATH / 'pdf/setup'
+SAVE_PATH_PGF.mkdir(exist_ok=True)
 
 with np.errstate(divide='ignore'):
     SEQUENTIAL_CMAPS = {
@@ -335,4 +337,4 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
     fig, axes, leg = plot_lens_choosing(df_all, ylog=False, fill_cbar=True, cbar_loc='top',
                                         D_min=1.25, figsize=(TOTALWIDTH, 3.4),
                                         legendfontsize='x-small')
-    fig.savefig(SAVE_PATH / 'choosing.pdf')
+    fig.savefig(SAVE_PATH_PGF / 'choosing.pgf')

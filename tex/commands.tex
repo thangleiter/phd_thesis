@@ -224,7 +224,7 @@
 \DeclareRobustCommand\repolink[1]{%
     % https://genai.rwth-aachen.de/app/conversations/68094898cd677dccf7756dab
     \texorpdfstring{%
-            {\begingroup
+        {\begingroup
         % Change settings locally.
         \hypersetup{colorlinks=false,urlcolor=black}%
         \href{https://git.rwth-aachen.de/tobias.hangleiter/phd_thesis/-/tree/main/#1}{\texttt{\detokenize{#1}}}%
@@ -233,6 +233,12 @@
     % Fallback for PDF bookmarks and list entries
         \href{https://git.rwth-aachen.de/tobias.hangleiter/phd_thesis/-/tree/main/#1}{\texttt{\detokenize{#1}}}%
     }%
+}
+\DeclareRobustCommand\importpgf[2]{%
+    {\begingroup
+        \hypersetup{hidelinks}
+        \import{#1}{#2}%
+    \endgroup}%
 }
 
 % Fancy lettrines

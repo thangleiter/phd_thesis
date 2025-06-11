@@ -39,10 +39,6 @@
 % Custom packages
 %----------------------------------------------------------------------------------------
 %\usepackage{pdfpages}
-%\usepackage{newpax}
-%\directlua{require("newpax")}
-%\directlua{newpax.writenewpax("img/pdf/setup/choosing")
-%
 \PassOptionsToPackage{
     chapter,%
     cache=true,%
@@ -98,6 +94,10 @@
 
 %\usepackage{pgfplots}
 %\pgfplotsset{compat=1.18}
+
+% Fix for matplotlib's PGF backend
+% https://github.com/matplotlib/matplotlib/issues/27907
+\newcommand{\mathdefault}[1]{\displaystyle #1}
 
 %\usetikzlibrary{math}
 % quantum circuits
