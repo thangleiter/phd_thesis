@@ -132,20 +132,18 @@
         -- ($(-\CA, 0) + (objective)$)
         -- (source)
     ;
-    % CMOS beam
-    \draw[midarrow2,RWTHbordeaux100,dashed]
-        (source)
-        -- ++($(\CA, \f)$)
-        -- ($(bs2) + (\CA, \CA)$)
-        -- ($(cmos-ocular) + (0, \CA)$)
-        -- (cmos)
-    ;
     % Detection beam
     \draw[midarrow,RWTHbordeaux100]
         (source)
         -- ++($(\CA, \f)$)
         -- ($(\CA, 0) + (detection-ocular)$)
         -- ++($(-\CA, \f)$)
+    ;
+    % CMOS beam
+    \draw[midarrow1,RWTHbordeaux100,dashed]
+        ($(bs2) + (\CA, \CA)$)
+        -- ($(cmos-ocular) + (0, \CA)$)
+        -- (cmos)
     ;
 
     % Windows

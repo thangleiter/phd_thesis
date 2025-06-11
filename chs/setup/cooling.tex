@@ -82,16 +82,23 @@ Indeed, already a single window installed on the Cold plate significantly reduce
 While the windows do introduce additional reflections of the laser spot when imaging the sample due to the finite remaining reflectance, their intensity is low enough, and their position on the camera far enough away from the main spot to be an issue.
 On the contrary, their presence can be quite useful when aligning the laser spots from the two arms of the optical head by aligning them in such a way that the reflections overlap.
 
+\todo{I / we, general rephrasing}
 Besides the ambient radiation, there is also the heat load introduced by the partial absorption of the laser excitation during optical measurements.
-With the power meter mounted in the transmission direction of the excitation arm of the optical head (\cf \cref{fig:setup:optics:optical_path}), we can measure the amount of power directed towards the sample by scaling the measured power with the ratio of transmittance and reflectance of the \gls{bs}, $T:R\approx\num{15}$.
-Assuming negligible losses on the way towards the sample, we can then measure the mixing chamber temperature as function of laser power.
+In order to characterize both the heat load and measure the absorptance $A$ of our sample, I irradiated a flip-chip-bonded membrane sample such as measured in \cref{part:exp} with the laser at \qty{815}{\nano\meter} and measured the increase in base temperature.
+The sample consists of a \qty{220}{\nano\meter} thick \ch{GaAs/AlGaAs} membrane glued with epoxy to a \ch{Si} host substrate chip for handling.
+As the samples are flip-chip bonded, light that is transmitted through the chip without being absorbed or reflected will then hit the surrounding puck and scatter.
+Thus, to be precise, I measured $A+T$ this way, where $T$ is the transmittance, assuming that light that exits the membrane will be absorbed \emph{somewhere} and contribute to heating.
+I will nonetheless refer to the measured quantity as simply $A$.
+
+With the power meter mounted in the transmission direction of the excitation arm of the optical head (\cf \cref{fig:setup:optics:optical_path}), I measured the amount of power directed towards the sample by scaling the measured power with the ratio of transmittance and reflectance of the \gls{bs}, $T\div R\approx\num{15}$.
+Assuming negligible losses on the way towards the sample, I then recorded the mixing chamber temperature as function of laser power.
 To relate that change in temperature to a heat load $\dot{Q}$ deposited on the sample, I calibrated the cooling power of the \gls{dr} using the built-in heaters.
 Setting a heater power and waiting for the mixing chamber temperature to settle thus yields the cooling power $P_{\mr{cool}}$ as function of temperature \Tmxc, which is expected to follow the quadratic relationship~\cite{DeWaele2011}
 \begin{equation}\label{eq:setup:cooling:dr_power}
     P_{\mr{cool}} = \dot{Q} = \alpha \Tmxc^2 + \beta.
 \end{equation}
 As a last step, we can use a simple model of absorption of the laser on the sample in thermal equilibrium,
-\begin{equation}
+\begin{equation}\label{eq:setup:cooling:absorptance}
     P_{\mr{cool}} = P_{\mr{nr}} = A P_{\mr{laser}},
 \end{equation}
 where $P_{\mr{nr}}$ is the amount of power deposited into nonradiative emission channels causing heating of the lattice, to relate the incident laser power $P_{\mr{laser}}$ to the cooling power and thus obtain the absorptance $A$.
@@ -108,39 +115,105 @@ where $P_{\mr{nr}}$ is the amount of power deposited into nonradiative emission 
     \label{fig:setup:cooling:laser}
 \end{marginfigure}
 
-\clearpage
-Next, I address the impact of the \positioner position readout.
+\Cref{fig:setup:cooling:laser} shows data sets obtained with the \gls{mxc} heater (magenta) and laser (green).
+The solid lines are fits to \cref{eq:setup:cooling:dr_power} including the solid data points only as at low powers there is clearly a deviation from the square-root relationship between the two.
+Comparing the fit results for $\alpha$, we obtain $A = \qty{28.5}{\percent}$.
+Alternatively, we can fit a quadratic smoothing spline to the laser data (magenta dashed line) and fit a version scaled according to \cref{eq:setup:cooling:absorptance} to the heater data (green dashed line).
+This yields $A = \qty{28.1}{\percent}$ in good agreement to the value obtained from fitting the theoretical model.
+Furthermore, the data shows that only at laser powers above \qty{10}{\micro\watt} the \gls{mxc} heats up appreciably.
+
+Lastly, let us address the impact of the \positioner position readout.
 The nanopositioners are crucial in the operation of the microscope as they are used to position the sample with respect to the focal spot of the objective lens.
 They operate in slip-stick mode which naturally generates heat through friction when moving.
 However, the resistive position readout also contributes to heating, so in order to assess if the readout should be switched off when it is not required to avoid unnecessarily elevated cryostat temperatures, I measured \Tmxc as a function of readout voltage.
-Note that the \positionercontroller piezo controller offers the option of lock-in measurement for readout, which should be enabled as it improves the \gls{snr} and thus allows for a smaller readout voltage.
+Note that the \positionercontroller piezo controller offers the option of lock-in measurement for readout, which should be enabled as it improves the \gls{snr} and thus allows for a smaller readout voltage $V_{\mr{AC}}$.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/anc_readout_heating}
     \caption[\imgsource{img/py/setup/cooling_power.py}]{
         \Acrlong{mxc} temperature as function of nanopositioner AC readout voltage.
-        Solid line is a fit to $T_{\mr{\acrshort{mxc}}} = a V_{\mr{AC}}^2 + b$.
         The secondary axis indicates the conversion from $T_{\mr{\acrshort{mxc}}}$ to power obtained in \cref{fig:setup:cooling:laser} which is approximately linear in this regime, leading to the expected $P\sim R\inverse V_{\mr{AC}}^2$ behavior.
-        Fitting $P$ instead of $T_{\mr{\acrshort{mxc}}}$ results in $R=\qty{17.5}{\kilo\ohm}$.
+        Solid line is a fit to the power with $R=\qty{16.9}{\kilo\ohm}$.
     }
     \label{fig:setup:cooling:anc}
 \end{marginfigure}
 
+\Cref{fig:setup:cooling:anc} shows the temperature as function of $V_{\mr{AC}}$, as well as the equivalent power from the calibration performed in \cref{fig:setup:cooling:laser}.
+The expected Ohmic behavior is evident, resulting in a resistance of $R=\qty{16.9}{\kilo\ohm}$.
+We can conclude that for $V_{\mr{AC}} < \qty{100}{\milli\volt}$, heating from the positioner readout is negligible, which is a regime where the \gls{snr} of the measurement is reasonable.
+
 \section{Electron temperature}\label{sec:setup:cooling:etemp}
+In the previous section, I discussed various sources of heating of the cryostat temperature measured at the mixing chamber plate using a commercial resistive thermometer.
+Being in the quantum technology business, though, we can measure the electronic temperature using a more sensitive probe: a \gls{gdqd}.\todo{will QDs have been introduced at this point?}
+\Glspl{gdqd} hosted in semiconductor heterostructures offer several different ways of measuring the electron temperature that are each different in subtle ways.
+For example, using an adjacent charge sensor, one can measure the width of a lead transition~\cite{Maradan2014} or the width of the inter-dot transition in a double \gls{qd}~\cite{DiCarlo2004}.
+Simpler still, one can measure the width of a Coulomb resonance in the conductance through a \gls{qd}~\cite{Ihn2009,Maradan2014}.
+All of these methods rely on some form of energy reference scale that relates the energy of an electron confined in a \gls{qd} to some externally controlled parameter such as a voltage, however.
+Typically this is the so-called \emph{lever arm} $\alpha$, which is the constant of proportionality between the plunger gate voltage and the electrochemical potential $\mu_N$ for adding the $N$th electron to the quantum dot~\cite{Ihn2009}.
+It can be measured using pulsed-gate spectroscopy~\cite{Fujisawa2001,Harbusch2010}, photon-assisted tunneling~\cite{Kouwenhoven1994}, or using bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}.
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/setup/diamonds_gl}
+    \caption[\imgsource{img/py/setup/transport.py}]{
+        Gate layout of a quadruple \acrlong{qd} with two charge sensor \glspl{qd} from \citer{Cerfontaine2019}.
+        Ohmic contacts used for transport measurements are right (left) of SA (SD).
+        The gates are colored according to the voltages applied with the device hosting a single large \gls{qd} in the few-electron, sequential tunneling regime.
+    }
+    \label{fig:setup:cooling:etemp:gl}
+\end{marginfigure}
+
+Here, I chose the simplest of these techniques that require the least tune-up to avoid unnecessarily complicating things.
+That is, I formed a single \gls{qd} in a gated \ch{GaAs/AlGaAs} heterostructure and extracted the lever arm from Coulomb diamonds and the electron temperature from the conductance trace of a Coulomb resonance at zero bias in the sequential tunneling regime.
+The gate layout of the device used is shown in \cref{fig:setup:cooling:etemp:gl}.
+Designed for two-qubit experiments with two-electron spin qubits by \citet{Cerfontaine2019}, I tuned the device to host a single large \gls{qd} in the center of the device.
+The gates are color-coded according to the voltages applied with the device in the few-electron regime.
+I applied a bias voltage at the Ohmic contact situated to the right of gate SA using a \decadac voltage source and measured the current at the Ohmic contact to the left of gate SD using a \baseltia I/V converter with non-inverting input shorted to ground.
+Gate voltages were also supplied by the \decadac.
+All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.
+The former were connected to RF lines attenuated with \qtylist{20;6;0;3}{\decibel} attenuators mounted to the \gls{pt1}, \gls{pt2}, Still, and \gls{mxc} plates, respectively, and connected to a \hdawg but unused.
+
+To tune the electrochemical potential in the dot, I set up a virtual plunger gate~\cite{Botzem2018} from a linear combination of the gates NBC and TBC by performing a two-dimensional sweep of TBC against NBC\@.
+From the slope $m$ of a charge transition in the voltage space spanned by TBC and NBC, I computed the weights of the virtual gate in terms of the physical gates as
+\begin{equation}
+    V_p = \frac{1}{\sqrt{1 + m^2}}\left(\mr{TBC} + m\times \mr{NBC}\right).
+\end{equation}
+Following this procedure, even a dot that does not lie in the middle between the two gates, \ie, couples more strongly to one than the other gate, should not move in position when changing the virtual gate voltage.
+Having set up the virtual plunger gate, I performed a Coulomb diamond measurement wherein the (virtual) plunger gate is swept as the source-drain bias voltage is varied~\cite{Ihn2009}.\sidenote{
+    In this case, the source-drain bias is asymmetric as the drain is always grounded and only the electrochemical potential of the source reservoir is changed.
+    This does not qualitatively change the physics of the measurement, though.
+}
+The left panel of \cref{fig:setup:cooling:etemp:diamonds} shows the current of the Coulomb diamond measurement.
+Starting from zero bias, when current can only flow through the Coulomb-blockaded \gls{qd} when both source and drain are aligned with an energy level in the dot, increasing the bias voltage opens up the \emph{bias window}, allowing current to flow as long as the dot's energy level is inside the window.
+This defines areas of zero (blockaded) current within the space of plunger and bias voltage that takes on the shape of a diamond whose height (along the bias axis) is given by the energy penalty of adding another electron to the dot~\cite{Ihn2009},
+\begin{equation}
+    E_\mr{add} = \mu_{N+1} - \mu_N = E_c + \Delta E,
+\end{equation}
+where $\mu_N$ is the electrochemical potential of the dot with $N$ electrons, $E_c$ is the charging energy due to Coulomb repulsion, and $\Delta E$ is the single-particle energy spacing.
+At the same time, the width of a diamond (along the gate voltage axis) is given by
+\begin{equation}
+    \Delta V_p = \alpha\inverse E_\mr{add},
+\end{equation}
+implying that we can extract the lever arm $\alpha$ from the geometry of the diamonds.
+Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of current through the Coulomb resonance at zero bias (dashed gray lines), I obtained
+\begin{equation}
+    \alpha = \abs{\Delta m} = \abs{m_1 - m_2} \approx\qty{0.11}{\eV\per\volt}.
+\end{equation}
+
+Although not of particular interest for the electron temperature, a Coulomb diamond measurement can also be used for excited state spectroscopy.
+Computing the differential conductance $\partial I/\partial V_p$ makes visible a host of additional transition lines in the conducting region of the map (right panel of \cref{fig:setup:cooling:etemp:diamonds}).\sidenote{
+    Features inside the blockaded region can also occur, indicative of co-tunneling.
+}
+These correspond to excited states of the quantum dot entering the bias window.
+Their sign depends on the tunnel coupling of the state to source and drain~\cite{Ihn2009}.
+
 \begin{figure*}
     \centering
     \includegraphics{img/pdf/setup/diamonds}
     \caption[\imgsource{img/py/setup/transport.py}]{}
     \label{fig:setup:cooling:etemp:diamonds}
 \end{figure*}
-
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/setup/diamonds_gl}
-    \caption[\imgsource{img/py/setup/transport.py}]{}
-    \label{fig:setup:cooling:etemp:gl}
-\end{marginfigure}
 
 \begin{marginfigure}
     \centering

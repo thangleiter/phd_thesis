@@ -12,7 +12,10 @@
 - Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
 
 # To Dos
+
 ## Content
+- [ ] Acknowledgements / author contributions
+ 
 ### How to read this thesis
 - [ ] PDF viewer
 - [ ] Image sources
@@ -30,7 +33,7 @@
 - [x] Spot image fits
 - [ ] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
-- [ ] Indicate noise floor from accelerometer signal conditioner?
+- [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
@@ -39,8 +42,8 @@
  
 ## Layout
 - [ ] Tune the bibliography style
-- [ ] Chapters instead of parts?
-	- [x] Else numbered parts
+- [ ] ~~Chapters instead of parts?~~
+- [x] Else numbered parts
 - [ ] Part title page design
 - [ ] `\margintoc`?
 

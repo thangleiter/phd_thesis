@@ -125,8 +125,8 @@ a = (np.diff(xs)/np.diff(ys)).squeeze()
 b = xs[:, 0] - a * ys[:, 0]
 
 ΔV = np.diff(b).item()
-E_c = abs(np.diff(b) / np.diff(a)).item()
-alpha = E_c / ΔV
+ΔE = abs(np.diff(b) / np.diff(a)).item()
+alpha = ΔE / ΔV
 
 # %%% GL
 with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=True):
@@ -144,8 +144,8 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
         else:
             txt.set_visible(False)
 
-    gl.ax.text(1.29 + 0.9, +1.15, 'SA', horizontalalignment='center', verticalalignment='bottom')
-    gl.ax.text(1.29 - 0.9, +1.15, 'SD', horizontalalignment='center', verticalalignment='bottom')
+    gl.ax.text(1.29 - 0.9, +1.15, 'SA', horizontalalignment='center', verticalalignment='bottom')
+    gl.ax.text(1.29 + 0.9, +1.15, 'SD', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, +1.15, 'NBC', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, -0.15, 'TBC', horizontalalignment='center', verticalalignment='top')
 

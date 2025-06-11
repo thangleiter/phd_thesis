@@ -8,7 +8,6 @@ import mpmath as mpm
 import numpy as np
 import pandas as pd
 import xarray as xr
-from cycler import cycler
 from qutil import const, functools
 from qutil.plotting.colors import RWTH_COLORS
 from scipy import interpolate, optimize
@@ -34,8 +33,8 @@ def Qdot(T, a, b):
     return a * T**2 + b
 
 
-def P_AC(V, R, P_0):
-    return V**2/R + P_0
+def P_AC(V, R):
+    return V**2/R
 
 
 @functools.cache
@@ -69,7 +68,7 @@ fig.savefig(SAVE_PATH / 'black_body_radiance.pdf')
 # %% Laser heating
 heater = pd.read_table(DATA_PATH / 'mxc_heater_temperature.txt', skiprows=3, sep='\t+',
                        engine='python', index_col=0)['Temperature (K)'].to_xarray()
-laser = xr.load_dataarray(DATA_PATH / 'laser_absorption.h5')
+laser = xr.load_dataset(DATA_PATH / 'laser_absorption.h5')
 
 fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.25))
 ylim = (5, 40)
@@ -87,8 +86,8 @@ ax.plot(Qdot(x := np.geomspace(*ylim, 1001), *popt_heater), x, color=RWTH_COLORS
 
 # Laser data
 ix = 5
-T = laser.data * 1e3  # mK
-P = laser['excitation_path_power_at_sample'].data * 1e6  # μW
+T = laser.fridge_T8.data * 1e3  # mK
+P = laser.excitation_path_power_at_sample.data * 1e6  # μW
 ax.plot(P[ix:], T[ix:], **markerprops(RWTH_COLORS['green'], marker='D', markersize=4))
 ax.plot(P[:ix], T[:ix], **markerprops(
     RWTH_COLORS['green'], marker='D', markersize=4, markeredgealpha=0.5, markerfacealpha=0.1
@@ -101,6 +100,9 @@ ax.plot(Qdot(x, *popt_laser), x, color=RWTH_COLORS['green'])
 spline = interpolate.make_splrep(T, P, k=2, s=1)
 popt_spline, pcov_spline = optimize.curve_fit(lambda x, A: A * spline(x),
                                               heater.data * 1e3, heater["Power (uW)"].data)
+
+print(f'popt_heater / popt_laser = {popt_heater / popt_laser}')
+print(f'popt_spline = {popt_spline}')
 
 ax.plot(spline(x), x, color=RWTH_COLORS['green'], ls='--')
 ax.plot(spline(x) * popt_spline, x, color=RWTH_COLORS['magenta'], ls='--')
@@ -132,27 +134,30 @@ fig.savefig(SAVE_PATH / 'laser_heating.pdf')
 temp = pd.read_table(DATA_PATH / 'anc_readout_heating.txt', skiprows=1, sep='\t+', engine='python',
                      index_col=0)['MXC Temperature (mK)'].to_xarray()
 volt = temp.coords['Voltage (mV)']
-fit = temp.curvefit('Voltage (mV)', P_AC).curvefit_coefficients
-x = volt.interp({'Voltage (mV)': np.linspace(0, 300*1.05, 1001)},
-                kwargs={"fill_value": "extrapolate"})
-
-fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.1))
-ax.margins(x=0.05, y=0.1)
-temp.plot(ax=ax, **markerprops(RWTH_COLORS['blue']))
-ax.set_xlim(ax.get_xlim())  # freezes them
-ax.plot(x, P_AC(x, *fit))
-ax.grid()
-ax.set_xticks([0, 100, 200, 300])
 
 # Use splines to convert temperature to power from the heater measurements
 T = heater.data * 1e3  # mK
 P = heater["Power (uW)"].data  # μW
 
+fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.1))
 ax2 = ax.secondary_yaxis(
     'right',
-    (interpolate.make_splrep(T, P, k=2, s=1),
-     interpolate.make_splrep(P, T, k=2, s=1))
+    (t_to_p := interpolate.make_splrep(T, P, k=2, s=1),
+     p_to_t := interpolate.make_splrep(P, T, k=2, s=1))
 )
+ax2.set_yticks([0, 2, 4, 6])
+
+ax.margins(x=0.05, y=0.1)
+temp.plot(ax=ax, **markerprops(RWTH_COLORS['blue']))
+ax.set_xlim(ax.get_xlim())  # freezes them
+ax.grid()
+ax.set_xticks([0, 100, 200, 300])
+
+popt, pcov = optimize.curve_fit(P_AC, volt, t_to_p(temp))
+print('popt[0] = ', popt[0])
+x = volt.interp({'Voltage (mV)': np.linspace(0, 300*1.05, 1001)},
+                kwargs={"fill_value": "extrapolate"})
+ax.plot(x, p_to_t(P_AC(x, *popt)))
 
 match backend:
     case 'pgf':
