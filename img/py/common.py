@@ -2,8 +2,9 @@ import pathlib
 
 import IPython
 import matplotlib as mpl
+import numpy as np
 
-from qutil import const
+from qutil import const, functools, misc
 
 TEXTWIDTH = 4.2134
 MARGINWIDTH = 1.87831
@@ -46,6 +47,36 @@ def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerface
         markeredgecolor=mpl.colors.to_rgba(color, markeredgealpha),
         markerfacecolor=mpl.colors.to_rgba(color, markerfacealpha)
     )
+
+
+def _lambda2eV(lambda_):
+    with misc.filter_warnings('ignore', RuntimeWarning):
+        result = const.lambda2eV(lambda_)
+    result[np.isinf(result)] = 1e16
+    return result
+
+
+def _eV2lambda(eV):
+    with misc.filter_warnings('ignore', RuntimeWarning):
+        result = const.eV2lambda(eV)
+    result[np.isinf(result)] = 1e16
+    return result
+
+
+def secondary_axis(ax, unit: str = 'eV'):
+    match unit:
+        case 'nm':
+            functions = (functools.scaled(1e+9)(_lambda2eV),
+                         functools.scaled(1e-9)(_eV2lambda))
+            secondary_unit = 'eV'
+        case 'eV':
+            functions = (functools.scaled(1e+9)(_eV2lambda),
+                         functools.scaled(1e-9)(_lambda2eV))
+            secondary_unit = 'nm'
+        case _:
+            return ax, ''
+
+    return ax.secondary_xaxis('top', functions=functions), secondary_unit
 
 
 def n_GaAs(T=0):

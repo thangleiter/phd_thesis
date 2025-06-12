@@ -1,7 +1,6 @@
 import pathlib
 import sys
 import tempfile
-import threading
 import time
 
 import matplotlib as mpl

@@ -145,9 +145,13 @@ We can conclude that for $V_{\mr{AC}} < \qty{100}{\milli\volt}$, heating from th
 
 \section{Electron temperature}\label{sec:setup:cooling:etemp}
 In the previous section, I discussed various sources of heating of the cryostat temperature measured at the mixing chamber plate using a commercial resistive thermometer.
-Being in the quantum technology business, though, we can measure the electronic temperature using a more sensitive probe: a \gls{gdqd}.\todo{will QDs have been introduced at this point?}
-\Glspl{gdqd} hosted in semiconductor heterostructures offer several different ways of measuring the electron temperature that are each different in subtle ways.
-For example, using an adjacent charge sensor, one can measure the width of a lead transition~\cite{Maradan2014} or the width of the inter-dot transition in a double \gls{qd}~\cite{DiCarlo2004}.
+An arguably more relevant metric for quantum device experiments is the electronic temperature which -- depending on how it is measured in detail -- corresponds to the temperature of the Fermi distribution of electrons in or coupled to a reservoir rather than the temperature of the crystal lattice.
+Precisely because the behavior of these quantum devices depends so sensitively on the electron temperature, one can also flip this relationship on its head and use them to \emph{measure} the temperature, an instance of single controlled quantum systems being used as highly sensitive probes of physical quantities known as \emph{quantum sensing}~\cite{Degen2017}.
+\Glspl{gdqd} hosted in the \gls{2deg} of a semiconductor heterostructure offer several different ways of measuring the electron temperature that are each different in subtle ways.
+For example, using an adjacent charge sensor, one can measure the width of a lead\sidenote{
+    A \enquote{lead} is a reservoir of charge carriers coupled to a quantum dot.
+}
+transition~\cite{Maradan2014} or the width of the inter-dot transition in a double \gls{qd}~\cite{DiCarlo2004}.
 Simpler still, one can measure the width of a Coulomb resonance in the conductance through a \gls{qd}~\cite{Ihn2009,Maradan2014}.
 All of these methods rely on some form of energy reference scale that relates the energy of an electron confined in a \gls{qd} to some externally controlled parameter such as a voltage, however.
 Typically this is the so-called \emph{lever arm} $\alpha$, which is the constant of proportionality between the plunger gate voltage and the electrochemical potential $\mu_N$ for adding the $N$th electron to the quantum dot~\cite{Ihn2009}.
@@ -169,15 +173,17 @@ That is, I formed a single \gls{qd} in a gated \ch{GaAs/AlGaAs} heterostructure 
 The gate layout of the device used is shown in \cref{fig:setup:cooling:etemp:gl}.
 Designed for two-qubit experiments with two-electron spin qubits by \citet{Cerfontaine2019}, I tuned the device to host a single large \gls{qd} in the center of the device.
 The gates are color-coded according to the voltages applied with the device in the few-electron regime.
-I applied a bias voltage at the Ohmic contact situated to the right of gate SA using a \decadac voltage source and measured the current at the Ohmic contact to the left of gate SD using a \baseltia I/V converter with non-inverting input shorted to ground.
-Gate voltages were also supplied by the \decadac.
+I applied a bias voltage at the Ohmic contact situated to the right of gate SA using a \decadac voltage source and measured the current at the Ohmic contact to the left of gate SD using a \baseltia I/V converter with non-inverting input shorted to ground.\sidenote{
+    I use the same naming scheme for gate electrodes as \citer{Cerfontaine2019}.
+}
+Gate voltages were also supplied by the \decadac, divided by six and low-pass filtered at room temperature in the \gls{bob}.
 All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.
-The former were connected to RF lines attenuated with \qtylist{20;6;0;3}{\decibel} attenuators mounted to the \gls{pt1}, \gls{pt2}, Still, and \gls{mxc} plates, respectively, and connected to a \hdawg but unused.
+The former were connected to RF lines attenuated with \qtylist{20;6;0;3}{\decibel} attenuators mounted to the \gls{pt2}, Still, Cold, and \gls{mxc} plates, respectively, and connected to a \hdawg but unused during these experiments.
 
 To tune the electrochemical potential in the dot, I set up a virtual plunger gate~\cite{Botzem2018} from a linear combination of the gates NBC and TBC by performing a two-dimensional sweep of TBC against NBC\@.
 From the slope $m$ of a charge transition in the voltage space spanned by TBC and NBC, I computed the weights of the virtual gate in terms of the physical gates as
 \begin{equation}
-    V_p = \frac{1}{\sqrt{1 + m^2}}\left(\mr{TBC} + m\times \mr{NBC}\right).
+    V_{\mr{p}} = \frac{1}{\sqrt{1 + m^2}}\left(\mr{TBC} + m\times \mr{NBC}\right).
 \end{equation}
 Following this procedure, even a dot that does not lie in the middle between the two gates, \ie, couples more strongly to one than the other gate, should not move in position when changing the virtual gate voltage.
 Having set up the virtual plunger gate, I performed a Coulomb diamond measurement wherein the (virtual) plunger gate is swept as the source-drain bias voltage is varied~\cite{Ihn2009}.\sidenote{
@@ -193,7 +199,7 @@ This defines areas of zero (blockaded) current within the space of plunger and b
 where $\mu_N$ is the electrochemical potential of the dot with $N$ electrons, $E_c$ is the charging energy due to Coulomb repulsion, and $\Delta E$ is the single-particle energy spacing.
 At the same time, the width of a diamond (along the gate voltage axis) is given by
 \begin{equation}
-    \Delta V_p = \alpha\inverse E_\mr{add},
+    \Delta V_{\mr{p}} = \alpha\inverse E_\mr{add},
 \end{equation}
 implying that we can extract the lever arm $\alpha$ from the geometry of the diamonds.
 Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of current through the Coulomb resonance at zero bias (dashed gray lines), I obtained
@@ -201,23 +207,58 @@ Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of curren
     \alpha = \abs{\Delta m} = \abs{m_1 - m_2} \approx\qty{0.11}{\eV\per\volt}.
 \end{equation}
 
+\begin{figure*}
+    \centering
+    \includegraphics{img/pdf/setup/diamonds}
+    \caption[\imgsource{img/py/setup/transport.py}]{
+        Coulomb diamond measurement of the single \gls{gdqd} confined by applying static voltages to the gates shown in \cref{fig:setup:cooling:etemp:gl}.
+        The left panel shows the current measured with a \gls{tia} with a bias applied on one side of the device.
+        The horizontal axis shows the virtual plunger gate swept for each bias voltage indicated on the vertical axis.
+        The difference in slope of the dashed gray lines around the $N$-electron diamond yields the lever arm $\alpha$ converting virtual plunger gate voltage to (relative) energy inside the dot.
+        From the fact that the slopes are not equal up to a sign we can infer that the coupling to source and drain reservoirs is unequal also, indicating that either the dot is situated closer to SA than to SD, or the topology of the tunneling contacts in the \gls{2deg} is different due to different electrostatic potential.
+        The right panel shows the differential conductance obtained from differentiating the data from the left panel along the plunger gate axis.
+        Clearly visible are several additional transition lines which correspond to excited states inside the dot becoming energetically available within the bias window.
+    }
+    \label{fig:setup:cooling:etemp:diamonds}
+\end{figure*}
+
 Although not of particular interest for the electron temperature, a Coulomb diamond measurement can also be used for excited state spectroscopy.
-Computing the differential conductance $\partial I/\partial V_p$ makes visible a host of additional transition lines in the conducting region of the map (right panel of \cref{fig:setup:cooling:etemp:diamonds}).\sidenote{
+Computing the differential conductance $\partial I/\partial V_{\mr{p}}$ makes visible a host of additional transition lines in the conducting region of the map (right panel of \cref{fig:setup:cooling:etemp:diamonds}).\sidenote{
     Features inside the blockaded region can also occur, indicative of co-tunneling.
 }
 These correspond to excited states of the quantum dot entering the bias window.
 Their sign depends on the tunnel coupling of the state to source and drain~\cite{Ihn2009}.
 
-\begin{figure*}
-    \centering
-    \includegraphics{img/pdf/setup/diamonds}
-    \caption[\imgsource{img/py/setup/transport.py}]{}
-    \label{fig:setup:cooling:etemp:diamonds}
-\end{figure*}
-
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/coulomb_resonance}
-    \caption[\imgsource{img/py/setup/transport.py}]{}
+    \caption[\imgsource{img/py/setup/transport.py}]{
+        Conductance of a Coulomb resonance in the sequential tunneling regime.
+        Magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
+    }
     \label{fig:setup:cooling:etemp:resonance}
 \end{marginfigure}
+
+Having measured the energy reference scale, the lever arm $\alpha$, I proceeded to measure the conductance through a single Coulomb resonance as function of virtual plunger gate voltage $V_{\mr{p}}$ in order to measure the electron temperature.
+The line shape of such a resonance is qualitatively different in two limiting regimes of two competing energy scales, the tunnel coupling $\Gamma$ of the quantum dot to the leads and the thermal energy $\kb T$.
+If the former dominates transport through the \gls{qd} is said to be in the resonant (coherent) tunneling regime while if the latter dominates, it is said to be in the sequential (incoherent) tunneling regime~\cite{Ihn2009}.
+For resonant tunneling, the line shape has the form of a Lorentzian of width $\Gamma$.
+For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}}$ is given by
+\begin{equation}\label{eq:setup:cooling:etemp:resonance}
+    G(V_{\mr{p}}) = \frac{e^2}{2h}\frac{\Gamma}{4\kb T}\cosh^{-2}\left[\frac{\alpha\left(V_{\mr{p}} - V_{\mr{p}}^{\mr{res}}\right)}{2\kb T}\right]
+\end{equation}
+in linear response (small bias).
+Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
+The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote{
+    In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
+    The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
+    \begin{equation*}
+        G(V_{\mr{p}}) \propto f(V_{\mr{p}} - V_{\mr{p}}^{\mr{res,S}}) - f(V_{\mr{p}} - V_{\mr{p}}^{\mr{res,D}}),
+    \end{equation*}
+    with the Fermi-Dirac distribution
+    \begin{equation*}
+        f(V) = \left[\exp(\alpha V/\kb T) + 1\right]\inverse.
+    \end{equation*}
+    The precise physical mechanism behind this behavior is not understood.
+}

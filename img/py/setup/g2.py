@@ -1,0 +1,101 @@
+# %% Imports
+import pathlib
+import sys
+
+import matplotlib as mpl  # noqa
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy as sc
+import xarray as xr
+from mjolnir.helpers import save_to_hdf5
+from mjolnir.plotting import plot_nd  # noqa
+from qcodes.dataset import initialise_or_create_database_at
+from qutil import const
+from qutil.plotting.colors import RWTH_COLORS
+from uncertainties import ufloat
+
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
+
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, TOTALWIDTH, init,  # noqa
+                    markerprops, secondary_axis)
+
+EXTRACT_DATA = False
+ORIG_DATA_PATH = pathlib.Path(
+    r'"\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\InGaAs_dots_M1_12_47_18.db"'
+)
+DATA_PATH = PATH.parent / 'data/ingaas'
+DATA_PATH.mkdir(exist_ok=True)
+SAVE_PATH = PATH / 'pdf/setup'
+SAVE_PATH.mkdir(exist_ok=True)
+
+init(MARGINSTYLE, backend := 'pgf')
+# %% Functions
+
+
+def g2_model(tau, gamma, g0):
+    return np.square(g0*(1 - np.exp(-0.5*gamma*np.abs(tau))))
+
+
+# %% Extract runs from database
+if EXTRACT_DATA:
+    initialise_or_create_database_at(ORIG_DATA_PATH)
+    save_to_hdf5(12, DATA_PATH / 'power_dependence.h5')
+    save_to_hdf5(20, DATA_PATH / 'g2.h5')
+
+# %% A simple PL spectrum
+power_dependence = xr.load_dataset(DATA_PATH / 'power_dependence.h5')
+# Plot with interactive sliders
+# fig, ax, sliders = plot_nd(power_dependence, norm=mpl.colors.AsinhNorm(vmin=0))
+
+# %%% Plot
+power_data = power_dependence.ccd_ccd_data_rate_bg_corrected.sel(
+    excitation_path_power_at_sample=1e-6
+)
+
+fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.5))
+ax.plot(power_data.ccd_horizontal_axis, power_data * 1e-3)
+ax.set_xlabel('$E$ (eV)')
+ax.set_ylabel('CCD data rate (kcps)')
+ax.set_ylim(top=1)
+ax2, unit = secondary_axis(ax, 'eV')
+ax2.set_xlabel(rf'$\lambda$ ({unit})')
+ax2.set_xticks([868, 871, 874, 877])
+
+fig.savefig(SAVE_PATH / 'ingaas_pl.pdf')
+
+# %% G2 measurement
+g2 = xr.load_dataset(DATA_PATH / 'g2.h5')
+
+g2_data = g2.tagger_correlation_1_data_normalized
+g2_data_log = g2.tagger_histogram_log_bins_1_g2
+
+mask = np.abs(x := g2_data.tagger_correlation_1_time_bins) < 12e3
+popt, pcov = sc.optimize.curve_fit(g2_model, x[mask], g2_data.data.squeeze()[mask], p0=[1e-3, 1],
+                                   bounds=list(zip((0, np.inf), (0, 1))))
+
+τmax = g2_data_log.tagger_histogram_log_bins_1_time_bins[g2_data_log.argmax()].item()
+print(f'γ = {ufloat(popt[0], np.sqrt(np.diag(pcov))[0])} THz')
+print(f'Bump is at τ = {τmax} ps = {τmax*1e-12*const.c} m')
+# %%% Plot
+DOWNSAMPLING = 10
+
+fig, axs = plt.subplots(2, layout='constrained', sharey=True, figsize=(MARGINWIDTH, 2.25))
+axs[0].plot(x[::DOWNSAMPLING] * 1e-3, g2_data.T[::DOWNSAMPLING],
+            **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=0.75,
+                          markerfacealpha=0.25))
+axs[0].plot(x*1e-3, g2_model(x, *popt))
+axs[1].semilogx(g2_data_log.tagger_histogram_log_bins_1_time_bins * 1e-3, g2_data_log.T,
+                **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=.75,
+                              markerfacealpha=0.25))
+
+axs[0].grid()
+axs[1].grid()
+axs[0].set_yticks([0, 1, 2])
+axs[1].set_yticks([0, 1, 2])
+axs[0].set_xlim(-12, 12)
+axs[0].set_ylim(top=2)
+axs[1].set_xlabel(r'$\tau$ (ns)')
+fig.supylabel(r'$g^{(2)}(\tau)$', fontsize=10)
+
+fig.get_layout_engine().set(hspace=0, wspace=0)
+fig.savefig(SAVE_PATH / 'ingaas_g2.pdf')

@@ -353,4 +353,33 @@ Finally, note that the excitation spot typically looks worse than the detection 
 \subsection{Cross-polarization extinction}\label{subsec:setup:optics:coupling:rejection}
 
 \section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
+As a demonstration of the optical capabilities of the setup, I performed second-order coherence ($\g{2}(\tau)$) measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.
+\Glspl{saqd} are \glspl{oaqd} that form at random locations during epitaxial growth.
+They have demonstrated excellent optical properties and show potential for technological applications such as quantum repeaters~\cite{Petroff2001,Warburton2013,Lodahl2015,Zajac2025}.
+In particular, \glspl{saqd} can be operated as single-photon sources.
+Because they locally deform the band structure, they can capture and confine excitons.
+Owing to their small spatial extents, strong Coulomb interaction significantly shifts the energy of excitonic complexes other than the neutral exciton $X^{0}$, implying that light emitted at $h\nu = E_{X^{0}}$ upon recombination is certain to contain a single photon within a time window on the scale of the exciton lifetime.
+This so-called photon \emph{anti-bunching} behavior\sidenote{
+    Also known as sub-Poissonian statistics.
+}
+can be measured and serves as a fingerprint of single-photon source behavior.
 
+The measurement involves measuring the second-order coherence function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
+\begin{equation}
+    \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
+\end{equation}
+where $\hat{n}_i(t) = \hat{b}^\dagger_i(t) \hat{b}_i(t), i\in\lbrace 1,2\rbrace$ is the photon-number operator for a single mode at detector $i$.
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/setup/ingaas_pl}
+    \caption[\imgsource{img/py/setup/g2.py}]{}
+    \label{fig:}
+\end{marginfigure}
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/setup/ingaas_g2}
+    \caption[\imgsource{img/py/setup/g2.py}]{}
+    \label{fig:}
+\end{marginfigure}

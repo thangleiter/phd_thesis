@@ -7,6 +7,7 @@ from unittest import mock
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import uncertainties.unumpy as unp
 import xarray as xr
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qutil import const
@@ -241,7 +242,11 @@ bounds = dict(zip(params, zip(
 p0 = dict(zip(params, [Γ, V_0, T, off]))
 
 fit = conductance_plunger[ix].curvefit('NBC_TBC', dfermi, p0=p0, bounds=bounds)
+fitpar = unp.uarray(fit.curvefit_coefficients, np.sqrt(np.diag(fit.curvefit_covariance)))
 
+print('Coulomb resonance fit:')
+print(f'Γ = {fitpar[0]/const.h*const.e*1e6} μeV = {fitpar[0]/const.h/const.k*const.e**2*1e3} mK')
+print(f'T = {fitpar[2]*1e3} mK')
 # %%% Plot
 with (
         mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-2, 3)}], after_reset=True),
