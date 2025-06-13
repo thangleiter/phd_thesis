@@ -1,5 +1,5 @@
 % mainfile: ../../main.tex
-\chapter{Characterization and improvements of the optical path}\label{ch:setup:optics}
+\chapter{Optical path}\label{ch:setup:optics}
 \AutoLettrine{The} confocal microscope integrated into a millikelvin-temperature cryogen-free \gls{dr} accommodating free-space optical measurements together with DC and AC electrical control was designed and set up by \citeauthor{Descamps2024}~\cite{Descamps2021,Descamps2024}.
 In this chapter, I lay out improvements to the design to improve the optical efficiency of the microscope.
 I review the relevant relationships between optical parameters, estimate the maximum expected efficiency, and compare it to measurements.
@@ -353,33 +353,71 @@ Finally, note that the excitation spot typically looks worse than the detection 
 \subsection{Cross-polarization extinction}\label{subsec:setup:optics:coupling:rejection}
 
 \section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
-As a demonstration of the optical capabilities of the setup, I performed second-order coherence ($\g{2}(\tau)$) measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.
+As a demonstration of the optical capabilities of the setup, I performed second-order coherence measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.
 \Glspl{saqd} are \glspl{oaqd} that form at random locations during epitaxial growth.
 They have demonstrated excellent optical properties and show potential for technological applications such as quantum repeaters~\cite{Petroff2001,Warburton2013,Lodahl2015,Zajac2025}.
 In particular, \glspl{saqd} can be operated as single-photon sources.
 Because they locally deform the band structure, they can capture and confine excitons.
-Owing to their small spatial extents, strong Coulomb interaction significantly shifts the energy of excitonic complexes other than the neutral exciton $X^{0}$, implying that light emitted at $h\nu = E_{X^{0}}$ upon recombination is certain to contain a single photon within a time window on the scale of the exciton lifetime.
+Owing to their small spatial extents, strong Coulomb interaction shifts the energy of excitonic complexes other than the neutral exciton $X^{0}$, implying that light emitted at $h\nu = E_{X^{0}}$ upon recombination is certain to contain a single photon within a time window on the scale of the exciton lifetime.
 This so-called photon \emph{anti-bunching} behavior\sidenote{
     Also known as sub-Poissonian statistics.
 }
-can be measured and serves as a fingerprint of single-photon source behavior.
-
-The measurement involves measuring the second-order coherence function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
-\begin{equation}
-    \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
-\end{equation}
-where $\hat{n}_i(t) = \hat{b}^\dagger_i(t) \hat{b}_i(t), i\in\lbrace 1,2\rbrace$ is the photon-number operator for a single mode at detector $i$.
+can be measured with a \gls{hbt} interferometer and serves as a fingerprint of single-photon source behavior.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/ingaas_pl}
-    \caption[\imgsource{img/py/setup/g2.py}]{}
-    \label{fig:}
+    \caption[\imgsource{img/py/setup/g2.py}]{
+        \Gls{pl} spectrum of a \gls{saqd} under \gls{cw} excitation at \qty{793}{\nano\meter}.
+    }
+    \label{fig:setup:optics:ingaas:pl}
 \end{marginfigure}
+
+I loaded and cooled down an \ch{InAs/GaAs} chip with \glspl{saqd} and selected a bright and isolated emission line.
+A typical \gls{pl} spectrum under \gls{cw} above-gap excitation is shown in \cref{fig:setup:optics:ingaas:pl}.
+The brightest line at $\qty{1.4212}{\eV} = \qty{872.39}{\nano\meter}$ has a width of around $\qty{15}{\micro\eV} = \qty{12}{\pico\meter}$ close to the grating\sidenote{
+    \qty{1800}{lines\per\milli\meter}
+}
+resolution limit of around \qty{10}{pm}.\todo{check}
+To perform a \g2 experiment, light emitted by the source is spectrally filtered using the \spectrometer diffraction grating spectrometer and sent through a 50:50 \gls{bs} with a \spcm \gls{spcm} on each exit port.
+The clicks from the detectors are time-correlated using a counting card (\tagger), computing the second-order coherence function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
+\begin{equation}
+    \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
+\end{equation}
+where $\hat{n}_i(t) = \hat{b}^\dagger_i(t) \hat{b}_i(t), i\in\lbrace 1,2\rbrace$ is the photon-number operator for a single mode at detector $i$ and averaging takes place over time.
+For a weakly excited artificial atom, one expects this function to take on the form~\cite{Walls1979}
+\begin{equation}\label{eq:setup:optics:g2:fit}
+    \g{2}(\tau) = \left[1 - \exp(-\flatfrac{\tau\gamma}{2})\right]^2,
+\end{equation}
+where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $1/T_1$ of the excited state.
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/ingaas_g2}
-    \caption[\imgsource{img/py/setup/g2.py}]{}
-    \label{fig:}
+    \caption[\imgsource{img/py/setup/g2.py}]{
+        \g{2} measurement of the emission line at \qty{872.267}{\nano\meter} under \gls{cw} excitation with \qty{1}{\micro\watt} at \qty{793}{\nano\meter}.
+        The monochromator bandwidth was $\Delta\lambda = \qty{200}{\pico\meter} = \qty{325}{\micro\eV}$.
+    }
+    \label{fig:setup:optics:ingaas:g2}
 \end{marginfigure}
+
+The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
+$\g2(0)$ does not quite reach the theoretically expected value of zero.
+Likely causes include the remnant dark counts of the detectors.\sidenote{
+    On the order of \qty{50}{cps} each.
+    The average count rate during the experiment was $\sim\qty{5.5}{\kilo cps}$ and \qty{5.9}{\kilo cps}.
+}
+and additional decay channels.
+The lower panel shows the same measurement for logarithmically spaced time lags $\tau$ covering a wider range.
+A peculiar feature shows at $\tau = \qty{13.4}{\nano\second}$, where the measurement suggests a bunching of photons with $\g2(\tau) \approx 2$.
+The origin of this bump is not understood.
+One possible cause might be multiple reflections in the setup.
+However, in free space the delay corresponds to a time-of-flight distance of \qty{4}{\meter}, far larger than any distances in the setup besides the path between objective and ocular lens at $\sim\qty{1.5}{\meter}$.
+Assuming a refractive index of $n=\num{1.4}$ for a typical \gls{smf} results in a characteristic distance of \qty{2.8}{\meter} which also does not match any components in the setup.\sidenote{
+    The closest match is the \qty{10}{\meter} fiber from the optical head to the optical table.
+}
+What can be said is that it is likely related to the setup rather than a physical process in the sample since the feature also appeared in a measurement on the next-brightest emission line at \qty{1.4196}{\eV} as well as under excitation from the tunable \ch{Ti:Sa} laser's \pumplaser pump laser at \qty{532}{\nano\meter}.
+For measurements such as the one performed here, this effect may safely be treated as a measurement artefact and ignored.
+Only in case the characteristic decay time $\gamma\inverse$ approached \qty{10}{\nano\seconds} this would need to be investigated more carefully.
+Finally, I note that the dependence of the integrated peak power on excitation power for this line was superlinear, suggesting an excitonic complex rather than the natural exciton as the source of emission.
+The line at \qty{1.4196}{\eV} did show a linear relationship and produced qualitatively the same \g2 results.
