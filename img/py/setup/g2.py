@@ -145,7 +145,7 @@ axs[0].set_xlim(-11, 11)
 axs[0].set_ylim(top=1.3)
 axs[1].set_ylim(top=2)
 axs[1].set_xlabel(r'$\tau$ (ns)')
-fig.supylabel(r'$g^{(2)}(\tau)$', fontsize=10)
 
+fig.supylabel(r'$g^{(2)}(\tau)$', fontsize=mpl.rcParams['font.size'])
 fig.get_layout_engine().set(hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'ingaas_g2.pdf')

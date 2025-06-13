@@ -181,34 +181,13 @@ poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
 cps = y1[mask].mean('counter_time_axis')
 cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
-data = odr.RealData(pos, cps, sx=poserr, sy=cpserr)
-model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
-fit = odr.ODR(data, model, beta0=[2.5, 0])
-output = fit.run()
+linear_data = odr.RealData(pos, cps, sx=poserr, sy=cpserr)
+linear_model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
+linear_fit = odr.ODR(linear_data, linear_model, beta0=[2.5, 0])
+linear_output = linear_fit.run()
 
 # s has units of Mcps/μm
-s, b = unp.uarray(output.beta, output.sd_beta)
-
-# %%%% Knife edge fit
-xx = pos_vs_vdc(x, *popt_posvdc)
-yy = y1.mean('counter_time_axis')
-sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
-       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
-syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
-
-# GaAs @ 800 nm
-n = n_GaAs(30e-3)
-r = abs((n - 1) / (n + 1))**2  # at 30 mK
-
-data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
-model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
-
-fit = odr.ODR(data, model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
-output = fit.run()
-if 'Sum of squares convergence' not in output.stopreason:
-    output = fit.restart(100)
-
-fitpar = unp.uarray(output.beta, output.sd_beta)
+s, b = unp.uarray(linear_output.beta, linear_output.sd_beta)
 
 # %%%%% Plot camera image
 erroralpha = 0.5
@@ -250,7 +229,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     fig.subplots_adjust(hspace=0)
     fig.savefig(SAVE_PATH / 'knife_edge.pdf')
 
-# %%%% Plot fits
+# %%%% Plot linear fit
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
@@ -279,16 +258,14 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.xaxis.set_ticks_position('both')
     ax.xaxis.set_tick_params(which='both', labeltop=True, labelbottom=False)
     ax.xaxis.set_label_position('top')
-    # xlim = ax.get_xlim()
+    xlim = ax.get_xlim()
 
     # cps vs pos
     ax = axs[1]
     ax.errorbar(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
                 **markerprops(errorcolor, marker='.'))
-    ax.plot(xtmp := np.linspace(-1, 1, 1001), erf_theory(-xtmp, *unp.nominal_values(fitpar)),
-            zorder=5)
-    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
+    ax.plot(pos, linear_model.fcn(linear_output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
         'top',
@@ -300,8 +277,8 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
     ax.set_yticks([2, 3, 4])
-    # ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
-    # ax.set_ylim(2, 4)
+    ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
+    ax.set_ylim(2, 4)
 
     fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
 
@@ -336,6 +313,65 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
 
     fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
 
+# %%% Full knife-edge fit
+xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
+sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+# GaAs @ 800 nm
+n = n_GaAs(30e-3)
+r = abs((n - 1) / (n + 1))**2  # at 30 mK
+
+knife_edge_data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
+knife_edge_model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
+
+knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+knife_edge_output = knife_edge_fit.run()
+if 'Sum of squares convergence' not in knife_edge_output.stopreason:
+    knife_edge_output = knife_edge_fit.restart(100)
+
+fitpar = unp.uarray(knife_edge_output.beta, knife_edge_output.sd_beta)
+
+print('Knife edge fit results:')
+print(f'w_0 = {fitpar[1]:.3g} μm')
+print(f'r = {fitpar[3]:.3g}')
+
+knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r],
+                              ifixb=[1, 1, 1, 0])
+knife_edge_output_rfix = knife_edge_fit_rfix.run()
+if 'Sum of squares convergence' not in knife_edge_output_rfix.stopreason:
+    knife_edge_output_rfix = knife_edge_fit_rfix.restart(100)
+
+fitpar_rfix = unp.uarray(knife_edge_output_rfix.beta, knife_edge_output_rfix.sd_beta)
+
+# %%%% Plot
+erroralpha = 0.5
+errorcolor = RWTH_COLORS['blue']
+
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+
+    ax.errorbar(xx, yy, yerr=syy, xerr=sxx, alpha=0.75,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.', markersize=2.5))
+
+    ax.plot(xtmp := np.linspace(-1, 1, 1001), erf_theory(-xtmp, *unp.nominal_values(fitpar)),
+            zorder=5)
+
+    ylim = ax.get_ylim()
+    ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
+            color=RWTH_COLORS_75['magenta'], zorder=5)
+
+    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.grid()
+    ax.set_yticks([2, 3, 4])
+    ax.set_ylim(1.6)
+
+    fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
+
 # %% Load spects
 with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
     spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
@@ -353,7 +389,7 @@ spect_accel.processed_unit = 'μm'
 spect_accel.reprocess_data(*spect_accel.keys(), detrend='constant')
 
 spect_optic.procfn = cps_calib
-spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta,
+spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=linear_output.beta,
                            detrend='constant')
 
 figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))

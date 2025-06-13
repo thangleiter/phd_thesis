@@ -1,5 +1,5 @@
 % mainfile: ../../main.tex
-\chapter{Vibration performance}\label{ch:setup:vibrations}
+\chapter{Vibration noise}\label{ch:setup:vibrations}
 \AutoLettrine{A} microscope's performance is limited chiefly by two factors; first and foremost the resolution and imaging fidelity are limited by the systematic aberrations introduced by the optics.\sidenote{
     Besides the limit set by the wavelength-dependent diffraction, of course.
 }
@@ -101,7 +101,7 @@ The criteria, given as velocities rather than displacements or accelerations bec
 For the typical feature sizes we would like our microscope to resolve, the VC-B criterion is a fair target.
 I will use them below to classify the vibration isolation of the confocal microscope.
 
-\begin{margintable}[*-10]
+\begin{margintable}[*-12]
     \centering
     \footnotesize
     \caption{\Glspl{vc} and \gls{iso} guidelines}
@@ -247,7 +247,7 @@ Under the simplifying assumption of a perfectly sharp drop-off and taking the re
     \end{dcases}
 \end{equation}
 where $r$ is the reflectance of the bare \ch{GaAs} surface.
-Assuming a perfect Gaussian (\gls{tem}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by\todo{is the result the same for 2D? if yes, argue why 1D is sufficient!}
+Assuming a perfect Gaussian (\gls{tem}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by
 \begin{equation}\label{eq:setup:gaussian}
     I(y) = I_0\exp(-\frac{2y^2}{w_0^2}),
 \end{equation}
@@ -317,20 +317,23 @@ Therefore, I calibrated the relative position using the imaging arm of the optic
 Illuminating the sample with the white light, I positioned the spot on the edge of the optical gate and imaged the sample with the \cmoscam.
 I then extracted the position of the edge, in pixels, for several rows to obtain some statistics by fitting a linear function to the edge profile in a small region between two refraction maxima.
 Repeating this step for different DC voltages applied to the nanopositioner,
-%\sidenote{
-%    The positioners operate in so-called slip-stick mode.
-%    In physics terms, the scheme corresponds to alternating adiabatic and diabatic ramps.
-%    Applying a DC voltage elongates the piezoelectric element by a small amount and moves the positioner table.
-%    When quickly ramping the voltage back down, the table slips and stays in place while the piezo contracts back to its equilibrium elongation.
-%    This way, distances much larger than the piezoelectric elongation can be travelled.
-%    Staying in the adiabatic regime results in reproducible displacements but also limits the travel.
-%}
+\sidenote{
+    The positioners operate in so-called slip-stick mode.
+    In physics terms, the scheme corresponds to alternating adiabatic and diabatic ramps.
+    Slowly ramping up a DC voltage elongates the piezoelectric element by a small amount and moves the positioner table.
+    When quickly jumping back down to \qty{0}{\volt}, the table slips and stays in place while the piezo contracts back to its equilibrium elongation.
+    This way, distances much larger than the piezoelectric elongation can be travelled.
+    Staying in the adiabatic regime results in reproducible displacements but also limits the travel.
+}
 this yields the proportionality factor between the nanopositioner DC voltage, $V_{\mr{DC}}$, and the position of the gate edge on the camera.
 By measuring the total width of the gate on the camera image, I obtained the magnification by referencing it to the design width,
 \begin{equation}\label{eq:setup:knife_edge:magnification}
     M = \frac{w[\unit{\pixel}]}{w[\unit{\micro\meter}]} = \frac{\qty{116}{\pixel}}{\qty{14}{\micro\meter}} \approx \qty{8.3}{\pixel\per\micro\meter}.
 \end{equation}
 Again performing a linear fit to the data for different voltages then results in the linear transformation from DC voltage to position (upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}).
+Of course it is also possible to fit the full knife-edge function, \cref{eq:setup:knife_edge}, to the data shown in \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
+From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectivity $r$ can be extracted.
+Here we are content with the linear approximation; refer to \cref{sec:app:setup:vibrations:knife_edge} for the full fits.
 
 \begin{marginfigure}
     \centering
@@ -447,7 +450,7 @@ Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:kn
 \end{equation}
 if we identify $\bar{\Phi} = \epsilon\Phi_0$ for some (fixed) setup efficiency \eps.
 This shows a clear path towards improving the \gls{snr} of the method.
-Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-r$ and by decreasing $w_0$, so is the shot noise floor, albeit \emph{quadratically} in $w_0$ and $1-r$.
+Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-r$ and by decreasing $w_0$, so is the shot noise floor, albeit quadratically in $w_0$ and $1-r$.
 For example, for a reduction in spot size by a factor of two from inserting a different objective lens and a tenfold increase in maximum count rate achieved by replacing the counting card with a more powerful model,\sidenote{
     \swinst offers models with up to \qty{1.2}{\giga\sample\per\second}, although at that rate the jitter and dead time of the \glspl{apd} would start to become the limiting factors~\cite{SwabianTimeTagger}.
 }
