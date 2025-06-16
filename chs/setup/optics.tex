@@ -289,7 +289,27 @@ the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
     \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} T \approx\qty{1.0}{\percent}.
 \end{equation}
 
-% TODO: compare to measured values
+\begin{margintable}
+    \centering
+    \caption{Measured efficiencies of }
+    \label{tab:setup:optics:efficiency:measured}
+    \begin{tabular}{lS}
+        \toprule
+        \textsc{Opt. element}       & Efficiency (\unit{\percent}) \\
+        \midrule
+        Light exiting \acrshort{dr} & 37.8 \\
+        \acrshort{bs}1 + A          & 67.6 \\
+        Detection fiber             & 39.1 \\
+        Spectrometer                & 22.2
+        \bottomrule
+    \end{tabular}
+\end{margintable}
+
+
+Due to the small intensities when dealing with \gls{pl} emitted from a membrane sample, it is difficult to measure this efficiency directly to compare it to the theoretical expectation.
+What can be done rather easily is measure the reflected laser power as it is collected by the objective lens.
+Together with the reflectance obtained from the calibration measurement in \cref{sec:setup:vibrations:optic}, we can then estimate the various efficiencies.
+With the polarizer and analyzer co-polarized for maximum transmission and the laser $s$-polarized \wrt to \gls{bs}1 (\cf \cref{fig:setup:optics:optical_path}), I measured the efficiencies listed in \cref{tab:setup:optics:efficiency:measured}.
 
 \subsection{Imaging the laser spot}\label{subsec:setup:optics:coupling:imaging}
 As the confocal microscope is free space, we are in a position to image the sample using a white light source.
