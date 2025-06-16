@@ -6,7 +6,7 @@ I review the relevant relationships between optical parameters, estimate the max
 Furthermore, I characterize the cross-polarization extinction and outline various schemes I established to automatically control the motorized stages regulating the excitation power and rejection as well as the diffraction grating spectrometer and \gls{ccd}.
 Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a \g2 measurement on self-assembled quantum dots in \ch{InGaAs}.
 
-\begin{marginfigure}[*-6]
+\begin{marginfigure}[*-9]
     \input{img/tikz/setup/optical_path}
     \caption[\imgsource{img/tikz/setup/optical_path.tex}]{
         Reduced sketch of the microscope optical path.
@@ -15,6 +15,7 @@ Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a 
         An objective lens (O) focuses the beam onto the sample and collects and collimates the emitted light.
         It exits the cryostat, is transmitted through the \gls{bs} and an analyzer (A) before being focused into the \gls{smf} by the detection ocular (D).
         Another \halfwave-plate can be inserted below the analyzer to rotate the plane of polarization, and another beam splitter can be inserted below the first to divert some of the light to a \gls{cmos} camera with ocular lens (C).
+        Not shown is the cold mirror that deflects the collimated beam before the objective lens.
     }
     \label{fig:setup:optics:optical_path}
 \end{marginfigure}
@@ -376,9 +377,9 @@ can be measured with a \gls{hbt} interferometer and serves as a fingerprint of s
 I loaded and cooled down an \ch{InAs/GaAs} chip with \glspl{saqd} and selected a bright and isolated emission line.
 A typical \gls{pl} spectrum under \gls{cw} above-gap excitation is shown in \cref{fig:setup:optics:ingaas:pl}.
 The brightest line at $\qty{1.4212}{\eV} = \qty{872.39}{\nano\meter}$ has a width of around $\qty{15}{\micro\eV} = \qty{12}{\pico\meter}$ close to the grating\sidenote{
-    \qty{1800}{lines\per\milli\meter}
+    \qty{1800}{lines\per\milli\meter}, resulting in a dispersion of $\dv*{\lambda}{x} = \qty{325}{\pico\meter\per\milli\meter}$ in the focal plane.
 }
-resolution limit of around \qty{10}{pm}.\todo{check}
+resolution limit of around \qty{5}{pm}.
 To perform a \g2 experiment, light emitted by the source is spectrally filtered using the \spectrometer diffraction grating spectrometer and sent through a 50:50 \gls{bs} with a \spcm \gls{spcm} on each exit port.
 The clicks from the detectors are time-correlated using a counting card (\tagger), computing the second-order coherence function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
 \begin{equation}
