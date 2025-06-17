@@ -291,20 +291,24 @@ the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 
 \begin{margintable}
     \centering
-    \caption{Measured efficiencies of }
+    \caption{
+        Measured efficiencies of optical elements along the detection path for laser light reflected from the sample.
+        All efficiencies are with respect to the previous stage, \ie the first row is the amount of power measured after \gls{bs}1 divided by the power entering the cryostat.
+    }
     \label{tab:setup:optics:efficiency:measured}
     \begin{tabular}{lS}
         \toprule
-        \textsc{Opt. element}       & Efficiency (\unit{\percent}) \\
+        \textsc{Opt. element}           & {Efficiency (\unit{\percent})} \\
         \midrule
-        Light exiting \acrshort{dr} & 37.8 \\
-        \acrshort{bs}1 + A          & 67.6 \\
-        Detection fiber             & 39.1 \\
-        Spectrometer                & 22.2
+        Collection + \acrshort{bs}1     & 37.8 \\
+        Analyzer                        & 67.6 \\
+        Detection fiber                 & 39.1 \\
+        Spectrometer                    & 22.2 \\
+        \midrule
+        $\prod$                         & 2.2 \\
         \bottomrule
     \end{tabular}
 \end{margintable}
-
 
 Due to the small intensities when dealing with \gls{pl} emitted from a membrane sample, it is difficult to measure this efficiency directly to compare it to the theoretical expectation.
 What can be done rather easily is measure the reflected laser power as it is collected by the objective lens.

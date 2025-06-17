@@ -406,6 +406,25 @@ def collection_efficiency(NA, n):
     return (1/8)*(4*n**3 + np.sqrt(-NA**2 + n**2)*(NA**2 - 4*n**2))/n**3
 
 
+# %% Print measured efficiencies
+# Measured values
+P_down = 900e-9
+P_up = 340e-9
+P_ana = 230e-9
+P_fiber = 90e-9
+P_spect = 20e-9
+
+η_up = P_up/P_down
+η_ana = P_ana/P_up
+η_fiber = P_fiber/P_ana
+η_spect = P_spect/P_fiber
+η_total = η_up * η_ana * η_fiber * η_spect
+
+print(f'η_up = {η_up:.3g}')
+print(f'η_ana = {η_ana:.3g}')
+print(f'η_fiber = {η_fiber:.3g}')
+print(f'η_spect = {η_spect:.3g}')
+print(f'η_total = {η_total:.3g}')
 # %% Plot
 abslevels = np.linspace(0.4, 1, 13)
 absnorm = mpl.colors.Normalize(*abslevels[[0, -1]])
