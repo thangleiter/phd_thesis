@@ -10,6 +10,7 @@
 - To automatically set up the repository to compile with `latexmk`, run `shell/init.{sh,ps1}`. 
   This creates symlinks (copies on Windows) to `$HOME/texmf/tex/latex/kaobook` and `$HOME/texmf/fonts/truetype/LiberationMono/`.
 - Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
+- `minted` needs to be installed and Python on `PATH`.
 
 # To Dos
 

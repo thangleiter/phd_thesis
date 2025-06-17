@@ -560,8 +560,6 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2))
     ax[0].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
     ax[1].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
-    ax[0].axhline(color='black')
-    ax[1].axhline(color='black')
 
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.hide('PTR off, susp. off', 'PTR off, susp. on')
@@ -574,9 +572,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ln = spect._plot_manager.lines[1, 'PTR on, susp. on']['cumulative']['processed']['line']
         ax[1].semilogx(*ln.get_data())
 
-        # with changed_plotting_backend('pgf'):
-        #     spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
-
+    ax[0].axhline(color=RWTH_COLORS_75['black'])
+    ax[1].axhline(color=RWTH_COLORS_75['black'])
     ax[0].set_yticks([20, 0, -20, -40, -60])
     ax[1].set_yticks([0, -20])
     ax[0].set_xlim(spect.ax[-1].get_xlim())

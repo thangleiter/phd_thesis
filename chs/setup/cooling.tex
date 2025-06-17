@@ -85,7 +85,7 @@ On the contrary, their presence can be quite useful when aligning the laser spot
 \todo{I / we, general rephrasing}
 Besides the ambient radiation, there is also the heat load introduced by the partial absorption of the laser excitation during optical measurements.
 In order to characterize both the heat load and measure the absorptance $A$ of our sample, I irradiated a flip-chip-bonded membrane sample such as measured in \cref{part:exp} with the laser at \qty{815}{\nano\meter} and measured the increase in base temperature.
-The sample consists of a \qty{220}{\nano\meter} thick \ch{GaAs/AlGaAs} membrane glued with epoxy to a \ch{Si} host substrate chip for handling.
+The sample consists of a \qty{220}{\nano\meter} thick \GaAsAlGaAs membrane glued with epoxy to a \ch{Si} host substrate chip for handling.
 As the samples are flip-chip bonded, light that is transmitted through the chip without being absorbed or reflected will then hit the surrounding puck and scatter.
 Thus, to be precise, I measured $A+T$ this way, where $T$ is the transmittance, assuming that light that exits the membrane will be absorbed \emph{somewhere} and contribute to heating.
 I will nonetheless refer to the measured quantity as simply $A$.
@@ -169,7 +169,7 @@ It can be measured using pulsed-gate spectroscopy~\cite{Fujisawa2001,Harbusch201
 \end{marginfigure}
 
 Here, I chose the simplest of these techniques that require the least tune-up to avoid unnecessarily complicating things.
-That is, I formed a single \gls{qd} in a gated \ch{GaAs/AlGaAs} heterostructure and extracted the lever arm from Coulomb diamonds and the electron temperature from the conductance trace of a Coulomb resonance at zero bias in the sequential tunneling regime.
+That is, I formed a single \gls{qd} in a gated \GaAsAlGaAs heterostructure and extracted the lever arm from Coulomb diamonds and the electron temperature from the conductance trace of a Coulomb resonance at zero bias in the sequential tunneling regime.
 The gate layout of the device used is shown in \cref{fig:setup:cooling:etemp:gl}.
 Designed for two-qubit experiments with two-electron spin qubits by \citet{Cerfontaine2019}, I tuned the device to host a single large \gls{qd} in the center of the device.
 The gates are color-coded according to the voltages applied with the device in the few-electron regime.
@@ -183,10 +183,10 @@ The former were connected to RF lines attenuated with \qtylist{20;6;0;3}{\decibe
 To tune the electrochemical potential in the dot, I set up a virtual plunger gate~\cite{Botzem2018} from a linear combination of the gates NBC and TBC by performing a two-dimensional sweep of TBC against NBC\@.
 From the slope $m$ of a charge transition in the voltage space spanned by TBC and NBC, I computed the weights of the virtual gate in terms of the physical gates as
 \begin{equation}
-    V_{\mr{p}} = \frac{1}{\sqrt{1 + m^2}}\left(\mr{TBC} + m\times \mr{NBC}\right).
+    V_{\mr{p}} = \frac{1}{\sqrt{1 + m^2}}\left(\mr{TBC} + \abs{m}\times \mr{NBC}\right).
 \end{equation}
 Following this procedure, even a dot that does not lie in the middle between the two gates, \ie, couples more strongly to one than the other gate, should not move in position when changing the virtual gate voltage.
-Having set up the virtual plunger gate, I performed a Coulomb diamond measurement wherein the (virtual) plunger gate is swept as the source-drain bias voltage is varied~\cite{Ihn2009}.\sidenote{
+Having set up the virtual plunger gate, I performed a Coulomb diamond measurement wherein the (virtual) plunger gate is swept as the source-drain bias voltage is varied.\sidenote[][*-4]{
     In this case, the source-drain bias is asymmetric as the drain is always grounded and only the electrochemical potential of the source reservoir is changed.
     This does not qualitatively change the physics of the measurement, though.
 }
@@ -229,16 +229,6 @@ Computing the differential conductance $\partial I/\partial V_{\mr{p}}$ makes vi
 These correspond to excited states of the quantum dot entering the bias window.
 Their sign depends on the tunnel coupling of the state to source and drain~\cite{Ihn2009}.
 
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/setup/coulomb_resonance}
-    \caption[\imgsource{img/py/setup/transport.py}]{
-        Conductance of a Coulomb resonance in the sequential tunneling regime.
-        Magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
-    }
-    \label{fig:setup:cooling:etemp:resonance}
-\end{marginfigure}
-
 Having measured the energy reference scale, the lever arm $\alpha$, I proceeded to measure the conductance through a single Coulomb resonance as function of virtual plunger gate voltage $V_{\mr{p}}$ in order to measure the electron temperature.
 The line shape of such a resonance is qualitatively different in two limiting regimes of two competing energy scales, the tunnel coupling $\Gamma$ of the quantum dot to the leads and the thermal energy $\kb T$.
 If the former dominates transport through the \gls{qd} is said to be in the resonant (coherent) tunneling regime while if the latter dominates, it is said to be in the sequential (incoherent) tunneling regime~\cite{Ihn2009}.
@@ -250,7 +240,7 @@ For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}
 in linear response (small bias).
 Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
 The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
-From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote{
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-9]{
     In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
     The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
     \begin{equation*}
@@ -262,3 +252,13 @@ From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $
     \end{equation*}
     The precise physical mechanism behind this behavior is not understood.
 }
+
+\begin{marginfigure}[*-23]
+    \centering
+    \includegraphics{img/pdf/setup/coulomb_resonance}
+    \caption[\imgsource{img/py/setup/transport.py}]{
+        Conductance of a Coulomb resonance in the sequential tunneling regime.
+        Magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
+    }
+    \label{fig:setup:cooling:etemp:resonance}
+\end{marginfigure}
