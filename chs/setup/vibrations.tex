@@ -8,12 +8,6 @@ The second factor is vibration noise.
 This becomes more significant the higher the resolution of the microscope simply because ambient, environmental vibrations within the range of human civilization is typically on the order of $\qty{100}{\micro\meter\per\second}$ \gls{rms}~\cite{Gordon1999}.
 Comparing that to transmission electron microscopes with atomic resolution, it is clear that these instruments require purpose-built rooms to reduce the vibration level to acceptable levels.
 
-%Due to space constraints, the complexity of optics in our microscope is limited.
-%Since we do not require the microscope to cover a wide range of wavelengths, chromatic aberrations do not play a significant role.\sidenote{
-%    At least when not considering polarization.
-%    The excitation extinction ratio is highly dependent on wavelength, \cf \cref{ch:setup:optical}
-%% TODO: ref
-%}
 The demands on the microscope discussed in \thethesis are fortunately much more relaxed as the features we need to resolve are on the micrometer scale.
 However, we face the additional challenge of ultra-low temperatures, or rather the manner in which they are achieved.
 The microscope is integrated into a \emph{dry} \gls{dr}.
@@ -30,14 +24,18 @@ While the cold foot of the \gls{ptr} is not rigidly connected to the cryostat in
 the entire cold head assembly rests with rubber feet on the cryostat top plate in the system's delivery status.
 Thus, our microscope does not only encounter passive environmental vibrations but also the active perturbation from the \gls{ptr}.
 
-\todo{review literature}
-\cite{Caparrelli2006,Pelliccione2013}
+Several authors have addressed vibration decoupling in \glspl{ptr}.
+\citet{Caparrelli2006} employed active control of a sample stage at \qty{3}{\kelvin} to attenuate vibrations.
+\citet{Pelliccione2013,Oh2021,Esser2024} constructed scanning gate microscopes in \gls{ptr}-cooled systems, demonstrating excellent displacement noise.
+\citet{Kalra2016} investigated the impact of \gls{ptr}-vibrations on electrical noise while \citet{Riabzev2009,Olivieri2017,Schmoranzer2019} investigated the generation and decoupling of vibrations.
+Due to space constraints, the complexity of decoupling solutions we can apply to our microscope is limited.
+Nonetheless, I show in the following chapter that the rigid-body construction of the optics together with passive air spring damping reduces the vibration noise to an adequate level for our purposes.
 
 This chapter is laid out as follows.
 In \cref{sec:setup:vibrations:isolation}, I briefly discuss the theoretical underpinnings of vibration isolation to inform its optimization.
 To characterize and improve upon the isolation, I performed vibration noise spectroscopy using the techniques and tools presented in \cref{part:speck}.
 I employed two different approaches that I lay out in the following; first, using a commercial piezoelectric accelerometer (\cref{sec:setup:vibrations:accel}) and second, using the optical response of a spatial reflectance gradient (\cref{sec:setup:vibrations:optic}).
-As will become clear, the two approaches complement each other because they are sensitive to slightly different quantities.\todo{improve}
+As will become clear, the two approaches complement each other because they are sensitive to slightly different quantities.
 
 \section{Vibration isolation}\label{sec:setup:vibrations:isolation}
 A simple yet effective method of vibration isolation is to suspend the system on passive air springs.
@@ -316,16 +314,7 @@ Therefore, I calibrated the relative position using the imaging arm of the optic
 \Cref{fig:setup:vibrations:calibration:length_scale} depicts the procedure.
 Illuminating the sample with the white light, I positioned the spot on the edge of the optical gate and imaged the sample with the \cmoscam.
 I then extracted the position of the edge, in pixels, for several rows to obtain some statistics by fitting a linear function to the edge profile in a small region between two refraction maxima.
-Repeating this step for different DC voltages applied to the nanopositioner,
-\sidenote{
-    The positioners operate in so-called slip-stick mode.
-    In physics terms, the scheme corresponds to alternating adiabatic and diabatic ramps.
-    Slowly ramping up a DC voltage elongates the piezoelectric element by a small amount and moves the positioner table.
-    When quickly jumping back down to \qty{0}{\volt}, the table slips and stays in place while the piezo contracts back to its equilibrium elongation.
-    This way, distances much larger than the piezoelectric elongation can be travelled.
-    Staying in the adiabatic regime results in reproducible displacements but also limits the travel.
-}
-this yields the proportionality factor between the nanopositioner DC voltage, $V_{\mr{DC}}$, and the position of the gate edge on the camera.
+Repeating this step for different DC voltages applied to the nanopositioner, this yields the proportionality factor between the nanopositioner DC voltage, $V_{\mr{DC}}$, and the position of the gate edge on the camera.
 By measuring the total width of the gate on the camera image, I obtained the magnification by referencing it to the design width,
 \begin{equation}\label{eq:setup:knife_edge:magnification}
     M = \frac{w[\unit{\pixel}]}{w[\unit{\micro\meter}]} = \frac{\qty{116}{\pixel}}{\qty{14}{\micro\meter}} \approx \qty{8.3}{\pixel\per\micro\meter}.

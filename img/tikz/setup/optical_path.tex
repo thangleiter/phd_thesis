@@ -132,6 +132,11 @@
         -- ($(-\ca, 0) + (objective)$)
         -- (source)
     ;
+    % Transmission
+    \draw[midarrow2,RWTHred100]
+        ($(bs1) - (\ca, \ca)$)
+        -- ++($(-\ca, 0)$)
+    ;
     % Detection beam
     \draw[midarrow,RWTHbordeaux100]
         (source)
@@ -144,6 +149,11 @@
         ($(bs2) + (\ca, \ca)$)
         -- ($(cmos-ocular) + (0, \ca)$)
         -- (cmos)
+    ;
+    % Transmission
+    \draw[midarrow2,RWTHred100,dashed]
+        ($(bs2) - (\ca, \ca)$)
+        -- ++($(-\ca, 0)$)
     ;
 
     % Windows

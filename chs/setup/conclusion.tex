@@ -48,10 +48,13 @@ As shown by \citet{Steindl2023}, the giant cross-polarization extinction mechani
     A halfwave plate inserted into the path was also found to reduce the rejection ratio, suggesting that the \halfwave and \quarterwave plates might also impact performance.
     On the other hand, \citet{Kuhlmann2013} found the \quarterwave plate to be crucial for compensating ellipticities introduced by the setup.
 }
-Our situation is again slightly different to the one studied there, however, as the cold mirror is mounted perpendicular to the \gls{bs} and hence the effects on $s$- and $p$-polarizations upon reflection mix.
+Our situation is again slightly different to the one studied there, however, as the cold mirror is mounted perpendicular to the \gls{bs}\sidenote{
+    That is, while $x$ lies in the plane of the \gls{bs}, $y$ lies in the plane of the cold mirror if we use the coordinate system of \cref{fig:setup:vibrations:knife_edge:sketch} where $x$ is the out-of-plane sample coordinate and $z$ is along gravity.
+}
+and hence the effects on $s$- and $p$-polarizations upon reflection mix.
 A detailed analysis of the spatial mode profile would thus help elucidate the extent to which these effects matter in our experiments.
 
-Lastly, in \cref{ch:setup:vibrations}, I addressed the impact of vibrations, chiefly induced by the \gls{ptr}, on the microscope performance.
+Lastly, in \cref{ch:setup:vibrations}, I addressed the impact of vibrations, induced chiefly by the \gls{ptr}, on the microscope performance.
 After outlining the basic principles of vibration isolation, I described the suspension scheme based on passive air springs which I installed in the setup to mitigate the vibration noise coupled into system by the \gls{ptr}.
 I then performed measurements of the displacement noise \gls{psd} using two different methods.
 First, using a piezoelectric accelerometer that is directly sensitive to absolute displacements through the local acceleration experienced by the sensor, I found that during operation of the cryostat the vibrations should be considered too large for operation of the microscope, obtaining $\flatfrac{1}{3}$ octave band \gls{rms} velocities well into the tenths of \unit{\milli\meter\per\second} range.
@@ -59,8 +62,8 @@ However, I argued that the absolute value of displacement noise at the sample po
 To quantify these, I introduced an optical \emph{in-situ} method of measuring lateral displacement using a knife-edge measurement on a reflectance step on a sample.
 This technique can be employed without additional modifications or instruments besides those already present in the optical setup.
 It is based on the fact that the finite spot size of the Gaussian laser beam incident on a step-like reflectance profile such as that produced by a lithographic \ch{Au} gate on a crystalline surface results in a linear slope in reflected intensity over the width of the laser spot.
-This allows measuring the reflected intensity as function of time and subsequently converting the intensity to a displacement along the gradient using a previous calibration akin to the charge sensing technique in \glspl{gdqd}.
-Using this technique, I showed that the relative displacement noise is orders of magnitude smaller than the absolute, placing the octave band \gls{rms} velocities well below the targeted levels categorized by the \glspl{vc}.
+This allows measuring the reflected intensity as function of time and subsequently converting the intensity to a displacement along the gradient using a previous calibration akin to the charge sensing technique in \glspl{gdqd}, following which the tools laid out in \cref{part:speck} can be used to obtain the noise \gls{psd}.
+Using this technique, I showed that the relative displacement noise is orders of magnitude smaller than the absolute, placing the octave band \gls{rms} velocities well below the targeted levels categorized by the \acrlongpl{vc}.
 I furthermore analyzed the sensitivity of the technique, showing that the noise floor is dominated by photon shot noise, and laid out routes for enhancing the \gls{snr}.
 
 \Cref{fig:setup:conclusion:vibrations} summarizes the performance of the vibration damping for enabled \gls{ptr} and the two different vibration spectroscopy techniques.
@@ -89,5 +92,5 @@ The microscope characterized in \thispart has potential applications beyond the 
 Parts of the results presented in \thispart have been published in \citer{Descamps2024}.
 Thomas Descamps and Feng Liu originally designed the setup together with Hendrik Bluhm and constructed it.
 Julian Ritzmann and Arne Ludwig grew the wafer on which Matthias Künne fabricated the sample used to measure the electron temperature in \cref{sec:setup:cooling:etemp}.
-The chip used to measure \g2 in \cref{sec:setup:optics:g2} was grown by Xuelin Jin.
+The chip used to measure photon antibunching in \cref{sec:setup:optics:g2} was grown by Xuelin Jin.
 Marcus Eßer kindly lent the accelerometer used in \cref{sec:setup:vibrations:accel}.

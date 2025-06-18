@@ -21,7 +21,7 @@ DATA_PATH = PATH.parent / 'data/lenses'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
-SAVE_PATH_PGF = PATH / 'pdf/setup'
+SAVE_PATH_PGF = PATH / 'pgf/setup'
 SAVE_PATH_PGF.mkdir(exist_ok=True)
 
 with np.errstate(divide='ignore'):
@@ -238,7 +238,6 @@ def plot_lens_choosing(df, D_min=1.5, D_max=5.3, f_max=30, dipole: bool = True, 
     colors = colors * (len(df) // len(colors) + 1)
 
     # Excitation: Gaussian
-    MFD = 5e-3
     ax = axes[0]
     ax.set_xscale('log')
     if ylog:
@@ -259,8 +258,6 @@ def plot_lens_choosing(df, D_min=1.5, D_max=5.3, f_max=30, dipole: bool = True, 
     ax.plot(f, collimated_beam_diameter_gaussian(f, MFD, λ0, z=1.5e3), ls='--', color='tab:grey')
 
     # Objective detection
-    # TODO
-    MFD = 3e-3
     ax = axes[1]
 
     cs2 = ax.contour(ff, DD, lens_na_geom(DD, ff), levels=np.linspace(0, 1, 11),

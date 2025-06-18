@@ -1,8 +1,15 @@
 % mainfile: ../../main.tex
 \chapter{Optical coupling}\label{ch:app:setup:optics}
 \section{Collection efficiency}\label{sec:app:setup:optics:collection}
-In this section, I derive the expression for the collection efficiency $\eta_{\mr{c}}$, \cref{eq:setup:optics:coupling:efficiency:collection} for radiation emitted from a dipole oriented in-plane inside a semiconductor \gls{qw} with refractive index $n$ and collected with a lens of a given \gls{na}.
-The dipole fields in spherical coordinates $(r, \vartheta, \varphi)$ in the coordinate system $(z, x, y)$ are given in \cref{eq:setup:optics:coupling:dipole:efield,eq:setup:optics:coupling:dipole:hfield}.\todo{fix CS}
+In this section, I derive the expression for the collection efficiency $\eta_{\mr{c}}$, \cref{eq:setup:optics:coupling:efficiency:collection}, for radiation emitted from a dipole oriented in-plane inside a semiconductor \gls{qw} with refractive index $n$ and collected with a lens of a given \gls{na}.
+The dipole fields in spherical coordinates $(r, \vartheta, \varphi)$ in the coordinate system $(z, x, y)$ are given in \cref{eq:setup:optics:coupling:dipole:efield,eq:setup:optics:coupling:dipole:hfield}.\sidenote{
+    That is,
+    \begin{align*}
+        z &= r\sin\vartheta\sin\varphi \\
+        x &= r\sin\vartheta\cos\varphi \\
+        y &= r\cos\vartheta.
+    \end{align*}
+}
 Since we observe the dipole from the side, \ie, perpendicular to its axis, it is useful to rotate the spherical coordinates $(r, \vartheta, \varphi) \to (r, \theta, \phi)$ aligned with the cartesian coordinate system $(x, y, z)$ in \cref{fig:setup:optics:coupling:emission}.
 To this end, observe that with the spherical coordinates
 \begin{align}
@@ -123,6 +130,6 @@ Having approximated the beam as circular, we can write the electric field on the
 \begin{equation}\label{eq:app:setup:optics:diffraction}
     \tilde{E}(q) = \frac{\abs{\bvec{p}}k^2}{2\epsilon}\exp(\i k z)\int_0^a\dd{\rho}\rho J_0(k\rho q/\foc) E_x(\rho)
 \end{equation}
-with $E_x(\rho)$ given by \cref{eq:setup:optics:coupling:efield:lens:x} upon substituting $\theta = \arctan(\flatfrac{\rho}{\fob})$ and $r=\sqrt{\rho^2 + \fob^2}$ and $J_0(x)$ is the Bessel function of order zero.
+with $E_x(\rho)$ given by \cref{eq:setup:optics:coupling:efield:lens:x} upon substituting $\theta = \arctan(\rho/\fob)$ and $r=\sqrt{\rho^2 + \fob^2}$, and $J_0(x)$ is the Bessel function of order zero.
 \Cref{eq:app:setup:optics:diffraction} is in general only solvable numerically.
 Furthermore, note that likely the Fraunhofer approximation is only of limited applicability here since the phase of the wave incident on the lens is not constant across $\rho$ as laid out before.
