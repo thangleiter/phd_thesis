@@ -1,5 +1,5 @@
 % mainfile: ../../main.tex
-\chapter{Characterization of the cryostat performance}\label{ch:setup:cooling}
+\chapter{Cryostat performance}\label{ch:setup:cooling}
 \AutoLettrine{An} essential feature of the confocal microscope discussed in \thethesis is its capability to perform optical measurements at Millikelvin temperatures.
 As individual quantum systems are singled out for applications in quantum technology, thermal excitations with energy $\kb T = \qty{86}{\micro\eV\per\kelvin}\times T$ quickly become the dominating energy scale and overshadow the desired effects.
 Hence, typical energies in the solid state on the \unit{\micro\eV} scale, such as Zeeman energies of individual spins with energy $\mub B = \qty{58}{\micro\eV\per\tesla}\times B$, require temperatures well below \qty{1}{\kelvin} to suppress thermal excitations.
@@ -133,7 +133,7 @@ Note that the \positionercontroller piezo controller offers the option of lock-i
     \includegraphics{img/pdf/setup/anc_readout_heating}
     \caption[\imgsource{img/py/setup/cooling_power.py}]{
         \Acrlong{mxc} temperature as function of nanopositioner AC readout voltage.
-        The secondary axis indicates the conversion from $T_{\mr{\acrshort{mxc}}}$ to power obtained in \cref{fig:setup:cooling:laser} which is approximately linear in this regime, leading to the expected $P\sim R\inverse V_{\mr{AC}}^2$ behavior.
+        The secondary axis indicates the conversion from \Tmxc to power obtained in \cref{fig:setup:cooling:laser} which is approximately linear in this regime, leading to the expected $P\sim R\inverse V_{\mr{AC}}^2$ behavior.
         Solid line is a fit to the power with $R=\qty{16.9}{\kilo\ohm}$.
     }
     \label{fig:setup:cooling:anc}

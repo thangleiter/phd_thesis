@@ -12,9 +12,9 @@
     midarrow/.style = {midarrow1, midarrow2},%
 ]    % requires libraries angle,quotes,calc,decorations.markings
 
-    \ifdefined\CA
+    \ifdefined\ca
     \else
-        \newlength\CA
+        \newlength\ca
     \fi
     \ifdefined\f
     \else
@@ -24,7 +24,7 @@
     \else
         \newlength\dx
     \fi
-    \setlength\CA{0.25cm}
+    \setlength\ca{0.25cm}
     \setlength\f{0.4cm}
     \setlength\dx{0.25cm}
 
@@ -45,7 +45,7 @@
 
     % Symmetry axes
     \draw[symmetryaxis]
-        ($(bs1) - (\CA*2,0)$)
+        ($(bs1) - (\ca*2,0)$)
         -- ($(excitation-fiber) + (\f/4,0)$)
     ;
     \draw[symmetryaxis]
@@ -59,56 +59,56 @@
 
     % Beamsplitters
     \draw
-    ($(bs1) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}1}
-        -- ++($(3*\CA, 3*\CA)$)
+    ($(bs1) - (1.5*\ca, 1.5*\ca)$) node[below left,xshift=2.1mm] {\acrshort{bs}1}
+        -- ++($(3*\ca, 3*\ca)$)
     ;
 
     % Mirror
     \draw
-        ($(mirror) + (-1.5*\CA, 1.5*\CA)$) node[above left,xshift=2.1mm] {M}
-        -- ++($(3*\CA, -3*\CA)$)
+        ($(mirror) + (-1.5*\ca, 1.5*\ca)$) node[above left,xshift=2.1mm] {M}
+        -- ++($(3*\ca, -3*\ca)$)
     ;
 
     % Lenses
     \draw[lens]
-        ($(objective) + (0, 1.5\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {O}
+        ($(objective) + (0, 1.5\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {O}
     ;
     \draw[lens]
-        ($(detection-ocular) - (1.5\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {D}
+        ($(detection-ocular) - (1.5\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {D}
     ;
     \draw[lens]
-        ($(excitation-ocular) + (0, 1.5\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {E}
+        ($(excitation-ocular) + (0, 1.5\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {E}
     ;
 
     % Optical elements
     \draw[optics]
-        ($(polarizer) + (0, 1.5*\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {P}
+        ($(polarizer) + (0, 1.5*\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {P}
     ;
     \draw[optics]
-        ($(analyzer) - (1.5*\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {A}
+        ($(analyzer) - (1.5*\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {A}
     ;
 
     % Excitation beam
     \draw[midarrow,RWTHred100]
         (excitation-fiber)
-        -- ++($(-\f, -\CA)$)
-        -- ($(bs1) - (\CA, \CA)$)
-        -- ($(mirror) + (-\CA, \CA)$)
-        -- ($(objective) + (0, \CA)$)
+        -- ++($(-\f, -\ca)$)
+        -- ($(bs1) - (\ca, \ca)$)
+        -- ($(mirror) + (-\ca, \ca)$)
+        -- ($(objective) + (0, \ca)$)
         -- (source)
     ;
     % Detection beam
     \draw[midarrow,RWTHbordeaux100]
         (source)
-        -- ++($(-\f, -\CA)$)
-        -- ($(mirror) + (\CA, -\CA)$)
-        -- ($(\CA, 0) + (detection-ocular)$)
-        -- ++($(-\CA, \f)$)
+        -- ++($(-\f, -\ca)$)
+        -- ($(mirror) + (\ca, -\ca)$)
+        -- ($(\ca, 0) + (detection-ocular)$)
+        -- ++($(-\ca, \f)$)
     ;
 
 \end{tikzpicture}

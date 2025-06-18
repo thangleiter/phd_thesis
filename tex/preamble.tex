@@ -27,12 +27,12 @@
     license=true
 }
 
-%\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
-%\addbibresource[label=ownsoft]{bib/01_own_software.bib}
-%\addbibresource[label=main]{bib/02_phd_thesis.bib}
-\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
-\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
-\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
+\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
+\addbibresource[label=ownsoft]{bib/01_own_software.bib}
+\addbibresource[label=main]{bib/02_phd_thesis.bib}
+%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;name:My%20Library/collection/00_own_publications.biblatex.biblatex&useJournalAbbreviation=true}
+%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
+%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
 %\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
 
 %----------------------------------------------------------------------------------------
@@ -71,6 +71,7 @@
 \renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
 
 \usepackage{tabularx} % better tables with given width
+\usepackage{threeparttable} % tablenotes env
 %\setlength{\extrarowheight}{3pt} % increase table row height
 \usepackage{collcell} % for verb columns
 

@@ -14,7 +14,7 @@ Lastly, I demonstrate the setup's efficacy to measure photon anti-bunching in a 
         It is polarized (P), passes \halfwave- and \quarterwave-plates, and is reflected into the cryostat by a 90:10 \acrfull{bs}.
         An objective lens (O) focuses the beam onto the sample and collects and collimates the emitted light.
         It exits the cryostat, is transmitted through the \gls{bs} and an analyzer (A) before being focused into the \gls{smf} by the detection ocular (D).
-        Another \halfwave-plate can be inserted below the analyzer to rotate the plane of polarization, and another beam splitter can be inserted below the first to divert some of the light to a \gls{cmos} camera with ocular lens (C).
+        Another \halfwave-plate can be inserted below the analyzer to rotate the plane of polarization, and another beam splitter can be inserted below the first to divert some of the light to a \acrshort{cmos} camera with ocular lens (C).
         Not shown is the cold mirror that deflects the collimated beam before the objective lens.
     }
     \label{fig:setup:optics:optical_path}
@@ -93,13 +93,13 @@ As the lens diameter and hence the \acrfull{ca}\sidenote{
     The \gls{ca} is the diameter over which the lens specifications hold.
     Outside this diameter, light may still be transmitted but is not guaranteed to behave according to the lens design.
 }
-is constrained by the available space in the sample puck, the best lens was found to be \objectivelens~\cite{Thorlabs354330} with $\fob = \qty{3.1}{\milli\meter}$, $\NA = \num{0.7}$, and infinity-side $\mr{\acrshort{ca}} = \qty{5}{\milli\meter}$.\sidenote{
+is constrained by the available space in the sample puck, the best lens was found to be \objectivelens~\cite{Thorlabs354330} with $\fob = \qty{3.1}{\milli\meter}$, $\NA = \num{0.7}$, and infinity-side $\CA = \qty{5}{\milli\meter}$.\sidenote{
     A lens with even higher \gls{na} exists~\cite{LightPath355330} but I found it to have too short a \gls{wd} to put our flip-chipped samples into focus.
     Samples with a different mounting strategy might benefit from the slightly increased focusing power of that lens.
 }
 Having chosen the objective lens, we can next select the excitation ocular to match the beam diameter.
-For our typical excitation wavelengths around \qty{800}{\nano\meter}, the best-matching \gls{smf} has $\mr{\acrshort{mfd}} = 2 w_0 = \qty{5}{\micro\meter}$~\cite{Thorlabs780HP}.
-Again using \cref{eq:setup:optics:coupling:gaussian:diffraction_limit} and solving for $f$, we find $\foc = \flatfrac{\pi w_0 w}{\lambda} \approx \qty{24.5}{\milli\meter}$ when setting $w = \flatfrac{\mr{\acrshort{ca}}}{2}$.
+For our typical excitation wavelengths around \qty{800}{\nano\meter}, the best-matching \gls{smf} has $\MFD = 2 w_0 = \qty{5}{\micro\meter}$~\cite{Thorlabs780HP}.
+Again using \cref{eq:setup:optics:coupling:gaussian:diffraction_limit} and solving for $f$, we find $\foc = \flatfrac{\pi w_0 w}{\lambda} \approx \qty{24.5}{\milli\meter}$ when setting $w = \flatfrac{\CA}{2}$.
 Since $w$ specifies the $\flatfrac{1}{e}$-radius of the beam, we should choose a lens resulting in a collimated beam diameter that is smaller than the \gls{ca}, \ie, a shorter focal length.
 The lens that best matches this requirement is \ocularlens~\cite{ThorlabsA280TM} with $\foc = \qty{18.4}{\milli\meter}$, resulting in a collimated beam diameter of $2 w \approx\qty{3.8}{\milli\meter}$.\sidenote{
     A lens with larger focal length and hence wider beam diameter and resulting smaller spot size exists~\cite{LightPath354850} but its design wavelength is further off from our typical working wavelengths.
@@ -133,7 +133,7 @@ Again comparing the lens chosen here with that by \citer{Descamps2021} with $\fo
     \importpgf{img/pgf/setup}{choosing.pgf}
     \caption[\imgsource{img/py/setup/single_mode_fiber_coupling.py}]{
         Performance of selected lenses from the Thorlabs and Edmund Optics catalogs for Gaussian (left) and geometric (right) optics.
-        The left panel shows the diameter $D$ of a Gaussian beam launched from a \gls{smf} with $\mr{\acrshort{mfd}} = \qty{5}{\micro\meter}$ and collimated by the given lens at the position $z = \qty{1.5}{\meter}$ behind the lens plotted for various lenses.
+        The left panel shows the diameter $D$ of a Gaussian beam launched from a \gls{smf} with $\MFD = \qty{5}{\micro\meter}$ and collimated by the given lens at the position $z = \qty{1.5}{\meter}$ behind the lens plotted for various lenses.
         For lenses with different \acrlongpl{ca} on both sides, I assume a magnification of the beam by their ratio, resulting in the deviation from the theoretical beam diameter shown as a dashed gray line for some lenses, but note that this is a rough approximation for lens underfulling in particular.
         The green contours show the theoretical spot size diffraction limit, $2w_0$ (\cref{eq:setup:optics:coupling:gaussian:diffraction_limit}), for a beam with diameter $2w=D$.
         To the left of the minimum of the (apparent, note the logarithmic scale) parabola, the beam diameter increases with shorter focal length because the beam divergence after the collimating lens becomes relevant as the objective lens plane moves into the beam's far field.
@@ -199,7 +199,7 @@ The \gls{na} determines the maximum amount of light the objective lens can colle
     \sin\theta^\prime = n\sin\theta,
 \end{equation}
 with $n\approx 3.57$ at $\lambda_0=\qty{800}{\nano\meter}$ and $T=\qty{0}{\kelvin}$.
-This yields $\theta_{\mr{m}} = \arcsin(\flatfrac{\mr{\acrshort{na}}}{n}) \approx\qty{11}{\degree}$ for the emission angle of the marginal ray inside the semiconductor, implying that only a small fraction of light escapes the sample.
+This yields $\theta_{\mr{m}} = \arcsin(\flatfrac{\NA}{n}) \approx\qty{11}{\degree}$ for the emission angle of the marginal ray inside the semiconductor, implying that only a small fraction of light escapes the sample.
 Indeed, according to Poynting's theorem the radiated power through the surface $\Sigma$ is given by
 \begin{equation}\label{eq:setup:optics:coupling:power}
     \expval{P} = \int_{\Sigma}\dd{\bvec{\Sigma}}\cdot\expval{\bvec{S}(r, \vartheta)}
@@ -219,7 +219,7 @@ with $\NA=\num{0.7}$ for the chosen objective lens (\cf \cref{subsec:setup:optic
     \includegraphics{img/pdf/setup/modes_2d}
     \caption[\imgsource{img/py/setup/extraction.py}]{
         Electric field at the sample surface (top) and the objective lens plane (bottom).
-        The white circle indicates the area from which light can be collected, corresponding to the marginal angle $w_i = d\tan\theta_{\mr{m}}$ for the upper and $w_f = \flatfrac{\mr{\acrshort{ca}}}{2}$ for the lower plot.
+        The white circle indicates the area from which light can be collected, corresponding to the marginal angle $w_i = d\tan\theta_{\mr{m}}$ for the upper and $w_f = \flatfrac{\CA}{2}$ for the lower plot.
         The arrows represent the projection of the vector-valued electric field onto the $xy$-plane.
         At the interface, the polarization is mostly out-of-plane and along $y$, but in the far field, represented by the lens plane, it is almost perfectly polarized along $x$.
         The intensity profile changes from a local minimum at the center to maximal with a roughly circular dependence.
@@ -282,7 +282,8 @@ Indeed, evaluating \cref{eq:setup:optics:coupling:efficiency:mode_matching} for 
 \end{equation}
 for our parameters, slightly better than the naive result using the flattop beam.
 Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $T\approx\qty{87}{\percent}$,\sidenote{
-    While the specifications of the beamsplitter are $T:R = \qty{90}{\percent}:\qty{10}{\percent}$, in reality $T:R\approx\qty{87}{\percent}:\qty{6}{\percent}$ which also varies slightly with polarization.
+    \label{sidenote:setup:optics:bs}
+    While the specifications of the beamsplitter are $T\div R = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $T\div R\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
@@ -291,29 +292,50 @@ the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 
 \begin{margintable}
     \centering
-    \caption{
-        Measured efficiencies of optical elements along the detection path for laser light reflected from the sample.
-        All efficiencies are with respect to the previous stage, \ie the first row is the amount of power measured after \gls{bs}1 divided by the power entering the cryostat.
-    }
-    \label{tab:setup:optics:efficiency:measured}
-    \begin{tabular}{lS}
-        \toprule
-        \textsc{Opt. element}           & {Efficiency (\unit{\percent})} \\
-        \midrule
-        Collection + \acrshort{bs}1     & 37.8 \\
-        Analyzer                        & 67.6 \\
-        Detection fiber                 & 39.1 \\
-        Spectrometer                    & 22.2 \\
-        \midrule
-        $\prod$                         & 2.2 \\
-        \bottomrule
-    \end{tabular}
+    \footnotesize
+    \begin{threeparttable}
+        \caption{
+            Measured efficiencies of optical elements along the detection path for laser light reflected from the sample.
+            All efficiencies are with respect to the previous stage, \ie, the first row is the amount of power measured after \gls{bs}1 divided by the power entering the cryostat
+        }
+        \label{tab:setup:optics:efficiency:measured}
+        \begin{tabular}{lS}
+            \toprule
+            \textsc{Opt. element}                   & {Efficiency (\unit{\percent})} \\
+            \midrule
+            Collection + \acrshort{bs}1\tnote{a}    & 37.8 \\
+            Analyzer\tnote{b}                       & 67.6 \\
+            Detection fiber\tnote{c}                & 39.1 \\
+            Spectrometer\tnote{d}                   & 22.2 \\
+            \midrule
+            Total                                   & 2.2 \\
+            \bottomrule
+        \end{tabular}
+        \begin{tablenotes}
+            \scriptsize
+            \item[a] Reflected and transmitted through windows and \acrshort{bs}1
+            \item[b] Transmitted through the analyzer
+            \item[c] Emitted from the detection \acrshort{smf}
+            \item[d] Emitted from the spectrometer side exit port
+        \end{tablenotes}
+    \end{threeparttable}
 \end{margintable}
 
 Due to the small intensities when dealing with \gls{pl} emitted from a membrane sample, it is difficult to measure this efficiency directly to compare it to the theoretical expectation.
 What can be done rather easily is measure the reflected laser power as it is collected by the objective lens.
 Together with the reflectance obtained from the calibration measurement in \cref{sec:setup:vibrations:optic}, we can then estimate the various efficiencies.
 With the polarizer and analyzer co-polarized for maximum transmission and the laser $s$-polarized \wrt to \gls{bs}1 (\cf \cref{fig:setup:optics:optical_path}), I measured the efficiencies listed in \cref{tab:setup:optics:efficiency:measured}.
+The \enquote{Collection + \gls{bs}1} efficiency corresponds to $Tr$ with $r$ the reflectance of the sample and matches reasonably well the expected value of $r=\abs{(n-1)/(n+1)}^2\approx\qty{32}{\percent}$ for \ch{GaAs}.
+The transmittance of the analyzer (a nanoparticle linear film polarizer~\sidecite{ThorlabsLPVIS050-MP2}) is lower than expected from the datasheet, which quotes around \qty{80}{\percent} at \qty{800}{\nano\meter}.
+Coupling into the \gls{smf} (\enquote{Detection fiber}) is significantly worse than expected from the considerations in \cref{subsec:setup:optics:coupling:lenses} for a Gaussian beam.
+Since the beam used to measure the efficiencies is launched from and collimated by the same fiber type and lens as used to collect the light, the coupling efficiency should theoretically be as large as unity.
+However, due to the small \gls{mfd}, alignment is tricky and vibrations may be expected to significantly reduce the coupling efficiency (\cf \cref{ch:setup:vibrations}).
+It is moreover unclear how well the beam retains its Gaussian \TEM{00} mode profile after being transmitted through the entire optical path (\cf \cref{fig:setup:optics:optical_path}).
+Finally, the throughput efficiency of the spectrometer is also lower than expected by a factor of order two.
+The gratings have efficiencies on the order of \qty{50}{\percent}, and since the measurement was conducted with monochromatic light, there should be no other significant loss channels, indicating the spectrometer might not be perfectly well aligned.
+To fully account for all losses, the \gls{pde} (quantum efficiency) of the \gls{ccd} (\ccd, $\eta_{\QE}\sim\qty{85}{\percent}$) or the \glspl{spcm} (\spcm, $\eta_{\QE}\sim\qty{65}{\percent}$) needs to be taken into account.
+In summary, while certainly allowing room for improvement, the total optical efficiency of $\eta_{\mr{o,tot}} = \qty{2.2}{\percent}$ given by the power arriving at the plane of measurement -- either the \gls{ccd} or the \glspl{spcm} -- as fraction of the power incident on the cryostat is at an acceptable level.
+% TODO: blabla
 
 \subsection{Imaging the laser spot}\label{subsec:setup:optics:coupling:imaging}
 As the confocal microscope is free space, we are in a position to image the sample using a white light source.
@@ -376,6 +398,70 @@ The asymmetry resulting in elliptical spot cross sections, on the other hand, mi
 Finally, note that the excitation spot typically looks worse than the detection spot, likely because of the additional optical elements introducing beam distortions.
 
 \subsection{Cross-polarization extinction}\label{subsec:setup:optics:coupling:rejection}
+An essential part of the confocal microscope's design is the ability to reject the excitation laser from coupling into the detection fiber.
+In a conventional microscope, this issue is avoided because one can arrange the illumination and detection lenses such that their optical axes are orthogonal and the light used for excitation of the sample does not scatter into the objective lens.
+In a confocal geometry, though, the same lens is used for excitation and detection, and unwanted excitation light dominates the response unless filtered out by means of, \eg, a notch filter.
+This limits the optical bandwidth of the microscope and hence other techniques are desirable.
+Here, excitation rejection is achieved by cross-polarization of the polarizer (P) setting the polarization axis of the beam launched from the excitation \gls{smf} and the analyzer (A) just before coupling the light into the detection \gls{smf}.
+As demonstrated by \citet{Benelajla2021}, this technique enables extinction ratios\sidenote{
+    Defined as incident power over transmitted power.
+}
+up to \num[print-unity-mantissa=false]{1e10} in a confocal geometry, far beyond the bare polarizer extinction ratio of up to $\sim\num[print-unity-mantissa=false]{1e8}$~\sidecite{ThorlabsLPVIS050-MP2}.
+In our case, vibrations and rough sample surfaces from which the light is reflected limit the extinction ratio to $\sim\num[print-unity-mantissa=false]{1e6}$.
+
+As the laser beam launched from the excitation fiber is already polarized, rather than rotate the polarizer, the plane of polarization is rotated using a \halfwave plate.
+To compensate for ellipticities introduced by the \gls{bs}, windows, and sample reflection, a \quarterwave plate is inserted after the \halfwave plate~\cite{Kuhlmann2013}.
+The waveplates are mounted on piezoelectric rotation stages (\rotator with \rotatorcontroller controller), allowing for computer-controlled adjustment of the angles.
+Previously, a third rotation stage was used to rotate the analyzer, but I found this to deteriorate the fiber coupling, most likely due to an angle-dependent beam deflection of the analyzer.\sidenote{
+    This effect was less pronounced with the unmounted version of the same polarizer, \polarizerunmounted.
+    That though introduced significant etaloning with a free spectral range of $\Delta\lambda\approx\lambda^2/2 n l\approx\qty{100}{\pico\meter}$ matching the substrate thickness of $l = \qty{2}{\milli\meter}$~\cite{Ismail2016}.
+}
+Furthermore, the optics behind the analyzer such as the diffraction grating have polarization-dependent properties so that it is in any case a good idea to fix the plane of polarization.
+I therefore used only the waveplates on the excitation arm to fine-tune the excitation rejection, which is not ideal since the same argument as before naturally also applies to the optics behind these, such as the beam splitter whose ratio is polarization dependent.
+It is hence advisable to insert another \halfwave plate on a rotation stage before the analyzer and use it together with the \quarterwave plate for rejection control.
+
+To analyze the properties of the excitation rejection, I measured the \gls{od} as a function of the relative waveplate angles $\Delta\phi_{\halfwave(\quarterwave)}$.
+The \gls{od} is defined as
+\begin{equation}\label{eq:setup:optics:od}
+    \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right),
+\end{equation}
+where $P_{\mr{t}}$ is the transmitted power after and $P_{\mr{i}}$ the incident power before the analyzer.
+To evaluate this expression, I measured the photon flux $\dot{\Phi}_{\mr{t}}$ after the spectrometer using the \glspl{spcm} when irradiating a sample with the laser and compared it to the power $P$ measured at the optical head.
+Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $T\div R$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
+\begin{equation}\label{eq:setup:optics:od:eval}
+    \OD = \log_{10}\left(\frac{P\times\flatfrac{R}{T}}{\flatfrac{hc}{\lambda}\times\dot{\Phi}_{\mr{t}}/\eta_{\mr{o,tot}}\eta_{\QE}}\right).
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/setup/rejection}
+    \caption[\imgsource{img/py/setup/excitation_rejection.py}]{
+        \Gls{od} measured (left) and fitted (right) as function of relative \quarterwave and \halfwave angles.
+        The dashed gray line indicates the axis along which there should be no dispersion if all optics between polarizer and analyzer were polarization-independent.
+    }
+    \label{fig:setup:optics:rejection}
+\end{figure}
+
+\Cref{fig:setup:optics:rejection} shows the measurement when the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
+The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate changes the plane of polarization, so the \quarterwave plate should need to be rotated by the same amount to retain a constant angle between plane of polarization and fast axis of the waveplate).
+The \gls{od} reaches maximum values around \num{6.4} -- corresponding to an extinction ratio of \num{2.5e6} -- but quickly falls off by more than an order of magnitude even for small angular displacements.\sidenote{
+    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016a}.
+}
+Qualitatively, one finds that close to the extinction maximum, the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
+\begin{equation}
+    \dot{\Phi}_{\mr{t}} = \bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0
+\end{equation}
+with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$, and $R(\theta)$ a rotation matrix.
+Inserting into \cref{eq:setup:optics:od:eval} yields
+\begin{equation}\label{eq:setup:optics:od:fit}
+    \OD = \log_{10}\left(\frac{P R\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
+\end{equation}
+a fit to which is shown in the right panel of \cref{fig:setup:optics:rejection}, displaying good agreement with the data.
+From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.35}{\per\textdegree\squared}$ and \qty[per-mode=symbol]{-0.05}{\per\textdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
+
+The optics between polarizer and analyzer furthermore display chromatic dispersion.
+When changing the excitation wavelength, the angles of \halfwave and \quarterwave plate therefore need to be re-optimized.
+I describe the automatic calibration procedure implemented in the measurement framework to this end in \cref{part:exp}.
 
 \section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
 As a demonstration of the optical capabilities of the setup, I performed second-order coherence measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.

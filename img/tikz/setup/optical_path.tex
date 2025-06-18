@@ -12,9 +12,9 @@
     midarrow/.style = {midarrow1, midarrow2},%
 ]    % requires libraries angle,quotes,calc,decorations.markings
 
-    \ifdefined\CA
+    \ifdefined\ca
     \else
-        \newlength\CA
+        \newlength\ca
     \fi
     \ifdefined\f
     \else
@@ -24,7 +24,7 @@
     \else
         \newlength\dx
     \fi
-    \setlength\CA{0.25cm}
+    \setlength\ca{0.25cm}
     \setlength\f{0.4cm}
     \setlength\dx{0.25cm}
 
@@ -52,11 +52,11 @@
 
     % Symmetry axes
     \draw[symmetryaxis]
-        ($(bs1) - (\CA*2,0)$)
+        ($(bs1) - (\ca*2,0)$)
         -- ($(excitation-fiber) + (\f/4,0)$)
     ;
     \draw[symmetryaxis]
-        ($(bs2) - (\CA*2,0)$)
+        ($(bs2) - (\ca*2,0)$)
         -- ($(cmos) + (\f/4,0)$)
     ;
     \draw[symmetryaxis]
@@ -66,90 +66,90 @@
 
     % Cryostat
     \draw[cryostat]
-        ($(window) - (1.5*\CA, -0.025)$)
+        ($(window) - (1.5*\ca, -0.025)$)
         -- ++($(-\f/2, 0)$)
-        -- ($(source) - (1.5*\CA + \f/2, \f/2)$)
-        -- ++($(3*\CA + \f, 0)$)
-        -- ($(window) + (1.5*\CA + \f/2, 0.025)$) node[below,midway,rotate=90,xshift=5mm] {Cryostat}
+        -- ($(source) - (1.5*\ca + \f/2, \f/2)$)
+        -- ++($(3*\ca + \f, 0)$)
+        -- ($(window) + (1.5*\ca + \f/2, 0.025)$) node[below,midway,rotate=90,xshift=5mm] {Cryostat}
         -- ++($(-\f/2, 0)$)
     ;
 
     % Beamsplitters
     \draw
-        ($(bs1) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}1}
-        -- ++($(3*\CA, 3*\CA)$)
+        ($(bs1) - (1.5*\ca, 1.5*\ca)$) node[below left,xshift=2.1mm] {\acrshort{bs}1}
+        -- ++($(3*\ca, 3*\ca)$)
     ;
     \draw[dashed]
-        ($(bs2) - (1.5*\CA, 1.5*\CA)$) node[below left,xshift=2.1mm] {\acrshort{bs}2}
-        -- ++($(3*\CA, 3*\CA)$)
+        ($(bs2) - (1.5*\ca, 1.5*\ca)$) node[below left,xshift=2.1mm] {\acrshort{bs}2}
+        -- ++($(3*\ca, 3*\ca)$)
     ;
 
     % Lenses
     \draw[lens]
-        ($(objective) - (1.5\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {O}
+        ($(objective) - (1.5\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {O}
     ;
     \draw[lens]
-        ($(detection-ocular) - (1.5\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {D}
+        ($(detection-ocular) - (1.5\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {D}
     ;
     \draw[lens]
-        ($(excitation-ocular) + (0, 1.5\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {E}
+        ($(excitation-ocular) + (0, 1.5\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {E}
     ;
     \draw[lens]
-        ($(cmos-ocular) + (0, 1.5\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {C}
+        ($(cmos-ocular) + (0, 1.5\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {C}
     ;
 
     % Optical elements
     \draw[optics,dashed]
-        ($(detection-halfwave) - (1.5*\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {\halfwave}
+        ($(detection-halfwave) - (1.5*\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {\halfwave}
     ;
     \draw[optics]
-        ($(excitation-halfwave) + (0, 1.5*\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {\halfwave}
+        ($(excitation-halfwave) + (0, 1.5*\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {\halfwave}
     ;
     \draw[optics]
-        ($(quarterwave) + (0, 1.5*\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {\quarterwave}
+        ($(quarterwave) + (0, 1.5*\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {\quarterwave}
     ;
     \draw[optics]
-        ($(polarizer) + (0, 1.5*\CA)$)
-        -- ++($(0, -3*\CA)$) node[below] {P}
+        ($(polarizer) + (0, 1.5*\ca)$)
+        -- ++($(0, -3*\ca)$) node[below] {P}
     ;
     \draw[optics]
-        ($(analyzer) - (1.5*\CA, 0)$)
-        -- ++($(3*\CA, 0)$) node[right] {A}
+        ($(analyzer) - (1.5*\ca, 0)$)
+        -- ++($(3*\ca, 0)$) node[right] {A}
     ;
 
     % Excitation beam
     \draw[midarrow,RWTHred100]
         (excitation-fiber)
-        -- ++($(-\f, -\CA)$)
-        -- ($(bs1) - (\CA, \CA)$)
-        -- ($(-\CA, 0) + (objective)$)
+        -- ++($(-\f, -\ca)$)
+        -- ($(bs1) - (\ca, \ca)$)
+        -- ($(-\ca, 0) + (objective)$)
         -- (source)
     ;
     % Detection beam
     \draw[midarrow,RWTHbordeaux100]
         (source)
-        -- ++($(\CA, \f)$)
-        -- ($(\CA, 0) + (detection-ocular)$)
-        -- ++($(-\CA, \f)$)
+        -- ++($(\ca, \f)$)
+        -- ($(\ca, 0) + (detection-ocular)$)
+        -- ++($(-\ca, \f)$)
     ;
     % CMOS beam
     \draw[midarrow1,RWTHbordeaux100,dashed]
-        ($(bs2) + (\CA, \CA)$)
-        -- ($(cmos-ocular) + (0, \CA)$)
+        ($(bs2) + (\ca, \ca)$)
+        -- ($(cmos-ocular) + (0, \ca)$)
         -- (cmos)
     ;
 
     % Windows
     \draw[window]
-        ($(window) - (1.5*\CA, 0)$)
-        rectangle ($(window) + (1.5*\CA, 0.05)$) %node[right] {Window}
+        ($(window) - (1.5*\ca, 0)$)
+        rectangle ($(window) + (1.5*\ca, 0.05)$) %node[right] {Window}
     ;
 
 \end{tikzpicture}
