@@ -16,12 +16,11 @@ from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, TOTALWIDTH, init,  # noqa
-                    markerprops, secondary_axis)
+from common import MARGINSTYLE, MARGINWIDTH, PATH, init, markerprops, secondary_axis  # noqa
 
 EXTRACT_DATA = False
 ORIG_DATA_PATH = pathlib.Path(
-    r'"\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\InGaAs_dots_M1_12_47_18.db"'
+    r"\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\InGaAs_dots_M1_12_47_18.db"
 )
 DATA_PATH = PATH.parent / 'data/ingaas'
 DATA_PATH.mkdir(exist_ok=True)
@@ -32,8 +31,8 @@ init(MARGINSTYLE, backend := 'pgf')
 # %% Functions
 
 
-def g2_model(tau, gamma, g0):
-    return np.square(g0*(1 - np.exp(-0.5*gamma*np.abs(tau))))
+def g2_model(tau, gamma):
+    return np.square(1 - np.exp(-0.5*gamma*np.abs(tau)))
 
 
 def lorentz(E, E_0, gamma, A):
@@ -117,12 +116,10 @@ g2_data = g2.tagger_correlation_1_data_normalized
 g2_data_log = g2.tagger_histogram_log_bins_1_g2
 
 mask = np.abs(x := g2_data.tagger_correlation_1_time_bins) < 11e3
-popt, pcov = sc.optimize.curve_fit(g2_model, x[mask], g2_data.data.squeeze()[mask], p0=[1e-3, 1],
-                                   bounds=list(zip((0, np.inf), (0, 1))))
+popt, pcov = sc.optimize.curve_fit(g2_model, x[mask], g2_data.data.squeeze()[mask], p0=[1e-3])
 
 τmax = g2_data_log.tagger_histogram_log_bins_1_time_bins[g2_data_log.argmax()].item()
 print(f'γ = {ufloat(popt[0], np.sqrt(np.diag(pcov))[0])} THz')
-print(f'g0 = {ufloat(popt[1], np.sqrt(np.diag(pcov))[1])}')
 print(f'Bump is at τ = {τmax} ps = {τmax*1e-12*const.c} m')
 # %%% Plot
 DOWNSAMPLING = 10
