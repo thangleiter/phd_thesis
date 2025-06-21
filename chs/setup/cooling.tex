@@ -4,7 +4,7 @@
 As individual quantum systems are singled out for applications in quantum technology, thermal excitations with energy $\kb T = \qty{86}{\micro\eV\per\kelvin}\times T$ quickly become the dominating energy scale and overshadow the desired effects.
 Hence, typical energies in the solid state on the \unit{\micro\eV} scale, such as Zeeman energies of individual spins with energy $\mub B = \qty{58}{\micro\eV\per\tesla}\times B$, require temperatures well below \qty{1}{\kelvin} to suppress thermal excitations.
 
-By design the \odin dry \gls{dr} housing the microscope is rated for base temperatures at the mixing chamber plate below $\Tmxc=\qty{10}{\milli\kelvin}$.
+By design the \odin dry \gls{dr} housing the microscope is rated for base temperatures at the mixing chamber plate below $\Tmxc=\qty{10}{\milli\kelvin}$ and a cooling power of \qty{450}{\micro\watt} at $\Tmxc=\qty{100}{\milli\kelvin}$.
 However, several factors, both passive and active, introduce additional heat loads that can potentially raise the base temperature if too large:
 \begin{enumerate}
     \item \label{itm:setup:cooling:wiring}
@@ -102,7 +102,7 @@ We can then use a simple model of absorption of the laser on the sample in therm
 \end{equation}
 where $P_{\mr{nr}}$ is the amount of power deposited into nonradiative emission channels causing heating of the lattice, to relate the incident laser power $P_{\mr{laser}}$ to the cooling power and thus obtain the absorptance $A$.
 
-\begin{marginfigure}[*-7]
+\begin{marginfigure}[*-8]
     \centering
     \includegraphics{img/pdf/setup/laser_heating}
     \caption[\imgsource{img/py/setup/cooling_power.py}]{
@@ -123,7 +123,7 @@ Furthermore, the data shows that only at laser powers above \qty{10}{\micro\watt
 
 Lastly, let us address the impact of the \positioner position readout.
 The nanopositioners are crucial in the operation of the microscope as they are used to position the sample with respect to the focal spot of the objective lens.
-They operate in slip-stick mode which naturally generates heat through friction when moving.\sidenote[][*-4]{
+They operate in slip-stick mode which naturally generates heat through friction when moving.\sidenote[][*-5]{
     In physics terms, the slip-stick scheme corresponds to alternating adiabatic and diabatic ramps.
     Slowly ramping up a DC voltage elongates the piezoelectric element by a small amount and moves the positioner table.
     When quickly jumping back down to \qty{0}{\volt}, the table slips and stays in place while the piezo contracts back to its equilibrium elongation.
@@ -133,7 +133,7 @@ They operate in slip-stick mode which naturally generates heat through friction 
 However, the resistive position readout also contributes to heating, so in order to assess if the readout should be switched off when it is not required to avoid unnecessarily elevated cryostat temperatures, I measured \Tmxc as a function of readout voltage.
 Note that the \positionercontroller piezo controller offers the option of lock-in measurement for readout, which should be enabled as it improves the \gls{snr} and thus allows for a smaller readout voltage $V_{\mr{AC}}$.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-1]
     \centering
     \includegraphics{img/pdf/setup/anc_readout_heating}
     \caption[\imgsource{img/py/setup/cooling_power.py}]{
@@ -160,7 +160,7 @@ transition~\cite{Maradan2014} or the width of the inter-dot transition in a doub
 Simpler still, one can measure the width of a Coulomb resonance in the conductance through a \gls{qd}~\cite{Ihn2009,Maradan2014}.
 All of these methods rely on some form of energy reference scale that relates the energy of an electron confined in a \gls{qd} to some externally controlled parameter such as a voltage, however.
 Typically this is the so-called \emph{lever arm} $\alpha$, which is the constant of proportionality between the plunger gate voltage and the electrochemical potential $\mu_N$ for adding the $N$th electron to the quantum dot~\cite{Ihn2009}.
-It can be measured using pulsed-gate spectroscopy~\cite{Fujisawa2001,Harbusch2010}, photon-assisted tunneling~\cite{Kouwenhoven1994}, or using bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}.
+It can be measured using photon-assisted tunneling~\cite{Kouwenhoven1994} or finite-bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}, for example.
 
 \begin{marginfigure}
     \centering
@@ -182,7 +182,11 @@ I applied a bias voltage at the Ohmic contact situated to the right of gate SA u
     I use the same naming scheme for gate electrodes as \citer{Cerfontaine2019}.
 }
 Gate voltages were also supplied by the \decadac, divided by six and low-pass filtered at room temperature in the \gls{bob}.
-All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.
+All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.\sidenote{
+    The sample is mounted on a high-frequency \gls{pcb} whose on-board capacitors form the second link in a second-order $RC$ low-pass filter.
+    Between the \gls{pcb} and the $z$-axis nanopositioner, there is a \ch{Cu} plate connected directly to the top interface of the sample puck via flexible braids for heat sinking as the positioners have poor thermal conductivity~\cite{Descamps2024}.
+    However, this plate is also crucial for providing a ground connection for the \gls{pcb} and, consequently, the functioning of the $RC$ low-pass, as the positioners are also not electrically conductive.
+}
 The former were connected to RF lines attenuated with \qtylist{20;6;0;3}{\decibel} attenuators mounted to the \gls{pt2}, Still, Cold, and \gls{mxc} plates, respectively, and connected to a \hdawg but unused during these experiments.
 
 To tune the electrochemical potential in the dot, I set up a virtual plunger gate~\cite{Botzem2018} from a linear combination of the gates NBC and TBC by performing a two-dimensional sweep of TBC against NBC\@.
@@ -255,7 +259,7 @@ For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}
 in linear response (small bias).
 Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
 The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
-From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-11]{
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-10]{
     In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
     The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
     \begin{equation*}

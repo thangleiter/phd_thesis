@@ -151,7 +151,7 @@ In order to evaluate the vibration level at the sample position, I designed a sm
 }
 can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, enabling measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
 The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \gls{sma} connector.
-Outside of the cryostat, the signal is routed to a signal conditioner that provides the necessary current bias and outputs a voltage which is digitized by a \dmm connected to the measurement computer.
+Outside of the cryostat, the signal is routed to a signal conditioner that provides the necessary current bias and outputs a voltage which is digitized by a \thedmm \gls{dmm} connected to the measurement computer.
 Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
 
@@ -210,9 +210,6 @@ But is the \emph{absolute} magnitude of displacement noise at the sample positio
 Indeed, if the sample oscillates in phase with the objective and ocular lenses as well as the \gls{smf}, we will still obtain a perfect imaging fidelity.
 So actually only the \emph{relative} displacements of sample, lenses, and detection fiber affect the achievable resolution of the microscope.
 To characterize these, I developed an optical \emph{in-situ} technique to measure the displacement noise based on knife-edge reflectance fluctuations that I will present in the following section.
-% TODO: gaussian beam diameter to first order in z and x
-%  Spot size: sqrt(1 + (z/z_r)^2) = 1 + .5(z/z_r)^2
-%  Radial: exp(-r^2/2) = 1 - .5r^2
 
 \section{Optical vibration spectroscopy}\label{sec:setup:vibrations:optic}
 The gate electrodes on our samples are fabricated using two separate lithography processes; first, the smallest structures are written using \gls{ebl} in two steps.
@@ -221,7 +218,7 @@ In the region where the two overlap on the mesa to establish electrical contact,
 Scanning perpendicularly across such a straight edge between a poorly and a highly reflecting material is known as a knife-edge measurement and is frequently used to measure the spatial extent of a laser spot~\cite{Arnaud1971,Skinner1972,Khosrofian1983}.
 We can use the same setup to measure the displacement noise; instead of manually shifting our knife edge across the beam spot, though, we measure the reflectance fluctuations induced by the knife edge fluctuating relative to the spot due to external perturbations.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-10]
     \centering
     \input{img/tikz/setup/knife_edge}
     \caption[\imgsource{img/tikz/setup/knife_edge.tex}]{
@@ -293,7 +290,7 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-6]
     \centering
     \includegraphics{img/pdf/setup/knife_edge}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -324,7 +321,7 @@ Of course it is also possible to fit the full knife-edge function, \cref{eq:setu
 From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectivity $r$ can be extracted.
 Here we are content with the linear approximation; refer to \cref{sec:app:setup:vibrations:knife_edge} for the full fits.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-7]
     \centering
     \includegraphics{img/pdf/setup/knife_edge_fits}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -356,7 +353,7 @@ Clearly, the count rate is linear in the displacement over a large range, indica
 \end{figure}
 
 We are now at last able to measure the displacement noise using \pyspeck.
-Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the \taggershort,\sidenote{
+Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the \taggershort,\sidenote[][*7]{
     Since the \glspl{apd} are arranged in a \gls{hbt} geometry, I combined the counts of both instruments using the virtual channel functionality of the \taggershort.
 }
 I obtained the displacement noise \glspl{psd} shown in \cref{fig:setup:vibrations:optic}.
@@ -414,7 +411,7 @@ On the other hand, recall from \cref{sec:speck:theory:time_series_estimation} th
 \begin{align}\label{eq:setup:shot_noise:var}
     \variance(\delta N(\dt)) = \intinf\ddf{\omega} S_{\delta N(\dt)}(\omega) = \int_{-\flatfrac{\fs}{2}}^{\flatfrac{\fs}{2}}\dd{f} S_{\delta N(\dt)}(f)
 \end{align}
-where the last equation holds true because of the finite bandwidth of the discretely sampled signal.
+where the last equality holds true because of the finite bandwidth of the discretely sampled signal.
 Since $S_{\delta N}$ is white, it follows that $S_{\delta N(\dt)}$ is, too, and we can directly evaluate \cref{eq:setup:shot_noise:var}, obtaining\sidenote{
     $S_{\delta N(\dt)}$ also has units \unit{\cts\squared\per\hertz}.
 }
@@ -492,4 +489,3 @@ Acoustic insulation of the room and \gls{ptr} flex hoses could further improve t
 Lastly, let me note that there also exist cryocoolers with variable operating frequency that can thus be tuned away from problematic resonances in the system~\cite{TransMitPTR}.
 
 In \cref{ch:app:setup:vibrations} I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.
-\todo{appendix plots}
