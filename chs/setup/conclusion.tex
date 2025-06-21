@@ -17,7 +17,7 @@ In \cref{ch:setup:optics}, I then discussed the optical characteristics of the s
 I laid out the rationale behind choosing the lenses for collimating the Gaussian beam launched from the \gls{smf}, focusing it onto the sample, collecting the emitted radiation, and focusing that into another \gls{smf}.
 Having chosen the lenses, I analyzed the efficiency of light emitted from a point dipole located inside a dielectric slab being coupled into the \gls{smf}.
 From the analysis, it became clear that the precise spatial distribution of the electric field is non-trivial and warrants further attention.
-A more detailed numerical simulation could serve to pinpoint areas of improvement besides fairly obvious solutions such as mirrors below the sample or mode-engineering such as the approach pursued in \citer{Wu2024}.
+A more detailed numerical simulation could serve to pinpoint areas of improvement besides fairly obvious solutions such as mirrors below the sample or mode-engineering like the approach pursued in \citer{Wu2024}.
 On the other hand, measuring the field profile experimentally using a \gls{ccd} inserted into the optical path right before the detection fiber would allow better matching between theoretically expected and experimentally observed efficiencies.
 
 \begin{marginfigure}[*-16]
@@ -31,7 +31,7 @@ On the other hand, measuring the field profile experimentally using a \gls{ccd} 
 \end{marginfigure}
 
 A crucial point might turn out to be the mirror in front of the objective lens.
-As shown by \citet{Benelajla2021}, reflections of polarized non-plane-wave beams induce a modal transform into modes with nodes at the center that are spatially filtered in a confocal geometry by the \gls{smf}.
+As shown by \citet{Benelajla2021}, reflections of polarized non-plane-wave beams induce a modal transform into modes with nodes at the center that are spatially filtered by the \gls{smf} in a confocal geometry.
 While beneficial for cross-polarization extinction (\cf \cref{subsec:setup:optics:coupling:rejection}), the same effect could lead to radiation emitted from the sample not coupling into the detection fiber if it is co-polarized with the excitation beam.\sidenote{
     Of course, the cross-polarization of analyzer and polarizer will suppress emitted radiation co-polarized with the excitation in any case.
     The excitation with linear polarization was chosen to coherently address exciton states in a Voigt configuration.
@@ -40,7 +40,7 @@ While beneficial for cross-polarization extinction (\cf \cref{subsec:setup:optic
 }
 \Cref{fig:setup:conclusion:optical_path_reduced} shows a reduced sketch of the optical path.
 Light emitted from the sample is reflected off the mirror (M) and passes through the \acrlong{bs} \acrshort{bs}1 and the analyzer (A) before being focused into the detection fiber by the ocular lens (D).
-This situation is equivalent to that described by \citet{Benelajla2021} if the emitted light is cross-polarized \wrt A and has a Gaussian mode profile.
+This situation is equivalent to that described by \citet{Benelajla2021} if the emitted light is cross-polarized with respect to A and has a Gaussian mode profile.
 As I showed in \cref{subsec:setup:optics:coupling:efficiency}, the mode overlap between the dipole radiation after collimation and a Gaussian \TEM{00} mode is quite large at \qty{83}{\percent}, implying that the effects investigated in \citer{Benelajla2021} for Gaussian beams will also apply to some extent to the dipole radiation considered here.
 
 For the excitation rejection, the cold mirror potentially adds another issue.
@@ -87,6 +87,11 @@ Clearly, above \qty{10}{\hertz} the suspension improves the overall noise power 
 \end{marginfigure}
 
 The microscope characterized in \thispart has potential applications beyond the field of quantum technology.
+Low-temperature effects such as superconductivity and other correlated electronic phases could be studied optically~\cite{Hadfield2016,Arora2020,Zhang2023}.
+Van der Waals heterostructures appear particularly promising as they allow to combine optically responsive direct-gap semiconductors with metallic materials whose electronic properties can be studied in transport, leading to hybridization and proximity effects due to the atomically close contact~\cite{Geim2013}.
+Examples of this include stacks of graphene or \gls{blg} with \glspl{tmd} such as \ch{MoS2} or \ch{WSe2}~\cite{Popert2022,Masseroni2024,Xie2024,Seiler2025}.
+The latter display giant exciton binding energies that are sensitive to the dielectric screening by their close environment, thus allowing to serve as optical sensors of electronic properties~\cite{Popert2022,Tebbe2023}.
+Recent experiments in this direction undertaken in the setup by \citet{Tebbe2025} on \acrshort{blg}/\ch{WSe2} show promising first results on \gls{soi} proximity effects and magnetic phases in \gls{blg}~\cite{Icking2024}.
 
 \paragraph{Acknowledgements}
 Parts of the results presented in \thispart have been published in \citer{Descamps2024}.
