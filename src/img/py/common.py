@@ -2,23 +2,26 @@ import pathlib
 
 import IPython
 import matplotlib as mpl
+import numpy as np
+
+from qutil import const, functools, misc
 
 TEXTWIDTH = 4.2134
 MARGINWIDTH = 1.87831
-TOTALWIDTH = TEXTWIDTH + TEXTWIDTH + 0.24414
+TOTALWIDTH = TEXTWIDTH + MARGINWIDTH + 0.24414
 PATH = pathlib.Path(__file__).parents[1]
 MAINSTYLE = PATH / 'py/main.mplstyle'
 MARGINSTYLE = PATH / 'py/margin.mplstyle'
 
 
 def init(style, backend):
-    mpl.rcdefaults()
-    mpl.style.use(style)
-
     if (ipy := IPython.get_ipython()) is not None:
         ipy.run_line_magic('matplotlib', backend)
     else:
         mpl.use('qtagg' if backend == 'qt' else backend)
+
+    mpl.rcdefaults()
+    mpl.style.use(style)
 
 
 def apply_sketch_style(ax):
@@ -34,12 +37,51 @@ def apply_sketch_style(ax):
     ax.set_ylabel(ax.get_ylabel(), rotation='horizontal')
 
 
-def markerprops(color, marker='o', markersize=5, markerfacealpha=0.5, markeredgewidth=None):
+def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerfacealpha=0.5,
+                markeredgewidth=None):
     return dict(
         ls='',
         marker=marker,
         markersize=markersize,
         markeredgewidth=markeredgewidth or mpl.rcParams['lines.markeredgewidth'],
-        markeredgecolor=color,
+        markeredgecolor=mpl.colors.to_rgba(color, markeredgealpha),
         markerfacecolor=mpl.colors.to_rgba(color, markerfacealpha)
     )
+
+
+def _lambda2eV(lambda_):
+    with misc.filter_warnings('ignore', RuntimeWarning):
+        result = const.lambda2eV(lambda_)
+    result[np.isinf(result)] = 1e16
+    return result
+
+
+def _eV2lambda(eV):
+    with misc.filter_warnings('ignore', RuntimeWarning):
+        result = const.eV2lambda(eV)
+    result[np.isinf(result)] = 1e16
+    return result
+
+
+def secondary_axis(ax, unit: str = 'eV'):
+    match unit:
+        case 'nm':
+            functions = (functools.scaled(1e+9)(_lambda2eV),
+                         functools.scaled(1e-9)(_eV2lambda))
+            secondary_unit = 'eV'
+        case 'eV':
+            functions = (functools.scaled(1e+9)(_eV2lambda),
+                         functools.scaled(1e-9)(_lambda2eV))
+            secondary_unit = 'nm'
+        case _:
+            return ax, ''
+
+    return ax.secondary_xaxis('top', functions=functions), secondary_unit
+
+
+def n_GaAs(T=0):
+    # 800 nm
+    # https://refractiveindex.info/?shelf=other&book=AlAs-GaAs&page=Papatryfonos-0
+    n0 = 3.6520 + 1j*0.075663
+    # https://doi.org/10.1063/1.114204, we assume they measured at 25C
+    return n0 - 2.67e-4 * (25 + const.zero_Celsius - T)

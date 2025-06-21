@@ -7,20 +7,20 @@ from unittest import mock
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import uncertainties.unumpy as unp
 import xarray as xr
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qutil import const
 from qutil.itertools import absmax
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import (RWTH_COLORS_25, RWTH_COLORS,
-                                   make_diverging_colormap, make_sequential_colormap)
+from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_25, make_diverging_colormap,
+                                   make_sequential_colormap)
 from qutil.ui.gate_layout import GateLayout
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (  # noqa
-    init, markerprops, PATH, TOTALWIDTH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE
-)
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, TOTALWIDTH, init,  # noqa
+                    markerprops)
 
 ORIG_DATA_PATH = pathlib.Path(r'\\janeway\User AG Bluhm\Common\GaAs\PL Lab\Data\Triton\2022-07-13')
 DATA_PATH = PATH.parent / 'data/transport'
@@ -126,19 +126,17 @@ a = (np.diff(xs)/np.diff(ys)).squeeze()
 b = xs[:, 0] - a * ys[:, 0]
 
 ΔV = np.diff(b).item()
-E_c = abs(np.diff(b) / np.diff(a)).item()
-alpha = E_c / ΔV
+ΔE = abs(np.diff(b) / np.diff(a)).item()
+alpha = ΔE / ΔV
 
 # %%% GL
 with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=True):
     gl = GateLayout(DATA_PATH / 'gl_005d.dxf',
                     foreground_color=RWTH_COLORS_25['black'],
                     cmap=SEQUENTIAL_CMAP,
-                    # cmap=mpl.colormaps.get_cmap('afmhot'),
                     v_min=-1)
     gl.ax.set_aspect('equal')
     gl.ax.set_axis_off()
-    # gl.ax.grid()
     for txt in gl.ax.texts:
         if not any(
                 txt.get_text().startswith(dim) for dim in dmm_voltage_diamonds.dims[-1].split("_")
@@ -147,8 +145,8 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
         else:
             txt.set_visible(False)
 
-    gl.ax.text(1.29 + 0.9, +1.15, 'SA', horizontalalignment='center', verticalalignment='bottom')
-    gl.ax.text(1.29 - 0.9, +1.15, 'SD', horizontalalignment='center', verticalalignment='bottom')
+    gl.ax.text(1.29 - 0.9, +1.15, 'SA', horizontalalignment='center', verticalalignment='bottom')
+    gl.ax.text(1.29 + 0.9, +1.15, 'SD', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, +1.15, 'NBC', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, -0.15, 'TBC', horizontalalignment='center', verticalalignment='top')
 
@@ -163,20 +161,21 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
     gl.fig.savefig(SAVE_PATH / 'diamonds_gl.pdf', backend='pdf' if backend == 'qt' else backend)
 
 # %%% Plot
-# TODO: double-check units!
 fig = plt.figure(figsize=(TOTALWIDTH, TOTALWIDTH / const.golden / 1.5))
 grid = ImageGrid(fig, 111, nrows_ncols=(1, 2), share_all=True, aspect=False, cbar_mode='each',
                  cbar_location="top", axes_pad=(.2, .05))
 
-image_data = [tia_current_diamonds - np.median(tia_current_diamonds),
-              1e-3 * tia_current_diamonds.differentiate('NBC_TBC')]
+image_data = [
+    tia_current_diamonds - np.median(tia_current_diamonds),
+    1e-3 * tia_current_diamonds.differentiate('NBC_TBC')  # pA/mV
+]
 match backend:
     case 'pgf':
         image_labels = [r"$I$ (\unit{pA})", r"$\pdv*{I}{V}$ (\unit{pA\per mV})"]
     case 'qt':
         image_labels = ["$I$ (pA)", r"$\partial I/\partial V$ (pA/mV)"]
 
-widths = [0.045e3, 40]
+widths = [45, 37.5]
 
 x = tia_current_diamonds['NBC_TBC']
 y = tia_current_diamonds['Bias']
@@ -188,6 +187,17 @@ for ax, cax, img, label, width in zip(grid, grid.cbar_axes, image_data, image_la
     cb.set_ticks(np.delete(ticks := cb.get_ticks(), len(ticks) // 2))
     ax.set_xlabel(f"{x.attrs['long_name']} (mV)")
     ax.set_ylabel(r"$V_\mathrm{bias}$ (mV)")
+
+    # Slightly shift central labels to avoid overlap
+    for txt in cax.xaxis.get_ticklabels():
+        dx = 0.045
+        match txt.get_position()[0]:
+            case 10:
+                txt.set_transform(txt.get_transform()
+                                  + mpl.transforms.ScaledTranslation(dx, 0, fig.dpi_scale_trans))
+            case -10:
+                txt.set_transform(txt.get_transform()
+                                  + mpl.transforms.ScaledTranslation(-dx, 0, fig.dpi_scale_trans))
 
 ax = grid[0]
 txt_kwargs = dict(horizontalalignment='center', verticalalignment='center', transform=ax.transData)
@@ -209,9 +219,9 @@ dmm_voltage_plunger = xr.load_dataarray((DATA_PATH / file).with_suffix('.h5'))
 conductance_plunger = (dmm_voltage_plunger
                        / dmm_voltage_plunger.attrs['gain']
                        / dmm_voltage_plunger.attrs['bias']
-                       / const.physical_constants['conductance quantum'][0])
+                       / (const.physical_constants['conductance quantum'][0] / 2))
 conductance_plunger.attrs.update(dmm_voltage_plunger.attrs)
-conductance_plunger.attrs.update(units='$G_0$', long_name='$G$')
+conductance_plunger.attrs.update(units='$e^2/h$', long_name='$G$')
 # %%% Fit
 x = conductance_plunger['NBC_TBC']
 y = conductance_plunger
@@ -232,10 +242,14 @@ bounds = dict(zip(params, zip(
 p0 = dict(zip(params, [Γ, V_0, T, off]))
 
 fit = conductance_plunger[ix].curvefit('NBC_TBC', dfermi, p0=p0, bounds=bounds)
+fitpar = unp.uarray(fit.curvefit_coefficients, np.sqrt(np.diag(fit.curvefit_covariance)))
 
+print('Coulomb resonance fit:')
+print(f'Γ = {fitpar[0]/const.h*const.e*1e6} μeV = {fitpar[0]/const.h/const.k*const.e**2*1e3} mK')
+print(f'T = {fitpar[2]*1e3} mK')
 # %%% Plot
 with (
-        mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-3, 6)}], after_reset=True),
+        mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-2, 3)}], after_reset=True),
         changed_plotting_backend('pgf')
 ):
     fig, ax = plt.subplots(layout='constrained',
@@ -244,7 +258,9 @@ with (
     ax.plot(x[ix] * 1e3, y[ix] - fit.curvefit_coefficients[-1],
             **markerprops(RWTH_COLORS['blue'], markersize=3, markeredgewidth=0.5))
 
-    ax.plot(x[ix] * 1e3, dfermi(x[ix], *fit.curvefit_coefficients) - fit.curvefit_coefficients[-1],
+    xx = np.linspace(*x[ix][[0, -1]].data, 1001)
+    ax.plot(xx * 1e3,
+            dfermi(xx, *fit.curvefit_coefficients.data) - fit.curvefit_coefficients[-1].data,
             color=RWTH_COLORS['magenta'], marker='')
 
     ax.set_xlabel(f"{x.attrs['long_name']} (m{x.attrs['units']})")
@@ -252,14 +268,14 @@ with (
 
     fig.savefig(SAVE_PATH / 'coulomb_resonance.pdf')
 
-# %%%
+# %%% With inset axes (unused)
 conductance_diamonds = dmm_voltage_diamonds.sel(Bias=0, method='nearest')
 conductance_diamonds = (conductance_diamonds
                         / conductance_diamonds.Bias
                         / dmm_voltage_plunger.attrs['gain']
-                        / const.physical_constants['conductance quantum'][0])
+                        / (const.physical_constants['conductance quantum'][0] / 2))
 conductance_diamonds.attrs.update(conductance_diamonds.attrs)
-conductance_diamonds.attrs.update(units='$G_0$', long_name='$G$')
+conductance_diamonds.attrs.update(units='$e^2/h$', long_name='$G$')
 
 with (
         mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-3, 6)}], after_reset=True),

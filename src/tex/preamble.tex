@@ -27,17 +27,18 @@
     license=true
 }
 
-%\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
-%\addbibresource[label=ownsoft]{bib/01_own_software.bib}
-%\addbibresource[label=main]{bib/02_phd_thesis.bib}
-\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/00_own_publications.biblatex&useJournalAbbreviation=true}
-\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
-\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
+\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
+\addbibresource[label=ownsoft]{bib/01_own_software.bib}
+\addbibresource[label=main]{bib/02_phd_thesis.bib}
+%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;name:My%20Library/collection/00_own_publications.biblatex.biblatex&useJournalAbbreviation=true}
+%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
+%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
 %\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
 
 %----------------------------------------------------------------------------------------
 % Custom packages
 %----------------------------------------------------------------------------------------
+%\usepackage{pdfpages}
 \PassOptionsToPackage{
     chapter,%
     cache=true,%
@@ -68,6 +69,7 @@
 \renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
 
 \usepackage{tabularx} % better tables with given width
+\usepackage{threeparttable} % tablenotes env
 %\setlength{\extrarowheight}{3pt} % increase table row height
 \usepackage{collcell} % for verb columns
 
@@ -75,7 +77,15 @@
 
 %! begin preamble = tikz
 % graphs
-\usetikzlibrary{arrows, positioning, calc, shadows}
+\usetikzlibrary{
+    arrows,
+    positioning,
+    calc,
+    angles,
+    quotes,
+    shadows,
+    decorations.markings
+}
 % tree structures
 \usepackage[edges]{forest}
 % electric circuits
@@ -83,6 +93,10 @@
 
 %\usepackage{pgfplots}
 %\pgfplotsset{compat=1.18}
+
+% Fix for matplotlib's PGF backend
+% https://github.com/matplotlib/matplotlib/issues/27907
+\newcommand{\mathdefault}[1]{\displaystyle #1}
 
 %\usetikzlibrary{math}
 % quantum circuits
@@ -94,7 +108,6 @@
 %! end preamble = tikz
 
 %! begin preamble = math
-%\usepackage{bm}
 \usepackage{dsfont}
 \RequirePackage{mathtools}
 %\usepackage{mathrsfs}
@@ -140,6 +153,7 @@
 %\usepackage{blindtext} % Print text without any meaning for testing purposes
 %\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
 %\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
+%\usepackage{lipsum}
 
 %\usepackage{printlen}
 %\uselengthunit{in}
@@ -155,19 +169,20 @@
 \includeonly{
     tex/publications,
     tex/software,
-    %chs/spectrometer/introduction,
-    %chs/spectrometer/theory,
-    %chs/spectrometer/software,
-    %chs/spectrometer/conclusion,
+%    chs/spectrometer/introduction,
+%    chs/spectrometer/theory,
+%    chs/spectrometer/software,
+%    chs/spectrometer/conclusion,
     chs/setup/introduction,
-    chs/setup/electrical,
-    chs/setup/optical,
+    chs/setup/cooling.tex,
+    chs/setup/optics.tex,
     chs/setup/vibrations,
     chs/setup/conclusion,
-    %chs/filter_functions/introduction,
-    %chs/filter_functions/prr,
-    %chs/filter_functions/time_domain_methods,
-    %chs/filter_functions/validation,
+    chs/appendices/setup/optics,
     chs/appendices/setup/vibrations,
-    %chs/appendices/filter_functions,
+%    chs/filter_functions/introduction,
+%    chs/filter_functions/prr,
+%    chs/filter_functions/time_domain_methods,
+%    chs/filter_functions/validation,
+%    chs/appendices/filter_functions,
 }

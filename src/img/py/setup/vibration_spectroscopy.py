@@ -9,23 +9,22 @@ import numpy as np
 import tifffile
 import uncertainties.unumpy as unp
 import xarray as xr
+from cycler import cycler
 from python_spectrometer import Spectrometer
 from qcodes.utils.json_utils import NumpyJSONEncoder
 from qutil import const, functools, io
 from qutil.misc import filter_warnings
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import (
-    get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75
-)
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75, get_rwth_color_cycle
 from qutil.signal_processing import fourier_space, real_space
 from scipy import interpolate, odr, special
-from uncertainties import ufloat, unumpy as unp
+from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (
-    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops, init
-)  # noqa
+from common import (  # noqa
+    MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops, n_GaAs
+)
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -109,8 +108,8 @@ def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
-def erf_theory(x, I0, w0, r):
-    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf(x*np.sqrt(2)/w0))
+def erf_theory(x, I0, w0, x0, r):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf((x - x0)*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -182,13 +181,13 @@ poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
 cps = y1[mask].mean('counter_time_axis')
 cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
-data = odr.Data(pos, cps, wd=poserr, we=cpserr)
-model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
-fit = odr.ODR(data, model, beta0=[2.5, 0])
-output = fit.run()
+linear_data = odr.RealData(pos, cps, sx=poserr, sy=cpserr)
+linear_model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
+linear_fit = odr.ODR(linear_data, linear_model, beta0=[2.5, 0])
+linear_output = linear_fit.run()
 
 # s has units of Mcps/μm
-s, b = unp.uarray(output.beta, output.sd_beta)
+s, b = unp.uarray(linear_output.beta, linear_output.sd_beta)
 
 # %%%%% Plot camera image
 erroralpha = 0.5
@@ -230,13 +229,15 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     fig.subplots_adjust(hspace=0)
     fig.savefig(SAVE_PATH / 'knife_edge.pdf')
 
-# %%%% Plot fits
+# %%%% Plot linear fit
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
 xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
 xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
          pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+yyerr = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
 with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
     fig, axs = plt.subplots(nrows=2, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2),
@@ -261,12 +262,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     # cps vs pos
     ax = axs[1]
-    ax.errorbar(xx, y1.mean('counter_time_axis'),
-                y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
-                xerr=xxerr, label='Data',
+    ax.errorbar(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
                 **markerprops(errorcolor, marker='.'))
-    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
+    ax.plot(pos, linear_model.fcn(linear_output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
         'top',
@@ -277,113 +276,24 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.set_ylabel(r'$\Phi_R$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
+    ax.set_yticks([2, 3, 4])
     ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
     ax.set_ylim(2, 4)
 
     fig.savefig(SAVE_PATH / 'knife_edge_fits.pdf')
 
-# %%%% Plot all together
-erroralpha = 0.5
-errorcolor = RWTH_COLORS['blue']
-ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
-xx = pos_vs_vdc(x, *popt_posvdc)
-xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
-         pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
-
-with mpl.style.context(MAINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
-    mainfig = plt.figure(layout='constrained', figsize=(TEXTWIDTH, TEXTWIDTH / const.golden / 2))
-    subfigs = mainfig.subfigures(1, 2)
-
-    # position calibration
-    fig = subfigs[0]
-    fig.get_layout_engine().set(h_pad=0 / 72, hspace=0)
-    axs = fig.subplots(nrows=3, sharex=True, gridspec_kw={'height_ratios': [3.25, 1, 1]})
-
-    ax = axs[0]
-    ax.imshow(seq[0, row-75:row+75, 400:600], cmap='binary', aspect='equal')
-    ax.plot([0, 200], [75-5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.plot([0, 200], [75+5]*2, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.plot([ix[0]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.plot([ix[1]]*2, [0, 150], '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.axis('off')
-    ax.annotate('(a)', (0.025, 0.95), xycoords='axes fraction', va='top')
-
-    ax = axs[1]
-    ax.plot(seq[0, row, 400:600], color='k')
-    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
-                     linewidth=0.0)
-    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.set_ylim(lim)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.annotate('(b)', (0.025, 0.85), xycoords='axes fraction', va='top')
-
-    ax = axs[2]
-    ax.plot(np.gradient(seq[0, row, 400:600], 1), color='k')
-    ax.fill_betweenx(lim := ax.get_ylim(), *ix, color=RWTH_COLORS_50['black'], alpha=0.3,
-                     linewidth=0.0)
-    ax.plot([ix[0]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.plot([ix[1]]*2, lim, '--', color=RWTH_COLORS['black'], alpha=0.3, linewidth=0.5)
-    ax.set_ylim(lim)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.annotate('(c)', (0.025, 0.35), xycoords='axes fraction', va='top')
-
-    fig = subfigs[1]
-    axs = fig.subplots(nrows=2, gridspec_kw=dict(height_ratios=(2, 3)))
-
-    # pos vs vdc
-    ax = axs[0]
-    ax.errorbar(vdc_calib, unp.nominal_values(position)*1e6, unp.std_devs(position)*1e6,
-                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                **markerprops(errorcolor))
-    ax.plot(vdc_calib, np.polyval(popt_posvdc, vdc_calib)*1e6, zorder=5)
-    ax.margins(x=0.05)
-    ax.grid()
-    ax.set_xlabel(r'$V_\mathrm{DC}$ (V)')
-    ax.set_ylabel(r'$y - \langle y\rangle$ (μm)')
-    ax.xaxis.set_ticks_position('both')
-    ax.xaxis.set_tick_params(which='both', labeltop=True, labelbottom=False)
-    ax.xaxis.set_label_position('top')
-    xlim = ax.get_xlim()
-    ax.annotate('(d)', (0.05, 1.), xycoords='subfigure fraction', va='top')
-
-    # cps vs pos
-    ax = axs[1]
-    ax.errorbar(xx, y1.mean('counter_time_axis'),
-                y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
-                xerr=xxerr, label='Data',
-                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
-                **markerprops(errorcolor, marker='.'))
-    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
-
-    ax2 = ax.secondary_xaxis(
-        'top',
-        functions=(functools.partial(vdc_vs_pos, a=popt_posvdc[0], b=popt_posvdc[1]),
-                   functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
-    )
-    ax2.sharex(axs[0])
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
-    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
-    ax.grid()
-    ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
-    ax.set_ylim(2, 4)
-    ax.annotate('(e)', (0.05, 0.05), xycoords='subfigure fraction', va='top')
-
-    mainfig.savefig(SAVE_PATH / 'knife_edge_calibration.pdf')
-
 # %%%% Theory plot
 x = np.linspace(-1.5, 1.5, 1001)
 I0 = 2
 w0 = .3
+x0 = 0
 r = 0.2
 N = I0*w0*np.sqrt(0.5*np.pi)
 
 with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
 
-    ax.plot(x, erf_theory(x*w0, I0, w0, r) / N)
+    ax.plot(x, erf_theory(x*w0, I0, w0, x0, r) / N)
 
     ylim = ax.get_ylim()
     ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
@@ -403,6 +313,65 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
 
     fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
 
+# %%% Full knife-edge fit
+xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
+sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+# GaAs @ 800 nm
+n = n_GaAs(30e-3)
+r = abs((n - 1) / (n + 1))**2  # at 30 mK
+
+knife_edge_data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
+knife_edge_model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
+
+knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+knife_edge_output = knife_edge_fit.run()
+if 'Sum of squares convergence' not in knife_edge_output.stopreason:
+    knife_edge_output = knife_edge_fit.restart(100)
+
+fitpar = unp.uarray(knife_edge_output.beta, knife_edge_output.sd_beta)
+
+print('Knife edge fit results:')
+print(f'w_0 = {fitpar[1]:.3g} μm')
+print(f'r = {fitpar[3]:.3g}')
+
+knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r],
+                              ifixb=[1, 1, 1, 0])
+knife_edge_output_rfix = knife_edge_fit_rfix.run()
+if 'Sum of squares convergence' not in knife_edge_output_rfix.stopreason:
+    knife_edge_output_rfix = knife_edge_fit_rfix.restart(100)
+
+fitpar_rfix = unp.uarray(knife_edge_output_rfix.beta, knife_edge_output_rfix.sd_beta)
+
+# %%%% Plot
+erroralpha = 0.5
+errorcolor = RWTH_COLORS['blue']
+
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+
+    ax.errorbar(xx, yy, yerr=syy, xerr=sxx, alpha=0.75,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.', markersize=2.5))
+
+    ax.plot(xtmp := np.linspace(-1, 1, 1001), erf_theory(-xtmp, *unp.nominal_values(fitpar)),
+            zorder=5)
+
+    ylim = ax.get_ylim()
+    ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
+            color=RWTH_COLORS_75['magenta'], zorder=5)
+
+    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.grid()
+    ax.set_yticks([2, 3, 4])
+    ax.set_ylim(1.6)
+
+    fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
+
 # %% Load spects
 with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
     spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
@@ -420,10 +389,10 @@ spect_accel.processed_unit = 'μm'
 spect_accel.reprocess_data(*spect_accel.keys(), detrend='constant')
 
 spect_optic.procfn = cps_calib
-spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta,
+spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=linear_output.beta,
                            detrend='constant')
 
-figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.5))
+figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
 legend_kw = dict(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
                  ncols=2, mode="expand", borderaxespad=0., frameon=False)
 settings = dict(
@@ -457,6 +426,8 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
 # spect_optic.ax[1].set_yscale('asinh', linear_width=1.65e-3)
 # spect_accel.ax[1].set_ylim(0)
 # spect_optic.ax[1].set_ylim(0)
+spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
+spect_accel.ax[1].set_yticks([0, 5, 10])
 
 # %%% Resave
 # to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
@@ -472,14 +443,12 @@ shot_noise_floor = 2 * cts.mean() / fs * conversion_factor ** 2  # factor two fo
 
 spect_optic.ax[0].axhline(np.sqrt(shot_noise_floor.nominal_value), ls='--',
                           color=RWTH_COLORS_50['black'], zorder=5)
-spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
-spect_accel.ax[1].set_yticks([0, 5, 10])
 
 with changed_plotting_backend('pgf'):
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.fig.savefig(SAVE_PATH / f'{typ}.pdf')
 
-# %% Vibration criterion
+# %% Vibration criterion individual (unused)
 with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         fig, ax = plt.subplots(layout='constrained')
@@ -494,27 +463,92 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
             ax.loglog(vc_f, vc, label=key[1], zorder=5, color=sty['color'],
                       **(markerprops(sty['color'], markersize=4) | dict(ls='--')))
 
-        lim = ax.get_xlim()
-        ax.plot([8, lim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
-        ax.plot([lim[0], 8], [200/lim[0], 25], color=RWTH_COLORS_50['black'], marker='',
+        xlim = spect[key]['settings']['f_min'], spect[key]['settings']['f_max']
+        ax.plot([8, xlim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [200/xlim[0], 25], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls='-')
-        ax.plot([8, lim[1]], [50, 50], marker='', ls='--', color=RWTH_COLORS_50['black'])
-        ax.plot([lim[0], 8], [400/lim[0], 50], color=RWTH_COLORS_50['black'], marker='',
+        ax.plot([8, xlim[1]], [50, 50], marker='', ls='--', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [400/xlim[0], 50], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls='--')
-        ax.plot([8, lim[1]], [100, 100], marker='', ls='-.', color=RWTH_COLORS_50['black'])
-        ax.plot([lim[0], 8], [800/lim[0], 100], color=RWTH_COLORS_50['black'], marker='',
+        ax.plot([8, xlim[1]], [100, 100], marker='', ls='-.', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [800/xlim[0], 100], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls='-.')
-        ax.plot([8, lim[1]], [200, 200], marker='', ls=':', color=RWTH_COLORS_50['black'])
-        ax.plot([lim[0], 8], [1600/lim[0], 200], color=RWTH_COLORS_50['black'], marker='',
+        ax.plot([8, xlim[1]], [200, 200], marker='', ls=':', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [1600/xlim[0], 200], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls=':')
 
         ax.grid()
-        ax.set_xlim(lim)
-        ax.set_xlabel(r'$f_\mathrm{center}$ (Hz)')
+        ax.set_xlim(xlim)
+        match typ:
+            case 'spect_accel':
+                ax.set_ylim(1e-3, 1e3)
+            case 'spect_optic':
+                ax.set_ylim(top=5e2)
+
+        ax.set_xlabel(r'$f_\mathrm{m}$ (Hz)')
         ax.set_ylabel(r'$1/3$ octave band $\mathrm{RMS}$ (μm/s)')
         ax.legend(**legend_kw)
 
-        fig.savefig(SAVE_PATH / f'{typ}_vc.pdf')
+        # fig.savefig(SAVE_PATH / f'{typ}_vc.pdf')
+
+# %% Vibration criterion together
+cyclers = [
+    get_rwth_color_cycle(50)[1:] + cycler(marker=['o']*12, ls=['--']*12),
+    get_rwth_color_cycle(100)[1:] + cycler(marker=['D']*12, markersize=[4]*12, ls=['-.']*12),
+]
+
+with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+    lines = []
+    for typ, spect, cycle in zip(['spect_accel', 'spect_optic'], spects, cyclers):
+
+        for key, sty in zip(spect.keys(), cycle):
+            if 'PTR off' in key[1]:
+                continue
+            S = np.sqrt(spect[key]['S_processed'].mean(0))
+            f = spect[key]['f_processed']
+
+            vc, vc_f = fourier_space.octave_band_rms(*fourier_space.derivative(S, f, order=1),
+                                                     fraction=3)
+
+            ln, = ax.loglog(vc_f, vc, zorder=5, **(markerprops(sty['color']) | sty))
+            lines.append(ln)
+
+        vc_sn, vc_sn_f = fourier_space.octave_band_rms(
+            *fourier_space.derivative(np.full_like(f, np.sqrt(shot_noise_floor.nominal_value)),
+                                      f, order=1),
+            fraction=3
+        )
+
+        ax.loglog(vc_sn_f, vc_sn, ls=(0, (5, 10)), color=RWTH_COLORS_75['black'])
+
+        xlim = spect[key]['settings']['f_min'], spect[key]['settings']['f_max']
+        ax.plot([8, xlim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [200/xlim[0], 25], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='-')
+        ax.plot([8, xlim[1]], [50, 50], marker='', ls='--', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [400/xlim[0], 50], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='--')
+        ax.plot([8, xlim[1]], [100, 100], marker='', ls='-.', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [800/xlim[0], 100], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls='-.')
+        ax.plot([8, xlim[1]], [200, 200], marker='', ls=':', color=RWTH_COLORS_50['black'])
+        ax.plot([xlim[0], 8], [1600/xlim[0], 200], color=RWTH_COLORS_50['black'], marker='',
+                zorder=0, ls=':')
+
+    ax.set_yticks([1e-3, 1e-1, 1e1, 1e3])
+    ax.set_xlim(xlim)
+    ax.set_ylim(1e-3, 1e3)
+
+    ax.set_xlabel(r'$f_\mathrm{m}$ (Hz)')
+    ax.set_ylabel(r'$1/3$ octave band $\mathrm{RMS}$ (μm/s)')
+    ax.legend(
+        handles=lines,
+        labels=['Accel. susp. off', 'Accel. susp. on', 'Optical susp. off', 'Optical susp. on'],
+        **legend_kw
+    )
+
+    fig.savefig(SAVE_PATH / 'vc.pdf')
 
 # %% Relative dB
 settings['plot_dB_scale'] = True
@@ -526,8 +560,6 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2))
     ax[0].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
     ax[1].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
-    ax[0].axhline(color='black')
-    ax[1].axhline(color='black')
 
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.hide('PTR off, susp. off', 'PTR off, susp. on')
@@ -540,14 +572,13 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ln = spect._plot_manager.lines[1, 'PTR on, susp. on']['cumulative']['processed']['line']
         ax[1].semilogx(*ln.get_data())
 
-        with changed_plotting_backend('pgf'):
-            spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
-
+    ax[0].axhline(color=RWTH_COLORS_75['black'])
+    ax[1].axhline(color=RWTH_COLORS_75['black'])
     ax[0].set_yticks([20, 0, -20, -40, -60])
     ax[1].set_yticks([0, -20])
     ax[0].set_xlim(spect.ax[-1].get_xlim())
     ax[1].set_xlabel(spect.ax[-1].get_xlabel())
-    ax[0].set_ylabel('Power (dB)')
+    ax[0].set_ylabel('Instant. (dB)')
     ax[1].set_ylabel('Integrated (dB)')
     ax[0].grid()
     ax[1].grid()

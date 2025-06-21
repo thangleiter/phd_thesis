@@ -1,12 +1,15 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="Hangleiter">
+  <dictionary name="project">
     <words>
+      <w>cernox</w>
       <w>cumulant</w>
       <w>discretization</w>
       <w>discretized</w>
       <w>discretizing</w>
+      <w>exemplarized</w>
       <w>fidelities</w>
       <w>fluctuators</w>
+      <w>fraunhofer</w>
       <w>gaussianity</w>
       <w>hann</w>
       <w>lindblad</w>
@@ -14,10 +17,16 @@
       <w>parseval's</w>
       <w>periodogram</w>
       <w>periodograms</w>
+      <w>poynting</w>
+      <w>qubit</w>
       <w>sidelobe</w>
       <w>sidelobes</w>
       <w>superoperator</w>
       <w>superpropagator</w>
+      <w>thorlabs</w>
+      <w>ungrounds</w>
+      <w>unshifted</w>
+      <w>wien</w>
     </words>
   </dictionary>
 </component>

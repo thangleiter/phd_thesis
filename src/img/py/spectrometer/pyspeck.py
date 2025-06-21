@@ -6,7 +6,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from qopt.noise import fast_colored_noise
-from qutil import itertools
 from qutil.plotting.colors import RWTH_COLORS
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
@@ -15,7 +14,7 @@ from common import (  # noqa
     init, apply_sketch_style, markerprops, MARGINWIDTH, PATH, TEXTWIDTH, MARGINSTYLE, MAINSTYLE
 )
 
-init(MARGINSTYLE, backend='pgf')
+init(MARGINSTYLE, backend := 'pgf')
 # %%
 
 
@@ -113,12 +112,19 @@ with plt.style.context(MAINSTYLE, after_reset=True):
     ax2.spines.top.set_visible(False)
     ax2.spines.left.set_visible(False)
     ax2.spines.right.set_visible(False)
-    ax.set_xticks([i*(N-K) for i in range(M + 2)])
-    ax.set_xticklabels([r'$0$', r'$N-K$'] + ['$...$']*(M - 2) + [r'$L - N + K$', r'$L$'])
+    ax.set_xticks(
+        ticks=[i*(N-K) for i in range(M + 2)],
+        labels=(
+            [r'$0$', r'$N-K$'] + [r'$\cdots$' if backend == 'pgf' else '...']*(M - 2)
+            + [r'$L - N + K$', r'$L$']
+        ),
+        va='bottom'
+    )
     ax.set_yticks([])
     ax2.set_yticks([])
     ax.margins(y=0.15)
-    ax.tick_params(direction='inout')
+    ax.tick_params('x', pad=mpl.rcParams['axes.labelpad'] + mpl.rcParams['font.size'] - 2)
+    ax.tick_params('both', direction='inout')
 
     fig.tight_layout()
     fig.savefig(PATH / 'pdf/spectrometer/welch.pdf', backend='pgf')

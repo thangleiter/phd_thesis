@@ -57,7 +57,7 @@ This class is used in the background to validate data acquisition settings both 
     \label{tab:speck:software:parameters}
     \begin{tabular}{ c C }
         \toprule
-        Variable & Parameter \\
+        \textsc{Variable} & \textsc{Parameter} \\
         \midrule
         $L$ & n_pts \\
         $N$ & nperseg \\
@@ -272,8 +272,7 @@ A simple example for a processing function in Fourier space is shown in \cref{ls
     \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
 \end{align}
 under the Fourier transform.
-In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
-% TODO: ref
+In \cref{sec:setup:vibrations:optic}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
 
 \begin{marginlisting}[*4]
     \begin{minted}[fontsize=\footnotesize]{python}
@@ -322,7 +321,7 @@ spect = Spectrometer(mfli_daq, procfn=scaled(1e6),
                      plot_negative_frequencies=False,
                      processed_unit='μV')
 
-settings = {'f_min': 1e1, 'f_max': 1e5', 'freq': 0}
+settings = {'f_min': 1e1, 'f_max': 1e5, 'freq': 0}
 spect.take('baseline', daq='grounded', **settings)
     \end{minted}
     \caption[\pyspeck serial workflow]{

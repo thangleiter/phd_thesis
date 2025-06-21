@@ -1037,7 +1037,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
     \includegraphics{img/pdf/filter_functions/rabi_driving_weak_vs_strong}
     \caption{
         Filter functions for weak (a) and strong (b) Rabi driving (\num{20} identity gates in total).
-        Grey dashed (dotted) lines indicate the respective drive (Rabi) frequencies $\omega_0$ ($\Omega_\mr{R}$).
+        gray dashed (dotted) lines indicate the respective drive (Rabi) frequencies $\omega_0$ ($\Omega_\mr{R}$).
         (a) Weak driving with $\flatfrac{A}{\omega_\mr{0}}\ll 1$.
         The filter function $F_{xx}$ for noise operator \sx is approximately constant up to the resonance frequency where it peaks sharply and then aligns with the filter function $F_{zz}$ for \sz.
         $F_{zz}$ peaks at the Rabi frequency before rolling off with $\omega^{-2}$ and a DC level that is almost ten orders of magnitude larger than the DC level of the transverse filter function $F_{xx}$.
@@ -1175,7 +1175,7 @@ Note that the circuit could be compressed in time by parallelizing some operatio
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
         Bottom: Filter functions for noise operators on the first qubit ($i = 0$).
-        Dotted grey lines indicate the positions of the $n$ harmonic, $\omega_n = \flatfrac{2\pi n}{\tau}$ with $\tau = \qty{30}{\nano\second}$ the duration of the gates in $\mathbb{G}$, for $n\in\lbrace 1, 2, 3, 4\rbrace$.
+        Dotted gray lines indicate the positions of the $n$ harmonic, $\omega_n = \flatfrac{2\pi n}{\tau}$ with $\tau = \qty{30}{\nano\second}$ the duration of the gates in $\mathbb{G}$, for $n\in\lbrace 1, 2, 3, 4\rbrace$.
         The filter functions have a baseline of around $10^4$ in the range $\omega\in[10^{-1}, 10^{1}]$ \si{\per\nano\second} before they drop down to follow the usual $1/\omega^2$ behavior.
         The dashed lines show the error sensitivities $\mc{I}_\alpha(\omega_1,\omega_2)\coloneqq\int_{\omega_1}^{\omega_2}\dd{\omega} F_\alpha(\omega)$ in the frequency band $[0, \omega]$ as a fraction of the total sensitivity $\mc{I}_\alpha(0,\infty)$.
         These are closely related to the entanglement fidelity (\cf \cref{eq:ff:filter_function:fidelity,eq:ff:infidelity:ent:integral}) and suggest that high frequencies up to the knee at $\omega\approx\qty{10}{\per\nano\second}$ cannot be neglected if the cutoff frequency of the noise is sufficiently high or the spectrum does not drop off quickly enough (note the linear scale as opposed to the logarithmic scale for the filter functions).

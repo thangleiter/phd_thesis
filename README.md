@@ -9,9 +9,13 @@
 	- Fonts not available from CTAN are at `lib/fonts`.
 - To automatically set up the repository to compile with `tectonic`, run `shell/init.{sh,ps1}`.
 - Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
+- `minted` needs to be installed and Python on `PATH`. If Python is installed as part of the miniforge3 distribution at either `$HOME/miniforge3` or `$LOCALAPPDATA/miniforge3`, this is automatically taken care of when compiling with `latexmk -r windows.latexmkrc`.
 
 # To Dos
+
 ## Content
+- [ ] Acknowledgements / author contributions
+ 
 ### How to read this thesis
 - [ ] PDF viewer
 - [ ] Image sources
@@ -25,8 +29,11 @@
 - [ ] Discuss cumulative with dB scale?
 
 ### Setup
+- [x] Knife edge fit
+- [x] Spot image fits
+- [x] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
-- [ ] Indicate noise floor from accelerometer signal conditioner?
+- [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 
 ### FF
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
@@ -35,8 +42,8 @@
  
 ## Layout
 - [ ] Tune the bibliography style
-- [ ] Chapters instead of parts?
-	- [x] Else numbered parts
+- [ ] ~~Chapters instead of parts?~~
+- [x] Else numbered parts
 - [ ] Part title page design
 - [ ] `\margintoc`?
 
