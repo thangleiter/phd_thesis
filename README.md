@@ -30,9 +30,9 @@
 - [ ] Discuss cumulative with dB scale?
 
 ### Setup
-- [ ] Knife edge fit
+- [x] Knife edge fit
 - [x] Spot image fits
-- [ ] Go over derivation in appendix.
+- [x] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 
