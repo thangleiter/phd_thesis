@@ -7,7 +7,7 @@ is_branch_checkout=$3
 # Only run for branch checkouts (not file checkouts)
 if [ "$is_branch_checkout" = "1" ]; then
     echo "Switched branches, updating submodules..."
-    git submodule update
+    git submodule update --remote
 fi
 
 exit $?
