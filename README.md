@@ -39,6 +39,9 @@
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
 - [ ] split up `prr.tex`
+
+## Code
+- [ ] `uv pip freeze` *or* just make installable.
  
 ## Layout
 - [ ] Tune the bibliography style
