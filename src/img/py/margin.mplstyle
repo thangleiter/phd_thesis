@@ -49,7 +49,7 @@ mathtext.fontset: custom  # Should be 'dejavusans' (default),
                        # the special name "regular" for the same font
                        # used in regular text.
 
-axes.formatter.use_locale : True  ## When True, format tick labels
+axes.formatter.use_locale : False  ## When True, format tick labels
                                    ## according to the user's locale.
                                    ## For example, use ',' as a decimal
                                    ## separator in the fr_FR locale.
