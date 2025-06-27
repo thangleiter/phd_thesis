@@ -23,9 +23,11 @@ with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite')
     DIVERGING_CMAP = make_diverging_colormap(['magenta', 'green'], endpoint='white')
 
-WAV = 800
+WAV = 825
 INC = 0.
 POL = 0.
+
+INCLUDE_SI = True
 
 init(MAINSTYLE, backend := 'pgf')
 # %% Functions
@@ -49,7 +51,7 @@ def get_source_interface(structure):
     return np.diff(structure.layer_type).tolist().index(0) + 1
 
 
-def setup_bare_structure(barrier_thickness=90):
+def setup_bare_structure(barrier_thickness=90, epoxy_thickness=None, verbose=False):
     stack = [
         materials.index(air),
         materials.index(gaas),
@@ -58,8 +60,7 @@ def setup_bare_structure(barrier_thickness=90):
         materials.index(gaas),
         materials.index(algaas),
         materials.index(gaas),
-        materials.index(epoxy),
-        # materials.index(si),
+        materials.index(epoxy)
         # materials.index(air)
     ]
     thickness = [
@@ -71,14 +72,17 @@ def setup_bare_structure(barrier_thickness=90):
         barrier_thickness,
         10,
         1,  # irrelevant
-        # 2e6,
         # 1
     ]
-    return pm.Structure(materials, stack, thickness, verbose=False)
+    if epoxy_thickness is not None:
+        stack.append(materials.index(si))
+        thickness.insert(-1, epoxy_thickness)
+
+    return pm.Structure(materials, stack, thickness, verbose=verbose)
 
 
-def setup_tbg_structure(barrier_thickness):
-    bare_structure = setup_bare_structure(barrier_thickness)
+def setup_tbg_structure(barrier_thickness=90, epoxy_thickness=None, verbose=False):
+    bare_structure = setup_bare_structure(barrier_thickness, epoxy_thickness, verbose)
     tbg_stack = bare_structure.layer_type.copy()
     tbg_stack.insert(1, materials.index(au_thin))
     tbg_stack.insert(2, materials.index(ti))
@@ -90,12 +94,13 @@ def setup_tbg_structure(barrier_thickness):
     tbg_thickness.insert(2, 2)
     tbg_thickness.insert(-1, 25)
     tbg_thickness.insert(-2, 5)
-    return pm.Structure(materials, tbg_stack, tbg_thickness, verbose=False)
+    return pm.Structure(materials, tbg_stack, tbg_thickness, verbose=verbose)
 
 
-def analyze_absorptance(structure, wavelength=WAV, incidence=INC, polarization=POL):
+def analyze_absorptance(structure, wavelength=WAV, incidence=INC, polarization=POL, verbose=True):
     if not np.isscalar(wavelength):
-        print('Sweeping wavelength.')
+        if verbose:
+            print('Sweeping wavelength.')
         rs, ts = np.empty((2, np.size(wavelength)), dtype=complex)
         Rs, Ts = np.empty((2, np.size(wavelength)))
         As = np.empty((np.size(wavelength), len(structure.layer_type)))
@@ -109,8 +114,9 @@ def analyze_absorptance(structure, wavelength=WAV, incidence=INC, polarization=P
     else:
         source_interface = get_source_interface(structure)
         As, rs, ts, Rs, Ts = pm.absorption(structure, wavelength, incidence, polarization)
-        print(f'R = {Rs:.2g}')
-        print(f'A = {sum(As[source_interface-1:source_interface+1]).real:.2g}')
+        if verbose:
+            print(f'R = {Rs:.2g}')
+            print(f'A = {sum(As[source_interface-1:source_interface+1]).real:.2g}')
     return As, rs, ts, Rs, Ts
 
 
@@ -161,6 +167,7 @@ def plot_field(structures, Es, window, xlim, mat):
             ln, = axs[0].plot(func(Es[i])[:, window.nx // 2], ys[i], color=RWTH_COLORS['magenta'])
 
             axs[1].set_aspect(8)
+            axs[1].set_yticks([0, 100, 200, 300])
             axs[1].set_ylim(ylims[i])
             axs[0].set_aspect(1/50)
             axs[0].set_ylim(ylims[i])
@@ -263,8 +270,21 @@ materials = [air, gaas, algaas, au_thin, au_med, au_thick, ti, epoxy, si]
 # ebeam etched gate: 2/7
 # optical: 7/150
 # %%% Bare stack
-bare_structure = setup_bare_structure(barrier_thickness=90)
+print('Bare stack:\n -> 10/90/20/90/10')
+bare_structure = setup_bare_structure(barrier_thickness=90, epoxy_thickness=None, verbose=False)
 A, r, t, R, T = analyze_absorptance(bare_structure)
+# %%%% Sweep epoxy thickness
+thickness = np.linspace(0, 500, 1001)
+Rs = np.empty_like(thickness)
+for i, t in enumerate(thickness):
+    structure = setup_bare_structure(barrier_thickness=90, epoxy_thickness=t, verbose=False)
+    Rs[i] = pm.coefficient(structure, WAV, INC, POL)[2]
+
+fig, ax = plt.subplots(layout='constrained')
+ax.plot(thickness, Rs)
+ax.scatter([0], [R])
+ax.set_xlabel('Epoxy thickness (nm)')
+ax.set_ylabel('$R$')
 # %%% Topgate optical
 tg_stack = bare_structure.layer_type.copy()
 tg_stack.insert(1, materials.index(au_thick))
@@ -274,7 +294,8 @@ tg_thickness = bare_structure.thickness.copy()
 tg_thickness.insert(1, 150)
 tg_thickness.insert(2, 7)
 
-tg_structure = pm.Structure(materials, tg_stack, tg_thickness)
+print('Optical top gate:\n -> 150/7/10/90/20/90/10')
+tg_structure = pm.Structure(materials, tg_stack, tg_thickness, verbose=False)
 A, r, t, R, T = analyze_absorptance(tg_structure)
 # %%% Bottomgate optical
 bg_stack = bare_structure.layer_type.copy()
@@ -285,7 +306,8 @@ bg_thickness = bare_structure.thickness.copy()
 bg_thickness.insert(-1, 150)
 bg_thickness.insert(-2, 7)
 
-bg_structure = pm.Structure(materials, bg_stack, bg_thickness)
+print('Optical bot gate:\n -> 10/90/20/90/10/7/150')
+bg_structure = pm.Structure(materials, bg_stack, bg_thickness, verbose=False)
 A, r, t, R, T = analyze_absorptance(bg_structure)
 # %%% Topgate ebeam
 tg_stack = bare_structure.layer_type.copy()
@@ -296,7 +318,8 @@ tg_thickness = bare_structure.thickness.copy()
 tg_thickness.insert(1, 7)
 tg_thickness.insert(2, 2)
 
-tg_structure = pm.Structure(materials, tg_stack, tg_thickness)
+print('Ebeam top gate:\n -> 7/2/10/90/20/90/10')
+tg_structure = pm.Structure(materials, tg_stack, tg_thickness, verbose=False)
 A, r, t, R, T = analyze_absorptance(tg_structure)
 # %%% Bottomgate ebeam
 bg_stack = bare_structure.layer_type.copy()
@@ -307,10 +330,12 @@ bg_thickness = bare_structure.thickness.copy()
 bg_thickness.insert(-1, 25)
 bg_thickness.insert(-2, 5)
 
-bg_structure = pm.Structure(materials, bg_stack, bg_thickness)
+print('Ebeam bot gate:\n -> 10/90/20/90/10/5/25')
+bg_structure = pm.Structure(materials, bg_stack, bg_thickness, verbose=False)
 A, r, t, R, T = analyze_absorptance(bg_structure)
 # %%% Top and Bottom ebeam
-tbg_structure = setup_tbg_structure(barrier_thickness=90)
+print('Ebeam top and bot gate:\n -> 7/2/10/90/20/90/10/5/25')
+tbg_structure = setup_tbg_structure(barrier_thickness=90, verbose=False)
 A, r, t, R, T = analyze_absorptance(tbg_structure)
 # %%%% optimize barrier thickness
 
@@ -324,19 +349,21 @@ def objective_function(barrier_thickness, wavelength=WAV, incidence=INC, polariz
 
 budget = 1000
 best, convergence = pm.differential_evolution(objective_function, budget,
-                                              X_min=np.array([50]), X_max=np.array([150]))
-best = best.round()
+                                              X_min=np.array([25]), X_max=np.array([200]))
+best = round(best.item())
 
-tbg_structure_opt = setup_tbg_structure(barrier_thickness=best[0])
+print(f'Ebeam top and bot gate (opt @ {WAV} nm):\n -> 7/2/10/{best}/20/{best}/10/5/25')
+tbg_structure_opt = setup_tbg_structure(barrier_thickness=best, verbose=False)
 A_opt, *_ = analyze_absorptance(tbg_structure_opt)
 # %%%%% Plot wavelengths
 PLOT_R = False
 
 source_interface = get_source_interface(tbg_structure_opt)
-wavelengths = np.arange(750, 851)
-As, rs, ts, Rs, Ts = analyze_absorptance(tbg_structure, wavelengths)
+wavelengths = np.arange(775, 876)
+As, rs, ts, Rs, Ts = analyze_absorptance(tbg_structure, wavelengths, verbose=False)
 As = np.sum(As[:, source_interface-1:source_interface+1], axis=1)
-As_opt, rs_opt, ts_opt, Rs_opt, Ts_opt = analyze_absorptance(tbg_structure_opt, wavelengths)
+As_opt, rs_opt, ts_opt, Rs_opt, Ts_opt = analyze_absorptance(tbg_structure_opt, wavelengths,
+                                                             verbose=False)
 As_opt = np.sum(As_opt[:, source_interface-1:source_interface+1], axis=1)
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
@@ -346,12 +373,12 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.semilogy(wavelengths, As_opt)
     ax.set_ylabel('$A$')
     ax.set_xlabel(r'$\lambda$ (nm)')
-    arr = mpl.patches.FancyArrowPatch((800, As[wavelengths == 800].item()),
-                                      (800, As_opt[wavelengths == 800].item()),
-                                      arrowstyle='->', mutation_scale=10, zorder=5)
+    arr = mpl.patches.FancyArrowPatch((WAV, As[wavelengths == WAV].item()),
+                                      (WAV, As_opt[wavelengths == WAV].item()),
+                                      arrowstyle='->', mutation_scale=7.5, zorder=5)
     ax.add_patch(arr)
-    ax.annotate(rf'$\times {(As_opt[wavelengths == 800] / As[wavelengths == 800]).item():.2g}$',
-                (.75, .5), xycoords=arr, ha='left', va='center')
+    ax.annotate(rf'$\times {(As_opt[wavelengths == WAV] / As[wavelengths == WAV]).item():.2g}$',
+                (1, .5), xycoords=arr, ha='left', va='center')
     if PLOT_R:
         ax2 = ax.twinx()
         ax2.plot(wavelengths, Rs, ls='--')
@@ -370,8 +397,9 @@ structure = pm.Structure(materials, tbg_structure.layer_type[:depth],
 structure_opt = pm.Structure(materials, tbg_structure_opt.layer_type[:depth],
                              tbg_structure_opt.thickness[:depth], verbose=False)
 
-beam = pm.Beam(WAV, INC, POL, 2*624)
-window = pm.Window(7.5*WAV, 0.5, 50, 1)
+beam = pm.Beam(wavelength=WAV, incidence=INC, polarization=POL, horizontal_waist=2*624)
+window = pm.Window(width=7.5*WAV, beam_relative_position=0.5, horizontal_pixel_size=50,
+                   vertical_pixel_size=1)
 
 E = pm.field(structure, beam, window)
 E_opt = pm.field(structure_opt, beam, window)
@@ -384,7 +412,8 @@ fig.savefig(SAVE_PATH / 'tmm_field.pdf')
 # %%%% Dipole emitter
 depth = None
 # Window needs to be wide enough for fields to have attenuated before leaking into other side (PBC)
-window = pm.Window(50*WAV, 0.5, 5, 1)
+window = pm.Window(width=50*WAV, beam_relative_position=0.5, horizontal_pixel_size=5,
+                   vertical_pixel_size=1)
 
 thick = tbg_structure.thickness[:depth]
 thick[0] = 0.6*WAV
