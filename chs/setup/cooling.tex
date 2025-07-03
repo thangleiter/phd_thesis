@@ -243,7 +243,7 @@ Their sign depends on the tunnel coupling of the state to source and drain~\cite
     \includegraphics{img/pdf/setup/coulomb_resonance}
     \caption[\imgsource{img/py/setup/transport.py}]{
         Conductance of a Coulomb resonance in the sequential tunneling regime.
-        Magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
+        The magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
     }
     \label{fig:setup:cooling:etemp:resonance}
 \end{marginfigure}
@@ -259,7 +259,7 @@ For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}
 in linear response (small bias).
 Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
 The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
-From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-10]{
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin} = \qty{6.5}{\micro\eV}/\kb$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}\times\kb$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-9]{
     In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
     The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
     \begin{equation*}
@@ -271,3 +271,4 @@ From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $
     \end{equation*}
     The precise physical mechanism behind this behavior is not understood.
 }
+The achieved electron temperature is therefore low enough for high-fidelity qubit experiments with energy splittings $\sim\qty{100}{\micro\eV}$.
