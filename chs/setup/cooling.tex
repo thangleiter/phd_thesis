@@ -33,7 +33,7 @@ Then, in \cref{sec:setup:cooling:etemp}, I present measurements of the \emph{ele
 The base temperature (\Tmxc) can be read out from the resistance bridge connected to the gas handling PC controlling the cryostat.
 Two different thermometers are installed on the mixing chamber, a Cernox\textsuperscript{\textregistered} sensor that works in the range from room temperature down to around \qty{2}{\kelvin} for cooldown, and a \ch{RuO_2} sensor that works from \qty{30}{\kelvin} down to the Millikelvin regime for base temperature operation.
 The resistance bridge performs a four-terminal measurement of the sensor resistance and converts it to a temperature according to a sensor-specific calibration $\Tmxc(R_{\ch{RuO_2}})$.
-Since the particular sensor installed in our system was only calibrated down to \qty{30}{\milli\kelvin}, I had to extrapolate the calibration curve as the system reaches lower temperatures than this, and hence the temperatures below this threshold quoted here are not guaranteed to be correct.
+Since the particular sensor installed in the system was only calibrated down to \qty{30}{\milli\kelvin}, I had to extrapolate the calibration curve as the system reaches lower temperatures than this, and hence the temperatures below this threshold quoted here are not guaranteed to be correct.
 
 \begin{marginfigure}
     \centering
@@ -51,7 +51,7 @@ To investigate the influence of ambient thermal radiation entering the cryostat 
 The windows (\thewindow) are made from UV fused silica with \gls{ar} coating.\sidenote{
     Depending on the manufacturer, the coating for the range \qtyrange{650}{1050}{\nano\meter} is called \acrshort{bbar} VIS-\acrshort{nir} or \acrshort{bbar}-B.
 }
-The manufacturer quotes a typical reflectance of \qty{0.25}{\percent} in the relevant wavelength range, while the glass is largely transmissive for wavelengths below $\lambda_{\mr{cutoff}}\sim\qty{4.5}{\micro\meter}$.
+The manufacturer quotes a typical reflectance of \qty{0.25}{\percent} in the relevant wavelength range of \qtyrange{700}{1000}{\nano\meter}, while the glass is largely transmissive for wavelengths below $\lambda_{\mr{cutoff}}\sim\qty{4.5}{\micro\meter}$.
 Since the spectral radiance of thermal black-body radiation~\cite{Planck1900}
 \begin{equation}\label{eq:setup:cooling:blackbody}
     B_\lambda(\lambda, T) = \frac{2 h c^2}{\lambda^5}\frac{1}{\exp(\flatfrac{hc}{\lambda\kb T}) - 1}
