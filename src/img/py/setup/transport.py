@@ -150,10 +150,9 @@ with mpl.style.context([MARGINSTYLE, {'patch.linewidth': 0.25}], after_reset=Tru
     gl.ax.text(1.29, +1.15, 'NBC', horizontalalignment='center', verticalalignment='bottom')
     gl.ax.text(1.29, -0.15, 'TBC', horizontalalignment='center', verticalalignment='top')
 
-    cb = gl.fig.colorbar(
-        mpl.cm.ScalarMappable(gl.norm, gl.cmap), ax=gl.ax, label='$V$ (V)',
-        shrink=.33, panchor=(1.0, 1.0), anchor=(0.0, 1.0), pad=0.0, aspect=7.5
-    )
+    cax = gl.ax.inset_axes([1.0, 0.7, 0.025, 0.4])
+    cax.set_xlabel('$V$ (V)', loc='left')  # counter-intuitive loc :)
+    cb = gl.fig.colorbar(mpl.cm.ScalarMappable(gl.norm, gl.cmap), cax=cax)
 
     gl.update(json.loads(dmm_voltage_diamonds.attrs['voltages']))
 
@@ -246,7 +245,7 @@ fitpar = unp.uarray(fit.curvefit_coefficients, np.sqrt(np.diag(fit.curvefit_cova
 
 print('Coulomb resonance fit:')
 print(f'Γ = {fitpar[0]/const.h*const.e*1e6} μeV = {fitpar[0]/const.h/const.k*const.e**2*1e3} mK')
-print(f'T = {fitpar[2]*1e3} mK')
+print(f'T = {fitpar[2]*1e3:.1f} mK = {fitpar[2]*const.k/const.e*1e6:.1f} μeV')
 # %%% Plot
 with (
         mpl.style.context([MARGINSTYLE, {'axes.formatter.limits': (-2, 3)}], after_reset=True),
