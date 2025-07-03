@@ -3,8 +3,8 @@
 \AutoLettrine{Pidgeons}
 \section{\Acrlong{tmm} simulations of the membrane structure}\label{sec:exp:tmm}
 The \gls{tmm} is a computationally efficient method of obtaining the electric field in layered structures.
-In this section, I perform simulations of the heterostructure membranes investigated in \thispart using the \package{PyMoosh} package~\cite{Langevin2024} to elucidate the observed quenching of \gls{pl} when illuminating gate electrodes as well as the overall optical efficiency.\sidenote{
-    Strictly speaking, the term \acrshort{tmm} only refers to one of the several formalisms implemented in the \package{PyMoosh} package.
+In this section, I perform simulations of the heterostructure membranes investigated in \thispart using the \pymoosh package~\cite{Langevin2024} to elucidate the observed quenching of \gls{pl} when illuminating gate electrodes as well as the overall optical efficiency.\sidenote{
+    Strictly speaking, the term \acrshort{tmm} only refers to one of the several formalisms implemented in the \pymoosh package.
     While fast, it not the most numerically stable, and other methods may be preferred if wall time is not a limiting issue.
 }
 I will first briefly recap the simulation method following \citer{Langevin2024}.
@@ -22,8 +22,8 @@ where $\gamma_i = \sqrt{\epsilon_{r,i}k_0^2 - k_x^2}$ with $k_0=\flatfrac{\omega
 In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces,
 \begin{equation}
     \begin{dcases}
-        E_{y,i}(z) = A_i^{+}\exp{\i\gamma_i(z-z_{i})} + B_i^{+}\exp{-\i\gamma_i(z-z_{i})}, \\
-        E_{y,i}(z) = A_i^{-}\exp{\i\gamma_i(z-z_{i+1})} + B_i^{-}\exp{-\i\gamma_i(z-z_{i+1})},
+        E_{y,i}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
+        E_{y,i}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
     \end{dcases}
 \end{equation}
 where the coefficients with superscript $+$ ($-$) are referenced to the phase at the upper (lower) interface, respectively.
@@ -47,7 +47,7 @@ Connecting the coefficients for adjacent interfaces within a layer of height $h_
 \end{equation}
 with
 \begin{equation}\label{eq:exp:tmm:C}
-    C_{i} = \exp{\diag(-\i\gamma_i h_i, \i\gamma_i h_i)}.
+    C_{i} = \exp\left\lbrace\diag(-\i\gamma_i h_i, \i\gamma_i h_i)\right\rbrace.
 \end{equation}
 Iterating \cref{eq:exp:tmm:C,eq:exp:tmm:T}, the total transfer matrix $T = T_{0,N+1}$ then reduces to the matrix product
 \begin{equation}\label{eq:exp:tmm:T:total}
@@ -67,7 +67,33 @@ However, the opposite signs in the argument of the exponentials in \cref{eq:exp:
 Rewriting \cref{eq:exp:tmm:T} to have incoming and outgoing fields on opposite sides of the equality alleviates this issue while sacrificing the simple matrix-multiplication composition rule in what is known as the scattering matrix ($S$-matrix) formalism.
 
 Beyond the calculation of the aforementioned coefficients, the \gls{tmm} formalism also allows to compute the full spatial dependence of the fields.
-Two cases are implemented in \package{PyMoosh}; first, irradiation of the layered structured with a Gaussian beam rather than plane waves of infinite extent, and second, a current line source inside the structure.
+Two cases are implemented in \pymoosh: irradiation of the layered structured with a Gaussian beam rather than plane waves of infinite extent, and a current line source inside the structure.
+In the first case, the previously assumed translational invariance along $x$ leading to a plane-wave spatial dependence is replaced by a superposition of plane waves weighted with a normally distributed amplitude,\sidenote{
+    \Ie, the inverse Fourier transform of $\mc{E}_0(k_x)$.
+}
+\begin{equation}\label{eq:exp:tmm:gauss:x}
+    E_{y,i}(x) = \exp(\i k_x x)\rightarrow \int\ddf{k_x}\mc{E}_0(k_x) \exp(\i k_x x),
+\end{equation}
+with (\cf \cref{eq:setup:gaussian})
+\begin{equation}\label{eq:exp:tmm:gauss:ampl}
+    \mc{E}_0(k_x) = \frac{w_0}{2\sqrt{\pi}}\exp\left\lbrace - \i k_x x_0 -\left[\frac{w_0 k_x}{2}\right]^2\right\rbrace,
+\end{equation}
+so that
+\begin{equation}\label{eq:exp:tmm:gauss:xz}
+    E_{y,i}(x, z) = E_{y,i}(z) E_{y,i}(x)
+\end{equation}
+with
+\begin{equation}\label{eq:exp:tmm:gauss:z}
+    E_{y,i}(z) = A_{i}^{-}\exp\lbrace\i\gamma_i[z-z_{i+1}]\rbrace + B_{i}^{+}\exp\lbrace -\i\gamma_i[z-z_{i}]\rbrace
+\end{equation}
+and where we considered only normal incidence for simplicity.
+In the second case, \citet{Langevin2024} consider an AC current $I$ flowing through a translationally invariant, one-dimensional wire along $y$ at $x=x_{\mr{s}}$.
+This introduces a source term into the Helmholtz equation \cref{eq:exp:tmm:helmholtz} which, upon Fourier transforming in $x$ direction, leads to
+\begin{equation}\label{eq:exp:tmm:helmholtz:green}
+    \pdv[2]{\hat{E}_y}{z} + \gamma_i^2\hat{E}_y = -\i\omega\mu_0 I\delta(z)\exp(\i k_x x_{\mr{s}}).
+\end{equation}
+The electric field $\hat{E}_{y,i}(k_x, z)$ is thus proportional to the Green's function of \cref{eq:exp:tmm:helmholtz:green} and can be obtained using a similar procedure as in the case of a distant source incident on the structure by matching the interface conditions.
+Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} with constant weights, $\mc{E}_0(k_x)\equiv 1$, then yields the two-dimensional spatial distribution of the electric field, $E_{y,i}(x, z)$.
 
 \begin{figure}
     \centering

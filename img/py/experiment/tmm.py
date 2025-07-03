@@ -357,7 +357,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     ax2 = ax.twinx()
     ax2.set_ylim(ax.get_ylim())
-    ax2.set_yticks(ticks=[R], labels=[r'$\mathdefault{\mathcal{R}_{\mathrm{none}}}$'])
+    ax2.set_yticks(ticks=[R], labels=[r'$\mathdefault{\mathcal{R}_{\infty}}$'])
 
     fig.savefig(SAVE_PATH / 'reflectance_epoxy.pdf')
 # %%% Topgate optical
