@@ -5,7 +5,7 @@
 The \gls{tmm} is a computationally efficient method of obtaining the electric field in layered structures.
 In this section, I perform simulations of the heterostructure membranes investigated in \thispart using the \pymoosh package~\cite{Langevin2024} to elucidate the observed quenching of \gls{pl} when illuminating gate electrodes as well as the overall optical efficiency.\sidenote{
     Strictly speaking, the term \acrshort{tmm} only refers to one of the several formalisms implemented in the \pymoosh package.
-    While fast, it not the most numerically stable, and other methods may be preferred if wall time is not a limiting issue.
+    While fast, it is not the most numerically stable, and other methods may be preferred if wall time is not a limiting issue.
 }
 I will first briefly recap the simulation method following \citer{Langevin2024}.
 For more details, refer to \ibid and references therein.
@@ -14,7 +14,7 @@ Consider a layered structure along $z$ with interfaces at $z_i, i\in\lbrace 0, 1
 Each layer $i$ may consist of a different dielectric material characterized by a (complex) relative permittivity $\epsilon_{r,i}$.\sidenote{
     We disregard magnetic materials with relative permeability $\mu_r\neq 1$ for simplicity.
 }
-The electric field component along $y$ of an electromagnetic wave \gls{te} mode originating in some far away point satisfies the Helmholtz equation
+The electric field component along $y$ of a \gls{te} mode originating in some far away point satisfies the Helmholtz equation
 \begin{equation}\label{eq:exp:tmm:helmholtz}
     \pdv[2]{E_y}{z} + \gamma_i^2 E_y = 0,
 \end{equation}
