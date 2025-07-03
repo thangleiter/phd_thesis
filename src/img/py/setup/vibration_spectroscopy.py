@@ -364,7 +364,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     ylim = ax.get_ylim()
     ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
-            color=RWTH_COLORS_75['magenta'], zorder=5)
+            color=RWTH_COLORS_50['magenta'], zorder=5)
 
     ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
