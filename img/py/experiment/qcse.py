@@ -1,9 +1,24 @@
+# %% Imports
+import pathlib
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sc
 from scipy.optimize import elementwise
 
 from qutil import const, functools
+from qutil.plotting.colors import RWTH_COLORS
+
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
+
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init,  # noqa
+                    apply_sketch_style)
+
+SAVE_PATH = PATH / 'pdf/experiment'
+SAVE_PATH.mkdir(exist_ok=True)
+
+init(MARGINSTYLE, backend := 'pgf')
 # %%
 
 
@@ -22,28 +37,42 @@ def airy_zeros(*args, **kwargs):
     return sc.special.ai_zeros(*args, **kwargs)[0]
 
 
-def psi_square(z, L, q, n):
-    return -np.sign(q) * np.sqrt(2/L) * np.cos(np.arange(1, n+1)[:, None]*np.pi*z/L)
-
-
 def eps_square(L, q, m, n: int):
     return np.sign(q) * (const.hbar * np.pi * np.arange(1, n+1) / L)**2 / (2 * m)
 
 
-def eps_triangular(F, q, m, n: int):
+def eps_triangular_large_field(F, q, m, n: int):
     # Eq (4.42), Davies 1998
     with np.errstate(divide='ignore', invalid='ignore'):
         eps_0 = np.float_power(.5 * (q * F * const.hbar)**2 / m, 1/3)
     return np.expand_dims(-airy_zeros(n), list(range(1, np.ndim(eps_0) + 1))) * eps_0
 
 
+def psi_square(z, L, n: int):
+    return np.sqrt(2/L)*np.sin(n*np.pi*z/L)
+
+
+def psi_triangular(z, L, F, q, m, n: int):
+    # Miller's f, W_1
+    W_1 = eps_square(L, q, m, 1)
+    f = F / W_1 * q * L
+    # Miller's W is Rabinovitch's eps
+    eps = eps_triangular_normalized_vec(np.atleast_1d(f), n)[0]*W_1
+    # Rabinovitch's α_1, \bar{ε}
+    alpha_1 = 2*m*q*F/const.hbar**2
+    eps_bar = 2*m*eps/const.hbar**2
+    Z = (np.float_power(alpha_1, 1/3, dtype=complex)*z
+         - eps_bar/np.float_power(alpha_1, 2/3, dtype=complex))
+    ZL = (np.float_power(alpha_1, 1/3, dtype=complex)*L
+          - eps_bar/np.float_power(alpha_1, 2/3, dtype=complex))
+
+    Ai, _, Bi, _ = sc.special.airy(Z)
+    Ai_L, _, Bi_L, _ = sc.special.airy(ZL)
+    return Ai - Ai_L/Bi_L*Bi
+
+
 def Eq_B7(w, f):
-    """
-    Evaluate the function
-      Ai(Z_+) Bi(Z_-) - Ai(Z_-) Bi(Z_+)
-    and its derivative with
-      Z_± = (-π/f)^(2/3) * (w ± f/2)
-    """
+    # Miller 1985
     f = float(f)
     if f == 0:
         return 0, 0
@@ -63,12 +92,7 @@ def Eq_B7(w, f):
 
 
 def Eq_B7_vec(w, f):
-    """
-    Evaluate the function
-      Ai(Z_+) Bi(Z_-) - Ai(Z_-) Bi(Z_+)
-    and its derivative with
-      Z_± = (-π/f)^(2/3) * (w ± f/2)
-    """
+    # Miller 1985
     w, f = np.broadcast_arrays(w, f)
     mask = f != 0
 
@@ -85,6 +109,42 @@ def Eq_B7_vec(w, f):
     val[mask] = Ai_Zp * Bi_Zm - Ai_Zm * Bi_Zp
     val[~mask] = 0
     return val.real
+
+
+def Eq_2d5(eps, F, L, q, m):
+    # Rabinovitch 1971
+    if F == 0:
+        return 0, 0
+
+    alpha_1 = 2*m*e*F/const.hbar**2
+    eps_bar = 2*m*eps/const.hbar**2
+
+    alphaell = np.float_power(alpha_1, 1/3, dtype=complex)*L
+    alphaeps = -np.float_power(alpha_1, -2/3, dtype=complex)*eps_bar
+    deps = -np.float_power(alpha_1, -2/3, dtype=complex)*2*m/const.hbar**2
+
+    Ai_1, Aip_1, Bi_1, Bip_1 = sc.special.airy(alphaeps.real)
+    Ai_2, Aip_2, Bi_2, Bip_2 = sc.special.airy(alphaeps.real + alphaell.real)
+
+    return (
+        Ai_1 * Bi_2 - Ai_2 * Bi_1,
+        deps*(Ai_1*Bip_2 + Aip_1*Bi_2 - Ai_2*Bip_1 - Aip_2*Bi_1)
+    )
+
+
+def eps_triangular(F, L, q, m):
+    # Rabinovitch 1971
+    eps = np.empty(F.size, dtype=complex)
+    for i in range(len(F)):
+        if i == 0:
+            x0 = eps_square(L, e, m, 1)
+        else:
+            x0 = eps[i-1]
+        result = sc.optimize.root_scalar(Eq_2d5, args=(F[i], L, q, m), fprime=True, x0=x0)
+        if not result.converged:
+            raise RuntimeError("Not converged.\n", result)
+        eps[i] = result.root.item()
+    return eps
 
 
 def eps_triangular_normalized(f):
@@ -161,8 +221,8 @@ W = w * W_1[:, None]
 # %%% Square
 fig, ax = plt.subplots(layout='constrained')
 for (E_e, E_h), c in zip(eps_square(L, e, m, n).T, plt.rcParams['axes.prop_cycle']):
-    ax.axhline(E_e/W_1[0], 0, 1, **c)
-    ax.axhline(E_h/W_1[1], 0, 1, ls='--', **c)
+    ax.axhline(E_e/const.e, 0, 1, **c)
+    ax.axhline(E_h/const.e, 0, 1, ls='--', **c)
 
 # %%% Triangular (Davies)
 fig, ax = plt.subplots(layout='constrained')
@@ -179,3 +239,94 @@ for (E_e, E_h), c in zip(W.swapaxes(0, 1), plt.rcParams['axes.prop_cycle']):
 
     axs[1].grid()
     axs[1].plot(F, (E_e - (-E_h)) / const.e, **c)
+
+# %% Sketch band structure
+F = 1/200  # 1V/200nm
+# %%% Plot untilted well
+fig, ax = plt.subplots()
+
+apply_sketch_style(ax)
+
+z = np.array([-100, -L/2*1e9, L/2*1e9, 100]) + 110
+z0 = np.mean(z)
+E_off = 0.5
+
+# Conduction band
+ax.plot(z[0:2], np.array([.5*ΔE_g + ΔE_c]*2), color=RWTH_COLORS['blue'])
+ax.plot(z[[1, 1]], np.array([.5*ΔE_g + ΔE_c, .5*ΔE_g]), color=RWTH_COLORS['blue'])
+ax.plot(z[1:3], np.array([.5*ΔE_g]*2), color=RWTH_COLORS['blue'])
+ax.plot(z[[2, 2]], np.array([.5*ΔE_g, .5*ΔE_g + ΔE_c]), color=RWTH_COLORS['blue'])
+ax.plot(z[2:4], np.array([.5*ΔE_g + ΔE_c]*2), color=RWTH_COLORS['blue'])
+ax.annotate('$E_c$', (z[3] + 5, .5*ΔE_g + ΔE_c), verticalalignment='center')
+
+# Valence band
+ax.plot(z[0:2], np.array([-.5*ΔE_g - ΔE_v]*2), color=RWTH_COLORS['blue'])
+ax.plot(z[[1, 1]], np.array([-.5*ΔE_g - ΔE_v, -.5*ΔE_g]), color=RWTH_COLORS['blue'])
+ax.plot(z[1:3], np.array([-.5*ΔE_g]*2), color=RWTH_COLORS['blue'])
+ax.plot(z[[2, 2]], np.array([-.5*ΔE_g, -.5*ΔE_g - ΔE_v]), color=RWTH_COLORS['blue'])
+ax.plot(z[2:4], np.array([-.5*ΔE_g - ΔE_v]*2), color=RWTH_COLORS['blue'])
+ax.annotate('$E_v$', (z[3] + 5,  -.5*ΔE_g - ΔE_v), verticalalignment='center')
+
+# Wave functions
+zw = np.linspace(z[1], z[2], 101)
+ax.plot(
+    zw,
+    .5*ΔE_g + eps_square(L, e, m[0], 1)/e + psi_square(zw - z[1], L*1e9, n=1)**2,
+    color=RWTH_COLORS['magenta']
+)
+ax.plot(
+    zw,
+    -.5*ΔE_g - eps_square(L, e, m[1], 1)/e - psi_square(zw - z[1], L*1e9, n=1)**2,
+    color=RWTH_COLORS['magenta']
+)
+
+ax.set_xticks([10, 100, 120, 210])
+# ax.set_yticks([.5*ΔE_g + ΔE_c, .5*ΔE_g, -.5*ΔE_g, -.5*ΔE_g - ΔE_v])
+ax.set_xlim(0, 250)
+ax.set_xlabel('$z$ (nm)', x=0.95, verticalalignment='bottom')
+ax.set_ylabel('$E$ (eV)', rotation='vertical')
+
+# %%% Plot tilted well
+fig, ax = plt.subplots()
+
+apply_sketch_style(ax)
+
+zz = [np.linspace(*z[i:i+2], 101) for i in range(3)]
+E0 = F * np.diff(z)[1] / 2
+
+# Conduction band
+ax.plot(zz[0], F*(zz[0] - z0) + .5*ΔE_g + ΔE_c, color=RWTH_COLORS['blue'])
+ax.plot(z[[1, 1]], np.array([.5*ΔE_g + ΔE_c - E0, .5*ΔE_g - E0]), color=RWTH_COLORS['blue'])
+ax.plot(zz[1], F*(zz[1] - z0) + .5*ΔE_g, color=RWTH_COLORS['blue'])
+ax.plot(z[[2, 2]], np.array([.5*ΔE_g + E0, .5*ΔE_g + ΔE_c + E0]), color=RWTH_COLORS['blue'])
+ax.plot(zz[2], F*(zz[2] - z0) + .5*ΔE_g + ΔE_c, color=RWTH_COLORS['blue'])
+ax.annotate('$E_c$', (zz[2][-1] + 5, F*(zz[2][-1] - z0) + .5*ΔE_g + ΔE_c))
+
+# Valence band
+ax.plot(zz[0], F*(zz[0] - z0) - .5*ΔE_g - ΔE_v, color=RWTH_COLORS['blue'])
+ax.plot(z[[1, 1]], np.array([-.5*ΔE_g - ΔE_v - E0, -.5*ΔE_g - E0]), color=RWTH_COLORS['blue'])
+ax.plot(zz[1], F*(zz[1] - z0) - .5*ΔE_g, color=RWTH_COLORS['blue'])
+ax.plot(z[[2, 2]], np.array([-.5*ΔE_g + E0, -.5*ΔE_g - ΔE_v + E0]), color=RWTH_COLORS['blue'])
+ax.plot(zz[2], F*(zz[2] - z0) - .5*ΔE_g - ΔE_v, color=RWTH_COLORS['blue'])
+ax.annotate('$E_v$', (zz[2][-1] + 5, F*(zz[2][-1] - z0) - .5*ΔE_g - ΔE_v))
+
+# Wave functions
+zw = np.linspace(z[1], z[2], 101)
+ax.plot(
+    zw,
+    .5*ΔE_g - E0 + eps_triangular_normalized(F*1e9/W_1[0]*const.e*L).real*W_1[0]/e
+    + psi_triangular((zw - z[1])*1e-9, L, F*1e9, e, m[0], n)**2,
+    color=RWTH_COLORS['magenta']
+)
+ax.plot(
+    zw,
+    -.5*ΔE_g + E0 - eps_triangular_normalized(F*1e9/W_1[1]*const.e*L).real*W_1[1]/e
+    - psi_triangular((zw - z[1])*1e-9, L, F*1e9, e, m[1], n)**2,
+    color=RWTH_COLORS['magenta']
+)
+
+ax.set_xticks([10, 100, 120, 210])
+# ax.set_yticks([.5*ΔE_g + ΔE_c, .5*ΔE_g, -.5*ΔE_g, -.5*ΔE_g - ΔE_v])
+ax.set_xlim(0, 250)
+ax.set_xlabel('$z$ (nm)', x=0.95, verticalalignment='bottom')
+ax.set_ylabel('$E$ (eV)', rotation='vertical')
