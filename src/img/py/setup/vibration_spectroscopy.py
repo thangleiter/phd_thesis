@@ -108,8 +108,8 @@ def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
-def erf_theory(x, I0, w0, x0, r):
-    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf((x - x0)*np.sqrt(2)/w0))
+def erf_theory(x, I0, w0, x0, R):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - R)*special.erf((x - x0)*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -273,7 +273,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
                    functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
     ax2.sharex(axs[0])
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
     ax.set_yticks([2, 3, 4])
@@ -287,23 +287,24 @@ x = np.linspace(-1.5, 1.5, 1001)
 I0 = 2
 w0 = .3
 x0 = 0
-r = 0.2
+R = 0.2
 N = I0*w0*np.sqrt(0.5*np.pi)
 
 with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
 
-    ax.plot(x, erf_theory(x*w0, I0, w0, x0, r) / N)
+    ax.plot(x, erf_theory(x*w0, I0, w0, x0, R) / N)
 
     ylim = ax.get_ylim()
-    ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
+    ax.plot(x, (-I0*(1-R)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
     ax.set_ylim(ylim)
 
     ax.grid()
     ax.margins(x=0)
-    ax.set_yticks([r/2, 0.5, 1-r/2], [r'$\frac{r}{2}$', r'$\frac{1}{2}$', r'$1-\frac{r}{2}$'],
+    ax.set_yticks([R/2, 0.5, 1-R/2],
+                  [r'$\frac{\mathrm{r}_0}{2}$', r'$\frac{1}{2}$', r'$1-\frac{\mathrm{r}_0}{2}$'],
                   va='center')
-    ax.set_ylabel(r'$P_R(y) / (I_0 w_0 \sqrt{\pi/2})$')
+    ax.set_ylabel(r'$P_{\mathrm{r}}(y) / (I_0 w_0 \sqrt{\pi/2})$')
 
     match mpl.get_backend():
         case 'pgf':
@@ -314,6 +315,7 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
 
 # %%% Full knife-edge fit
+x = count_rate['positioners_y_axis_voltage']
 xx = pos_vs_vdc(x, *popt_posvdc)
 yy = y1.mean('counter_time_axis')
 sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
@@ -322,12 +324,12 @@ syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'
 
 # GaAs @ 800 nm
 n = n_GaAs(30e-3)
-r = abs((n - 1) / (n + 1))**2  # at 30 mK
+R = abs((n - 1) / (n + 1))**2  # at 30 mK
 
 knife_edge_data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
 knife_edge_model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
 
-knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R], ifixb=[1, 1, 1, 1])
 knife_edge_output = knife_edge_fit.run()
 if 'Sum of squares convergence' not in knife_edge_output.stopreason:
     knife_edge_output = knife_edge_fit.restart(100)
@@ -336,9 +338,9 @@ fitpar = unp.uarray(knife_edge_output.beta, knife_edge_output.sd_beta)
 
 print('Knife edge fit results:')
 print(f'w_0 = {fitpar[1]:.3g} μm')
-print(f'r = {fitpar[3]:.3g}')
+print(f'R = {fitpar[3]:.3g}')
 
-knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r],
+knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R],
                               ifixb=[1, 1, 1, 0])
 knife_edge_output_rfix = knife_edge_fit_rfix.run()
 if 'Sum of squares convergence' not in knife_edge_output_rfix.stopreason:
@@ -364,7 +366,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
             color=RWTH_COLORS_75['magenta'], zorder=5)
 
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
     ax.set_yticks([2, 3, 4])
