@@ -236,20 +236,20 @@ This gradient in reflected intensity can be inverted to obtain the vibration noi
 Let us take a closer look at the reflected intensity when the laser spot has a finite overlap with the edge of the gate.
 Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the Gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
 \begin{equation}\label{eq:setup:reflectance_step}
-    R(y) = \begin{dcases}
+    \reflectance(y) = \begin{dcases}
         1, & y \leq 0 \\
-        r, & y > 0,
+        \reflectance_0, & y > 0,
     \end{dcases}
 \end{equation}
-where $r$ is the reflectance of the bare \ch{GaAs} surface.
+where $\reflectance_0$ is the reflectance of the bare \ch{GaAs} surface.
 Assuming a perfect Gaussian (\gls{tem}$_{00}$ mode) beam characterized by its waist radius $w_0$ at which the intensity drops to $1/e^2$ of its maximum value, the laser intensity profile in 1D is given by
 \begin{equation}\label{eq:setup:gaussian}
     I(y) = I_0\exp(-\frac{2y^2}{w_0^2}),
 \end{equation}
-where $I_0 = \flatfrac{P_0}{w_0}$ with $P_0$ the total beam power.
+where $I_0 = P_0/w_0$ with $P_0$ the total beam power.
 The power reflected when the spot partially overlaps with the reflectance step can then be expressed as the convolution
 \begin{equation}\label{eq:setup:knife_edge}
-    P_R(y) = R(y) \ast I(y) = \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}\left[ 1 - (1 - r)\erf\left(\frac{y\sqrt{2}}{w_0}\right) \right]
+    P_{\mr{r}}(y) = \reflectance(y) \ast I(y) = \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}\left[ 1 - (1 - \reflectance_0)\erf\left(\frac{y\sqrt{2}}{w_0}\right) \right]
 \end{equation}
 in the $yz$ focal plane, where $\erf(y)$ is the error function.
 
@@ -257,35 +257,35 @@ in the $yz$ focal plane, where $\erf(y)$ is the error function.
     \centering
     \includegraphics{img/pdf/setup/knife_edge_theory}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
-        Theoretical reflected power for a Gaussian beam of width $w_0$ and a reflectance contrast of $1-r$ according to \cref{eq:setup:knife_edge}.
+        Theoretical reflected power for a Gaussian beam of width $w_0$ and a reflectance contrast of $1-\reflectance_0$ according to \cref{eq:setup:knife_edge}.
         The dashed line indicates the leading order approximation at $y=0$.
     }
     \label{fig:setup:vibrations:knife_edge:theory}
 \end{marginfigure}
 
 The function is plotted in \Cref{fig:setup:vibrations:knife_edge:theory}.
-The contrast that can be achieved is given by $1-r$.
+The contrast that can be achieved is given by $1-\reflectance_0$.
 Furthermore, for $y\in[-w_0/2, w_0/2]$ the function is well-approximated by
 \begin{equation}\label{eq:setup:knife_edge:approx}
-    P_R(y)\approx -I_0(1-r)y + \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}
+    P_{\mr{r}}(y)\approx -I_0(1-\reflectance_0)y + \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}
 \end{equation}
 drawn as a dashed line.
 Since we measure the photon count rate rather than the power, $\Phi = \flatfrac{P\lambda}{hc}$ with $\lambda$ the laser wavelength, we rewrite this as
 \begin{equation}\label{eq:setup:knife_edge:linearized}
-    \Phi_R(y) = -sy + \frac{\Phi_0}{2}\sqrt{\frac{\pi}{2}}.
+    \Phi_{\mr{r}}(y) = -sy + \frac{\Phi_0}{2}\sqrt{\frac{\pi}{2}}.
 \end{equation}
 where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
-    s = \frac{\Phi_0}{w_0}(1 - r).
+    s = \frac{\Phi_0}{w_0}(1 - \reflectance_0).
 \end{equation}
-Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_R$, one could either improve the reflectance contrast $1-r$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
+Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
     Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
 In our case, the former two are fixed by the sample and the setup, respectively , whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
 
 Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to obtain the displacement in the vicinity of $y=0$ as function of photon flux,
 \begin{equation}\label{eq:setup:knife_edge:procfn}
-     y(\Phi_R) = \frac{w_0}{1-r}\left[\frac{1}{2}\sqrt{\frac{\pi}{2}} - \frac{\Phi_R}{\Phi_0}\right].
+     y(\Phi_{\mr{r}}) = \frac{w_0}{1-\reflectance_0}\left[\frac{1}{2}\sqrt{\frac{\pi}{2}} - \frac{\Phi_{\mr{r}}}{\Phi_0}\right].
 \end{equation}
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
@@ -304,7 +304,7 @@ Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a disp
     \label{fig:setup:vibrations:calibration:length_scale}
 \end{marginfigure}
 
-I will now lay out the experimental procedure of calibrating the system to (implicitly) obtain the parameters $w_0$, $r$, and $\Phi_0$.
+I will now lay out the experimental procedure of calibrating the system to (implicitly) obtain the parameters $w_0$, $\reflectance_0$, and $\Phi_0$.
 The first challenge is obtaining a proper length reference scale.
 While the nanopositioners on which the sample is mounted do in principle have a resistive position readout, it is extremely unreliable at small displacements.
 Therefore, I calibrated the relative position using the imaging arm of the optical head.
@@ -318,7 +318,7 @@ By measuring the total width of the gate on the camera image, I obtained the mag
 \end{equation}
 Again performing a linear fit to the data for different voltages then results in the linear transformation from DC voltage to position (upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}).
 Of course it is also possible to fit the full knife-edge function, \cref{eq:setup:knife_edge}, to the data shown in \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
-From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectivity $r$ can be extracted.
+From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectance $\reflectance_0$ can be extracted.
 Here we are content with the linear approximation; refer to \cref{sec:app:setup:vibrations:knife_edge} for the full fits.
 
 \begin{marginfigure}[*-7]
@@ -329,7 +329,7 @@ Here we are content with the linear approximation; refer to \cref{sec:app:setup:
         Error bars are propagated standard errors of the weighted average of edge positions extracted from different rows.
         Bottom: laser photon count rate as function of position set by the nanopositioner.
         Fitting the region $V_{\mr{DC}}\in[0.5, 7]\,\unit{\volt}$ yields $s\approx\qty{2.36+-0.02}{\mega\cps\per\micro\meter}$ (\cf \cref{eq:setup:knife_edge:linearized}).
-        Error bars on $\Phi_R$ show the standard error of the mean over multiple observations and error bars on $y$ show the fit error from the top panel.
+        Error bars on $\Phi_{\mr{r}}$ show the standard error of the mean over multiple observations and error bars on $y$ show the fit error from the top panel.
     }
     \label{fig:setup:vibrations:calibration:pos_vs_cps}
 \end{marginfigure}
@@ -432,11 +432,11 @@ For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\
 
 Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:knife_edge:sensitivity}, into \cref{eq:setup:shot_noise:noise_floor}, we find that
 \begin{equation}\label{eq:setup:shot_noise:noise_floor2}
-    S_{\Delta y(\dt)}(\omega) = \frac{\epsilon}{\Phi_0}\left(\frac{w_0}{1-r}\right)^2
+    S_{\Delta y(\dt)}(\omega) = \frac{\epsilon}{\Phi_0}\left(\frac{w_0}{1-\reflectance_0}\right)^2
 \end{equation}
 if we identify $\bar{\Phi} = \epsilon\Phi_0$ for some (fixed) setup efficiency \eps.
 This shows a clear path towards improving the \gls{snr} of the method.
-Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-r$ and by decreasing $w_0$, so is the shot noise floor, albeit quadratically in $w_0$ and $1-r$.
+Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-\reflectance_0$ and by decreasing $w_0$, so is the shot noise floor, albeit quadratically in $w_0$ and $1-\reflectance_0$.
 For example, for a reduction in spot size by a factor of two from inserting a different objective lens and a tenfold increase in maximum count rate achieved by replacing the counting card with a more powerful model,\sidenote{
     \swinst offers models with up to \qty{1.2}{\giga\sample\per\second}, although at that rate the jitter and dead time of the \glspl{apd} would start to become the limiting factors~\cite{SwabianTimeTagger}.
 }
