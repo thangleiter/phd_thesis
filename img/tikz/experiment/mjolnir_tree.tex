@@ -1,0 +1,70 @@
+\forestset{
+    dir tree/.style={
+        for tree={
+            parent anchor=south west,
+            child anchor=west,
+            anchor=mid west,
+            inner ysep=0pt,
+            grow'=0,
+            align=left,
+            s sep=1ex,
+            edge path={
+                \noexpand\path [draw, \forestoption{edge}] (!u.parent anchor) ++(0.75em,0) |- (.child anchor)\forestoption{edge label};
+            },
+            font=\footnotesize\ttfamily,
+            if n children=0{}{
+                delay={
+                    prepend={[,phantom, calign with current]}
+                }
+            },
+            fit=band,
+            before computing xy={
+                l=1.25em
+            }
+        },
+    }
+}
+\begin{forest}
+    dir tree
+    [
+        [{\faIcon[regular]{folder} doc}]
+        [{\faIcon[regular]{folder-open} src}
+            [{\faIcon[regular]{folder-open} mjolnir}
+                [{\faIcon[regular]{folder-open} config}
+                    [{\faIcon[regular]{file-code} physical\_[\ldots].yaml}]
+                    [{\faIcon[regular]{file-code} optical\_path.yaml}]
+                    [{\faIcon[regular]{file-code} fig\_F10.yaml}]
+                    [{\faIcon[regular]{file-code} \ldots}]
+                ]
+                [{\faIcon[regular]{folder-open} instruments}
+                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
+                    [{\faIcon[regular]{file-code} logical\_[\ldots].py}]
+                    [{\faIcon[regular]{file-code} physical\_[\ldots].py}]
+                ]
+                [{\faIcon[regular]{folder-open} measurements}
+                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
+                    [{\faIcon[regular]{file-code} handler.py}]
+                    [{\faIcon[regular]{file-code} measures.py}]
+                    [{\faIcon[regular]{file-code} sweeps.py}]
+                ]
+                [{\faIcon[regular]{folder} parameters}
+                    %[{\faIcon[regular]{file-code} \_\_init\_\_.py}]
+                    %[{\faIcon[regular]{file-code} customized.py}]
+                ]
+                [{\faIcon[regular]{folder-open} plotting}
+                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
+                    [{\faIcon[regular]{file-code} live\_view.py}]
+                    [{\faIcon[regular]{file-code} plot\_nd.py}]
+                ]
+                [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
+                [{\faIcon[regular]{file-code} calibration.py}]
+                %[{\faIcon[regular]{file-code} \_version.py}]
+                %[{\faIcon[regular]{file-code} helpers.py}]
+                [{\faIcon[regular]{file-code} \ldots}]
+            ]
+        ]
+        [{\faIcon[regular]{file-code} main.py}]
+        [{\faIcon[regular]{file-code} pyproject.toml}]
+        [{\faIcon[regular]{file-code} \ldots}]
+    ]
+\end{forest}
