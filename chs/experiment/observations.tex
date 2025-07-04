@@ -19,8 +19,8 @@ The electric field component along $y$ of an electromagnetic wave \gls{te} mode 
     \pdv[2]{E_y}{z} + \gamma_i^2 E_y = 0,
 \end{equation}
 where $\gamma_i = \sqrt{\epsilon_{r,i}k_0^2 - k_x^2}$ with $k_0=\flatfrac{\omega}{c}$ the wave vector in vacuum and $k_x$ the component along $x$.
-In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces,
-\begin{equation}
+In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces~\cite{Langevin2024},
+\begin{equation}\label{eq:exp:tmm:fields}
     \begin{dcases}
         E_{y,i}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
         E_{y,i}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
@@ -56,8 +56,8 @@ Iterating \cref{eq:exp:tmm:C,eq:exp:tmm:T}, the total transfer matrix $T = T_{0,
 From $T$, the reflection and transmission coefficients can be obtained as $r=A_0^{-}=-\flatfrac{T_{01}}{T_{00}}$ and $t=B_{N+1}^{+}=rT_{10} + T_{11}$.
 Taking the absolute value square of reflection and transmission coefficients then yields the reflectance \reflectance and the transmittance \transmittance, which correspond to the fraction of total incident power being reflected and transmitted, respectively.
 To obtain the absorptance \absorptance, the fraction of power being absorbed, in layer $i$, one can compute the difference of the $z$-components of the Poynting vectors (\cf \cref{eq:setup:optics:coupling:poynting}) at the top of layers $i$ and $i+1$.
-In the \gls{te} case considered here, \cref{eq:setup:optics:coupling:poynting} reduces to
-\begin{equation}
+In the \gls{te} case considered here, \cref{eq:setup:optics:coupling:poynting} reduces to~\cite{Langevin2024}
+\begin{equation}\label{eq:exp:tmm:poynting}
     \bvec{S}_i = \re\left[\frac{\gamma_i^{\ast}}{\gamma_0}\left(A_i^{+} - B_i^{+}\right)^{\ast}\left(A_i^{+} + B_i^{+}\right)\right]
 \end{equation}
 and is hence straightforward to extract from the calculation of either the $S$ or $T$ matrices.
@@ -69,24 +69,21 @@ Rewriting \cref{eq:exp:tmm:T} to have incoming and outgoing fields on opposite s
 Beyond the calculation of the aforementioned coefficients, the \gls{tmm} formalism also allows to compute the full spatial dependence of the fields.
 Two cases are implemented in \pymoosh: irradiation of the layered structured with a Gaussian beam rather than plane waves of infinite extent, and a current line source inside the structure.
 In the first case, the previously assumed translational invariance along $x$ leading to a plane-wave spatial dependence is replaced by a superposition of plane waves weighted with a normally distributed amplitude,\sidenote{
-    \Ie, the inverse Fourier transform of $\mc{E}_0(k_x)$.
+    \Ie, the inverse Fourier transform of $\mc{E}_0(k_x) E_{y,i}(k_x, z)$.
 }
 \begin{equation}\label{eq:exp:tmm:gauss:x}
-    E_{y,i}(x) = \exp(\i k_x x)\rightarrow \int\ddf{k_x}\mc{E}_0(k_x) \exp(\i k_x x),
+    E_{y,i}(x,z) = \exp(\i k_x x)\rightarrow \int\ddf{k_x}\mc{E}_0(k_x) E_{y,i}(k_x, z)\exp(\i k_x x),
 \end{equation}
 with (\cf \cref{eq:setup:gaussian})
 \begin{equation}\label{eq:exp:tmm:gauss:ampl}
     \mc{E}_0(k_x) = \frac{w_0}{2\sqrt{\pi}}\exp\left\lbrace - \i k_x x_0 -\left[\frac{w_0 k_x}{2}\right]^2\right\rbrace,
 \end{equation}
-so that
-\begin{equation}\label{eq:exp:tmm:gauss:xz}
-    E_{y,i}(x, z) = E_{y,i}(z) E_{y,i}(x)
-\end{equation}
-with
+and
 \begin{equation}\label{eq:exp:tmm:gauss:z}
-    E_{y,i}(z) = A_{i}^{-}\exp\lbrace\i\gamma_i[z-z_{i+1}]\rbrace + B_{i}^{+}\exp\lbrace -\i\gamma_i[z-z_{i}]\rbrace
+    E_{y,i}(k_x, z) = A_{i}^{-}\exp\lbrace\i\gamma_i(k_x)[z-z_{i+1}]\rbrace + B_{i}^{+}\exp\lbrace -\i\gamma_i(k_x)[z-z_{i}]\rbrace
 \end{equation}
 and where we considered only normal incidence for simplicity.
+
 In the second case, \citet{Langevin2024} consider an AC current $I$ flowing through a translationally invariant, one-dimensional wire along $y$ at $x=x_{\mr{s}}$.
 This introduces a source term into the Helmholtz equation \cref{eq:exp:tmm:helmholtz} which, upon Fourier transforming in $x$ direction, leads to
 \begin{equation}\label{eq:exp:tmm:helmholtz:green}
