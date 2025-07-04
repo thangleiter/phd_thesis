@@ -1,0 +1,17 @@
+% mainfile: ../../main.tex
+\chapter{The \mjolnir measurement framework}\label{ch:exp:mjolnir}
+\AutoLettrine{Mjölnir}
+
+\begin{marginfigure}[]
+    \input{img/tikz/experiment/mjolnir_tree}
+    \caption[\imgsource{img/tikz/experiment/mjolnir_tree.tex}]{
+        Source tree structure of the \mjolnir package.
+        Logical \qcodes instruments and parameters are defined in the \code{instruments} and \code{parameters} modules, respectively.
+        Instruments are configured using \code{yaml} files located in the \code{config} directory.
+        The \code{measurements} module provides classes for the abstraction of measurements using \qcodes underneath.
+        Live plots of instrument data as well as a plot function for multidimensional measurement data are defined in the \code{plotting} module.
+        \code{calibration.py} contains routines for power, \acrshort{ccd}, and excitation rejection calibrations.
+        The \code{main.py} file is a code cell-based script that serves as the entrypoint for measurements.
+    }
+    \label{fig:exp:mjolnir:tree}
+\end{marginfigure}
