@@ -249,10 +249,12 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
         axs[0].grid(axis='x')
         axs[0].set_ylabel('$z$ (nm)')
         if i == 1:
-            axs[1].set_xlabel('$x$ ($w_0$)')
-            axs[0].set_xlabel(
-                label := r'$\lvert E_y\rvert$ (a.u.)' if backend == 'pgf' else '$|E_y|$ (a.u.)'
-            )
+            if backend == 'pgf':
+                axs[1].set_xlabel(r'$\flatfrac{x}{w_0}$')
+                axs[0].set_xlabel(label := r'$\lvert E_y\rvert$ (a.u.)')
+            else:
+                axs[1].set_xlabel('$x/w_0$')
+                axs[0].set_xlabel(label := '$|E_y|$ (a.u.)')
 
         plot_interfaces(axs, yaccs[i], yoffs[i], structures[i])
 
