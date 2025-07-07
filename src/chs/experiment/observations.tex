@@ -95,28 +95,42 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/tmm_field}
-    \caption[\imgsource{img/py/experiment/tmm.py}]{}
+    \caption[\imgsource{img/py/experiment/tmm.py}]{
+        Absolute value of the electric field inside the double-gated heterostructure under illumination with a Gaussian beam at $\lambda=\qty{825}{\nano\meter}$ from the top.
+        Top (bottom) panels show the structure with the default (optimized) barrier thickness of \qty{90}{\nano\meter} (\qty{122}{\nano\meter}), respectively.
+        Dotted horizontal lines indicate interfaces between different materials while the vertical dash-dotted line indicates the position of the line cuts shown in the left column.
+        Increasing the thickness of the barrier has two beneficial effects; first, the overall field intensity inside the structure is higher by a factor of two, and second, there is a peak rather than a knot in the \gls{qw} at a depth of $\sim\qty{120}{\nano\meter}$ ($\sim\qty{150}{\nano\meter}$), leading to enhanced absorption.
+    }
     \label{fig:exp:tmm:field}
 \end{figure}
 
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/tmm_absorptance}
-    \caption[\imgsource{img/py/experiment/tmm.py}]{}
+    \caption[\imgsource{img/py/experiment/tmm.py}]{
+        \Gls{qw} absorptance \absorptance in a heterostructure with default (blue) and optimized (magenta) barrier thickness and top and bottom gates as function of wavelength.
+        Optimization was performed at \qty{825}{\nano\meter} using the differential evolution algorithm implemented in \pymoosh, resulting in a barrier thickness of \qty{122}{\nano\meter} and an absorptance better by a factor of \num{16} at \qty{6.3}{\percent}.
+    }
     \label{fig:exp:tmm:wavelengths}
 \end{marginfigure}
 
 \begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/experiment/tmm_green_opt_tgbg}
-    \caption[\imgsource{img/py/experiment/tmm.py}]{}
-    \label{fig:exp:tmm:green:opt:tgbg}
+    \includegraphics{img/pdf/experiment/tmm_green}
+    \caption[\imgsource{img/py/experiment/tmm.py}]{
+        Real part of the electric field emitted by a current line located in the \gls{qw} at $x=0$ for different cases of the unoptimized structure.
+        From top to bottom: bare heterostructure, top gate, bottom gate, top and bottom gate.
+        The half space $z<0$ is the air above the membrane in the direction of the objective lens and the dotted lines indicate interfaces between materials.
+        Evidently, the bottom gate reduces the amplitude in the upper half of the membrane and thereby the outcoupling efficiency compared to the structures with just a top gate, consistent with what is observed in the experiment.
+    }
+    \label{fig:exp:tmm:green}
 \end{marginfigure}
 
 \begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/experiment/tmm_green}
-    \caption[\imgsource{img/py/experiment/tmm.py}]{}
-    \label{fig:exp:tmm:green}
-\end{marginfigure}
+    \includegraphics{img/pdf/experiment/tmm_green_opt_tgbg}
+    \caption[\imgsource{img/py/experiment/tmm.py}]{
 
+    }
+    \label{fig:exp:tmm:green:opt:tgbg}
+\end{marginfigure}
