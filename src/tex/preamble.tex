@@ -38,7 +38,6 @@
 %----------------------------------------------------------------------------------------
 % Custom packages
 %----------------------------------------------------------------------------------------
-%\usepackage{pdfpages}
 \PassOptionsToPackage{
     chapter,%
     cache=true,%
@@ -131,6 +130,17 @@
 % Make cleveref use "Appendix" instead of "Chapter" after \appendix
 % https://github.com/latex3/hyperref/issues/362
 \AddToHook{cmd/appendix/before}{\crefalias{chapter}{appendix}}
+
+% Set pdf version, but tectonic still thinks it's 1.5
+% https://tex.stackexchange.com/a/618019
+\ExplSyntaxOn
+\pdf_version_gset:n{2.0}
+\pdf_uncompress: % to check the pdf
+\ExplSyntaxOff
+
+% Make "Figure X.Y" link back to the list of figures
+\DeclareCaptionLabelFormat{linked}{\hyperlink{lof}{#1~#2}}
+\captionsetup[figure]{labelformat=linked}
 
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
