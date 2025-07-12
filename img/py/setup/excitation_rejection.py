@@ -1,4 +1,5 @@
 # %% Imports
+import os
 import json
 import pathlib
 import sys
@@ -16,7 +17,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
 from common import MAINSTYLE, PATH, init  # noqa
 
-EXTRACT_DATA = False
+EXTRACT_DATA = os.environ.get('EXTRACT_DATA', False)
 DATA_PATH = PATH.parent / 'data/rejection'
 DATA_PATH.mkdir(exist_ok=True)
 ORIG_DATA_PATH = pathlib.Path(

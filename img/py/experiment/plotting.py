@@ -66,28 +66,50 @@ def browse_db(initial_run_id: int = 1, db: str | None = None, **plot_nd_kwargs):
         else:
             break
 
+    print('DB browser:')
+    print('===========')
+    print('Navigate runs using left and right arrow keys, or type a run ID with the figure in '
+          'focus and confirm with enter.')
+    print('Pass keyword arguments through to mjolnir.plotting.plot_nd() to configure the plot.')
+    print('A secondary window opens up that displays some metadata of the currently selected run.')
+    print()
+
 
 @_cleanup_figs
 def _open_figure(run_id, bm, txt, **plot_nd_kwargs):
+    input_str = ""
 
     def on_key(event):
-        nonlocal run_id, fig, ax, sliders
+        nonlocal input_str, run_id, fig, ax, sliders
         if event.key == 'left':
             run_id -= 1
         elif event.key == 'right':
             run_id += 1
+        elif event.key == 'enter':
+            run_id = int(input_str)
+            input_str = ""
+        elif event.key == 'escape':
+            input_str = ""
+            return
+        elif event.key.isdigit():
+            input_str += event.key
+            return
         else:
             return
 
         fig2 = fig
         try:
-            print(f'Run #{run_id}: plotting.')
+            print(f'Run #{run_id}: Plotting... ', end='')
             fig, ax, sliders = _open_figure(run_id, bm, txt, **plot_nd_kwargs)
         except (ValueError, IndexError, TypeError):
-            print(' '*(7 + len(str(run_id))) + 'failed.')
+            print('Failed.')
+        except NameError:
+            print('End of db reached.')
+            run_id = run_id - 1 if event.key == 'right' else run_id + 1
         except Exception as err:
             raise RuntimeError("Unexpected exception") from err
         else:
+            print()
             fig2.canvas.mpl_disconnect(cid)
             plt.close(fig2)
 
@@ -100,16 +122,22 @@ def _open_figure(run_id, bm, txt, **plot_nd_kwargs):
 
 def _update_text(ds, txt, bm):
     s = (t := f'Run {ds.run_id}: {ds.attrs["ds_name"]}')
+    s += '\n' + '='*len(t)
+    s += f'\nRun timestamp: {ds.attrs["run_timestamp"]}\n'
+
     if cm := json.loads(ds.attrs.get('custom_metadata', '')):
         if mis := cm.get('measurement_initialization_settings', False):
-            s += ('\n' + '='*len(t) + '\n'
-                  + '\nMeasurement initialization settings'
+            s += ('\nMeasurement initialization settings'
                   + '\n' + '-'*len(t) + '\n'
                   + pprint.pformat(mis))
         if mpc := cm.get('measurement_parameter_contexts', False):
             s += ('\n\nMeasurement parameter contexts'
                   + '\n' + '-'*len(t) + '\n'
                   + pprint.pformat(mpc))
+    if c := json.loads(ds.attrs.get('comment', '""')):
+        s += ('\n\nComment'
+              + '\n' + '-'*len(t) + '\n'
+              + pprint.pformat(c))
 
     txt.set_text(s)
     bm.update()
