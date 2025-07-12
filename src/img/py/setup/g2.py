@@ -1,4 +1,5 @@
 # %% Imports
+import os
 import pathlib
 import sys
 
@@ -18,7 +19,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
 from common import MARGINSTYLE, MARGINWIDTH, PATH, init, markerprops, secondary_axis  # noqa
 
-EXTRACT_DATA = False
+EXTRACT_DATA = os.environ.get('EXTRACT_DATA', False)
 ORIG_DATA_PATH = pathlib.Path(
     r"\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\InGaAs_dots_M1_12_47_18.db"
 )

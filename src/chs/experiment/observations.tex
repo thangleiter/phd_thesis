@@ -121,12 +121,12 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
     }
     \label{fig:exp:tmm:wavelengths}
 \end{marginfigure}
-
+\clearpage
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/tmm_green}
     \caption[\imgsource{img/py/experiment/tmm.py}]{
-        Real part of the electric field emitted by a current line located in the \gls{qw} at $x=0$ for different cases of the unoptimized structure.
+        Real part of the electric field emitted by a current line located in the \gls{qw} (black point) for different cases of the unoptimized structure.
         From top to bottom: bare heterostructure, top gate, bottom gate, top and bottom gate.
         The half space $z<0$ is the air above the membrane in the direction of the objective lens and the dotted lines indicate interfaces between materials.
         Evidently, the bottom gate reduces the amplitude in the upper half of the membrane and thereby the outcoupling efficiency compared to the structures with just a top gate, consistent with what is observed in the experiment.
@@ -138,7 +138,81 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
     \centering
     \includegraphics{img/pdf/experiment/tmm_green_opt_tgbg}
     \caption[\imgsource{img/py/experiment/tmm.py}]{
-
+        Real part of the electric field emitted by a current line located in the \gls{qw} (black point) for the default (top) and optimized (bottom) structures with top and bottom gates.
+        Optimizing the barrier thickness for absorption in the \gls{qw} evidently also drastically improves the outcoupling efficiency into the halfspace $z<0$.
     }
     \label{fig:exp:tmm:green:opt:tgbg}
 \end{marginfigure}
+\clearpage
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/honey_H13_stark_shift_vs_gate}
+    \caption[
+        \sampleid{Honey H13}
+        \thewavelength{795},
+        \thepower{1}{\micro}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        \Gls{pl} as function of gate voltage on a single fan-out gate on the bottom (left) and top (right) side of the membrane.
+        The behavior is qualitatively similar but the overall quantum efficiency lower by an order of magnitude for gates on the bottom (as-grown buried) side.
+    }
+    \label{fig:exp:pl:honey_H13_stark_shift_vs_gate}
+\end{figure}
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_difference_mode}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-1.3}{CM},
+        \thewavelength{795}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        \Gls{pl} as function of difference-mode voltage on a large exciton trap.
+        The observed Stark shift follows the expected quadratic dispersion, but is offset by \qty{0.9}{\volt} with respect to zero bias (dash-dotted gray line).
+        Remnant \gls{pl} of the \gls{2deg} from outside the trap region is faintly visible below \qty{-1}{\volt}.
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_difference_mode}
+\end{marginfigure}
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/fig_F10_positioning}
+    \caption[
+        \sampleid{Fig F10}
+        \thewavelength{795}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{}
+    \label{fig:exp:pl:fig_F10_positioning}
+\end{marginfigure}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_power}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-2.7}{DM},
+        \thevoltage{-1.3}{CM},
+        \thewavelength{795}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+    }
+    \label{fig:}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_multiplets}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{0}{B},
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{}
+    \label{fig:}
+\end{figure}
