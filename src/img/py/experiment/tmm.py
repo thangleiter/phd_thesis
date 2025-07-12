@@ -24,7 +24,7 @@ DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
-    SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite')
+    SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
     DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 # Lengths are in units of nm
@@ -164,30 +164,32 @@ def analyze_absorptance(structure, wavelength=WAV, incidence=INC, polarization=P
     return As, rs, ts, Rs, Ts
 
 
-def analyze_dipole(barrier_thickness=90., air_thickness=0.6*WAV,
+def analyze_dipole(idx=range(4), barrier_thickness=90., air_thickness=0.6*WAV,
                    horizontal_pixel_size=10, vertical_pixel_size=1):
     # Window needs to be wide enough for fields to have attenuated before leaking into other side
     # (PBC)
     window = pm.Window(width=50 * WAV, beam_relative_position=0.5,
                        horizontal_pixel_size=horizontal_pixel_size,
                        vertical_pixel_size=vertical_pixel_size)
-    structure_bare = setup_bare_structure(barrier_thickness=barrier_thickness,
-                                          air_thickness=air_thickness)
-    structure_tg = setup_tg_structure(barrier_thickness=barrier_thickness,
-                                      air_thickness=air_thickness)
-    structure_bg = setup_bg_structure(barrier_thickness=barrier_thickness,
-                                      air_thickness=air_thickness)
-    structure_tgbg = setup_tgbg_structure(barrier_thickness=barrier_thickness,
-                                          air_thickness=air_thickness)
-    En_bare = green.green(structure_bare, window, WAV, get_source_interface(structure_bare))
-    En_tg = green.green(structure_tg, window, WAV, get_source_interface(structure_tg))
-    En_bg = green.green(structure_bg, window, WAV, get_source_interface(structure_bg))
-    En_tgbg = green.green(structure_tgbg, window, WAV, get_source_interface(structure_tgbg))
-    return (
-        (structure_bare, structure_tg, structure_bg, structure_tgbg),
-        (En_bare, En_tg, En_bg, En_tgbg),
-        window
-    )
+    structures = []
+    Ens = []
+    if 0 in idx:
+        structures.append(setup_bare_structure(barrier_thickness=barrier_thickness,
+                                               air_thickness=air_thickness))
+        Ens.append(green.green(structures[-1], window, WAV, get_source_interface(structures[-1])))
+    if 1 in idx:
+        structures.append(setup_tg_structure(barrier_thickness=barrier_thickness,
+                                             air_thickness=air_thickness))
+        Ens.append(green.green(structures[-1], window, WAV, get_source_interface(structures[-1])))
+    if 2 in idx:
+        structures.append(setup_bg_structure(barrier_thickness=barrier_thickness,
+                                             air_thickness=air_thickness))
+        Ens.append(green.green(structures[-1], window, WAV, get_source_interface(structures[-1])))
+    if 3 in idx:
+        structures.append(setup_tgbg_structure(barrier_thickness=barrier_thickness,
+                                               air_thickness=air_thickness))
+        Ens.append(green.green(structures[-1], window, WAV, get_source_interface(structures[-1])))
+    return structures, Ens, window
 
 
 def mask_data(structure, En, window, mat, xlim, func):
@@ -211,13 +213,15 @@ def extract_params(Ens, func, mat, structures, window, xlim):
     return absmax, maskeds, xmasks, xs, yaccs, ylims, ymasks, yoffs, ys
 
 
-def plot_interfaces(axs, yacc, yoff, structure):
+def plot_interfaces(axs, yacc, yoff, structure, show_emitter=False):
     for j, yy in enumerate(yacc):
-        if j < len(yacc) - 1 and structure.layer_type[j] == structure.layer_type[j+1]:
-            # Skip double layers
-            continue
         for ax in axs:
-            ax.axhline(yy - yoff, color=RWTH_COLORS_50['black'], ls=':', lw=0.5, alpha=0.66)
+            if j < len(yacc) - 1 and structure.layer_type[j] == structure.layer_type[j+1]:
+                # QW layer
+                if show_emitter:
+                    ax.scatter(0, yy - yoff, s=0.5, color=RWTH_COLORS['black'])
+            else:
+                ax.axhline(yy - yoff, color=RWTH_COLORS_50['black'], ls=':', lw=0.5, alpha=0.66)
 
 
 def plot_field(fig, structures, Es, window, beam, xlim, mat):
@@ -427,7 +431,7 @@ best = round(best.item())
 print(f'Ebeam top and bot gate (opt @ {WAV} nm):\n -> 7/2/10/{best}/20/{best}/10/5/25')
 tgbg_structure_opt = setup_tgbg_structure(barrier_thickness=best, verbose=False)
 A_opt, *_ = analyze_absorptance(tgbg_structure_opt)
-# %%%%% Plot wavelengths
+# %%% Plot absorptance as function of wavelengths
 PLOT_R = False
 
 source_interface = get_source_interface(tgbg_structure_opt)
@@ -462,7 +466,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     fig.savefig(SAVE_PATH / 'tmm_absorptance.pdf')
 
-# %%%% field
+# %%% Gaussian illumination
 structure = setup_tgbg_structure(barrier_thickness=90, air_thickness=1)
 structure_opt = setup_tgbg_structure(barrier_thickness=best, air_thickness=1)
 
@@ -473,34 +477,34 @@ window = pm.Window(width=8*w_0, beam_relative_position=0.5, horizontal_pixel_siz
 E = pm.field(structure, beam, window)
 E_opt = pm.field(tgbg_structure_opt, beam, window)
 
-# %%%%% Plotit
+# %%% Plotit
 xlim = ((-window.nx // 2 + window.nx % 2) * window.px,
         (+window.nx // 2 + window.nx % 2) * window.px)
 
 with mpl.style.context(MAINSTYLE, after_reset=True):
-    fig = plt.figure(figsize=(TEXTWIDTH, 2.4))
+    fig = plt.figure(figsize=(TEXTWIDTH, 2.35))
     plot_field(fig, [structure, structure_opt], [E, E_opt], window, beam, xlim, au_med)
     fig.savefig(SAVE_PATH / 'tmm_field.pdf')
 
-# %%%% Dipole emitter
-structures, Ens, window = analyze_dipole(barrier_thickness=90)
+# %%% Dipole emitter
+structures, Ens, window = analyze_dipole(idx=(1, 2), barrier_thickness=90)
 
-# %%%%% Plot different gate stacks
+# %%% Plot different gate stacks
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(figsize=(MARGINWIDTH, 5))
     plot_dipole(fig, structures, Ens, window, xlim=(-1000, 1000), mat=epoxy)
     fig.savefig(SAVE_PATH / 'tmm_green.pdf')
 
-# %%%% Dipole emitter optimized
+# %%% Dipole emitter optimized
 structures_opt, Ens_opt, window = analyze_dipole(barrier_thickness=best)
 
-# %%%%% Plot different gate stacks
+# %%% Plot different gate stacks
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(figsize=(MARGINWIDTH, 5))
     plot_dipole(fig, structures_opt, Ens_opt, window, xlim=(-1000, 1000), mat=epoxy)
     fig.savefig(SAVE_PATH / 'tmm_green_opt.pdf')
 
-# %%%%% Plot optimized
+# %%% Plot optimized
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(figsize=(MARGINWIDTH, 2))
     plot_dipole(fig, [structures[-1], structures_opt[-1]], [Ens[-1], Ens_opt[-1]], window,
