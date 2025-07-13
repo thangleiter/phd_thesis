@@ -8,7 +8,7 @@ import scipy as sc
 from scipy.optimize import elementwise
 
 from qutil import const, functools
-from qutil.plotting.colors import RWTH_COLORS
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
@@ -19,7 +19,7 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 
 init(MARGINSTYLE, backend := 'pgf')
-# %%
+# %% Functions
 
 
 def E_AlGaAs(x):
@@ -57,7 +57,7 @@ def psi_triangular(z, L, F, q, m, n: int):
     W_1 = eps_square(L, q, m, 1)
     f = F / W_1 * q * L
     # Miller's W is Rabinovitch's eps
-    eps = eps_triangular_normalized_vec(np.atleast_1d(f), n)[0]*W_1
+    eps = eps_triangular_normalized_vec(np.atleast_1d(f), n)[-1]*W_1
     # Rabinovitch's α_1, \bar{ε}
     alpha_1 = 2*m*q*F/const.hbar**2
     eps_bar = 2*m*eps/const.hbar**2
@@ -68,7 +68,20 @@ def psi_triangular(z, L, F, q, m, n: int):
 
     Ai, _, Bi, _ = sc.special.airy(Z)
     Ai_L, _, Bi_L, _ = sc.special.airy(ZL)
+
     return Ai - Ai_L/Bi_L*Bi
+
+
+def psi_triangular_davies(z, L, F, q, m, n: int):
+    # Miller's f, W_1
+    W_1 = eps_square(L, q, m, 1)
+    f = F / W_1 * q * L
+    # Miller's W is Rabinovitch's eps
+    eps = eps_triangular_normalized_vec(np.atleast_1d(f), n)[-1]*W_1
+    eps0 = np.float_power(.5*(q*F*const.hbar)**2/m, 1/3, dtype=complex)
+
+    Z = (q*F*z + eps)/eps0
+    return sc.special.airy(Z)[0]
 
 
 def Eq_B7(w, f):
@@ -233,11 +246,11 @@ for (E_e, E_h), c in zip(eps_triangular(F, e, m, n), plt.rcParams['axes.prop_cyc
 # %%% Triangular (Miller)
 fig, axs = plt.subplots(2, sharex=True)
 for (E_e, E_h), c in zip(W.swapaxes(0, 1), plt.rcParams['axes.prop_cycle']):
-    axs[0].grid()
+    axs[0].grid(True)
     axs[0].plot(F, +E_e/const.e, **c)
     axs[0].plot(F, -E_h/const.e, ls='--', **c)
 
-    axs[1].grid()
+    axs[1].grid(True)
     axs[1].plot(F, (E_e - (-E_h)) / const.e, **c)
 
 # %% Sketch band structure
@@ -269,6 +282,10 @@ ax.annotate('$E_v$', (z[3] + 5,  -.5*ΔE_g - ΔE_v), verticalalignment='center')
 
 # Wave functions
 zw = np.linspace(z[1], z[2], 101)
+ax.plot([90, 130], [.5*ΔE_g + eps_square(L, e, m[0], 1)/e]*2,
+        ls='--', color=RWTH_COLORS_50['magenta'], alpha=0.66)
+ax.plot([90, 130], [-.5*ΔE_g - eps_square(L, e, m[1], 1)/e]*2,
+        ls='--', color=RWTH_COLORS_50['magenta'], alpha=0.66)
 ax.plot(
     zw,
     .5*ΔE_g + eps_square(L, e, m[0], 1)/e + psi_square(zw - z[1], L*1e9, n=1)**2,
