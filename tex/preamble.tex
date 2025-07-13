@@ -1,9 +1,12 @@
 %----------------------------------------------------------------------------------------
 %    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
+%\PassOptionsToClass{toc=listof}{\@baseclass}
+%\PassOptionsToClass{toc=bibliography}{\@baseclass}
 
 % Choose the language
 \ifxetexorluatex
+    % TODO: https://github.com/reutenauer/polyglossia/issues/686
     \usepackage{polyglossia}
     \setmainlanguage[variant=american]{english}
 \else
@@ -151,7 +154,25 @@
 \usepackage[framed=true]{kaotheorems}
 
 % Load the package for hyperreferences
-\usepackage{kaorefs}
+\ifxetexorluatex
+    % These commmands in kaorefs add extra whitespace in the LOF
+    %\addto\captionsgerman{%
+    %    \renewcommand{\chapternameshort}{Kap.}
+    \usepackage[capitalise,nameinlink,noabbrev]{cleveref}
+
+    % Remove parentheses around equations
+    \creflabelformat{equation}{#2\textup{#1}#3}
+
+    % Set the refname for subsections
+    \crefname{subsection}{\subsectionname}{\subsectionnameplural}
+    \Crefname{subsection}{\subsectionname}{\subsectionnameplural}
+
+    % Set the refname for sidenotes
+    \crefname{sidenote}{sidenote}{sidenotes}
+    \Crefname{sidenote}{Sidenote}{Sidenotes}
+\else
+    \usepackage{kaorefs}
+\fi
 
 \graphicspath{ {./img/}{./} } % Paths in which to look for images
 
