@@ -27,44 +27,44 @@
 \begin{forest}
     dir tree
     [
-        [{\faIcon[regular]{folder} doc}]
-        [{\faIcon[regular]{folder-open} src}
-            [{\faIcon[regular]{folder-open} mjolnir}
-                [{\faIcon[regular]{folder-open} config}
-                    [{\faIcon[regular]{file-code} physical\_[\ldots].yaml}]
-                    [{\faIcon[regular]{file-code} optical\_path.yaml}]
-                    [{\faIcon[regular]{file-code} fig\_F10.yaml}]
+        [{\faIcon[regular]{folder} \mjolnirpath{doc}{doc}}]
+        [{\faIcon[regular]{folder-open} \mjolnirpath{src}{src}}
+            [{\faIcon[regular]{folder-open} \mjolnirpath{src/mjolnir}{mjolnir}}
+                [{\faIcon[regular]{folder-open} \mjolnirpath{src/mjolnir/config}{config}}
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/config/physical_instruments.yaml}{physical\_[\ldots].yaml}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/config/optical_path.yaml}{optical\_path.yaml}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/config/fig_F10.yaml}{fig\_F10.yaml}}]
                     [{\faIcon[regular]{file-code} \ldots}]
                 ]
-                [{\faIcon[regular]{folder-open} instruments}
-                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
-                    [{\faIcon[regular]{file-code} logical\_[\ldots].py}]
-                    [{\faIcon[regular]{file-code} physical\_[\ldots].py}]
+                [{\faIcon[regular]{folder-open} \mjolnirpath{src/mjolnir/instruments}{instruments}}
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/instruments/__init__.py}{\_\_init\_\_.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/instruments/logical_instruments.py}{logical\_[\ldots].py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/instruments/physical_instruments.py}{physical\_[\ldots].py}}]
                 ]
-                [{\faIcon[regular]{folder-open} measurements}
-                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
-                    [{\faIcon[regular]{file-code} handler.py}]
-                    [{\faIcon[regular]{file-code} measures.py}]
-                    [{\faIcon[regular]{file-code} sweeps.py}]
+                [{\faIcon[regular]{folder-open} \mjolnirpath{src/mjolnir/measurements}{measurements}}
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/measurements/__init__.py}{\_\_init\_\_.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/measurements/handler.py}{handler.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/measurements/measures.py}{measures.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/measurements/sweeps.py}{sweeps.py}}]
                 ]
-                [{\faIcon[regular]{folder} parameters}
-                    %[{\faIcon[regular]{file-code} \_\_init\_\_.py}]
-                    %[{\faIcon[regular]{file-code} customized.py}]
+                [{\faIcon[regular]{folder} \mjolnirpath{src/mjolnir/parameters}{parameters}}
+                    %[{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/parameters/__init__.py}{\_\_init\_\_.py}}]
+                    %[{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/parameters/custommized.py}{customized.py}}]
                 ]
-                [{\faIcon[regular]{folder-open} plotting}
-                    [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
-                    [{\faIcon[regular]{file-code} live\_view.py}]
-                    [{\faIcon[regular]{file-code} plot\_nd.py}]
+                [{\faIcon[regular]{folder-open} \mjolnirpath{src/mjolnir/plotting}{plotting}}
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/plotting/__init__.py}{\_\_init\_\_.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/plotting/live_view.py}{live\_view.py}}]
+                    [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/plotting/plot_nd.py}{plot\_nd.py}}]
                 ]
-                [{\faIcon[regular]{file-code} \_\_init\_\_.py}]
-                [{\faIcon[regular]{file-code} calibration.py}]
-                %[{\faIcon[regular]{file-code} \_version.py}]
-                %[{\faIcon[regular]{file-code} helpers.py}]
+                [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/__init__.py}{\_\_init\_\_.py}}]
+                [{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/calibration.py}{calibration.py}}]
+                %[{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/_version.py}{\_version.py}}]
+                %[{\faIcon[regular]{file-code} \mjolnirpath{src/mjolnir/helpers.py}{helpers.py}}]
                 [{\faIcon[regular]{file-code} \ldots}]
             ]
         ]
-        [{\faIcon[regular]{file-code} main.py}]
-        [{\faIcon[regular]{file-code} pyproject.toml}]
+        [{\faIcon[regular]{file-code} \mjolnirpath{main.py}{main.py}}]
+        [{\faIcon[regular]{file-code} \mjolnirpath{pyproject.toml}{pyproject.toml}}]
         [{\faIcon[regular]{file-code} \ldots}]
     ]
 \end{forest}
