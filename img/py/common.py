@@ -85,3 +85,15 @@ def n_GaAs(T=0):
     n0 = 3.6520 + 1j*0.075663
     # https://doi.org/10.1063/1.114204, we assume they measured at 25C
     return n0 - 2.67e-4 * (25 + const.zero_Celsius - T)
+
+
+def E_AlGaAs(x):
+    # https://www.ioffe.ru/SVA/NSM/Semicond/AlGaAs/bandstr.html#Temperature
+    return 1.519 + 1.155*x + 0.37*x**2
+
+
+def effective_mass():
+    # masses from 10.1103/PhysRevB.29.7085
+    m_ep = 0.0665
+    m_hp = 0.34
+    return np.array([[m_ep, m_hp]]).T * const.m_e

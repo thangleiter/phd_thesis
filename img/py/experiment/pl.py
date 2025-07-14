@@ -15,12 +15,13 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from qcodes.dataset import initialise_or_create_database_at
 from qutil import itertools
 from qutil.plotting import reformat_axis
-from qutil.plotting.colors import make_sequential_colormap, RWTH_COLORS, RWTH_COLORS_50
+from qutil.plotting.colors import (make_sequential_colormap,
+                                   RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50, RWTH_COLORS_25)
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
 from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init,  # noqa
-                    secondary_axis)
+                    secondary_axis, apply_sketch_style, E_AlGaAs, effective_mass)
 from experiment.plotting import browse_db  # noqa
 
 EXTRACT_DATA = os.environ.get('EXTRACT_DATA', False)
@@ -194,6 +195,62 @@ def print_params(ds, voltages=True, wavelength=True, power=True, tex=False):
 def fit_peak():
     pass
 
+
+# %% 2DEG PL sketch
+ΔE_g = E_AlGaAs(0.33) - E_AlGaAs(0)
+Q_e = 0.57
+ΔE_c = Q_e * ΔE_g
+ΔE_v = (1 - Q_e) * ΔE_g
+k_F = 0.7
+E_F = k_F**2
+mu = ΔE_c + E_F
+r = np.divide(*effective_mass()).item()
+
+txtfontsize = 'medium'
+annotate_kwargs = dict(
+    color=RWTH_COLORS_75['black'],
+    arrowprops=dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_75['black'],
+                    linewidth=0.75, shrinkA=0, shrinkB=0)
+)
+
+with mpl.style.context(MARGINSTYLE, after_reset=True):
+    fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.5))
+
+    k = np.linspace(-1, 1, 1001)
+    ax.plot(k, k**2 + ΔE_c, color='k')
+    ax.plot(k, -r*k**2 - ΔE_v, color='k')
+    ax.fill_between(k[abs(k) <= k_F], k[abs(k) <= k_F]**2 + ΔE_c, k_F**2 + ΔE_c,
+                    color=RWTH_COLORS_50['blue'], linewidth=0,
+                    hatch='', edgecolor=RWTH_COLORS_50['blue'], hatch_linewidth=5)
+    ax.plot(np.array([-1.2, 1.2])*k_F, np.array([1, 1])*mu, ls='--')
+
+    ax.annotate('', (0, ΔE_c), (0, -ΔE_v), **annotate_kwargs)
+    ax.text(0.05, 0, r'$E_\mathrm{g}$', verticalalignment='center', fontsize=txtfontsize)
+
+    ax.annotate('', (-k_F, mu), (-k_F, -r*k_F**2 - ΔE_v), **annotate_kwargs)
+    ax.text(-k_F - 0.05, mu + 0.06,
+            r'$E_\mathrm{g} + E_\mathrm{F}\left(1 + \frac{m_e^\ast}{m_h^\ast}\right)$',
+            verticalalignment='bottom', fontsize=txtfontsize)
+
+    ax.text(0.9, mu + 0.1, r'$E_\mathrm{c}$', verticalalignment='bottom', fontsize=txtfontsize)
+    ax.text(0.9, -ΔE_v - 0.1, r'$E_\mathrm{v}$', fontsize=txtfontsize)
+
+    ax.set_xticks([-k_F, 0, k_F], [r'$-k_\mathrm{F}$', '$0$', r'$k_\mathrm{F}$'],
+                  verticalalignment='bottom')
+    ax.set_yticks([0, mu], [r'$0$', r'$\mu$'])
+    ax.tick_params('x', pad=12.5)
+
+    ax.margins(x=0.05)
+
+    ax.set_xlabel(r'$k_\parallel$', verticalalignment='center')
+    ax.set_ylabel('$E$', rotation='horizontal', horizontalalignment='center')
+    ax.xaxis.set_label_coords(1.05, -0.02)
+    ax.yaxis.set_label_coords(0, 1.05)
+
+    ax.spines.top.set_visible(False)
+    ax.spines.right.set_visible(False)
+
+    fig.savefig(SAVE_PATH / '2deg_sketch.pdf')
 
 # %% Honey H13
 if EXTRACT_DATA:

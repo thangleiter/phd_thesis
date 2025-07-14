@@ -13,18 +13,13 @@ from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
 from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init,  # noqa
-                    apply_sketch_style)
+                    apply_sketch_style, E_AlGaAs, effective_mass)
 
 SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 
 init(MARGINSTYLE, backend := 'pgf')
 # %% Functions
-
-
-def E_AlGaAs(x):
-    # https://www.ioffe.ru/SVA/NSM/Semicond/AlGaAs/bandstr.html#Temperature
-    return 1.519 + 1.155*x + 0.37*x**2
 
 
 @functools.wraps(sc.special.airy)
@@ -213,10 +208,7 @@ Q_e = 0.57
 
 n = 2
 L = 20e-9
-# masses from 10.1103/PhysRevB.29.7085
-m_ep = 0.0665
-m_hp = 0.34
-m = np.array([[m_ep, m_hp]]).T * const.m_e
+m = effective_mass()
 e = const.e
 
 # 10 MV/m = 100 kV/cm = 2 V/200nm
