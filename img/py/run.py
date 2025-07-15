@@ -3,7 +3,6 @@ import concurrent.futures
 import os
 import pathlib
 import sys
-import time
 
 from tqdm import tqdm
 
@@ -93,13 +92,20 @@ def main():
     args = parser.parse_args()
 
     files = gather_files(root := pathlib.Path(__file__).parent.resolve(), args)
+    if not files:
+        print('No files found. Exiting.')
+        sys.exit(0)
+    else:
+        print('Found the following files:')
+        print('\n'.join(str(file) for file in files))
+
     results = {}
 
     if args.parallel:
         workers = min(len(files), os.cpu_count())
         with (
                 concurrent.futures.ThreadPoolExecutor(workers) as executor,
-                tqdm(total=len(files), unit='files') as pbar
+                tqdm(total=len(files), unit='file') as pbar
         ):
             futures = {executor.submit(execute_file, file, args.timeout): file for file in files}
             pbar.set_description(f'Running {len(files)} scripts')
@@ -125,7 +131,7 @@ def main():
         total = pbar.format_dict['elapsed']
         ptimes = sum(result[1] for result in results.values())
         print(f'Processed {len(files)} scripts with {workers} processes in {total:.1f} seconds. '
-              f'Speedup: {round(ptimes/total*100)} %')
+              f'Speedup: {round((1 - total/ptimes)*100)} %')
     else:
         with tqdm(total=len(files), unit='files') as pbar:
             for file in files:
