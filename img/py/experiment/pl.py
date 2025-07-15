@@ -4,6 +4,7 @@ import json
 import pathlib
 import sys
 from typing import Literal
+from collections.abc import Sequence
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ from qutil.plotting.colors import (make_sequential_colormap,
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
 from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init,  # noqa
-                    secondary_axis, apply_sketch_style, E_AlGaAs, effective_mass)
+                    secondary_axis, apply_sketch_style, E_AlGaAs, effective_mass, sliceprops)
 from experiment.plotting import browse_db  # noqa
 
 EXTRACT_DATA = os.environ.get('EXTRACT_DATA', False)
@@ -33,6 +34,8 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
+LINE_COLORS = [color for name, color in RWTH_COLORS.items() if name not in ('magenta',)]
+LINE_COLORS = [RWTH_COLORS_75['magenta'], RWTH_COLORS_50['magenta']]
 
 PAD = 2
 
@@ -91,13 +94,17 @@ def plot_pl(das, ylabel='', scaley=1, norm=None, figsize=None, aspect=False,
     grid = ImageGrid(fig, 111, aspect=aspect, cbar_location=cbar_location, cbar_mode=cbar_mode,
                      cbar_pad=cbar_pad, **grid_kw)
 
-    if norm is None:
-        norm = mpl.colors.Normalize(vmin=0)
+    if norm is None and cbar_mode == 'single':
+        norm = mpl.colors.Normalize(vmin=0, vmax=max(da.max() for da in das).item())
 
     for da, ax in zip(das, grid):
         x = da.coords['ccd_horizontal_axis']
         y = da.coords[itertools.first_true(da.coords, pred=lambda c: c != 'ccd_horizontal_axis')]
-        img = ax.pcolormesh(x, y*scaley, da, cmap=SEQUENTIAL_CMAP, norm=norm, rasterized=True)
+        img = ax.pcolormesh(
+            x, y*scaley, da, cmap=SEQUENTIAL_CMAP,
+            norm=mpl.colors.Normalize(vmin=0) if norm is None and cbar_mode == 'each' else norm,
+            rasterized=True
+        )
         cb = ax.cax.colorbar(img, extend='neither')
         prefix = reformat_axis(cb, da, 'cps', 'c')
         ax.set_xlabel('$E$ (eV)')
@@ -111,11 +118,19 @@ def plot_pl(das, ylabel='', scaley=1, norm=None, figsize=None, aspect=False,
     return fig, grid
 
 
-def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_val: ...,
-                  vertical_target=None, ylabel='', scaley=1, norm=None, tick_pad=3.5):
+def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
+                  vertical_target=None, ylabel='', scaley=1, slice_scales: Sequence[...] = None,
+                  norm=None, tick_pad=3.5, **line_kwargs):
 
     if norm is None:
         norm = mpl.colors.Normalize(vmin=0)
+
+    if slice_scales is None:
+        slice_scales = [1] * len(slice_vals)
+
+    for i, scale in enumerate(slice_scales):
+        if scale is None:
+            slice_scales[i] = 1
 
     x = da.coords['ccd_horizontal_axis']
     y = da.coords[vertical_target := vertical_target if vertical_target is not None else
@@ -123,8 +138,9 @@ def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_val: ...,
 
     img = axs['img'].pcolormesh(x, scaley*y, da.sel(sel, method='nearest'),
                                 cmap=SEQUENTIAL_CMAP, norm=norm, rasterized=True)
-    axs['img'].axhline(scaley*y.sel({vertical_target: slice_val}, method='nearest'),
-                       ls=':', color=RWTH_COLORS_50['black'], alpha=0.66)
+    for slice_val, color in zip(slice_vals, LINE_COLORS):
+        axs['img'].axhline(scaley*y.sel({vertical_target: slice_val}, method='nearest'),
+                           **(sliceprops(color) | line_kwargs))
     axs['img'].set_xlabel('$E$ (eV)', labelpad=tick_pad)
     axs['img'].set_ylabel(ylabel, labelpad=tick_pad)
     axs['img'].tick_params(pad=tick_pad)
@@ -135,8 +151,11 @@ def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_val: ...,
         cb.set_label(f'Count rate ({prefix}cps)', labelpad=tick_pad)
         cb.ax.tick_params(pad=tick_pad)
 
-    ln, = axs['slc'].plot(x, da.sel(sel | {vertical_target: slice_val}, method='nearest'),
-                          color=RWTH_COLORS['magenta'])
+    for slice_val, slice_scale, color in zip(slice_vals, slice_scales, LINE_COLORS):
+        ln, = axs['slc'].plot(
+            x, slice_scale*da.sel(sel | {vertical_target: slice_val}, method='nearest'),
+            color=color, **line_kwargs
+        )
     axs['slc'].grid(axis='y')
     axs['slc'].tick_params(pad=tick_pad)
     axs['slc'].sharex(axs['img'])
@@ -209,7 +228,7 @@ r = np.divide(*effective_mass()).item()
 txtfontsize = 'medium'
 annotate_kwargs = dict(
     color=RWTH_COLORS_75['black'],
-    arrowprops=dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_75['black'],
+    arrowprops=dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
                     linewidth=0.75, shrinkA=0, shrinkB=0)
 )
 
@@ -228,7 +247,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.text(0.05, 0, r'$E_\mathrm{g}$', verticalalignment='center', fontsize=txtfontsize)
 
     ax.annotate('', (-k_F, mu), (-k_F, -r*k_F**2 - ΔE_v), **annotate_kwargs)
-    ax.text(-k_F - 0.05, mu + 0.06,
+    ax.text(-k_F - 0.075, mu + 0.06,
             r'$E_\mathrm{g} + E_\mathrm{F}\left(1 + \frac{m_e^\ast}{m_h^\ast}\right)$',
             verticalalignment='bottom', fontsize=txtfontsize)
 
@@ -237,14 +256,14 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     ax.set_xticks([-k_F, 0, k_F], [r'$-k_\mathrm{F}$', '$0$', r'$k_\mathrm{F}$'],
                   verticalalignment='bottom')
-    ax.set_yticks([0, mu], [r'$0$', r'$\mu$'])
+    ax.set_yticks([0, mu], ['', r'$\mu$'])
     ax.tick_params('x', pad=12.5)
 
     ax.margins(x=0.05)
 
     ax.set_xlabel(r'$k_\parallel$', verticalalignment='center')
     ax.set_ylabel('$E$', rotation='horizontal', horizontalalignment='center')
-    ax.xaxis.set_label_coords(1.05, -0.02)
+    ax.xaxis.set_label_coords(1.05, -0.01)
     ax.yaxis.set_label_coords(0, 1.05)
 
     ax.spines.top.set_visible(False)
@@ -295,7 +314,7 @@ da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, grid = plot_pl((da,), ylabel=r'$V_{\mathrm{DM}}$ (V)', nrows_ncols=(1, 1))
-    grid[0].axhline(0.90, ls='-.', lw=0.75, color=RWTH_COLORS_50['black'], alpha=0.5)
+    grid[0].axhline(0.90, **sliceprops(color=RWTH_COLORS_50['black'], alpha=0.66))
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_difference_mode.pdf')
 
 # %%% Power dependence 2
@@ -350,7 +369,7 @@ img, prefix = plot_pl_slice(
     ylabel=r'$V_{\mathrm{T}}$ (V)',
     vertical_target='doped_M1_05_49_2_trap_2_central_top',
     sel=dict(excitation_path_wavelength=800, excitation_path_power_at_sample=17.7e-9),
-    slice_val=-2.02,
+    slice_vals=[-2.02],
     tick_pad=PAD,
 )
 img.colorbar.set_label('')
@@ -363,7 +382,7 @@ img, prefix = plot_pl_slice(
     scaley=1e9,
     vertical_target='excitation_path_power_at_sample',
     sel=dict(excitation_path_wavelength=790, doped_M1_05_49_2_trap_2_central_top=-1.92),
-    slice_val=35.4e-9,
+    slice_vals=[35.4e-9],
     tick_pad=PAD,
 )
 
@@ -390,9 +409,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     axs = generate_mosaic(fig, 1, slc=True, cb=False, slc_height_ratio=1/3.5)
 
     img, prefix = plot_pl_slice(fig, axs[0], ds['ccd_ccd_data_rate_bg_corrected'],
-                                ylabel='Positioner steps', sel=dict(), slice_val=26,
-                                tick_pad=PAD)
+                                ylabel='Positioner steps', sel=dict(), slice_vals=[26, 45],
+                                slice_scales=[20, 1], tick_pad=PAD, linewidth=.75)
 
+    axs[0]['slc'].annotate(r'$\times 20$', (1.475, 300), color=LINE_COLORS[0])
     axs[0]['img'].set_ylim(top=53)
     ax2y = axs[0]['img'].secondary_yaxis(
         -0.275,

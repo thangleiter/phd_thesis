@@ -49,6 +49,15 @@ def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerface
     )
 
 
+def sliceprops(color, alpha=0.66, linestyle='-.', linewidth=0.75):
+    return dict(
+        color=color,
+        alpha=alpha,
+        linestyle=linestyle,
+        linewidth=linewidth
+    )
+
+
 def _lambda2eV(lambda_):
     with misc.filter_warnings('ignore', RuntimeWarning):
         result = const.lambda2eV(lambda_)

@@ -16,7 +16,7 @@ from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_50, make_diverging_c
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init)  # noqa
+from common import MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init, sliceprops  # noqa
 
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/tmm'
@@ -263,7 +263,7 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
         plot_interfaces(axs, yaccs[i], yoffs[i], structures[i])
 
         # line cut indicator
-        axs[1].axvline(0, color=RWTH_COLORS_50['black'], ls='-.', lw=0.75, alpha=0.66)
+        axs[1].axvline(0, **sliceprops(RWTH_COLORS_50['black']))
 
     cb = grid.cbar_axes[0].colorbar(img)
     cb.set_label(label)
