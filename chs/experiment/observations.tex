@@ -65,6 +65,7 @@ and is hence straightforward to extract from the calculation of either the $S$ o
 \Cref{eq:exp:tmm:T:total} is simple to evaluate on a computer, making this method attractive for numerical applications.
 However, the opposite signs in the argument of the exponentials in \cref{eq:exp:tmm:C} can lead to instabilities for evanescent waves ($\gamma_i\in\mathbb{C}$) due to finite-precision floating point arithmetic~\cite{Duetz}.
 Rewriting \cref{eq:exp:tmm:T} to have incoming and outgoing fields on opposite sides of the equality alleviates this issue while sacrificing the simple matrix-multiplication composition rule in what is known as the scattering matrix ($S$-matrix) formalism.
+Finally, note that for a thorough accounting of in- and out-going field amplitudes, excitonic effects should be included, for example using the approach by \citet{DAndrea1990}.
 
 Beyond the calculation of the aforementioned coefficients, the \gls{tmm} formalism also allows to compute the full spatial dependence of the fields.
 Two cases are implemented in \pymoosh: irradiation of the layered structured with a Gaussian beam rather than plane waves of infinite extent, and a current line source inside the structure.

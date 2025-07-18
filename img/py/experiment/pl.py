@@ -224,13 +224,13 @@ k_F = 0.7
 E_F = k_F**2
 mu = ΔE_c + E_F
 r = np.divide(*effective_mass()).item()
+s_dE = (r'$E_\mathrm{g} + '
+        r'E_\mathrm{F}\left(1 + \frac{m_{\mathrm{c}}^\ast}{m_{\mathrm{hh}}^\ast}\right)$')
 
 txtfontsize = 'medium'
-annotate_kwargs = dict(
-    color=RWTH_COLORS_75['black'],
-    arrowprops=dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
-                    linewidth=0.75, shrinkA=0, shrinkB=0)
-)
+arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
+                  linewidth=0.75, shrinkA=0, shrinkB=0)
+annotate_kwargs = dict(color=RWTH_COLORS_75['black'], arrowprops=arrowprops)
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.5))
@@ -247,12 +247,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.text(0.05, 0, r'$E_\mathrm{g}$', verticalalignment='center', fontsize=txtfontsize)
 
     ax.annotate('', (-k_F, mu), (-k_F, -r*k_F**2 - ΔE_v), **annotate_kwargs)
-    ax.text(-k_F - 0.075, mu + 0.06,
-            r'$E_\mathrm{g} + E_\mathrm{F}\left(1 + \frac{m_e^\ast}{m_h^\ast}\right)$',
-            verticalalignment='bottom', fontsize=txtfontsize)
+    ax.text(-k_F - 0.075, mu + 0.06, s_dE, verticalalignment='bottom', fontsize=txtfontsize)
 
     ax.text(0.9, mu + 0.1, r'$E_\mathrm{c}$', verticalalignment='bottom', fontsize=txtfontsize)
-    ax.text(0.9, -ΔE_v - 0.1, r'$E_\mathrm{v}$', fontsize=txtfontsize)
+    ax.text(0.9, -ΔE_v - 0.1, r'$E_\mathrm{hh}$', fontsize=txtfontsize)
 
     ax.set_xticks([-k_F, 0, k_F], [r'$-k_\mathrm{F}$', '$0$', r'$k_\mathrm{F}$'],
                   verticalalignment='bottom')

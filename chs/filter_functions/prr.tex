@@ -11,7 +11,7 @@ A closely related approach is the use of a Master equation in Lindblad form~\cit
 
 Yet many physical systems used as hosts for qubits do not satisfy the condition of uncorrelated noise.
 One example frequently encountered in solid state systems is that of \oneoverf noise, which in principle contains arbitrarily long correlation times.
-It emerges for instance as flux noise in superconducting qubits and electrical noise in quantum dot qubits~\cite{Brownnutt2015,Kumar2016,Yoneda2018,Paladino2014}.
+It emerges for instance as flux noise in superconducting qubits and electrical noise in quantum dot qubits~\cite{Brownnutt2015,Kumar2016a,Yoneda2018,Paladino2014}.
 Whereas simple approaches exist to treat for example quasistatic noise, which corresponds to perfectly correlated noise (\ie, a spectrum with weight only at zero frequency), they cannot be applied to \oneoverf noise because of the wide distribution of correlation times it contains.
 Thus, there is a gap in the mathematical descriptions of gate operations for noises with arbitrary power spectra that exist between the extremal cases of perfectly flat (white) and sharply peaked (quasistatic) spectra.
 To capture experimentally relevant effects important to understand the capabilities of quantum computing systems, a universally applicable formalism is hence desirable.
@@ -119,7 +119,7 @@ As most of our discussion later on in this article will focus on the approximati
 The difference is that in~\citer{Cerfontaine2021}, the Magnus expansion is applied to the solution of the Schr\"odinger equation, whereas the approach presented here is based on the theory of stochastic Liouville equations and the cumulant expansion~\cite{Kubo1962,Kubo1963}.
 In the filter function context, the cumulant expansion has been used to express the decay of the off-diagonal terms of a single-qubit density matrix in~\citer{Cywinski2008}.
 More recently,~\citeauthor{Paz-Silva2014} employed it in conjunction with the \gls{me} to obtain the matrix elements of the perturbed density operator after a time $T$ of noisy evolution.
-In~\citer{Yang2019a}, the authors made use of the cumulant expansion and stochastic Liouville equations for the purpose of gate optimization.
+In~\citer{Yang2019}, the authors made use of the cumulant expansion and stochastic Liouville equations for the purpose of gate optimization.
 Here, we combine different aspects of these works and make the connection to the quantum operations formalism by determining the noise-averaged error propagator in the Liouville representation.
 This form completely characterizes the error process and hence allows for detailed insight into the decoherence mechanisms of the operation.
 

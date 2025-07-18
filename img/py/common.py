@@ -101,8 +101,16 @@ def E_AlGaAs(x):
     return 1.519 + 1.155*x + 0.37*x**2
 
 
-def effective_mass():
+def effective_mass(lh=False):
     # masses from 10.1103/PhysRevB.29.7085
     m_ep = 0.0665
     m_hp = 0.34
-    return np.array([[m_ep, m_hp]]).T * const.m_e
+    m_lp = 0.094
+    if lh:
+        return np.array([[m_ep, m_lp]]).T * const.m_e
+    else:
+        return np.array([[m_ep, m_hp]]).T * const.m_e
+
+
+def reduced_mass(lh=False):
+    return (np.multiply.reduce(effective_mass(lh)) / np.add.reduce(effective_mass(lh))).item()
