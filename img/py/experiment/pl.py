@@ -302,7 +302,7 @@ fig.savefig(SAVE_PATH / 'honey_H13_stark_shift_vs_gate.pdf')
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'membrane_doped_M1_05_49-2.db')
 
-    save_to_hdf5(31, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')
+    save_to_hdf5(41, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')
     save_to_hdf5(69, DATA_PATH / 'doped_M1_05_49-2_power.h5')
     save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
 # %%% Difference mode
