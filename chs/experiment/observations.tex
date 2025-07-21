@@ -5,7 +5,7 @@
 The \gls{tmm} is a computationally efficient method of obtaining the electric field in layered structures.
 In this section, I perform simulations of the heterostructure membranes investigated in \thispart using the \pymoosh package~\cite{Langevin2024} to elucidate the observed quenching of \gls{pl} when illuminating gate electrodes as well as the overall optical efficiency.\sidenote{
     Strictly speaking, the term \acrshort{tmm} only refers to one of the several formalisms implemented in the \pymoosh package.
-    While fast, it not the most numerically stable, and other methods may be preferred if wall time is not a limiting issue.
+    While fast, it is not the most numerically stable, and other methods may be preferred if wall time is not a limiting issue.
 }
 I will first briefly recap the simulation method following \citer{Langevin2024}.
 For more details, refer to \ibid and references therein.
@@ -108,8 +108,13 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
 \begin{margintable}
     \centering
     \footnotesize
-    \caption{}
-    \label{tab:}
+    \caption{
+        Absorptance $\mathscr{A}$ and reflectance $\mathscr{R}$ in the \gls{qw} for different configurations of the heterostructure.
+        \enquote{Bare} is the standard structure without gate electrodes.
+        \enquote{TG} and \enquote{BG} are with a gate on either the top or bottom side.
+        \enquote{TG+BG} is with gates on both sides as on a trap site.
+    }
+    \label{tab:exp:tmm:absorptance_reflectance}
     \input{data/tmm/absorptance_reflectance}
 \end{margintable}
 
@@ -148,10 +153,48 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
 
 \begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/experiment/2deg_sketch}
-    \caption[\imgsource{img/py/experiment/pl.py}]{}
-    \label{fig:exp:pl:2deg_sketch}
+    \includegraphics{img/pdf/experiment/2deg_pl}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thewavelength{795}.
+        \thepower{0.92}{\micro}
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        \Gls{pl} of the bare \gls{2deg}.
+        Magenta line is a smoothing spline fit to the data.
+        Indicated by dotted gray lines are the Fermi edge at high and the band edge at low energy.
+        The Fermi edge has a Fermi distribution (exponential indicated by a dashed gray line) whose temperature is typically much higher than the lattice temperature ($\sim\qty{1}{\kelvin}$).
+        Below the band edge there is an exponential tail (dashed gray line) due to impurities that permeates far into the gap.
+    }
+    \label{fig:exp:pl:2deg}
 \end{marginfigure}
+
+\Cref{fig:exp:pl:2deg} shows a typical \gls{pl} spectrum obtained on the bare, unbiased \gls{qw} of a doped membrane sample.
+This measurement corresponds to the configuration already discussed in \cref{fig:exp:theory:bandstructure:doped}.
+Electrons require an energy of at least $E_\mr{F}$ and, because of the vanishingly small photon momentum, a momentum of at least $k_\mr{F}$ to be excited into a free state above the Fermi level $\mu$ (dotted gray line).
+Once excited, they quickly relax down to the Fermi edge at $\mu$ from where they can recombine emitting a photon.
+As the Fermi sea is at a finite temperature, the high-energy shoulder of the \gls{pl} spectrum is hence thermally broadened according to the Fermi distribution function of the electron gas (dashed gray line).
+The associated temperature is on the order of a few Kelvin and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}. % TODO: look up exact fit params
+This effect has already been observed by \citet{Pinczuk1984}.
+Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making carrier heating due to high excitation power an unlikely cause.
+
+\Gls{pl} emission is possible also at lower energies as electrons inside the Fermi sea recombine with the free photo-hole that scatters towards the valence band ege.
+The band gap then defines the low-energy shoulder of the \gls{pl} spectrum, below which there are -- ideally -- no states available (dotted gray line).
+However, the \gls{pl} reveals there are indeed free states decaying exponentially into the gap, originating most likely from impurities (dashed gray line).
+Compared to the results of \citet{Kamburov2017}, the \gls{pl} spectra obtained here are much flatter over energy, with the \gls{pl} peak typically close to the middle between gap and Fermi edge.
+Conversely, \Citet{Kamburov2017} found a strong peak at the band gap, indicating that in our samples either hole scattering rates are smaller and recombination more often takes place before the photo-hole fully relaxed to the valence band edge, or holes are more strongly localized and therefore have a wider spread in $k$-space, enabling transitions in a wider range of wave vectors~\cite{Skolnick1987}.
+
+From the width of the \gls{2deg} emission, we can calculate the charge carrier density by relating it to the Fermi energy in two dimensions~\cite{Pinczuk1984,Ihn2009},
+\begin{equation}\label{eq:exp:pl:n}
+    n = \frac{m^{\ast}_{\mr{c}}E_{\mr{F}}}{\pi\hbar^2} = \frac{\mu\Delta E}{\pi\hbar^2},
+\end{equation}
+where $\Delta E$ is the bandwidth of the emission (dashed gray lines in \cref{fig:exp:pl:2deg}) and $\mu = m^{\ast}_{\mr{c}}m^{\ast}_{\mr{hh}}/(m^{\ast}_{\mr{c}} + m^{\ast}_{\mr{hh}})$ is the reduced mass of conduction and valence band.
+For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$. % TODO: compare to growth sheet.
+Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt} by \qty{13}{\milli\electronvolt}. % TODO: cite gap
+\Citet{Descamps2021} hypothesized that the removal of the \ch{GaAs} substrate and the associated change in strain leads to this lowering of the band gap.
+However, this effect was also already observed by \citet{Pinczuk1984} in \enquote{bulk} modulation-doped \ch{GaAs} \glspl{qw}.
+There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation. % TODO: estimate strain effects
 
 \begin{figure}
     \centering
@@ -174,14 +217,15 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_difference_mode}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thevoltage{-1.3}{CM},
+        \thevoltage{-1.3}{CM}, % TODO: check
         \thewavelength{795}.
+        \thepower{10}{\micro}.
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
         \Gls{pl} as function of difference-mode voltage on a large exciton trap.
-        The observed Stark shift follows the expected quadratic dispersion, but is offset by \qty{0.9}{\volt} with respect to zero bias (dash-dotted gray line).
-        Remnant \gls{pl} of the \gls{2deg} from outside the trap region is faintly visible below \qty{-1}{\volt}.
+        The observed Stark shift follows roughly the expected quadratic dispersion, but is offset by \qty{0.8}{\volt} with respect to zero bias.
+        Line cuts in the upper panel are taken at the voltages indicated by dash-dotted lines in the lower.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_difference_mode}
 \end{marginfigure}

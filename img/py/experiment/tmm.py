@@ -411,7 +411,7 @@ with (DATA_PATH / 'absorptance_reflectance.tex').open('w') as file:
         file,
         header=[r'{{$\mathscr{{' + x + r'}}$ (\unit{{\percent}})}}' for x in df.columns],
         column_format='lSS',
-        float_format="%.2f"
+        float_format="%.1f"
     )
 # %%% Optimize barrier thickness
 
@@ -451,7 +451,8 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.set_xlabel(r'$\lambda$ (nm)')
     arr = mpl.patches.FancyArrowPatch((WAV, As[wavelengths == WAV].item()),
                                       (WAV, As_opt[wavelengths == WAV].item()),
-                                      arrowstyle='->', mutation_scale=7.5, zorder=5)
+                                      arrowstyle='->', mutation_scale=7.5, zorder=5,
+                                      linewidth=0.75)
     ax.add_patch(arr)
     ax.annotate(rf'$\times {(As_opt[wavelengths == WAV] / As[wavelengths == WAV]).item():.2g}$',
                 (1, .5), xycoords=arr, ha='left', va='center')

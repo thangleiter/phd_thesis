@@ -17,18 +17,19 @@ In-plane, the masses then become
     m_{\mr{lh},\parallel}^{\ast} &= \frac{1}{\gamma_1 - \gamma_2} = 0.21
 \end{align}
 
-%Applying an out-of-plane electric field across the heterostructure pulls the electron and hole wavefunctions apart, resulting in a smaller overlap and at the same time a larger dipole moment.
-%To assess the optical efficiency of a transition $m\to n$ under these two competing mechanisms, we can compute the oscillator strength~\cite{Davies2009}
-%\begin{equation}\label{eq:exp:oscillator_strength}
-%    f_{nm} = \frac{2\mu\Delta E_{nm}}{\hbar^2} \abs{\!\matrixelement{n}{z}{m}}^2,
-%\end{equation}
-%where $\Delta_{nm}$ is the transition energy.
-%For the interband transitions of interest here, we use the reduced effective mass $\mu\inverse = m_{\mathrm{c}}\inverse + m_{\mathrm{hh}}\inverse$, and consider only transitions with $n=m$ as others are either not allowed or very weak.
-%Finally, there is a certain gauge freedom in \cref{eq:exp:oscillator_strength} by choosing the origin of the coordinate system.
-%For symmetry reasons, we choose the origin to be in the middle of the \gls{qw} and absorb the offset into a constant term, $f_{nm}\rightarrow f_{nm}\gth{0} + \Delta f_{nm}$, where only the latter term depends on the electric field.
-% the actual transition matrix element is in-plane. but the wave function does not change in-plane, so only the reduced overlap contributes.
-
 \clearpage
+
+\section{Photoluminescence in doped \GaAsAlGaAs heterostructures}\label{sec:exp:theory:pl}
+The development of remote-doping techniques enabled the growth of extremely high-mobility \glspl{2deg} in \GaAsAlGaAs heterostructures~\cite{Ihn2009}.
+In these structures, dopants introduced into the \ch{AlGaAs} barrier layer some \qty{50}{\nano\meter} away from the \ch{GaAs} layer and thus spatially separated by a \ch{AlGaAs} spacer layer.
+This reduces Coulomb scattering in the \gls{2deg} induced by the doping and produces very high-quality samples as evidenced for example by the observation of the fractional quantum Hall effect~\cite{Stormer1999a}.
+It is hence not at all surprising that early quantum dot experiments also took place in this well-understood material system.
+While undoped approaches to electron and hole spin qubits in \ch{GaAs} exist~\cite{Harrell1999,Chen2012,Li2014,Tracy2014}, they introduce added complications because of the need to electrostatically induce a \gls{2deg} and reliably contacting it~\cite{Rossler2016}.
+What is more, these issues are exacerbated when the structures need to be thinned down to a membrane~\cite{Descamps2021,Kindel2025}.
+Therefore, to accommodate \glspl{gdqd} next to the \gls{oaqd} in the membrane, the devices measured in \thispart are fabricated on doped heterostructures hosting a \gls{2deg}.
+In the following, I discuss the optical behavior of these structures under illumination.\sidenote{
+    The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2025}.
+}
 
 \begin{marginfigure}
     \centering
@@ -39,9 +40,39 @@ In-plane, the masses then become
         Photonic excitation of an electron-hole pair can only occur at $\abs{k} > k_\mr{F}$ into the free states above $\mu$ due to the small photon momentum.
         Recombination can occur within a bandwidth of $E_\mr{F}(1 + m^\ast_{\mr{c}}/m^\ast_{\mr{hh}})$.
     }
-    \label{fig:exp:theory:bandstructure}
+    \label{fig:exp:theory:bandstructure:doped}
 \end{marginfigure}
 
+Consider an intrinsic, direct-gap, Zinc-blende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature. % TODO: reference
+At the $\Gamma$-point, the conduction band is well approximated by a parabolic band with effective mass $m^\ast_{\mr{c}}/m_{\mr{e}} = 0.067$ and is offset by $E_{\mr{g}}/2$ above the Fermi level $\mu$.
+Offset by the same absolute amount in the opposite direction is the valence band, which close to $\Gamma$ is fourfold degenerate with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
+The third valence band\sidenote{
+    The valence bands are $p$-like and hence contain contributions from three twofold degenerate atomic orbitals.
+}
+is split off by the spin-orbit interaction and lies \qty{0.34}{\electronvolt} below the other valence bands~\cite{Davies2009}.
+Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \gls{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
+
+Doping in sufficiently high concentration then raises the Fermi level from mid-gap to inside the conduction band in the plane of confinement, resulting in a band structure as sketched in \cref{fig:exp:theory:bandstructure:doped}.
+The bands remain parabolic as function of the in-plane wave vector $k_{\parallel}$ close to $\Gamma$.
+The valence band is filled up to $\mu$ where, measured from the conduction band edge, $E_{\mr{c}}(k_{\parallel} = k_{\mr{F}}) = E_{\mr{F}} = \hbar^2 k_{\mr{F}}^2/2m^\ast_{\mr{c}}$ with the Fermi wave vector $k_{\mr{F}}\sim\qty[print-unity-mantissa=false]{1e8}{\per\meter}$.
+Now, absorption of a photon incident on the semiconductor demands conservation of energy and momentum.
+The latter condition implies that hole and electron have close to equal momentum because $k_{\gamma} = 2\pi/\lambda\approx\qty{8e6}{\per\meter}$ is much smaller than $k_{\mr{F}}$.
+Thus, excitation of an electron-hole pair from the valence into the conduction band occurs only for $k\geq k_{\mr{F}}$.
+By contrast, recombination can take place for any $k$ in principle.
+In practice, however, photo-electrons quickly relax down to the Fermi level, and recombination takes place between electrons inside the Fermi sea and photo-holes somewhere in the valence band at $k\leq k_{\mr{F}}$.\sidenote{
+    For sufficiently localized states in real space, a wide range of $k$ states in the valence band is available for recombination as states are extended in $k$-space.
+    We can estimate the localization length required for states up to $k_{\mr{F}}$ to participate by $\Delta x \geq\flatfrac{1}{2\Delta k} = 1/2k_{\mr{F}}\sim\qty{5}{\nano\meter}$ for a typical \gls{2deg}.
+}
+The former condition then implies $E_{\gamma} \geq E_{\mr{g}} + E_{\mr{F}}\left(1 + m^{\ast}_{\mr{c}}/m^{\ast}_{\mr{hh}}\right)$ because no free electron states are available in the conduction band below $\mu$ due to the Pauli exclusion principle and where the term in parentheses is due to the valence band dispersion.
+
+Free electron-hole pairs created by photo-excitation can form hydrogenic bound states due to the Coulomb attraction of their opposite electric charges, \emph{excitons}.
+In two dimensions, this effect is strongly enhanced due to the increased overlap of electron and hole wavefunctions.
+Furthermore, the reduced dimensionality also enhances the binding energy from $\sim\qty{4}{\milli\electronvolt}$ in bulk \ch{GaAs} to up to four times that in \ch{GaAs} \glspl{qw}~\cite{Andreani1990,Gilliland1997}.
+Rather than the continuum of the joint density of states of valence and conduction band discussed previously, excitons are discrete states whose energy is lower than the band gap energy by the binding energy, $E_X = E_{\mr{g}} - E_{\mr{b}}$.
+Next, I discuss the influence of an electric field on excitons.
+For this, we return to undoped structures for simplicity.
+
+\section{The quantum-confined Stark effect}\label{sec:exp:theory:qcse}
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/in_plane_field}
@@ -54,11 +85,28 @@ In-plane, the masses then become
     \label{fig:exp:theory:in_plane_field}
 \end{marginfigure}
 
-\clearpage
+Consider the electron-hole pair in bulk \ch{GaAs} in the co-moving frame of the hole.
+The hole generates the Coulomb potential
+\begin{equation}
+    V(r) = \frac{e}{4\pi\eps_0\eps_{\mr{r}}\abs{r}},
+\end{equation}
+where $\eps_{\mr{r}} = \num{13.3}$ is the relative permittivity of \ch{GaAs} at low temperatures, which attracts the electron by the Coulomb energy $E(r) = qV(r) = -eV(r)$.
+\Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wavefunction sketched in black.
+The electron-hole separation $r$ is shown in units of the exciton Bohr radius in two dimensions~\cite{Olsen2016}
+\begin{equation}
+    a_{\mr{B}} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
+\end{equation}
+with $\mu$ the reduced effective mass of conduction and heavy-hole valence bands.
 
-\section{The \acrlong{qcse}}\label{sec:exp:theory:qcse}
-In order to obtain a qualitative understanding of the influence of an electric field on the \gls{pl}, consider an undoped \ch{GaAs/Al_{0.33}Ga_{0.66}As} \gls{qw} of width $L = \qty{20}{\nano\meter}$.
-We take a 57:43 ratio for the band offsets~\cite{Miller1984a}, resulting in discontinuities of height $\Delta E_{\mr{c}} = \qty{0.24}{\electronvolt}$ and $\Delta E_{\mr{hh}} = \qty{0.18}{\electronvolt}$ at the interfaces for the conduction and the heavy-hole valence band, respectively, and $m^\ast_{\mr{c}}/m_e = \num{0.067}$ and $m^\ast_{\mr{hh}}/m_e = \num{0.34}$ for the effective masses.\sidenote{
+We now apply an electric field $F$.
+This modifies the potential seen by the electron by $erF$ as sketched in green \cref{fig:exp:theory:in_plane_field}.
+Ignoring changes to the electron wavefunction, we can see that the electron can tunnel out of the Coulomb potential, leading to \emph{field-induced ionization} of the exciton.
+Now place the exciton in a \gls{qw} instead of in bulk with the electric field pointed such that it is out-of-plane of the \gls{qw}.
+The field still tilts the potential, but because electrons and holes are confined into a quasi-two-dimensional plane, they cannot escape and hence do not dissociate.
+This is the \gls{qcse}~\cite{Miller1984}.
+
+In order to obtain a qualitative understanding of the \gls{qcse}, consider an undoped \ch{GaAs/Al_{0.33}Ga_{0.66}As} \gls{qw} of width $L = \qty{20}{\nano\meter}$.
+We take a 57:43 ratio for the band offsets~\cite{Miller1984a}, resulting in discontinuities of height $\Delta E_{\mr{c}} = \qty{0.24}{\electronvolt}$ and $\Delta E_{\mr{hh}} = \qty{0.18}{\electronvolt}$ at the interfaces for the conduction and the heavy-hole valence band, respectively, and $m^\ast_{\mr{c}}/m_{\mr{e}} = \num{0.067}$ and $m^\ast_{\mr{hh}}/m_{\mr{e}} = \num{0.34}$ for the effective masses.\sidenote{
     I note that the literature knows many different values for the hole effective mass in the plane of a quantum well, suggesting that one should actually measure it to be confident in the actual value.
 }
 Assuming an infinitely deep well for simplicity, the eigenenergies are
@@ -69,11 +117,12 @@ and the eigenstates are
 \begin{equation}\label{eq:exp:theory:square_well:psi}
     \psi_n(z) = \sqrt{\frac{2}{L}}\sin(\frac{n\pi z}{L}).
 \end{equation}
-The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above the band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable.\sidenote{
+The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above the band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote{
     In a finite well, the wavefunctions decay exponentially into the barriers and result in slightly lower eigenenergies.
     However, the qualitative behavior remains the same.
 }
-The upper panel of \cref{fig:exp:theory:bandstructure} depicts the first two wavefunctions of electrons and holes in a band structure diagram.
+while the first excited state lies \qty{42}{\milli\electronvolt} higher than the ground state.
+The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wavefunctions of electrons and holes in a band structure diagram.
 Due to the symmetry of the confining potential, the wavefunctions are symmetric around the center of the well.
 
 \begin{marginfigure}
@@ -90,7 +139,7 @@ Due to the symmetry of the confining potential, the wavefunctions are symmetric 
         The wavefunctions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
         Excitonic effects are not included.
     }
-    \label{fig:exp:theory:qw_tilted}
+    \label{fig:exp:theory:qcse:bandstructure}
 \end{marginfigure}
 
 Now, applying an out-of-plane electric field tilts the bands and pulls electrons and holes to opposite interfaces of the \gls{qw}.
@@ -100,15 +149,15 @@ The Hamiltonian for the electrons in this case reads~\cite{Rabinovitch1971,Mille
 \end{equation}
 if we take $z$ to be zero at an interface and choose $F \geq 0$.
 Introducing the length and energy scales~\cite{Davies2009}
-\begin{align}
-    \tilde{\eps} &= \left[\frac{\left(\hbar eF\right)^2}{2m^\ast}\right]^{\frac{1}{3}}, \\
-    \tilde{z} &= \left[\frac{\hbar^2}{2m^\ast eF}\right]^{\frac{1}{3}} = \frac{\tilde{\eps}}{eF},
-\end{align}
+\begin{gather}
+    \tilde{\eps} = \left[\frac{\left(\hbar eF\right)^2}{2m^\ast}\right]^{\frac{1}{3}}, \\
+    \tilde{z} = \left[\frac{\hbar^2}{2m^\ast eF}\right]^{\frac{1}{3}} = \frac{\tilde{\eps}}{eF},
+\end{gather}
 and defining
 \begin{equation}
-    Z_n = z/\tilde{z} - \eps_n/\tilde{\eps}
+    Z_n(z) = z/\tilde{z} - \eps_n/\tilde{\eps}
 \end{equation}
-with $\eps_n$ the eigenenergy, the Schrödinger equation becomes~\cite{Rabinovitch1971}
+with $\eps_n$ the eigenvalues of $H$, the Schrödinger equation becomes~\cite{Rabinovitch1971}
 \begin{equation}\label{eq:exp:theory:qcse:se}
     \dv[2]{Z_n}\psi_n(Z_n) = Z_n\psi_n(Z_n).
 \end{equation}
@@ -117,32 +166,23 @@ with $\eps_n$ the eigenenergy, the Schrödinger equation becomes~\cite{Rabinovit
     \psi_n(Z_n) = \alpha_n\Ai(Z_n) + \beta_n\Bi(Z_n),
 \end{equation}
 where $\Ai(z)$ and $\Bi(z)$ are the Airy functions.
-The $\Ai(z)$ and $\Bi(z)$ oscillate for $z < 0$ and decay (grow) exponentially for $z > 0$, respectively.
+$\Ai(z)$ and $\Bi(z)$ oscillate for $z < 0$ and decay (grow) exponentially for $z > 0$, respectively.
 As we assumed infinitely high barriers at $z = 0$ and $z = L$, the boundary conditions impose
 \begin{equation}
-    \psi_n(0) = \psi_n(L) = 0,
+    \psi_n(Z_n(0)) = \psi_n(Z_n(L)) = 0,
 \end{equation}
 which completely determines the eigenstates and -energies.
 For large well widths or fields ($eFL/\eps_n\gg 1$), the second term is exponentially suppressed and the eigenenergies are given by the zeros of $\Ai(Z_n)$.
 For zero field, one recovers the square well solution (\cref{eq:exp:theory:square_well:psi,eq:exp:theory:square_well:eps}).
 
-The finite-field case is shown in the lower panel of \cref{fig:exp:theory:bandstructure} for $F=\qty{5}{\volt\per\micro\meter}$.
+The finite-field case is shown in the lower panel of \cref{fig:exp:theory:qcse:bandstructure} for $F=\qty{5}{\volt\per\micro\meter}$.
 Due to the larger effective mass of the heavy holes, the characteristic length scale $\tilde{z}$ is shorter and hence the corresponding wavefunctions are narrower than their electronic counterparts.
 The ground state transition energy at this field is \qty{10}{\milli\electronvolt} below the gap or \qty{27}{\milli\electronvolt} lower than in the zero-field case.
 
-For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would be required.
-The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wavefunctions is reduced when applying an electric field, pulling the wavefunctions to opposite interfaces.
+For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
+The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wavefunctions is reduced when applying an electric field, pulling the wavefunctions to opposite interfaces~\cite{Miller1984}.
 \Citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite well models.
-
 The latter should have a small effect on the ground state energy as argued above.
-Additionally, tilting the \gls{qw} results in a finite probability for the charge carriers confined within the well to escape as -- for infinitely thick barriers -- lower-lying states become available at some distance away, an effect known as Fowler-Nordheim tunneling.
-%This naturally also leads to a loss in radiative recombination efficiency.
-Following \citer{Davies2009}, we can estimate the tunneling probability as
-\begin{equation}
-    \mathscr{T}_n(F) \approx \exp\left\lbrace -\frac{\sqrt{4 m^\ast (\Delta E_{\mr{c}(\mr{hh})} - \eps_n)^3}}{e F\hbar}\right\rbrace,
-\end{equation}
-where $\Delta E_{\mr{c}(\mr{hh})}$ is the conduction (valence) band offset.
-% TODO: move to figure?
 
 \subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
 % Motivate why we do all this! -> oscillator strength
@@ -152,15 +192,15 @@ However, as we saw before, the field lowers the exciton energy below the \gls{qw
 
 How does this in-plane confinement modify the wavefunction?
 The harmonic potential applies to the center-of-mass wavefunction of the exciton with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$.
-We ignore the relative motion of electron and hole as the optical properties of the exciton are dominated by the behavior at zero separation for $a_{\mr{B}}/\xi < 1$~\cite{Kavokin1994}, where $a_{\mr{B}}=2\pi\eps_0\eps_{\mr{r}}\hbar^2/\mu e^2=\qty{6}{\nano\meter}$ is the exciton Bohr radius in two dimensions with $\epsilon_{\mr{r}} = \num{13.3}$ in \ch{GaAs} at low temperatures and $\mu$ the reduced effective mass~\cite{Olsen2016}, and consider only $\Delta n = 0$ transitions, \ie, electron and hole in the same $z$ quantum state, as $\Delta n\neq 0$ transitions are much weaker~\cite{Davies2009}.
+We ignore the relative motion of electron and hole as the optical properties of the exciton are dominated by the behavior at zero separation for $a_{\mr{B}}/\xi < 1$~\cite{Kavokin1994}, and consider only $\Delta n = 0$ transitions, \ie, electron and hole in the same $z$ quantum state, as $\Delta n\neq 0$ transitions are much weaker~\cite{Davies2009}.
 Let us further initially assume a separable wavefunction and choose cylindrical coordinates according to the symmetry of the potential.
 We then have
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi}
-    \Psi_{np\ell}(z_e, z_h, \rho, \phi) = \psi_n(z_e)\psi_n(z_h)\chi_{p\ell}(\rho)\exp(i\ell\phi)
+    \Psi_{np\ell}(z_{\mr{e}}, z_{\mr{h}}, \rho, \phi) = \psi_n(z_{\mr{e}})\psi_n(z_{\mr{h}})\chi_{p\ell}(\rho)\exp(i\ell\phi)
 \end{equation}
-where~\cite{Karimi2014}\sidenote{
+where\sidenote{
     Note that \citeauthor{Karimi2014} miss a factor $2\pi$ in the normalization.
-}
+}~\cite{Karimi2014}
 \begin{equation}\label{eq:exp:theory:qcse:trap:ho:psi}
     \chi_{p\ell}(\rho, \phi) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right)
 \end{equation}
@@ -172,27 +212,6 @@ The eigenenergies of the harmonic oscillator solution \cref{eq:exp:theory:qcse:t
 \end{equation}
 To account for a finite well width ($L\approx\xi$ in our case), we can to a first approximation perform the replacement $\rho\to r = \sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi}.
 The resulting wavefunction $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
-
-At last, we can use the exciton wavefunction $\Psi_{nm\ell}(r, \phi, z_{\mr{e}}, z_{\mr{h}})$ to estimate the \emph{oscillator strength}, a quantity often quoted in semiconductor spectroscopy.
-The oscillator strength puts in relation the quantum mechanical transition rate with the emission rate of a classical oscillator with frequency $\omega = \Delta E/\hbar$~\cite{Hilborn1982}.
-For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be written as~\cite{Davies2009}
-\begin{equation}\label{eq:exp:oscillator_strength}
-    f_{ji} = \frac{2\mu\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2,
-\end{equation}
-where $\mu$ is the reduced mass of the exciton.
-As the selection rules only allow in-plane dipole transitions for heavy holes, we write~\cite{Kavokin1994}
-\begin{equation}
-    f_{np\ell} = \frac{2\mu\Delta E_{np\ell}}{\hbar^2} J_{r}^2 J_{\phi}^2 \abs{\!\matrixelement*{u_{\mr{c}}}{x}{u_{\mr{hh}}}}^2
-\end{equation}
-for transitions with $\Delta n = \Delta p = \Delta\ell = 0$, where
-\begin{align}
-    J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \\
-    J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi),
-\end{align}
-and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and conduction band, respectively, that we have neglected so far.
-
-$\ell\neq 0$, $\Delta\eps_{p\ell} = 2p = \qty{1}{\milli\electronvolt}$ (\cf~\citer{Descamps2021})
-
 
 \begin{figure}
     \centering
@@ -206,6 +225,25 @@ $\ell\neq 0$, $\Delta\eps_{p\ell} = 2p = \qty{1}{\milli\electronvolt}$ (\cf~\cit
     \label{fig:exp:theory:qcse:wf}
 \end{figure}
 
+At last, we can use the exciton wavefunction $\Psi_{nm\ell}(r, \phi, z_{\mr{e}}, z_{\mr{h}})$ to estimate the \emph{oscillator strength}, a quantity often quoted in semiconductor spectroscopy.
+The oscillator strength puts in relation the quantum mechanical transition rate with the emission rate of a classical oscillator with frequency $\omega = \Delta E/\hbar$ matching the transition energy~\cite{Hilborn1982}.
+For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be written as~\cite{Davies2009}
+\begin{equation}
+    f_{ji} = \frac{2\mu\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2,
+\end{equation}
+where $\mu$ is the reduced mass of the exciton.
+As the selection rules only allow in-plane dipole transitions for heavy holes, we write~\cite{Kavokin1994}
+\begin{equation}\label{eq:exp:oscillator_strength}
+    f_{np\ell} = \frac{2\mu\Delta E_{np\ell}}{\hbar^2} J_{r}^2 J_{\phi}^2 \abs{\!\matrixelement*{u_{\mr{c}}}{x}{u_{\mr{hh}}}}^2
+\end{equation}
+for transitions with $\Delta n = \Delta p = \Delta\ell = 0$, where
+\begin{align}
+    J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
+    J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi}
+\end{align}
+and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and conduction band, respectively, that we have neglected so far.
+From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$!
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E_n = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor two larger than assumed by \citer{Descamps2021}.
 
 \begin{marginfigure}
     \centering
@@ -221,4 +259,29 @@ $\ell\neq 0$, $\Delta\eps_{p\ell} = 2p = \qty{1}{\milli\electronvolt}$ (\cf~\cit
     }
     \label{fig:exp:theory:qcse:field}
 \end{marginfigure}
+
+\Cref{fig:exp:theory:qcse:field} summarizes the \gls{qcse} in a \gls{qw} additionally confined in the plane by local electric fields.
+The top panel shows the exciton transition energy $\Delta E_{np}$ for $\Delta n = \Delta p = 0$ in solid lines.\sidenote{
+    Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduce the dispersion~\cite{Miller1984}.
+}
+The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
+The ground state shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
+Drawn as a dashed line is the induced dipole moment,
+\begin{equation}
+    \bvec{p}_{np}(F) = \pdv{\Delta E_{np}}{F}\ubvec{z},
+\end{equation}
+which is monotonously decreasing for the ground state as function of electric field $F$, consistent with a continuous lowering of energy.
+For the first excited state, the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
+The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
+It decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially themselves, is reduced.
+Higher sublevels of the \gls{qw} ground state (magenta, decreasing saturation) vary slightly in magnitude but show the same qualitative behavior while the first excited \gls{qw} state (green) vanishes at a finite field before increasing again, in line with the behavior of the wavefunction, which has a node close to the center of the \gls{qw}.
+Finally, the green dashed line shows the estimated tunneling probability (\cref{eq:exp:theory:qcse:tunneling}) of the electron excited state.
+Tilting the \gls{qw} results in a finite probability for the charge carriers confined within the well to escape as -- for infinitely thick barriers -- lower-lying states become available at some distance away, an effect known as Fowler-Nordheim tunneling.
+Following \citer{Davies2009}, we can estimate the tunneling probability as
+\begin{equation}\label{eq:exp:theory:qcse:tunneling}
+    \mathscr{T}_n(F) \approx \exp\left\lbrace -\frac{\sqrt{4 m^\ast [\Delta E_{\mr{c}(\mr{hh})} - \eps_n]^3}}{\hbar e F}\right\rbrace,
+\end{equation}
+where $\Delta E_{\mr{c}(\mr{hh})}$ is the conduction (valence) band offset.
+Even at very large fields it remains below \qty{1}{\percent} while the other states have a smaller probability still at below \qty{1}{\permill}, suggesting that tunneling out of the well can be neglected at reasonably small fields.
+For doped structures, this conclusion may need to be revisited as remote dopants pull the conduction band edge down and thus narrow the tunneling barrier to the \gls{qw}.
 

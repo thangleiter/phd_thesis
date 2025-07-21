@@ -375,15 +375,16 @@ for p in range(min(2, P)):
                                         cmap=DIVERGING_CMAP,
                                         # cmap=SEQUENTIAL_CMAP,
                                         norm=norm, levels=21)
-    grid.axes_row[p][0].text(73.5, -8.5, '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
+    grid.axes_row[p][0].text(rho[-1]*1e9 - 1.5, -8.5,
+                             '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
                              fontsize='small', horizontalalignment='right')
-    grid.axes_row[p][1].text(73.5, -8.5, '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
+    grid.axes_row[p][1].text(rho[-1]*1e9 - 1.5, -8.5,
+                             '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
                              fontsize='small', horizontalalignment='right')
 
 cbar = grid.cbar_axes[0].colorbar(img1)
 cbar.set_ticks([])
 cbar.set_label(r'$\Psi_{np\ell}(r, z_{\mathrm{h}})$')
-
 
 grid.axes_row[-1][0].set_ylabel(r'$z_{\mathrm{h}}$ (nm)')
 grid.axes_row[-1][0].set_xlabel(r'$\rho$ (nm)')

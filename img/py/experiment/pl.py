@@ -9,12 +9,13 @@ from collections.abc import Sequence
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy as sc
 import xarray as xr
 from mjolnir.helpers import save_to_hdf5
 from mjolnir.plotting import plot_nd  # noqa
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qcodes.dataset import initialise_or_create_database_at
-from qutil import itertools
+from qutil import const, itertools
 from qutil.plotting import reformat_axis
 from qutil.plotting.colors import (make_sequential_colormap,
                                    RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50, RWTH_COLORS_25)
@@ -34,9 +35,8 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
-LINE_COLORS = [color for name, color in RWTH_COLORS.items() if name not in ('magenta',)]
-LINE_COLORS = [RWTH_COLORS_75['magenta'], RWTH_COLORS_50['magenta']]
 
+LINE_COLORS = [color for name, color in RWTH_COLORS.items() if name not in ('magenta',)]
 PAD = 2
 
 init(MAINSTYLE, backend := 'pgf')
@@ -178,7 +178,13 @@ def print_params(ds, voltages=True, wavelength=True, power=True, tex=False):
         print('No snapshot.')
         return
 
-    active_trap = sample['parameters']['active_trap']['value'].split(',')[0].lstrip('Trap(name=')
+    active_trap = sample['parameters']['active_trap']['value']
+    if isinstance(active_trap, int):
+        active_trap = sample['name'] + f'_trap_{active_trap}'
+    elif len(parts := active_trap.split(',')) > 1:
+        active_trap = parts[0].lstrip('Trap(name=')
+    else:
+        active_trap = active_trap.split()[1]
     gates = sample['submodules']['traps']['channels'][active_trap]['parameters']
 
     if voltages:
@@ -254,7 +260,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     ax.set_xticks([-k_F, 0, k_F], [r'$-k_\mathrm{F}$', '$0$', r'$k_\mathrm{F}$'],
                   verticalalignment='bottom')
-    ax.set_yticks([0, mu], ['', r'$\mu$'])
+    ax.set_yticks([mu], [r'$\mu$'])
     ax.tick_params('x', pad=12.5)
 
     ax.margins(x=0.05)
@@ -305,14 +311,64 @@ if EXTRACT_DATA:
     save_to_hdf5(41, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')
     save_to_hdf5(69, DATA_PATH / 'doped_M1_05_49-2_power.h5')
     save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
+    save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_2deg.h5')
+
+# %%% Unbiased PL
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg.h5')[
+    'ccd_ccd_data_rate_bg_corrected'
+]
+
+txtfontsize = 'small'
+arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_75['black'],
+                  linewidth=0.75, shrinkA=0, shrinkB=0)
+annotate_kwargs = dict(color=RWTH_COLORS_75['black'], fontsize=txtfontsize, arrowprops=arrowprops)
+
+with mpl.style.context(MARGINSTYLE, after_reset=True):
+    fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.5))
+    ax.plot(x := da.ccd_horizontal_axis, y := da.sel(anc_y_axis_steps=-75))
+    spl = sc.interpolate.make_smoothing_spline(x[y != 0], np.log10(abs(y)[y != 0]), lam=5e-11)
+    ax.plot(x, 10**spl(x))
+    ax.axline((1.49554, 23.7781), (1.5008, 90.1246), alpha=0.66, ls='--',
+              color=RWTH_COLORS_75['black'])
+    ax.axline((1.52719, 917.206), (1.52819, 17.8526), alpha=0.66, ls='--',
+              color=RWTH_COLORS_75['black'])
+    ax.axvline(x1 := 1.506, ls=':', color=RWTH_COLORS_75['black'])
+    ax.axvline(x2 := 1.5277, ls=':', color=RWTH_COLORS_75['black'])
+
+    ax.set_yscale('log')
+    ax.set_xlim(1.49, 1.535)
+    ax.set_ylim(8)
+    ax.set_xlabel('$E$ (eV)')
+    ax.set_ylabel('Count rate (cps)')
+    ax2, unit = secondary_axis(ax)
+    ax2.set_xlabel(rf'$\lambda$ ({unit})')
+
+    ax.annotate('', (x1, 15), (x2, 15), **annotate_kwargs)
+    ax.annotate(r'$E_\mathrm{F}\left(1 + \frac{m_{\mathrm{c}}^\ast}{m_{\mathrm{hh}}^\ast}\right)$',
+                ((x2-x1)/2 + x1, 25), ha='center', va='bottom', fontsize=txtfontsize,
+                color=RWTH_COLORS['black'])
+
+    fig.savefig(SAVE_PATH / '2deg_pl.pdf')
+
+m = effective_mass()
+E_F = (x2 - x1) / (1 + np.divide(*m))
+n = m[0]*const.e*E_F/(const.pi*const.hbar**2)
+print(f'n = {n.item()*1e-4:.2g} /cm²')
 # %%% Difference mode
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
     'ccd_ccd_data_bg_corrected_per_second'
-]
+][0]
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig, grid = plot_pl((da,), ylabel=r'$V_{\mathrm{DM}}$ (V)', nrows_ncols=(1, 1))
-    grid[0].axhline(0.90, **sliceprops(color=RWTH_COLORS_50['black'], alpha=0.66))
+    fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 1.8))
+    axs = generate_mosaic(fig, 1, slc=True)
+    img, prefix = plot_pl_slice(fig, axs[0], da, ylabel=r'$V_{\mathrm{DM}}$ (V)',
+                                vertical_target='doped_M1_05_49_2_trap_2_central_difference_mode',
+                                sel=dict(), slice_vals=[0.8, -1.1, -2.3])
+
+    # fig, grid = plot_pl((da,), ylabel=r'$V_{\mathrm{DM}}$ (V)', nrows_ncols=(1, 1))
+    # grid[0].axhline(0.90, **sliceprops(color=RWTH_COLORS_50['black'], alpha=0.66))
+    fig.get_layout_engine().set(w_pad=2/72, h_pad=1/72)
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_difference_mode.pdf')
 
 # %%% Power dependence 2
