@@ -16,6 +16,7 @@
 
 - [ ] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [ ] `\ch{}` line breaks
+- [ ] Use `\subequations{}` where appropriate
 
 ## Content
 - [ ] Acknowledgements / author contributions
@@ -40,6 +41,10 @@
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 
 ### FF
+- [ ] I/we
+- [ ] Hilbert space calculations in appendix
+- [ ] Parse text for "second order not implemented"
+- [ ] Figures, tables, listings
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
 - [ ] split up `prr.tex`
