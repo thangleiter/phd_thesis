@@ -54,6 +54,7 @@
 
 ## Layout
 - [ ] Tune the bibliography style
+    - [ ] arXiv IDs
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
 - [ ] Part title page design
