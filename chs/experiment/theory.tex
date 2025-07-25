@@ -273,7 +273,7 @@ Drawn as a dashed line is the induced dipole moment,
 which is monotonously decreasing for the ground state as function of electric field $F$, consistent with a continuous lowering of energy.
 For the first excited state, the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
 The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
-It decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially themselves, is reduced.
+It decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially into the \gls{qw} themselves, is reduced.
 Higher sublevels of the \gls{qw} ground state (magenta, decreasing saturation) vary slightly in magnitude but show the same qualitative behavior while the first excited \gls{qw} state (green) vanishes at a finite field before increasing again, in line with the behavior of the wavefunction, which has a node close to the center of the \gls{qw}.
 Finally, the green dashed line shows the estimated tunneling probability (\cref{eq:exp:theory:qcse:tunneling}) of the electron excited state.
 Tilting the \gls{qw} results in a finite probability for the charge carriers confined within the well to escape as -- for infinitely thick barriers -- lower-lying states become available at some distance away, an effect known as Fowler-Nordheim tunneling.
@@ -285,3 +285,16 @@ where $\Delta E_{\mr{c}(\mr{hh})}$ is the conduction (valence) band offset.
 Even at very large fields it remains below \qty{1}{\percent} while the other states have a smaller probability still at below \qty{1}{\permill}, suggesting that tunneling out of the well can be neglected at reasonably small fields.
 For doped structures, this conclusion may need to be revisited as remote dopants pull the conduction band edge down and thus narrow the tunneling barrier to the \gls{qw}.
 
+\section{Excitonic complexes}\label{sec:exp:theory:complexes}
+If we liken the exciton to a Hydrogen atom\sidenote{Although positronium is a better analogon.} with modified binding energy $E_{\mr{b}}$ and Bohr radius $a_{\mr{B}}$, it is natural to expect molecules and ions of these states to exist.
+The simplest molecule, or excitonic complex, is the biexciton, the analog of the \ch{H2} molecule.
+Following a similar argument as for the binding energy of the exciton, we expect that of the biexciton to also increase as the dimensionality of the system is reduced.
+Indeed, in \glspl{qw} it has been measured to be on the order of \qty{1}{\milli\electronvolt}, \numrange{3}{4} times larger than in 3D~\cite{Miller1985a}, although also negative binding energies, corresponding to an anti-bonding state, have been reported~\cite{Kako2004,Dialynas2008,Amloy2011}.
+A signature of biexcitons is the power dependence of their \gls{pl}.
+The steady-state density of electron-hole pairs, which is proportional to the exciton density at low enough powers, is proportional to the irradiance, \ie, the excitation power.
+Conversely, the probability to form a two-body bound state is proportional to the square of the density of those bodies and we hence expect the power under the \gls{pl} peak of a biexciton emission to be proportional to the square of the laser power used to excite the sample.
+
+Besides the neutral biexciton, there exist also charged states consisting of three or more bodies.
+Here, additional electrons or holes bind to an exciton, forming negative or positively charged trions similar to \ch{H-} or \ch{He+} ions.
+Naturally, this process is favored when a large number of surplus charge carriers is present in the sample such as is the case in doped \glspl{qw} with a \gls{2deg} (or \gls{2dhg}).
+In these structures, the trion binding energy has been found to also be on the order of \qty{1}{\milli\electronvolt}~\cite{Esser2000,Bar-Joseph2005}.

@@ -22,9 +22,9 @@ from qutil.plotting.colors import (make_sequential_colormap,
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init,  # noqa
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, TOTALWIDTH, PATH, init,  # noqa
                     secondary_axis, apply_sketch_style, E_AlGaAs, effective_mass, sliceprops)
-from experiment.plotting import browse_db  # noqa
+from experiment.plotting import browse_db, print_params  # noqa
 
 EXTRACT_DATA = os.environ.get('EXTRACT_DATA', False)
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
@@ -43,47 +43,77 @@ init(MAINSTYLE, backend := 'pgf')
 # %% Functions
 
 
-def generate_mosaic(fig, n: int, slc: bool = False, cb: Literal[False] | str = 'each',
-                    slc_height_ratio: float = 1/4, cb_width_ratio: float = 1/20, **kwargs):
-    if slc:
-        mosaic = [list(itertools.chain.from_iterable(zip([f'slc_{i}' for i in range(n)],
-                                                         ['.']*2)))]
-        height_ratios = [slc_height_ratio, 1 - slc_height_ratio]
-    else:
-        mosaic = []
-        height_ratios = [1]
+def generate_mosaic(fig, nrows_ncols: tuple[int, int], slc: bool = False,
+                    cb: Literal[False, 'each', 'single', 'row'] = 'each',
+                    slc_height_ratio: float = 1/4, cb_width_ratio: float = 1/20,
+                    sharex: Literal['col'] | bool = False, sharey: Literal['row'] | bool = False,
+                    **kwargs):
+    nr, nc = nrows_ncols
+    mosaic = np.empty(((1 + slc)*nr, nc), dtype='<U6')
+    for i in range(nr):
+        for j in range(nc):
+            if slc:
+                mosaic[2*i, j] = f'slc_{i}{j}'
+                mosaic[2*i + 1, j] = f'img_{i}{j}'
+            else:
+                mosaic[i, j] = f'img_{i}{j}'
 
     match cb:
         case 'each':
-            if slc:
-                mosaic = [list(itertools.chain.from_iterable(zip([f'slc_{i}' for i in range(n)],
-                                                                 ['.']*2)))]
-            else:
-                mosaic = []
-            mosaic.append(list(itertools.chain.from_iterable(zip([f'img_{i}' for i in range(n)],
-                                                                 [f'cb_{i}' for i in range(n)]))))
-            width_ratios = [1 - cb_width_ratio, cb_width_ratio]*n
+            width_ratios = [1 - cb_width_ratio, cb_width_ratio]*nc
+            for j in range(nc):
+                mosaic = np.insert(mosaic, 2*j+1, '.', axis=1)
+                for i in range(nr):
+                    mosaic[2*i+1 if slc else i, 2*j+1] = f'cb_{i}{j}'
+        case 'row':
+            width_ratios = [1 - cb_width_ratio]*nc + [cb_width_ratio]
+            mosaic = np.insert(mosaic, nc, '.', axis=1)
+            for i in range(nr):
+                mosaic[2*i+1 if slc else i, -1] = f'cb_{i}{nc-1}'
         case 'single':
-            if slc:
-                mosaic = [[f'slc_{i}' for i in range(n)] + ['.']]
-            else:
-                mosaic = []
-            mosaic.append([f'img_{i}' for i in range(n)] + ['cb_0'])
-            width_ratios = [1 - cb_width_ratio]*n + [cb_width_ratio]
-        case False:
-            if slc:
-                mosaic = [[f'slc_{i}' for i in range(n)]]
-            else:
-                mosaic = []
-            mosaic.append([f'img_{i}' for i in range(n)])
-            width_ratios = [1]*n
+            width_ratios = [1 - cb_width_ratio]*nc + [cb_width_ratio]
+            mosaic = np.insert(mosaic, nc, f'cb_0{nc-1}', axis=1)
+        case _:
+            width_ratios = [1]*nc
+
+    if slc:
+        height_ratios = [slc_height_ratio, 1 - slc_height_ratio]*nr
+    else:
+        height_ratios = [1]*nr
 
     axs_dct = fig.subplot_mosaic(mosaic, height_ratios=height_ratios, width_ratios=width_ratios,
                                  **kwargs)
-    axs = []
-    for i in range(n):
-        axs.append({itm: axs_dct.get(f'{itm}_{i}', None)
-                    for itm in {'img', 'cb' if cb else 'img', 'slc' if slc else 'img'}})
+    axs = np.empty((nr, nc), dtype=object)
+    for i in range(nr):
+        for j in range(nc):
+            axs[i, j] = {itm: axs_dct.get(f'{itm}_{i}{j}', None)
+                         for itm in {'img', 'cb' if cb else 'img', 'slc' if slc else 'img'}}
+
+    if sharex in (True, 'col'):
+        axall = []
+        for j in range(nc):
+            for i, _ in enumerate(ax := list(itertools.chain(*(
+                    [a for k, a in ax.items() if not k.startswith('cb') and k != '.']
+                    for ax in axs[:, j]
+            )))):
+                if i > 0:
+                    ax[i].sharex(ax[i-1])
+            axall.append(ax)
+            if sharex is True:
+                axall[j][0].sharex(axall[j-1][-1])
+    if sharey in (True, 'row'):
+        for typ in ('img',) + (('slc',) if slc else ()):
+            axall = []
+            for i in range(nr):
+                for j, _ in enumerate(ax := list(itertools.chain(*(
+                        [a for k, a in ax.items() if k.startswith(typ)]
+                        for ax in axs[i, :]
+                )))):
+                    if j > 0:
+                        ax[j].sharey(ax[j-1])
+                axall.append(ax)
+                if sharey is True:
+                    axall[i][0].sharey(axall[i-1][-1])
 
     return axs
 
@@ -158,67 +188,17 @@ def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
         )
     axs['slc'].grid(axis='y')
     axs['slc'].tick_params(pad=tick_pad)
-    axs['slc'].sharex(axs['img'])
     axs['slc'].xaxis.set_tick_params(which="both", labelbottom=False)
     prefix = reformat_axis(axs['slc'], da.sel(sel, method='nearest'), 'cps', 'y')
     ax2, unit = secondary_axis(axs['slc'])
     ax2.set_xlabel(rf'$\lambda$ ({unit})', labelpad=tick_pad)
     ax2.tick_params(pad=tick_pad)
 
-    return img, prefix
+    return img, prefix, ax2
 
 
-def print_params(ds, voltages=True, wavelength=True, power=True, tex=False):
-    print('Measurement:', ds.ds_name)
-    s = json.loads(ds.attrs['snapshot'])
-    try:
-        ep = s['station']['instruments']['excitation_path']['parameters']
-        sample = s['station']['instruments'][ds.sample_name]
-    except KeyError:
-        print('No snapshot.')
-        return
-
-    active_trap = sample['parameters']['active_trap']['value']
-    if isinstance(active_trap, int):
-        active_trap = sample['name'] + f'_trap_{active_trap}'
-    elif len(parts := active_trap.split(',')) > 1:
-        active_trap = parts[0].lstrip('Trap(name=')
-    else:
-        active_trap = active_trap.split()[1]
-    gates = sample['submodules']['traps']['channels'][active_trap]['parameters']
-
-    if voltages:
-        for typ in ('guard', 'central'):
-            for mode in ('difference_mode', 'common_mode'):
-                if f'{active_trap}_{typ}_{mode}' in gates:
-                    if tex:
-                        print(r'\thevoltage{', end='')
-                    else:
-                        print(f'Trap {active_trap} {typ} {mode.replace("_", " ")}: ', end='')
-                    print(f"{gates[f'{active_trap}_{typ}_{mode}']['value']:.2f}",
-                          end='' if tex else '\n')
-                    if tex:
-                        print('}{' + typ[0] + ''.join(m[0] for m in mode.split('_')) + '}')
-    if wavelength:
-        if tex:
-            print(r'\thewavelength{', end='')
-        else:
-            print('Excitation wavelength: ', end='')
-        print(f"{ep['wavelength']['value']:.1f}", end='' if tex else '\n')
-        if tex:
-            print('}')
-    if power:
-        if tex:
-            print(r'\thepower{', end='')
-        else:
-            print('Excitation power at sample: ', end='')
-        print(f"{ep['power_at_sample']['value']*1e6:.2g}", end='' if tex else '\n')
-        if tex:
-            print(r'}{\micro}')
-
-
-def fit_peak():
-    pass
+def parabola(x, a, b, c):
+    return a*(x - b)**2 + c
 
 
 # %% 2DEG PL sketch
@@ -351,9 +331,16 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig.savefig(SAVE_PATH / '2deg_pl.pdf')
 
 m = effective_mass()
-E_F = (x2 - x1) / (1 + np.divide(*m))
-n = m[0]*const.e*E_F/(const.pi*const.hbar**2)
-print(f'n = {n.item()*1e-4:.2g} /cm²')
+mu = 1/(1/m).sum()
+E_F = (x2 - x1) / (1 + np.divide(*m)).item()
+n = m[0, 0]*const.e*E_F/(const.pi*const.hbar**2)
+k_F = np.sqrt(2*np.pi*n)
+S = const.hbar**2*k_F**2/(2*mu)/const.e
+print(f'n = {n*1e-4:.2g} /cm²')
+print(f'k_F = {k_F:.2g} /m')
+print(f'E_F = {E_F:.2g} meV')
+# Delalande 87
+print(f'Stokes shift = {S:.2g} meV')
 # %%% Difference mode
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
     'ccd_ccd_data_bg_corrected_per_second'
@@ -361,17 +348,27 @@ da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 1.8))
-    axs = generate_mosaic(fig, 1, slc=True)
-    img, prefix = plot_pl_slice(fig, axs[0], da, ylabel=r'$V_{\mathrm{DM}}$ (V)',
-                                vertical_target='doped_M1_05_49_2_trap_2_central_difference_mode',
-                                sel=dict(), slice_vals=[0.8, -1.1, -2.3])
+    axs = generate_mosaic(fig, (1, 1), slc=True, slc_height_ratio=1/3, sharex=True)
+    img, prefix, ax2 = plot_pl_slice(
+        fig, axs[0, 0], da, ylabel=r'$V_{\mathrm{DM}}$ (V)',
+        vertical_target='doped_M1_05_49_2_trap_2_central_difference_mode',
+        sel=dict(), slice_vals=[V0 := 0.75, -1.1, -2.3]
+    )
 
-    # fig, grid = plot_pl((da,), ylabel=r'$V_{\mathrm{DM}}$ (V)', nrows_ncols=(1, 1))
-    # grid[0].axhline(0.90, **sliceprops(color=RWTH_COLORS_50['black'], alpha=0.66))
+    E0 = 1.5375
+    axs[0, 0]['img'].plot(
+        parabola(
+            da.doped_M1_05_49_2_trap_2_central_difference_mode, a := -3.5e-3, V0, E0
+        ),
+        da.doped_M1_05_49_2_trap_2_central_difference_mode,
+        ls='--', lw=0.75, color=RWTH_COLORS_75['black'], alpha=0.66
+    )
+    axs[0, 0]['img'].set_xlim(1.48, 1.54)
+
     fig.get_layout_engine().set(w_pad=2/72, h_pad=1/72)
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_difference_mode.pdf')
 
-# %%% Power dependence 2
+# %%% Power dependence
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_power.h5')[
     'ccd_ccd_data_bg_corrected_per_second'
 ]
@@ -405,7 +402,7 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_power.pdf')
 
 # %%% Multiplets
-# // Use browse_db alternatively //
+# // Interactive exploration. Use browse_db alternatively //
 # Gate voltage dependence
 # fig, ax, sliders = plot_nd(140, slider_scale={'excitation_path_power_at_sample': 'log'})
 # Power dependence
@@ -414,40 +411,75 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
 ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
 print_params(ds)
 
-fig = plt.figure(layout='constrained', figsize=(TEXTWIDTH, 2.2))
-axs = generate_mosaic(fig, 2, slc=True, cb='each', cb_width_ratio=1/15)
+fig = plt.figure(layout='constrained', figsize=(TOTALWIDTH, 5))
+axs = generate_mosaic(fig, (3, 4), slc=True, cb='row', cb_width_ratio=1/15, slc_height_ratio=1/3,
+                      sharex=True, sharey='row')
 
-img, prefix = plot_pl_slice(
-    fig, axs[0],
-    ds['ccd_ccd_data_rate_bg_corrected'],
-    ylabel=r'$V_{\mathrm{T}}$ (V)',
-    vertical_target='doped_M1_05_49_2_trap_2_central_top',
-    sel=dict(excitation_path_wavelength=800, excitation_path_power_at_sample=17.7e-9),
-    slice_vals=[-2.02],
-    tick_pad=PAD,
-)
-img.colorbar.set_label('')
-axs[0]['img'].set_xlim(1.475, 1.50)
+Vs = [-1.92, -1.98, -2.02, -2.08]
+Ps = [7e-9, 16e-9, 35e-9]
+wavs = [790, 805, 815]
 
-img, prefix = plot_pl_slice(
-    fig, axs[1],
-    ds['ccd_ccd_data_rate_bg_corrected'],
-    ylabel=r'$P_{\mathrm{exc}}$ (nW)',
-    scaley=1e9,
-    vertical_target='excitation_path_power_at_sample',
-    sel=dict(excitation_path_wavelength=790, doped_M1_05_49_2_trap_2_central_top=-1.92),
-    slice_vals=[35.4e-9],
-    tick_pad=PAD,
-)
+for i, (ax, wav) in enumerate(zip(axs, wavs)):
+    da = ds['ccd_ccd_data_rate_bg_corrected'].sel(
+        excitation_path_wavelength=wav,
+        doped_M1_05_49_2_trap_2_central_top=Vs,
+        method='nearest'
+    )
+    slc_max = da.sel(excitation_path_power_at_sample=Ps, method='nearest').max()
+    norm = mpl.colors.Normalize(vmin=0, vmax=da.max())
 
-axs[1]['img'].set_xlim(1.475, 1.50)
-axs[1]['img'].set_yscale('log')
-axs[1]['img'].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
-axs[1]['img'].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
+    for j, (a, V) in enumerate(zip(ax, Vs)):
+        img, prefix, ax2 = plot_pl_slice(
+            fig, a,
+            ds['ccd_ccd_data_rate_bg_corrected'],
+            scaley=1e9,
+            vertical_target='excitation_path_power_at_sample',
+            sel=dict(excitation_path_wavelength=wav, doped_M1_05_49_2_trap_2_central_top=V),
+            slice_vals=Ps,
+            slice_scales=[5, 2.2, 1],
+            norm=norm,
+        )
+        a['img'].set_xlim(1.477, 1.497)
+        a['img'].set_yscale('log')
+        a['img'].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
+        a['img'].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
+        a['img'].xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator())
+        a['img'].set_xlabel(None)
+        a['img'].label_outer()
 
-fig.get_layout_engine().set(w_pad=1/72, h_pad=0/72, hspace=0, wspace=0)
+        a['slc'].label_outer()
+        a['slc'].text(0.025, 0.265, r'$\times 5$', color='tab:blue', verticalalignment='center',
+                      horizontalalignment='left', transform=a['slc'].transAxes, fontsize='small')
+        a['slc'].text(0.025, 0.515, r'$\times 2.2$', color='tab:green', verticalalignment='center',
+                      horizontalalignment='left', transform=a['slc'].transAxes, fontsize='small')
+
+        ax2.set_xlabel(None)
+        ax2.set_xticks([825, 830, 835, 840])
+
+        if j == 0:
+            match backend:
+                case 'pgf':
+                    a['img'].set_ylabel(rf'$\lambda_{{\mathrm{{exc}}}} = \qty{{{wav}}}{{nm}}$')
+                case _:
+                    a['img'].set_ylabel(rf'$\lambda_{{\mathrm{{exc}}}} = {wav}$ nm')
+        if i == 0:
+            match backend:
+                case 'pgf':
+                    a['slc'].set_title(rf'$V_{{\mathrm{{T}}}} = \qty{{{V:.2f}}}{{\volt}}$',
+                                       fontsize='medium')
+                case _:
+                    a['slc'].set_title(rf'$V_{{\mathrm{{T}}}} = {V:.2f}$ V',
+                                       fontsize='medium')
+        else:
+            ax2.xaxis.set_tick_params(which="both", labeltop=False)
+
+    a['slc'].set_ylim(0)
+
+fig.text(0.5, -0.03, r'$E$ (eV)', fontsize='medium')
+fig.supxlabel(r'$\lambda$ (nm)', y=1.05, va='top', fontsize='medium')
+fig.supylabel(r'$P$ (nW)', x=-0.04, fontsize='medium')
+fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
-
 # %% Fig F10
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'fig_F10.db')

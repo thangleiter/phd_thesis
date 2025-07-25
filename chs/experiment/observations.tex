@@ -177,13 +177,13 @@ Once excited, they quickly relax down to the Fermi edge at $\mu$ from where they
 As the Fermi sea is at a finite temperature, the high-energy shoulder of the \gls{pl} spectrum is hence thermally broadened according to the Fermi distribution function of the electron gas (dashed gray line).
 The associated temperature is on the order of a few Kelvin and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}. % TODO: look up exact fit params
 This effect has already been observed by \citet{Pinczuk1984}.
-Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making carrier heating due to high excitation power an unlikely cause.
+Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making carrier heating due to high excitation power an unlikely cause~\cite{Ulbrich1973}.
 
 \Gls{pl} emission is possible also at lower energies as electrons inside the Fermi sea recombine with the free photo-hole that scatters towards the valence band ege.
 The band gap then defines the low-energy shoulder of the \gls{pl} spectrum, below which there are -- ideally -- no states available (dotted gray line).
 However, the \gls{pl} reveals there are indeed free states decaying exponentially into the gap, originating most likely from impurities (dashed gray line).
 Compared to the results of \citet{Kamburov2017}, the \gls{pl} spectra obtained here are much flatter over energy, with the \gls{pl} peak typically close to the middle between gap and Fermi edge.
-Conversely, \Citet{Kamburov2017} found a strong peak at the band gap, indicating that in our samples either hole scattering rates are smaller and recombination more often takes place before the photo-hole fully relaxed to the valence band edge, or holes are more strongly localized and therefore have a wider spread in $k$-space, enabling transitions in a wider range of wave vectors~\cite{Skolnick1987}.
+Conversely, \Citet{Kamburov2017} observed a strong peak at the band gap, indicating that in our samples either hole scattering rates are smaller and recombination more often takes place before the photo-hole fully relaxed to the valence band edge, or holes are more strongly localized and therefore have a wider spread in $k$-space, enabling transitions in a wider range of wave vectors~\cite{Skolnick1987}.
 
 From the width of the \gls{2deg} emission, we can calculate the charge carrier density by relating it to the Fermi energy in two dimensions~\cite{Pinczuk1984,Ihn2009},
 \begin{equation}\label{eq:exp:pl:n}
@@ -194,7 +194,8 @@ For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\squar
 Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt} by \qty{13}{\milli\electronvolt}. % TODO: cite gap
 \Citet{Descamps2021} hypothesized that the removal of the \ch{GaAs} substrate and the associated change in strain leads to this lowering of the band gap.
 However, this effect was also already observed by \citet{Pinczuk1984} in \enquote{bulk} modulation-doped \ch{GaAs} \glspl{qw}.
-There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation. % TODO: estimate strain effects
+There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation.
+Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
 
 \begin{figure}
     \centering
@@ -214,24 +215,6 @@ There, the authors put forth a renormalization of the band gap due to many-body 
 
 \begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_difference_mode}
-    \caption[
-        \sampleid{Doped M1_05_49-2}
-        \thevoltage{-1.3}{CM}, % TODO: check
-        \thewavelength{795}.
-        \thepower{10}{\micro}.
-        \protect\newline
-        \imgsource{img/py/experiment/pl.py}
-    ]{
-        \Gls{pl} as function of difference-mode voltage on a large exciton trap.
-        The observed Stark shift follows roughly the expected quadratic dispersion, but is offset by \qty{0.8}{\volt} with respect to zero bias.
-        Line cuts in the upper panel are taken at the voltages indicated by dash-dotted lines in the lower.
-    }
-    \label{fig:exp:pl:doped_M1_05_49-2_difference_mode}
-\end{marginfigure}
-
-\begin{marginfigure}
-    \centering
     \includegraphics{img/pdf/experiment/fig_F10_positioning}
     \caption[
         \sampleid{Fig F10}
@@ -241,6 +224,44 @@ There, the authors put forth a renormalization of the band gap due to many-body 
     ]{}
     \label{fig:exp:pl:fig_F10_positioning}
 \end{marginfigure}
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_difference_mode}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-1.3}{CM},
+        \thewavelength{795}.
+        \thepower{10}{\micro}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        \Gls{pl} as function of difference-mode voltage on a large exciton trap.
+        The observed Stark shift follows roughly the expected quadratic dispersion, but is offset by \qty{0.75}{\volt} with respect to zero bias.
+        Dashed gray line is a guide to the eye of a parabola with curvature \qty{3.5}{\milli\electronvolt\per\volt\squared}.
+        Line cuts in the upper panel are taken at the voltages indicated by dash-dotted lines in the lower.
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_difference_mode}
+\end{marginfigure}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-1.3}{CM},
+        \thepower{1}{\micro}.
+        \protect\newline
+        \imgsource{img/py/experiment/ple.py}
+    ]{
+        \Gls{pl} (solid lines) and \gls{ple} (dashed lines) for different voltages $V_{\mr{DM}}$ (\cf \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode}).
+        The \gls{ple} data points correspond to \gls{pl} spectra integrated up to the laser line.
+        Arrows indicate the Stokes shift $\Delta E_{\mr{S}}$, which is approximately constant (although assignment of the gap peak is difficult for \qtylist{1.57;0}{\volt}) until the \gls{2deg} is fully depleted and the exciton resonance shifts quadratically with the electric field.
+        The features at \qty{1.555}{\electronvolt} do not shift with the voltage and are thus likely unrelated to the trap.
+        For the largest voltage, there is another peak at \qty{1.51}{\electronvolt} whose origin is unclear.
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_ple}
+\end{figure}
 
 \begin{figure}
     \centering
@@ -253,11 +274,15 @@ There, the authors put forth a renormalization of the band gap due to many-body 
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
+        \Gls{pl} as function of excitation power $P$ plotted on a logarithmic color scale.
+        Two qualitatively different regimes are indicated by dashed gray lines as guides to the eye; below \qty{10}{\nano\watt}, the main peak displays a blueshift logarithmic in excitation power, $E = \qty{1.485}{\electronvolt} + \qty{5}{\milli\electronvolt}\log_{10} P$.
+        Above, the blueshift diminishes significantly.
+        Three additional lines, indicated by arrows, with varying power dispersion appear.
     }
     \label{fig:}
 \end{figure}
 
-\begin{figure}
+\begin{figure*}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_multiplets}
     \caption[
@@ -265,6 +290,11 @@ There, the authors put forth a renormalization of the band gap due to many-body 
         \thevoltage{0}{B}.
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
-    ]{}
-    \label{fig:}
-\end{figure}
+    ]{
+        Wide-range \gls{pl} parameter sweep on a large exciton trap plotted as function of excitation power and detection energy.
+        Rows are data for three different excitation wavelengths, columns for four different top gate voltages $V_{\mr{T}}$ and share color and line cut scales.
+        Line cuts are taken at the indicated positions of $P = \qtylist{7;16;35}{\nano\watt}$ and drawn scaled by the fraction of excitation power with respect to \qty{35}{\nano\watt}.
+        % Atomic step fluctuations would shift by ~900 μeV (a = 5.6 Α)
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_multiplets}
+\end{figure*}
