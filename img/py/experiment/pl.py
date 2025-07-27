@@ -1,6 +1,5 @@
 # %% Imports
 import os
-import json
 import pathlib
 import sys
 from typing import Literal
@@ -150,7 +149,7 @@ def plot_pl(das, ylabel='', scaley=1, norm=None, figsize=None, aspect=False,
 
 def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
                   vertical_target=None, ylabel='', scaley=1, slice_scales: Sequence[...] = None,
-                  norm=None, tick_pad=3.5, **line_kwargs):
+                  norm=None, tickpad=None, labelpad=None, **line_kwargs):
 
     if norm is None:
         norm = mpl.colors.Normalize(vmin=0)
@@ -171,15 +170,13 @@ def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
     for slice_val, color in zip(slice_vals, LINE_COLORS):
         axs['img'].axhline(scaley*y.sel({vertical_target: slice_val}, method='nearest'),
                            **(sliceprops(color) | line_kwargs))
-    axs['img'].set_xlabel('$E$ (eV)', labelpad=tick_pad)
-    axs['img'].set_ylabel(ylabel, labelpad=tick_pad)
-    axs['img'].tick_params(pad=tick_pad)
+    axs['img'].set_xlabel('$E$ (eV)', labelpad=labelpad)
+    axs['img'].set_ylabel(ylabel, labelpad=labelpad)
 
     if axs.get('cb', None) is not None:
         cb = fig.colorbar(img, cax=axs['cb'], extend='neither')
         prefix = reformat_axis(cb, da.sel(sel, method='nearest'), 'cps', 'c')
-        cb.set_label(f'Count rate ({prefix}cps)', labelpad=tick_pad)
-        cb.ax.tick_params(pad=tick_pad)
+        cb.set_label(f'Count rate ({prefix}cps)', labelpad=labelpad)
 
     for slice_val, slice_scale, color in zip(slice_vals, slice_scales, LINE_COLORS):
         ln, = axs['slc'].plot(
@@ -187,12 +184,15 @@ def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
             color=color, **line_kwargs
         )
     axs['slc'].grid(axis='y')
-    axs['slc'].tick_params(pad=tick_pad)
     axs['slc'].xaxis.set_tick_params(which="both", labelbottom=False)
     prefix = reformat_axis(axs['slc'], da.sel(sel, method='nearest'), 'cps', 'y')
     ax2, unit = secondary_axis(axs['slc'])
-    ax2.set_xlabel(rf'$\lambda$ ({unit})', labelpad=tick_pad)
-    ax2.tick_params(pad=tick_pad)
+    ax2.set_xlabel(rf'$\lambda$ ({unit})', labelpad=labelpad)
+
+    if tickpad is not None:
+        axs['img'].tick_params(pad=tickpad)
+        axs['slc'].tick_params(pad=tickpad)
+        ax2.tick_params(pad=tickpad)
 
     return img, prefix, ax2
 
@@ -347,8 +347,8 @@ da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
 ][0]
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 1.8))
-    axs = generate_mosaic(fig, (1, 1), slc=True, slc_height_ratio=1/3, sharex=True)
+    fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 2))
+    axs = generate_mosaic(fig, (1, 1), slc=True, slc_height_ratio=1/4, sharex=True)
     img, prefix, ax2 = plot_pl_slice(
         fig, axs[0, 0], da, ylabel=r'$V_{\mathrm{DM}}$ (V)',
         vertical_target='doped_M1_05_49_2_trap_2_central_difference_mode',
@@ -492,27 +492,26 @@ fit = ds.anc_y_axis_position[ds.anc_y_axis_steps >= 10].polyfit('anc_y_axis_step
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 1.7))
-    axs = generate_mosaic(fig, 1, slc=True, cb=False, slc_height_ratio=1/3.5)
+    axs = generate_mosaic(fig, (1, 1), slc=True, cb=False, slc_height_ratio=1/3.5)
 
-    img, prefix = plot_pl_slice(fig, axs[0], ds['ccd_ccd_data_rate_bg_corrected'],
-                                ylabel='Positioner steps', sel=dict(), slice_vals=[26, 45],
-                                slice_scales=[20, 1], tick_pad=PAD, linewidth=.75)
+    img, prefix, ax2 = plot_pl_slice(fig, axs[0, 0], ds['ccd_ccd_data_rate_bg_corrected'],
+                                     ylabel='Positioner steps', sel=dict(), slice_vals=[26, 45],
+                                     slice_scales=[20, 1], linewidth=.75, labelpad=2, tickpad=1.7)
 
-    axs[0]['slc'].annotate(r'$\times 20$', (1.475, 300), color=LINE_COLORS[0])
-    axs[0]['img'].set_ylim(top=53)
-    ax2y = axs[0]['img'].secondary_yaxis(
+    axs[0, 0]['slc'].annotate(r'$\times 20$', (1.475, 300), color=LINE_COLORS[0],
+                              horizontalalignment='right')
+    axs[0, 0]['img'].set_ylim(top=53)
+    ax2y = axs[0, 0]['img'].secondary_yaxis(
         -0.275,
         functions=(lambda x: x*fit.polyfit_coefficients[0].item()*1e3,
                    lambda x: x/fit.polyfit_coefficients[0].item()/1e3)
     )
-    ax2y.tick_params(pad=PAD)
-    ax2y.set_ylabel(r'$\Delta x$ (μm)', labelpad=PAD)
+    ax2y.set_ylabel(r'$\Delta x$ (μm)', labelpad=2)
 
-    cax = axs[0]['img'].inset_axes([0.05, 0.075, 0.05, 0.85])
+    cax = axs[0, 0]['img'].inset_axes([0.05, 0.075, 0.05, 0.85])
     cb = fig.colorbar(img, cax=cax)
     prefix = reformat_axis(cb, ds['ccd_ccd_data_rate_bg_corrected'], 'cps', 'c')
-    cb.set_label(f'Rate ({prefix}cps)', labelpad=PAD)
-    cb.ax.tick_params(pad=PAD)
+    cb.set_label(f'Rate ({prefix}cps)')
 
     fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
     fig.savefig(SAVE_PATH / 'fig_F10_positioning.pdf')

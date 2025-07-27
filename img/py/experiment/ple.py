@@ -5,13 +5,15 @@ import sys
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
 import numpy as np
 from mjolnir.helpers import save_to_hdf5
 from mjolnir.plotting import plot_nd  # noqa
 from qcodes.dataset import initialise_or_create_database_at, load_by_run_spec
-from qutil import const, itertools
+from qutil import const
 from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75,
                                    make_sequential_colormap)
+import xarray as xr
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
@@ -30,13 +32,12 @@ with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
 
 LINE_COLORS = [color for name, color in RWTH_COLORS.items() if name not in ('magenta',)]
-PAD = 2
 
 init(MAINSTYLE, backend := 'pgf')
 # %% Functions
 
 
-def extract_data(V_DM, E0):
+def extract_data(ds, V_DM, E0):
     da = ds.ccd_ccd_data_bg_corrected_per_second.sel(
         doped_M1_05_49_2_trap_2_central_difference_mode=V_DM,
         method='nearest'
@@ -51,6 +52,27 @@ def extract_data(V_DM, E0):
     da_ple = da_ple[~da_ple.isnull()]
 
     return da_pl, da_ple
+
+
+def analyze_ple(ds):
+    da = ds.ccd_ccd_data_bg_corrected_per_second.where(
+        ds.ccd_horizontal_axis + 1e-3
+        < const.h*const.c/(1e-9*ds.excitation_path_wavelength_constant_power*const.e)
+    )
+    integral = da[..., 1:].values + da[..., :-1].values
+    integral *= np.diff(da.ccd_horizontal_axis)
+    integral = np.nansum(integral, axis=-1) / 2
+    integral[integral == 0] = np.nan
+
+    return xr.DataArray(
+        integral,
+        coords={'excitation_path_wavelength_constant_power':
+                ds.excitation_path_wavelength_constant_power,
+                'doped_M1_05_49_2_trap_2_central_difference_mode':
+                ds.doped_M1_05_49_2_trap_2_central_difference_mode},
+        name='ple_power',
+        attrs={'units': 'eV/s'}
+    )
 
 
 def annotate_shift(ax, E_1, E_1p, hs=(325, 450), xytext=None):
@@ -73,7 +95,20 @@ def annotate_shift(ax, E_1, E_1p, hs=(325, 450), xytext=None):
                 verticalalignment='center', horizontalalignment='center', fontsize='small')
 
 
-# %%
+def fit_esser(da, p0):
+    def exciton(E, I_X, E_X, Γ_X):
+        return I_X / np.cosh((E - E_X)/Γ_X)
+
+    def trion(E, I_T, E_T, T, c_1=15, eps_1=1.1e-3*const.e):
+        M_X = m[0, 0] + m[1, 0]
+        eps = E_T - E
+        MQ = c_1*np.exp(eps/eps_1)
+        return I_T*MQ*np.exp(-eps*m[0, 0]/(const.k*T*M_X))*E[E >= eps]
+
+    return np.convolve(exciton(), trion(), mode='same')
+
+
+# %% Load data
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'membrane_doped_M1_05_49-2.db')
 
@@ -81,22 +116,26 @@ if EXTRACT_DATA:
                  parameters='ccd_ccd_data_bg_corrected_per_second')
 
 ds = load_by_run_spec(captured_run_id=60).to_xarray_dataset('ccd_ccd_data_bg_corrected_per_second')
-
-# %% PLE
+# %% Plot
+m = effective_mass()
+# %%% Line traces
 # browse_db(60, max=500, vertical_target='wavelength')
+# browse_db(60, vmax=350, horizontal_target='path_wavelength', vertical_target='difference_mode')
 
-V_DM = [2.65, 1.57, 0, -1.57, -2.65]
-E0 = [1.516, 1.5266, 1.528, 1.5165, 1.5]
+da_ple_full = analyze_ple(ds)
+V_DM = [2.65, 1.678, 0.6, -1.57, -2.65]
 
-fig, axs_pl = plt.subplots(nrows=len(V_DM), sharex=True, sharey=True, figsize=(TEXTWIDTH, 3.5))
+fig, axs_pl = plt.subplots(nrows=len(V_DM), sharex=True, sharey=True, figsize=(TEXTWIDTH, 3.75))
 axs_ple = []
 ax2, unit = secondary_axis(axs_pl[0])
 
-for i, ((da_pl, da_ple), color, ax_pl) in enumerate(zip(
-        itertools.starmap(extract_data, zip(V_DM, E0)),
-        RWTH_COLORS,
-        axs_pl
-)):
+for i, (v, color, ax_pl) in enumerate(zip(V_DM, RWTH_COLORS, axs_pl)):
+    da_pl = ds.ccd_ccd_data_bg_corrected_per_second.sel(
+        excitation_path_wavelength_constant_power=795,
+        doped_M1_05_49_2_trap_2_central_difference_mode=v,
+        method='nearest'
+    )
+    da_ple = da_ple_full.sel(doped_M1_05_49_2_trap_2_central_difference_mode=v, method='nearest')
 
     ax_pl.plot(da_pl.ccd_horizontal_axis, da_pl, color=RWTH_COLORS[color])
     axs_ple.append(ax_ple := ax_pl.twinx())
@@ -114,7 +153,7 @@ for i, ((da_pl, da_ple), color, ax_pl) in enumerate(zip(
             s = rf'$V_{{\mathrm{{DM}}}} = \qty{{{V:.2f}}}{{\volt}}$'
         case _:
             s = rf'$V_{{\mathrm{{DM}}}} = {V:.2f}$ V'
-    if i < len(E0) - 1:
+    if i < len(V_DM) - 1:
         ax_pl.tick_params(which='both', bottom=False, labelbottom=False)
     else:
         s = s.replace('=', '=$\n$\\quad')
@@ -128,12 +167,12 @@ E_1 = 1.5112
 E_1p = 1.5383
 annotate_shift(axs_pl[0], [E_1], [E_1p], (350, 475))
 
-E_1 = 1.5209
+E_1 = 1.5192
 E_1p = 1.5479
 annotate_shift(axs_pl[1], [E_1], [E_1p])
 
-E_1 = 1.5194
-E_1p = 1.5461
+E_1 = 1.5180
+E_1p = 1.5457
 annotate_shift(axs_pl[2], [E_1], [E_1p])
 
 E_1 = 1.511
@@ -156,10 +195,103 @@ fig.text(0.98, 0.5, 'PLE power (eV/s)', horizontalalignment='right', verticalali
 fig.tight_layout(h_pad=0)
 fig.subplots_adjust(hspace=0, left=0.15, right=0.86)
 
-fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple.pdf')
+fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_cuts.pdf')
 
-# %% Only at large shift (unused)
-da_pl, da_ple = extract_data(-2.65, 1.5)
+# %%% Full map
+da_pl = ds.ccd_ccd_data_bg_corrected_per_second.sel(
+    excitation_path_wavelength_constant_power=795)
+
+fig, axs = plt.subplots(ncols=4, layout='constrained', figsize=(TEXTWIDTH, 2),
+                        gridspec_kw=dict(width_ratios=[15, 1, 15, 1]))
+
+ax = axs[0]
+img = ax.pcolormesh(da_pl.ccd_horizontal_axis,
+                    da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_pl * 1e-3,
+                    cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True)
+
+cb = fig.colorbar(img, cax=axs[1], label='PL count rate (kcps)')
+ax.set_xlim(const.lambda2eV(np.array([840, 809])*1e-9))
+ax.set_xlabel(r'$E_{\mathrm{det}}$ (eV)')
+ax.set_ylabel(r'$V_{\mathrm{DM}}$ (V)')
+ax2, unit = secondary_axis(ax, 'eV')
+ax2.set_xlabel(rf'$\lambda_{{\mathrm{{det}}}}$ ({unit})')
+
+ax = axs[2]
+img = ax.pcolormesh(const.lambda2eV(da_ple_full.excitation_path_wavelength_constant_power*1e-9),
+                    da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_ple_full.T,
+                    cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True)
+
+cb = fig.colorbar(img, cax=axs[3], label='PLE power (eV/s)')
+ax.set_xlabel(r'$E_{\mathrm{exc}}$ (eV)')
+ax2, unit = secondary_axis(ax, 'eV')
+ax2.set_xlabel(rf'$\lambda_{{\mathrm{{exc}}}}$ ({unit})')
+
+for v in V_DM:
+    axs[0].axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.5, alpha=0.5))
+    axs[2].axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.5, alpha=0.5))
+
+fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_wide.pdf')
+
+# %%%% margin size
+
+with mpl.style.context(MARGINSTYLE, after_reset=True):
+    fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.7))
+
+    img = ax.pcolormesh(
+        const.lambda2eV(da_ple_full.excitation_path_wavelength_constant_power*1e-9),
+        da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+        da_ple_full.T,
+        cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True
+    )
+
+    cb = fig.colorbar(img, label='PLE power (eV/s)')
+    ax.set_xticks([1.525, 1.550])
+    ax.set_xlabel(r'$E_{\mathrm{exc}}$ (eV)')
+    ax.set_ylabel(r'$V_{\mathrm{DM}}$ (V)')
+    ax2, unit = secondary_axis(ax, 'eV')
+    ax2.set_xlabel(rf'$\lambda_{{\mathrm{{exc}}}}$ ({unit})')
+
+    for v in V_DM:
+        ax.axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.5, alpha=0.5))
+
+    fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple.pdf')
+
+# %%%% single wavelength
+da = ds.ccd_ccd_data_bg_corrected_per_second.sel(ccd_horizontal_axis=[1.51342, 1.51897, 1.52275],
+                                                 method='nearest')
+
+fig = plt.figure(figsize=(TEXTWIDTH, 1.6))
+grid = ImageGrid(fig, 111, (1, da.shape[-1]), cbar_mode='single', aspect=False,
+                 axes_pad=0.04, cbar_pad=0.05)
+
+norm = mpl.colors.Normalize(vmin=0, vmax=da.max().item())
+for i in range(da.shape[-1]):
+    img = grid[i].pcolormesh(const.lambda2eV(da.excitation_path_wavelength_constant_power*1e-9),
+                             da.doped_M1_05_49_2_trap_2_central_difference_mode,
+                             da[..., i].T,
+                             norm=norm, cmap=SEQUENTIAL_CMAP, rasterized=True)
+
+    E = da.ccd_horizontal_axis[i].item()
+    match backend:
+        case 'pgf':
+            s = rf'$E_{{\mathrm{{det}}}} = \qty{{{E:.3f}}}{{\electronvolt}}$'
+        case _:
+            s = rf'$E_{{\mathrm{{det}}}} = {E:.3f}$ eV'
+    grid[i].annotate(s, (1.557, -2.4), horizontalalignment='right', fontsize='small')
+    ax2, unit = secondary_axis(grid[i], 'eV')
+    if i == da.shape[-1] // 2:
+        ax2.set_xlabel(rf'$\lambda_{{\mathrm{{exc}}}}$ ({unit})')
+        grid[i].set_xlabel(r'$E_{\mathrm{exc}}$ (eV)')
+
+cb = grid.cbar_axes[0].colorbar(img, label='PLE count rate (cps)')
+grid[0].set_ylabel(r'$V_{\mathrm{DM}}$ (V)')
+
+fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_delta.pdf')
+
+# %%% Only at large shift (unused)
+da_pl, da_ple = extract_data(ds, -2.65, 1.5)
 
 fig, ax_pl = plt.subplots(layout='constrained', figsize=(TEXTWIDTH, 2))
 ax_pl.plot(da_pl.ccd_horizontal_axis, da_pl, color=RWTH_COLORS['blue'])

@@ -128,10 +128,6 @@ def print_params(ds, voltages=True, wavelength=True, power=True, tex=False):
             print(r'}{\micro}')
 
 
-def fit_peak():
-    pass
-
-
 @_cleanup_figs
 def _open_figure(run_id, bm, txt, **plot_nd_kwargs):
     input_str = ""
