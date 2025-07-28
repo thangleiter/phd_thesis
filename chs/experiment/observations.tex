@@ -221,7 +221,12 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
         \thewavelength{795}.
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
-    ]{}
+    ]{
+        \Gls{pl} of the unbiased \gls{qw} as the laser is stepped across a bottom gate.
+        The line traces in the upper panel are taken at the positions indicated by dash-dotted lines.
+        Positioner steps are converted to distance using a linear fit of the positioner readout after the initial hysteresis has worn off (about \num{10} steps).
+        The Fermi edge shows a slight redshift when on top of the gate in this sample.
+    }
     \label{fig:exp:pl:fig_F10_positioning}
 \end{marginfigure}
 
@@ -246,7 +251,7 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
 
 \begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple_margin}
     \caption[
         \sampleid{Doped M1_05_49-2}
         \thevoltage{-1.3}{CM},
@@ -255,12 +260,26 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
         \imgsource{img/py/experiment/ple.py}
     ]{
     }
-    \label{fig:exp:pl:doped_M1_05_49-2_ple}
+    \label{fig:exp:pl:doped_M1_05_49-2_ple_margin}
 \end{marginfigure}
 
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple_wide}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-1.3}{CM},
+        \thepower{1}{\micro}.
+        \protect\newline
+        \imgsource{img/py/experiment/ple.py}
+    ]{
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_ple_wide}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple_delta}
     \caption[
         \sampleid{Doped M1_05_49-2}
         \thevoltage{-1.3}{CM},
@@ -289,6 +308,20 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
         For the largest voltage, there is another peak at \qty{1.51}{\electronvolt} whose origin is unclear.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_ple_cuts}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-1.3}{CM},
+        \thepower{1}{\micro}.
+        \protect\newline
+        \imgsource{img/py/experiment/ple.py}
+    ]{
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_ple}
 \end{figure}
 
 \begin{figure}

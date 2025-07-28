@@ -103,6 +103,8 @@ def E_AlGaAs(x):
 
 def effective_mass(lh=False):
     # masses from 10.1103/PhysRevB.29.7085
+    # Although 10.1038/s41598-017-05139-w find a much larger electron mass in QWs
+    # due to non-parabolicities: m_ep = 0.169
     m_ep = 0.0665
     m_hp = 0.34
     m_lp = 0.094

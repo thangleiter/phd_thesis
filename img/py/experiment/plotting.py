@@ -37,12 +37,14 @@ def plot_nd(ds_or_id, **kwargs):
         cm = json.loads(ds.attrs['custom_metadata'])
         print(s := f'Run {ds.run_id}: {ds.attrs["ds_name"]}')
         print('='*len(s))
-        print('\nMeasurement initialization settings')
-        print('-'*len(s))
-        pprint.pprint(cm['measurement_initialization_settings'])
-        print('\nMeasurement parameter contexts')
-        print('-'*len(s))
-        pprint.pprint(cm['measurement_parameter_contexts'])
+        if mis := cm.get('measurement_initialization_settings', False):
+            print('\nMeasurement initialization settings')
+            print('-'*len(s))
+            pprint.pprint(mis)
+        if mpc := cm.get('measurement_parameter_contexts', False):
+            print('\nMeasurement parameter contexts')
+            print('-'*len(s))
+            pprint.pprint(mpc)
 
     return plotting.plot_nd(ds, **kwargs), ds
 
