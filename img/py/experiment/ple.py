@@ -286,6 +286,38 @@ for E in E_dets:
 
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_wide.pdf')
 
+# %%%% In single plot
+E_exc = const.lambda2eV(da_ple_full.excitation_path_wavelength_constant_power*1e-9)
+E_det = da_pl.ccd_horizontal_axis
+
+fig, ax = plt.subplots(layout='constrained')
+green_cmap = make_sequential_colormap('green', endpoint='blackwhite').reversed()
+
+img = ax.pcolormesh(E_det[E_det < E_exc.min()],
+                    da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_pl[:, E_det < E_exc.min()] * 1e-3,
+                    cmap=green_cmap, vmin=0, rasterized=True)
+cb = fig.colorbar(img, label='PL count rate (cps)')
+ax.pcolormesh(E_det[E_det >= E_exc.min()],
+              da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
+              da_pl[:, E_det >= E_exc.min()] * 1e-3,
+              alpha=0.5, cmap=green_cmap, vmin=0, rasterized=True)
+img = ax.pcolormesh(E_exc[E_exc > E_det.max().item()],
+                    da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_ple_full.T[:, E_exc > E_det.max().item()],
+                    cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True)
+cb = fig.colorbar(img, label='PLE power (eV/s)')
+ax.pcolormesh(E_exc[E_exc <= E_det.max().item()],
+              da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+              da_ple_full.T[:, E_exc <= E_det.max().item()],
+              alpha=0.5, cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True)
+
+ax.set_xlabel('$E$ (eV)')
+ax.set_ylabel(r'$V_{\mathrm{DM}}$ (V)')
+ax2, unit = secondary_axis(ax, 'eV')
+ax2.set_xlabel(rf'$\lambda$ ({unit})')
+
+# fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_single.pdf')
 # %%%% margin size
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
