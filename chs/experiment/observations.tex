@@ -172,10 +172,12 @@ Performing the inverse Fourier transform by means of \cref{eq:exp:tmm:gauss:x} w
 
 \Cref{fig:exp:pl:2deg} shows a typical \gls{pl} spectrum obtained on the bare, unbiased \gls{qw} of a doped membrane sample.
 This measurement corresponds to the configuration already discussed in \cref{fig:exp:theory:bandstructure:doped}.
-Electrons require an energy of at least $E_\mr{F}$ and, because of the vanishingly small photon momentum, a momentum of at least $k_\mr{F}$ to be excited into a free state above the Fermi level $\mu$ (dotted gray line).
+Due to the Pauli exclusion principle, electrons require an energy of at least $E_\mr{F}\left(1 + m_{\mr{c}}^\ast/m_{\mr{hh}}^\ast\right)$ above the band gap and, because of the vanishingly small photon momentum, a momentum of at least $k_\mr{F}$ to be excited into a free state above the Fermi level $\mu$ (dotted gray line).\sidenote{
+    This is known as the Burstein-Moss shift~\cite{Burstein1954,Moss1954}.
+}
 Once excited, they quickly relax down to the Fermi edge at $\mu$ from where they can recombine emitting a photon.
 As the Fermi sea is at a finite temperature, the high-energy shoulder of the \gls{pl} spectrum is hence thermally broadened according to the Fermi distribution function of the electron gas (dashed gray line).
-The associated temperature is on the order of a few Kelvin and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}. % TODO: look up exact fit params
+The associated temperature is around \qty{1.5}{\kelvin} and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}.
 This effect has already been observed by \citet{Pinczuk1984}.
 Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making carrier heating due to high excitation power an unlikely cause~\cite{Ulbrich1973}.
 
@@ -183,15 +185,25 @@ Like in those experiments, the temperature of the Fermi edge does not vary signi
 The band gap then defines the low-energy shoulder of the \gls{pl} spectrum, below which there are -- ideally -- no states available (dotted gray line).
 However, the \gls{pl} reveals there are indeed free states decaying exponentially into the gap, originating most likely from impurities (dashed gray line).
 Compared to the results of \citet{Kamburov2017}, the \gls{pl} spectra obtained here are much flatter over energy, with the \gls{pl} peak typically close to the middle between gap and Fermi edge.
-Conversely, \Citet{Kamburov2017} observed a strong peak at the band gap, indicating that in our samples either hole scattering rates are smaller and recombination more often takes place before the photo-hole fully relaxed to the valence band edge, or holes are more strongly localized and therefore have a wider spread in $k$-space, enabling transitions in a wider range of wave vectors~\cite{Skolnick1987}.
+Conversely, \citet{Kamburov2017} observed a strong peak at the band gap,\sidenote{
+    \Cf also \citet{Gabbay2008}, who observe all but no \gls{fes} in samples nominally comparable to ours.
+}
+indicating that in our samples holes are more strongly localized and therefore have a wider spread in $k$-space, enabling transitions in a wider range of wave vectors~\cite{Skolnick1987}.
+This would in turn imply increased alloy disorder or interface roughness~\cite{Gabbay2008}, an observation we shall come back to in \cref{ch:exp:observations}. % TODO: ref multiplets
 
 From the width of the \gls{2deg} emission, we can calculate the charge carrier density by relating it to the Fermi energy in two dimensions~\cite{Pinczuk1984,Ihn2009},
 \begin{equation}\label{eq:exp:pl:n}
     n = \frac{m^{\ast}_{\mr{c}}E_{\mr{F}}}{\pi\hbar^2} = \frac{\mu\Delta E}{\pi\hbar^2},
 \end{equation}
 where $\Delta E$ is the bandwidth of the emission (dashed gray lines in \cref{fig:exp:pl:2deg}) and $\mu = m^{\ast}_{\mr{c}}m^{\ast}_{\mr{hh}}/(m^{\ast}_{\mr{c}} + m^{\ast}_{\mr{hh}})$ is the reduced mass of conduction and valence band.
-For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$. % TODO: compare to growth sheet.
-Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt} by \qty{13}{\milli\electronvolt}. % TODO: cite gap
+For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$ or, equivalently, $E_{\mr{F}} = \qty{18}{\milli\electronvolt}$ and $k_{\mr{F}} = \qty{1.8e8}{\per\meter}$.
+Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.4e11}{\per\square\centi\meter}$, shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
+    Note that the carrier density obtained thus does not vary significantly with excitation power, ruling out photo-doping as a source of the discrepancy.
+    See \cref{ch:app:exp:observations} for a measurement of the \gls{2deg} \gls{pl} as function of power.
+}
+Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt}~\cite{Vurgaftman2001} by \qty{13}{\milli\electronvolt}.\sidenote{
+    The redshift is in fact larger still due to the confinement energy of the \gls{qw}, estimated to be $\qty{17}{\milli\electronvolt}$ in \cref{sec:exp:theory:qcse}.
+}
 \Citet{Descamps2021} hypothesized that the removal of the \ch{GaAs} substrate and the associated change in strain leads to this lowering of the band gap.
 However, this effect was also already observed by \citet{Pinczuk1984} in \enquote{bulk} modulation-doped \ch{GaAs} \glspl{qw}.
 There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation.

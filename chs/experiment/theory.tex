@@ -54,7 +54,7 @@ Introducing confinement in one direction, for example by doping a \GaAsAlGaAs he
 
 Doping in sufficiently high concentration then raises the Fermi level from mid-gap to inside the conduction band in the plane of confinement, resulting in a band structure as sketched in \cref{fig:exp:theory:bandstructure:doped}.
 The bands remain parabolic as function of the in-plane wave vector $k_{\parallel}$ close to $\Gamma$.
-The valence band is filled up to $\mu$ where, measured from the conduction band edge, $E_{\mr{c}}(k_{\parallel} = k_{\mr{F}}) = E_{\mr{F}} = \hbar^2 k_{\mr{F}}^2/2m^\ast_{\mr{c}}$ with the Fermi wave vector $k_{\mr{F}}\sim\qty[print-unity-mantissa=false]{1e8}{\per\meter}$.
+The conduction band is filled up to $\mu$ where, measured from the conduction band edge, $E_{\mr{c}}(k_{\parallel} = k_{\mr{F}}) = E_{\mr{F}} = \hbar^2 k_{\mr{F}}^2/2m^\ast_{\mr{c}}$ with the Fermi wave vector $k_{\mr{F}}\sim\qty[print-unity-mantissa=false]{1e8}{\per\meter}$.
 Now, absorption of a photon incident on the semiconductor demands conservation of energy and momentum.
 The latter condition implies that hole and electron have close to equal momentum because $k_{\gamma} = 2\pi/\lambda\approx\qty{8e6}{\per\meter}$ is much smaller than $k_{\mr{F}}$.
 Thus, excitation of an electron-hole pair from the valence into the conduction band occurs only for $k\geq k_{\mr{F}}$.
@@ -64,11 +64,17 @@ In practice, however, photo-electrons quickly relax down to the Fermi level, and
     We can estimate the localization length required for states up to $k_{\mr{F}}$ to participate by $\Delta x \geq\flatfrac{1}{2\Delta k} = 1/2k_{\mr{F}}\sim\qty{5}{\nano\meter}$ for a typical \gls{2deg}.
 }
 The former condition then implies $E_{\gamma} \geq E_{\mr{g}} + E_{\mr{F}}\left(1 + m^{\ast}_{\mr{c}}/m^{\ast}_{\mr{hh}}\right)$ because no free electron states are available in the conduction band below $\mu$ due to the Pauli exclusion principle and where the term in parentheses is due to the valence band dispersion.
+Many-body effects due to localized photo-holes scattering with electrons of the Fermi sea can lead to a strong enhancement of luminescence intensity at the Fermi edge, the so-called \gls{fes}~\cite{Mahan1967,Mahan1967a,Skolnick1987}.
+The intensity of the \gls{pl} at the Fermi edge relative to recombination at the band edge ($k_{\parallel} = 0$) is thus an indicator of the \gls{qw} interface quality and degree of alloy fluctuations, both of which lead to hole localization~\cite{Melin2000,Gabbay2008}.
 
 Free electron-hole pairs created by photo-excitation can form hydrogenic bound states due to the Coulomb attraction of their opposite electric charges, \emph{excitons}.
 In two dimensions, this effect is strongly enhanced due to the increased overlap of electron and hole wavefunctions.
 Furthermore, the reduced dimensionality also enhances the binding energy from $\sim\qty{4}{\milli\electronvolt}$ in bulk \ch{GaAs} to up to four times that in \ch{GaAs} \glspl{qw}~\cite{Andreani1990,Gilliland1997}.
 Rather than the continuum of the joint density of states of valence and conduction band discussed previously, excitons are discrete states whose energy is lower than the band gap energy by the binding energy, $E_X = E_{\mr{g}} - E_{\mr{b}}$.
+In doped \glspl{qw} hosting a \gls{2deg}, the free carriers can screen the exciton binding energy and lead to an ionized electron-hole plasma~\cite{Palmieri2020}.
+This is known as the insulator-to-metal (Mott) transition in semiconductors~\cite{Mott1968}.
+Competing with this are so-called Mahan excitons~\cite{Mahan1967,Mahan1967a} that give rise to the \gls{fes}~\cite{Schleife2011}.
+
 Next, I discuss the influence of an electric field on excitons.
 For this, we return to undoped structures for simplicity.
 
@@ -117,7 +123,7 @@ and the eigenstates are
 \begin{equation}\label{eq:exp:theory:square_well:psi}
     \psi_n(z) = \sqrt{\frac{2}{L}}\sin(\frac{n\pi z}{L}).
 \end{equation}
-The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above the band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote{
+The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above (below) the conduction (valence) band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote{
     In a finite well, the wavefunctions decay exponentially into the barriers and result in slightly lower eigenenergies.
     However, the qualitative behavior remains the same.
 }

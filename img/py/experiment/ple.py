@@ -331,7 +331,7 @@ ax.set_ylabel(r'$V_{\mathrm{DM}}$ (V)')
 ax2, unit = secondary_axis(ax, 'eV')
 ax2.set_xlabel(rf'$\lambda$ ({unit})')
 
-# fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_single.pdf')
+fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_single.pdf')
 # %%%% margin size
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
@@ -355,53 +355,6 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
         ax.axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.75, alpha=0.66))
 
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_margin.pdf')
-
-# %%% Only at large shift (unused)
-da_pl, da_ple = extract_data(ds, -2.65, 1.5)
-
-fig, ax_pl = plt.subplots(layout='constrained', figsize=(TEXTWIDTH, 2))
-ax_pl.plot(da_pl.ccd_horizontal_axis, da_pl, color=RWTH_COLORS['blue'])
-ax_pl.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator())
-ax_pl.set_ylim(0)
-
-ax2, unit = secondary_axis(ax_pl)
-
-ax_ple = ax_pl.twinx()
-ax_ple.plot(const.lambda2eV(da_ple.excitation_path_wavelength_constant_power*1e-9), da_ple,
-            color=RWTH_COLORS_75['blue'], ls='--')
-ax_ple.set_ylim(0)
-
-E_1 = 1.4863
-E_2 = 1.4900
-E_1p = 1.5269
-E_2p = 1.5306
-
-ax_pl.axvline(E_1, ls=':', color=RWTH_COLORS['magenta'], alpha=0.66)
-ax_pl.axvline(E_2, ls=':', color=RWTH_COLORS['green'], alpha=0.66)
-ax_pl.axvline(E_1p, ls=':', color=RWTH_COLORS['magenta'], alpha=0.66)
-ax_pl.axvline(E_2p, ls=':', color=RWTH_COLORS['green'], alpha=0.66)
-
-ax_pl.annotate('', (E_1, 275), (E_1p, 275),
-               arrowprops=arrowprops | dict(color=RWTH_COLORS['magenta']))
-ax_pl.annotate('', (E_2, 200), (E_2p, 200),
-               arrowprops=arrowprops | dict(color=RWTH_COLORS['green']))
-
-match backend:
-    case 'pgf':
-        ax_pl.annotate(rf'$\Delta E = \qty{{{(E_2p-E_2)*1e3:.1f}}}{{\milli\electronvolt}}$',
-                       ((E_1 + E_2 + E_1p + E_2p)/4, (200 + 275)/2), verticalalignment='center',
-                       horizontalalignment='center')
-    case _:
-        ax_pl.annotate(r'$\Delta E = $' + f'{(E_2p-E_2)*1e3:.1f} meV',
-                       ((E_1 + E_2 + E_1p + E_2p)/4, (200 + 275)/2), verticalalignment='center',
-                       horizontalalignment='center')
-
-ax2.set_xlabel(rf'$\lambda$ ({unit})')
-ax_pl.set_xlabel('$E$ (eV)')
-ax_pl.set_ylabel('PL count rate (cps)')
-ax_ple.set_ylabel('PLE power (eV/s)')
-
-fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple_single.pdf')
 
 # %% One big plot
 V_DM = [2.65, 1.678, 0.6, -1.57, -2.65]
