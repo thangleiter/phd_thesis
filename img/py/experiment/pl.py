@@ -406,15 +406,14 @@ annotate_kwargs = dict(
 )
 
 with mpl.style.context(MAINSTYLE, after_reset=True):
-    fig, grid = plot_pl((da,), scaley=1e9, ylabel='$P$ (nW)', nrows_ncols=(1, 1), cbar_size='4%',
-                        cbar_pad=0.1, norm=mpl.colors.AsinhNorm(linear_width=10))
+    fig, grid, cbs = plot_pl((da,), scaley=1e9, ylabel='$P$ (nW)', nrows_ncols=(1, 1),
+                             cbar_size='4%', cbar_pad=0.1, norm=mpl.colors.AsinhNorm(10))
     ax = grid[0]
 
     ax.set_yscale('log')
     ax.set_xlim(1.472, 1.497)
     ax.yaxis.minorticks_on()
-    cbar = ax.get_children()[0].colorbar
-    cbar.set_ticks(np.delete(cbar.get_ticks(), 0))
+    cbs[0].set_ticks(np.delete(cbs[0].get_ticks(), 0))
 
     # Guides to the eye
     # ax.plot([1.4805, 1.4855, 1.487], [1, 7, 1000], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
