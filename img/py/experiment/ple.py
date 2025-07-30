@@ -127,6 +127,10 @@ if EXTRACT_DATA:
 # %% Plot
 m = effective_mass()
 ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ple.h5')
+
+arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
+                  linewidth=0.75, shrinkA=0, shrinkB=0)
+annotate_kwargs = dict(color=RWTH_COLORS_75['black'], arrowprops=arrowprops)
 # %%% Line traces
 # browse_db(60, max=500, vertical_target='wavelength')
 # browse_db(60, vmax=350, horizontal_target='path_wavelength', vertical_target='difference_mode')
@@ -237,6 +241,16 @@ for i, ax in enumerate(grid):
 
     for v in V_DM:
         ax.axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.75, alpha=0.66))
+
+grid[0].annotate('', (1.5285, 0.07), (1.5285 - 0.008, 0.07),
+                 arrowprops=arrowprops | dict(arrowstyle='->'))
+grid[0].annotate('', (1.5380, 0.07), (1.5380 + 0.008, 0.07),
+                 arrowprops=arrowprops | dict(arrowstyle='->'))
+
+grid[0].annotate('', (1.5361, 0.37), (1.5361 - 0.008, 0.37),
+                 arrowprops=arrowprops | dict(arrowstyle='->'))
+grid[0].annotate('', (1.5463, 0.37), (1.5463 + 0.008, 0.37),
+                 arrowprops=arrowprops | dict(arrowstyle='->'))
 
 cb = grid.cbar_axes[0].colorbar(img, label='PLE count rate (cps)')
 
@@ -361,9 +375,6 @@ E_1 = 1.4863
 E_2 = 1.4900
 E_1p = 1.5269
 E_2p = 1.5306
-arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
-                  linewidth=0.75, shrinkA=0, shrinkB=0)
-annotate_kwargs = dict(color=RWTH_COLORS_75['black'], arrowprops=arrowprops)
 
 ax_pl.axvline(E_1, ls=':', color=RWTH_COLORS['magenta'], alpha=0.66)
 ax_pl.axvline(E_2, ls=':', color=RWTH_COLORS['green'], alpha=0.66)
@@ -548,8 +559,15 @@ for i, ax in enumerate(axs[:-1]):
     for v in V_DM:
         ax.axhline(v, **sliceprops(RWTH_COLORS_50['black'], linewidth=0.75, alpha=0.66))
 
-axs[0].annotate('', (1.5285, 0.07), (1.5285 - 0.008, 0.07), **arrowprops)
-axs[0].annotate('', (1.5380, 0.07), (1.5380 + 0.008, 0.07), **arrowprops)
+axs[0].annotate('', (1.5285, 0.07), (1.5285 - 0.008, 0.07),
+                arrowprops=arrowprops | dict(arrowstyle='->'))
+axs[0].annotate('', (1.5380, 0.07), (1.5380 + 0.008, 0.07),
+                arrowprops=arrowprops | dict(arrowstyle='->'))
+
+axs[0].annotate('', (1.5361, 0.37), (1.5361 - 0.008, 0.37),
+                arrowprops=arrowprops | dict(arrowstyle='->'))
+axs[0].annotate('', (1.5463, 0.37), (1.5463 + 0.008, 0.37),
+                arrowprops=arrowprops | dict(arrowstyle='->'))
 
 cb = fig.colorbar(img, cax=axs[-1], label='PLE count rate (cps)')
 

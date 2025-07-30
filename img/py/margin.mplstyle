@@ -82,7 +82,7 @@ ytick.major.pad:     2.0     # distance to major tick label in points
 ytick.minor.pad:     1.9     # distance to the minor tick label in points
 
 #### SAVING FIGURES
-savefig.dpi:         600   # figure dots per inch or 'figure'
+savefig.dpi:         1200  # figure dots per inch or 'figure'
 savefig.bbox:        tight # {tight, standard}
                            # 'tight' is incompatible with generating frames
                            # for animation
