@@ -118,10 +118,13 @@ def generate_mosaic(fig, nrows_ncols: tuple[int, int], slc: bool = False,
 
 
 def plot_pl(das, ylabel='', scaley=1, norm=None, figsize=None, aspect=False,
-            cbar_location='right', cbar_mode='single', cbar_pad=0.05, **grid_kw):
+            cbar_location='right', cbar_mode='single', cbar_pad=0.05, cbar_extend='neither',
+            **grid_kw):
     fig = plt.figure(figsize=figsize)
-    grid = ImageGrid(fig, 111, aspect=aspect, cbar_location=cbar_location, cbar_mode=cbar_mode,
-                     cbar_pad=cbar_pad, **grid_kw)
+    grid = ImageGrid(fig, 111, grid_kw.pop('nrows_ncols', (1, 1)), aspect=aspect,
+                     cbar_location=cbar_location, cbar_mode=cbar_mode, cbar_pad=cbar_pad,
+                     **grid_kw)
+    cbs = []
 
     if norm is None and cbar_mode == 'single':
         norm = mpl.colors.Normalize(vmin=0, vmax=max(da.max() for da in das).item())
@@ -134,17 +137,23 @@ def plot_pl(das, ylabel='', scaley=1, norm=None, figsize=None, aspect=False,
             norm=mpl.colors.Normalize(vmin=0) if norm is None and cbar_mode == 'each' else norm,
             rasterized=True
         )
-        cb = ax.cax.colorbar(img, extend='neither')
-        prefix = reformat_axis(cb, da, 'cps', 'c')
         ax.set_xlabel('$E$ (eV)')
         ax.set_ylabel(ylabel)
         ax.label_outer()
+        if cbar_mode == 'each':
+            cbs.append(cb := ax.cax.colorbar(img, extend=cbar_extend))
+            prefix = reformat_axis(cb, da, 'cps', 'c')
+            cb.set_label(f'Count rate ({prefix}cps)')
 
         ax2, unit = secondary_axis(ax)
         ax2.set_xlabel(rf'$\lambda$ ({unit})')
 
-    cb.set_label(f'Count rate ({prefix}cps)')
-    return fig, grid
+    if cbar_mode == 'single':
+        cbs.append(cb := ax.cax.colorbar(img, extend=cbar_extend))
+        prefix = reformat_axis(cb, da, 'cps', 'c')
+        cb.set_label(f'Count rate ({prefix}cps)')
+
+    return fig, grid, cbs
 
 
 def plot_pl_slice(fig, axs, da, sel: dict[str, ...], slice_vals: Sequence[...],
@@ -279,8 +288,9 @@ ds_bot = xr.load_dataset(DATA_PATH / 'honey_H13_bot_gate_stark_shift.h5')
 da_top = ds_top['ccd_ccd_data_rate_bg_corrected']
 da_bot = ds_bot['ccd_ccd_data_rate_bg_corrected']
 
-fig, grid = plot_pl((da_bot, da_top), ylabel=r'$V_{\mathrm{gate}}$ (V)', figsize=(TEXTWIDTH, 1.1),
-                    nrows_ncols=(1, 2), axes_pad=0.35, cbar_mode='each')
+fig, grid, cbs = plot_pl((da_bot, da_top), ylabel=r'$V_{\mathrm{gate}}$ (V)',
+                         figsize=(TEXTWIDTH, 1.1), nrows_ncols=(1, 2), axes_pad=0.35,
+                         cbar_mode='each')
 grid[0].set_ylim(top=0.55)
 fig.savefig(SAVE_PATH / 'honey_H13_stark_shift_vs_gate.pdf')
 
@@ -291,6 +301,7 @@ if EXTRACT_DATA:
     save_to_hdf5(41, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')
     save_to_hdf5(69, DATA_PATH / 'doped_M1_05_49-2_power.h5')
     save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
+    save_to_hdf5(153, DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', 'index')
     save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_2deg.h5')
 
 # %%% Unbiased PL
@@ -338,9 +349,24 @@ k_F = np.sqrt(2*np.pi*n)
 S = const.hbar**2*k_F**2/(2*mu)/const.e
 print(f'n = {n*1e-4:.2g} /cm²')
 print(f'k_F = {k_F:.2g} /m')
-print(f'E_F = {E_F:.2g} meV')
+print(f'E_F = {E_F*1e3:.3g} meV')
 # Delalande 87
-print(f'Stokes shift = {S:.2g} meV')
+print(f'Stokes shift = {S*1e3:.3g} meV')
+
+# %%% Unbiased PL power dependence
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5')[
+    'ccd_ccd_data_rate_bg_corrected'
+]
+
+with mpl.style.context(MARGINSTYLE, after_reset=True):
+    fig, grid, cbs = plot_pl([da], 'Power (nW)', scaley=1e9, norm=mpl.colors.AsinhNorm(1),
+                             cbar_extend='neither')
+    grid[0].set_yscale('log')
+    grid[0].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
+    grid[0].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
+    cbs[0].set_ticks([0, 1, 10, 100])
+
+    fig.savefig(SAVE_PATH / '2deg_pl_power_dependence.pdf')
 # %%% Difference mode
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
     'ccd_ccd_data_bg_corrected_per_second'
