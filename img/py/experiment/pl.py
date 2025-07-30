@@ -280,11 +280,11 @@ if EXTRACT_DATA:
         'honey_H13_trap_1_guard_south_top_current',
         'honey_H13_trap_1_guard_south_bottom_current'
     )
-    save_to_hdf5(21, DATA_PATH / 'honey_H13_bot_gate_stark_shift.h5', *to_skip)
-    save_to_hdf5(22, DATA_PATH / 'honey_H13_top_gate_stark_shift.h5', *to_skip)
+    save_to_hdf5(21, DATA_PATH / 'honey_H13_bot_gate_stark_shift.h5', *to_skip, compress=True)
+    save_to_hdf5(22, DATA_PATH / 'honey_H13_top_gate_stark_shift.h5', *to_skip, compress=True)
 # %%% Top vs bottom gate
-ds_top = xr.load_dataset(DATA_PATH / 'honey_H13_top_gate_stark_shift.h5')
-ds_bot = xr.load_dataset(DATA_PATH / 'honey_H13_bot_gate_stark_shift.h5')
+ds_top = xr.load_dataset(DATA_PATH / 'honey_H13_top_gate_stark_shift.h5', engine='h5netcdf')
+ds_bot = xr.load_dataset(DATA_PATH / 'honey_H13_bot_gate_stark_shift.h5', engine='h5netcdf')
 da_top = ds_top['ccd_ccd_data_rate_bg_corrected']
 da_bot = ds_bot['ccd_ccd_data_rate_bg_corrected']
 
@@ -298,14 +298,15 @@ fig.savefig(SAVE_PATH / 'honey_H13_stark_shift_vs_gate.pdf')
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'membrane_doped_M1_05_49-2.db')
 
-    save_to_hdf5(41, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')
-    save_to_hdf5(69, DATA_PATH / 'doped_M1_05_49-2_power.h5')
-    save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
-    save_to_hdf5(153, DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', 'index')
-    save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_2deg.h5')
+    save_to_hdf5(41, DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5', compress=True)
+    save_to_hdf5(69, DATA_PATH / 'doped_M1_05_49-2_power.h5', compress=True)
+    save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5', compress=True)
+    save_to_hdf5(153, DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', 'index',
+                 compress=True)
+    save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_2deg.h5', compress=True)
 
 # %%% Unbiased PL
-da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg.h5')[
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'
 ]
 
@@ -354,7 +355,7 @@ print(f'E_F = {E_F*1e3:.3g} meV')
 print(f'Stokes shift = {S*1e3:.3g} meV')
 
 # %%% Unbiased PL power dependence
-da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5')[
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'
 ]
 
@@ -368,7 +369,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     fig.savefig(SAVE_PATH / '2deg_pl_power_dependence.pdf')
 # %%% Difference mode
-da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5')[
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5', engine='h5netcdf')[
     'ccd_ccd_data_bg_corrected_per_second'
 ][0]
 
@@ -395,7 +396,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_difference_mode.pdf')
 
 # %%% Power dependence
-da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_power.h5')[
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_power.h5', engine='h5netcdf')[
     'ccd_ccd_data_bg_corrected_per_second'
 ]
 annotate_kwargs = dict(
@@ -433,7 +434,7 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
 # Power dependence
 # fig, ax, sliders = plot_nd(140, vertical_target='power', yscale='log')
 
-ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_multiplets.h5')
+ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_multiplets.h5', engine='h5netcdf')
 print_params(ds)
 
 fig = plt.figure(layout='constrained', figsize=(TOTALWIDTH, 5))
@@ -509,9 +510,9 @@ fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'fig_F10.db')
 
-    save_to_hdf5(4, DATA_PATH / 'fig_F10_positioning.h5')
+    save_to_hdf5(4, DATA_PATH / 'fig_F10_positioning.h5', compress=True)
 # %%% Positioning
-ds = xr.load_dataset(DATA_PATH / 'fig_F10_positioning.h5')
+ds = xr.load_dataset(DATA_PATH / 'fig_F10_positioning.h5', engine='h5netcdf')
 # The first ten steps are hysteresis-afflicted, so drop them to extract x(steps)
 fit = ds.anc_y_axis_position[ds.anc_y_axis_steps >= 10].polyfit('anc_y_axis_steps', 1)
 

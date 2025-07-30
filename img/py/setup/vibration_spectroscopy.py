@@ -165,7 +165,7 @@ popt_posvdc, pcov_posvdc = np.polyfit(vdc_calib, unp.nominal_values(position), 1
                                       w=1/unp.std_devs(position))
 
 # %%%% Count rate calibration
-ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
+ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5', engine='h5netcdf')
 count_rate = ds.counter_countrate
 # 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
 x = count_rate['positioners_y_axis_voltage']

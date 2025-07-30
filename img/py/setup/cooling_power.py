@@ -68,7 +68,7 @@ fig.savefig(SAVE_PATH / 'black_body_radiance.pdf')
 # %% Laser heating
 heater = pd.read_table(DATA_PATH / 'mxc_heater_temperature.txt', skiprows=3, sep='\t+',
                        engine='python', index_col=0)['Temperature (K)'].to_xarray()
-laser = xr.load_dataset(DATA_PATH / 'laser_absorption.h5')
+laser = xr.load_dataset(DATA_PATH / 'laser_absorption.h5', engine='h5netcdf')
 
 fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.25))
 ylim = (5, 40)

@@ -102,7 +102,7 @@ if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH)
     save_to_hdf5(66, DATA_PATH / 'rejection_vs_angles.h5')
 
-ds = sanitize(xr.load_dataset(DATA_PATH / 'rejection_vs_angles.h5'))
+ds = sanitize(xr.load_dataset(DATA_PATH / 'rejection_vs_angles.h5', engine='h5netcdf'))
 # %% Fit paraboloid
 p0 = {
     'A': 1,

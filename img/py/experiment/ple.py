@@ -122,11 +122,12 @@ if EXTRACT_DATA:
                  DATA_PATH / 'doped_M1_05_49-2_ple.h5',
                  'excitation_path_power_at_sample',
                  'dac_ch05_read_current_A',
-                 'dac_ch06_read_current_A')
+                 'dac_ch06_read_current_A',
+                 compress=True)
 
 # %% Plot
 m = effective_mass()
-ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ple.h5')
+ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ple.h5', engine='h5netcdf')
 
 arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
                   linewidth=0.75, shrinkA=0, shrinkB=0)
