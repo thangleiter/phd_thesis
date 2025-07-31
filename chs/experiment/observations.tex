@@ -197,7 +197,7 @@ From the width of the \gls{2deg} emission, we can calculate the charge carrier d
 \end{equation}
 where $\Delta E$ is the bandwidth of the emission (dashed gray lines in \cref{fig:exp:pl:2deg}) and $\mu = m^{\ast}_{\mr{c}}m^{\ast}_{\mr{hh}}/(m^{\ast}_{\mr{c}} + m^{\ast}_{\mr{hh}})$ is the reduced mass of conduction and valence band.
 For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$ or, equivalently, $E_{\mr{F}} = \qty{18}{\milli\electronvolt}$ and $k_{\mr{F}} = \qty{1.8e8}{\per\meter}$.
-Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.4e11}{\per\square\centi\meter}$, shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
+Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.9e11}{\per\square\centi\meter}$, shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
     Note that the carrier density obtained thus does not vary significantly with excitation power, ruling out photo-doping as a source of the discrepancy.
     See \cref{ch:app:exp:observations} for a measurement of the \gls{2deg} \gls{pl} as function of power.
 }
@@ -371,3 +371,21 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_multiplets}
 \end{figure*}
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/doped_M1_05_49-2_positioning}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thevoltage{-0.43}{DM}
+        \thevoltage{-3.75}{CM}
+        \thepower{1}{\micro}
+        \thewavelength{795}.
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        % z is along gravity
+        % y is in plane
+    }
+    \label{fig:exp:pl:doped_M1_05_49-2_positioning}
+\end{figure}

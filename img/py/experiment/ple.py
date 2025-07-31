@@ -217,7 +217,7 @@ da = ds.ccd_ccd_data_bg_corrected_per_second.sel(ccd_horizontal_axis=E_dets, met
 
 fig = plt.figure(figsize=(TEXTWIDTH, 1.6))
 grid = ImageGrid(fig, 111, (1, da.shape[-1]), cbar_mode='single', aspect=False,
-                 axes_pad=0.04, cbar_pad=0.05)
+                 axes_pad=0.06, cbar_pad=0.05)
 
 norm = mpl.colors.Normalize(vmin=0, vmax=da.max().item())
 for i, ax in enumerate(grid):

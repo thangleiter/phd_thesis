@@ -304,10 +304,11 @@ if EXTRACT_DATA:
     save_to_hdf5(140, DATA_PATH / 'doped_M1_05_49-2_multiplets.h5', compress=True)
     save_to_hdf5(153, DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', 'index',
                  compress=True)
-    save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_2deg.h5', compress=True)
+    save_to_hdf5(252, DATA_PATH / 'doped_M1_05_49-2_zpos.h5', compress=True)
+    save_to_hdf5(255, DATA_PATH / 'doped_M1_05_49-2_ypos.h5', compress=True)
 
 # %%% Unbiased PL
-da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg.h5', engine='h5netcdf')[
+da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ypos.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'
 ]
 
@@ -507,6 +508,32 @@ fig.supxlabel(r'$\lambda$ (nm)', y=1.05, va='top', fontsize='medium')
 fig.supylabel(r'$P$ (nW)', x=-0.04, fontsize='medium')
 fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
+
+# %%% Positioning
+day = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ypos.h5', engine='h5netcdf')[
+    'ccd_ccd_data_rate_bg_corrected'
+]
+daz = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_zpos.h5', engine='h5netcdf')[
+    'ccd_ccd_data_rate_bg_corrected'
+]
+
+fig = plt.figure(layout='constrained')
+axs = generate_mosaic(fig, (1, 2), slc=True, sharex=True, cb='row', slc_height_ratio=1/3.5)
+
+img, prefix, ax2 = plot_pl_slice(fig, axs[0, 0], day,
+                                 ylabel=r'$\Delta y$ (steps)', sel=dict(), linewidth=.75,
+                                 slice_vals=[-8, -11, -20, -34])
+img, prefix, ax2 = plot_pl_slice(fig, axs[0, 1], daz,
+                                 ylabel=r'$\Delta z$ (steps)', sel=dict(), linewidth=.75,
+                                 slice_vals=[17, 26, 45, 70])
+axs[0, 0]['img'].invert_yaxis()
+axs[0, 0]['img'].set_xlim(1.485, 1.53)
+axs[0, 0]['img'].set_ylim(top=-45)
+axs[0, 0]['slc'].sharey(axs[0, 1]['slc'])
+
+fig.get_layout_engine().set(hspace=0, h_pad=0)
+fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_positioning.pdf')
+
 # %% Fig F10
 if EXTRACT_DATA:
     initialise_or_create_database_at(ORIG_DATA_PATH / 'fig_F10.db')
