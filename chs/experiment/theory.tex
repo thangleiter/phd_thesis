@@ -1,27 +1,7 @@
 % mainfile: ../../main.tex
 \chapter{Photoluminescence and excitons in semiconductors}\label{ch:exp:theory}
-\AutoLettrine{Rats}
-The effective masses of the holes along the growth-direction are
-\begin{align}
-    m_{\mr{hh},z}^{\ast} &= \frac{1}{\gamma_1 - 2\gamma_2} = 0.38 \\
-    m_{\mr{lh},z}^{\ast} &= \frac{1}{\gamma_1 + 2\gamma_2} = 0.09
-\end{align}
-with
-\begin{align}
-    \gamma_1 &= 6.8 \\
-    \gamma_2 &= 2.1.
-\end{align}
-In-plane, the masses then become
-\begin{align}
-    m_{\mr{hh},\parallel}^{\ast} &= \frac{1}{\gamma_1 + \gamma_2} = 0.11 \\
-    m_{\mr{lh},\parallel}^{\ast} &= \frac{1}{\gamma_1 - \gamma_2} = 0.21
-\end{align}
-
-\clearpage
-
-\section{Photoluminescence in doped \GaAsAlGaAs heterostructures}\label{sec:exp:theory:pl}
-The development of remote-doping techniques enabled the growth of extremely high-mobility \glspl{2deg} in \GaAsAlGaAs heterostructures~\cite{Ihn2009}.
-In these structures, dopants introduced into the \ch{AlGaAs} barrier layer some \qty{50}{\nano\meter} away from the \ch{GaAs} layer and thus spatially separated by a \ch{AlGaAs} spacer layer.
+\AutoLettrine{The} development of remote-doping techniques enabled the growth of extremely high-mobility \glspl{2deg} in \GaAsAlGaAs heterostructures~\cite{Ihn2009}.
+In these structures, dopants are introduced into the \ch{AlGaAs} barrier layer some \qty{50}{\nano\meter} away from the \ch{GaAs} layer and thus spatially separated by a \ch{AlGaAs} spacer layer.
 This reduces Coulomb scattering in the \gls{2deg} induced by the doping and produces very high-quality samples as evidenced for example by the observation of the fractional quantum Hall effect~\cite{Stormer1999a}.
 It is hence not at all surprising that early quantum dot experiments also took place in this well-understood material system.
 While undoped approaches to electron and hole spin qubits in \ch{GaAs} exist~\cite{Harrell1999,Chen2012,Li2014,Tracy2014}, they introduce added complications because of the need to electrostatically induce a \gls{2deg} and reliably contacting it~\cite{Rossler2016}.
@@ -31,6 +11,7 @@ In the following, I discuss the optical behavior of these structures under illum
     The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2025}.
 }
 
+\section{Photoluminescence in doped \GaAsAlGaAs heterostructures}\label{sec:exp:theory:pl}
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/2deg_sketch}
@@ -42,8 +23,7 @@ In the following, I discuss the optical behavior of these structures under illum
     }
     \label{fig:exp:theory:bandstructure:doped}
 \end{marginfigure}
-
-Consider an intrinsic, direct-gap, Zinc-blende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature. % TODO: reference
+Consider an intrinsic, direct-gap, Zincblende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature~\cite{Vurgaftman2001}.
 At the $\Gamma$-point, the conduction band is well approximated by a parabolic band with effective mass $m^\ast_{\mr{c}}/m_{\mr{e}} = 0.067$ and is offset by $E_{\mr{g}}/2$ above the Fermi level $\mu$.
 Offset by the same absolute amount in the opposite direction is the valence band, which close to $\Gamma$ is fourfold degenerate with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
 The third valence band\sidenote{
@@ -187,7 +167,7 @@ The ground state transition energy at this field is \qty{10}{\milli\electronvolt
 
 For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
 The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wavefunctions is reduced when applying an electric field, pulling the wavefunctions to opposite interfaces~\cite{Miller1984}.
-\Citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite well models.
+\Citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 The latter should have a small effect on the ground state energy as argued above.
 
 \subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
@@ -212,7 +192,7 @@ where\sidenote{
 \end{equation}
 with the associated Laguerre polynomial $L_p^{\abs{\ell}}(x)$ and we used the shorthand $\tilde{\rho} = \rho/\xi$.
 The numbers $p\in\mathbb{N}$ and $\ell\in\mathbb{Z}$ denote the principal and orbital momentum quantum numbers.
-The eigenenergies of the harmonic oscillator solution \cref{eq:exp:theory:qcse:trap:ho:psi} are given by
+The eigenenergies of the harmonic oscillator solution, \cref{eq:exp:theory:qcse:trap:ho:psi}, are given by
 \begin{equation}\label{eq:exp:theory:qcse:trap:ho:eps}
     \eps_{p\ell} = \hbar\omega\left(2p + \abs{\ell} + 1\right).
 \end{equation}
@@ -239,17 +219,20 @@ For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be writt
 \end{equation}
 where $\mu$ is the reduced mass of the exciton.
 As the selection rules only allow in-plane dipole transitions for heavy holes, we write~\cite{Kavokin1994}
-\begin{equation}\label{eq:exp:oscillator_strength}
-    f_{np\ell} = \frac{2\mu\Delta E_{np\ell}}{\hbar^2} J_{r}^2 J_{\phi}^2 \abs{\!\matrixelement*{u_{\mr{c}}}{x}{u_{\mr{hh}}}}^2
-\end{equation}
-for transitions with $\Delta n = \Delta p = \Delta\ell = 0$, where
-\begin{align}
-    J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
-    J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi}
-\end{align}
+\begin{subequations}\label{eq:exp:oscillator_strength}
+    \begin{equation}\tag{\ref{eq:exp:oscillator_strength}}
+        f_{np\ell} = \frac{2\mu\eps_{np\ell}}{\hbar^2} J_{r}^2 J_{\phi}^2 \abs{\!\matrixelement*{u_{\mr{c}}}{x}{u_{\mr{hh}}}}^2
+    \end{equation}
+    for transitions with $\Delta n = \Delta p = \Delta\ell = 0$, where
+    \begin{align}
+        J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
+        J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi} \\
+        \eps_{np\ell} &= \eps_n + \eps_{p\ell},
+    \end{align}
+\end{subequations}
 and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and conduction band, respectively, that we have neglected so far.
 From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$!
-This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E_n = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor two larger than assumed by \citer{Descamps2021}.
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor two larger than assumed by \citet{Descamps2021}.
 
 \begin{marginfigure}
     \centering

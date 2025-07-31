@@ -291,6 +291,7 @@ da_bot = ds_bot['ccd_ccd_data_rate_bg_corrected']
 fig, grid, cbs = plot_pl((da_bot, da_top), ylabel=r'$V_{\mathrm{gate}}$ (V)',
                          figsize=(TEXTWIDTH, 1.1), nrows_ncols=(1, 2), axes_pad=0.35,
                          cbar_mode='each')
+cbs[0].set_label(None)
 grid[0].set_ylim(top=0.55)
 fig.savefig(SAVE_PATH / 'honey_H13_stark_shift_vs_gate.pdf')
 
