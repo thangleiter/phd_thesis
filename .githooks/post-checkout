@@ -32,6 +32,7 @@ if [ "$is_branch_checkout" = "1" ]; then
     mkdir -p "$FONT_DIR"
 
     $COMMAND "$ROOT_DIR"/lib/kaobook "$TEX_DIR"
+    $COMMAND "$ROOT_DIR"/lib/polyglossia.sty "$TEX_DIR"
     $COMMAND "$ROOT_DIR"/lib/fonts/LiberationMono/*.ttf "$FONT_DIR"
 fi
 
