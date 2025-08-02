@@ -50,11 +50,30 @@ def oscillator_strength(z, i, j, Delta_E, m, in_plane=True):
     )
 
 
-def tunneling_probability(F, V_0, m):
+def tunneling_probability(F, ΔV, E, m):
     with np.errstate(divide='ignore'):
-        result = np.exp(-np.sqrt(4*m*V_0**3)/(const.e*F*const.hbar))
+        # WKB gives a factor 4/3*sqrt{2} instead of 2
+        result = np.exp(-np.sqrt(4*m*(ΔV - E)**3)/(const.e*F*const.hbar))
     result[np.isnan(result)] = 0
     return result
+
+
+def tunneling_rate(F, ΔV, E, L, m):
+    # Adapted from Larsson (1988)
+    # k = sqrt(2mE)/hbar
+    # v = hbar k/m
+    # f = v / 2L
+    f = np.sqrt(0.5*E/m)/L
+    P = tunneling_probability(F, ΔV, E, m)
+    return P * f
+
+
+def thermionic_emission_rate(F, T, ΔV, E, L, m):
+    # For completeness, though at mK zero
+    # Fox (1991), from Schneider & v. Klitzing (1988)
+    H = ΔV - (E - const.e*F*L/2)
+    kT = const.k*T
+    return np.sqrt(kT/(2*np.pi*m*L**2))*np.exp(-H/kT)
 
 
 @functools.wraps(sc.special.airy)
@@ -190,14 +209,14 @@ def eps_triangular_large_field(F, m, N: int):
 def psi_harmonic_oscillator(rho, phi, m, omega, p=0, ell=0):
     # 10.1103/PhysRevA.89.063813 with slight changes of notation:
     # alpha -> 1/xi (oscillator length)
-    xi = np.sqrt(const.hbar/(m*omega))
+    xi = np.sqrt(const.hbar/(m*np.atleast_1d(omega)[:, None, None]))
     A_n_ell = (
         np.sqrt(2*sc.special.factorial(p)/(xi**2*sc.special.factorial(p + abs(ell))))
         * np.exp(-0.5*(rho/xi)**2)
         * (rho/xi)**abs(ell)
         * sc.special.genlaguerre(p, abs(ell))((rho/xi)**2)
     )
-    return A_n_ell[..., None]*math.cexp(ell*phi)/np.sqrt(2*np.pi)
+    return A_n_ell*math.cexp(ell*phi)/np.sqrt(2*np.pi)
 
 
 def psi_square(z, L, N: int):
@@ -313,32 +332,35 @@ for i in range(2):
     axs[i, 0].plot(F, (eps[i]/const.e - F*L/2).T)
     axs[i, 1].plot(F, (eps_a[i]/const.e - F*L/2).T)
 
+# Well height
+axs[0, 0].axhline(ΔE_c, color='k')
+axs[1, 0].axhline(ΔE_v, color='k')
 # %%% Tunneling probability estimate (Davies Eq. (7.40))
-V_0 = (np.array([ΔE_c, ΔE_v])[:, None, None]*const.e - eps)
-T = tunneling_probability(F, V_0, m[:, None])
+ΔV = np.array([ΔE_c, ΔE_v])[:, None, None]*const.e
+T = tunneling_probability(F, ΔV, eps, m[:, None])
+Γ_T = tunneling_rate(F, ΔV, eps, L, m[:, None])
+Γ_E = thermionic_emission_rate(F, 10, ΔV, eps, L, m[:, None])
 # %% 3d wavefunctions in a trap
-omega = 7.38e11
+omega = 7.38e11 * F / 5e6
 rho = np.linspace(0, 75e-9, 151)
 zz = z - L/2
 P = 3
 
 f = np.empty((P, F.size), dtype=complex)
-eps_com = eps_harmonic_oscillator(omega, np.arange(P))
-psi_com = np.empty((P, z.size, rho.size), dtype=complex)
+eps_com = np.array([eps_harmonic_oscillator(omega, p) for p in np.arange(P)])
+psi_com = np.empty((P, F.size, z.size, rho.size), dtype=complex)
 for p in range(P):
     # phi = 0 since ell != 0 does not couple
-    psi_com[p] = np.squeeze(
-        psi_harmonic_oscillator(np.hypot(*np.meshgrid(rho, zz)), 0, m.sum(), omega, p, 0)
-    )
+    psi_com[p] = psi_harmonic_oscillator(np.hypot(*np.meshgrid(rho, zz)), 0, m.sum(), omega, p, 0)
     psi_com[p] /= np.sqrt(
         sc.integrate.simpson(2*np.pi*rho*math.abs2(psi_com[p]), rho, axis=-1)
     )[..., None]
 
 # Axes (e/h, n, p, F, z, rho)
 Delta_Ez = E_g_GaAs*const.e + (eps - const.e*F*L/2).sum(axis=0)
-Delta_E = Delta_Ez[:, None] + eps_com[:, None]
+Delta_E = Delta_Ez[:, None] + eps_com
 # 3d wavefunction
-PSI = psi[:, :, None, :, :, None] * psi_com[:, None]
+PSI = psi[:, :, None, :, :, None] * psi_com
 PSI_exc = PSI[0] * PSI[1, ..., ::-1, :]
 # 1d wavefunction with plane integrated out
 PSI_perp = sc.integrate.simpson(2*np.pi*rho*PSI, rho, axis=-1)
@@ -361,20 +383,24 @@ for p in range(P):
 # %%% 3d wavefunction
 fig = plt.figure(figsize=(TEXTWIDTH, 1.8))
 grid = ImageGrid(fig, 111, (min(P, 2), 2), cbar_mode='single', cbar_pad=0.075, cbar_size='2.5%',
-                 axes_pad=0.1)
+                 axes_pad=0.1, share_all=False)
 norm = mpl.colors.CenteredNorm(0)
-# norm = mpl.colors.Normalize(0, np.abs(PSI_exc[0]).max())
+n = 0
+F0 = 10
+F1 = 100
 
 for p in range(min(2, P)):
     # plot holes since they couple more strongly to the field
-    img1 = grid.axes_row[p][0].contourf(rho*1e9, zz*1e9, PSI[1, 0, p, 0, :, :].real,
+    img1 = grid.axes_row[p][0].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F0, :, :].real,
                                         cmap=DIVERGING_CMAP,
-                                        # cmap=SEQUENTIAL_CMAP,
-                                        norm=norm, levels=21)
-    img2 = grid.axes_row[p][1].contourf(rho*1e9, zz*1e9, PSI[1, 0, p, F.size//2, :, :].real,
+                                        # norm=norm,
+                                        norm=mpl.colors.CenteredNorm(0),
+                                        levels=21)
+    img2 = grid.axes_row[p][1].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F1, :, :].real,
                                         cmap=DIVERGING_CMAP,
-                                        # cmap=SEQUENTIAL_CMAP,
-                                        norm=norm, levels=21)
+                                        # norm=norm,
+                                        norm=mpl.colors.CenteredNorm(0),
+                                        levels=21)
     grid.axes_row[p][0].text(rho[-1]*1e9 - 1.5, -8.5,
                              '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
                              fontsize='small', horizontalalignment='right')
@@ -391,11 +417,11 @@ grid.axes_row[-1][0].set_xlabel(r'$\rho$ (nm)')
 
 match backend:
     case 'pgf':
-        grid.axes_row[0][0].set_title(r'$F=\qty{0}{\volt\per\micro\meter}$')
-        grid.axes_row[0][1].set_title(r'$F=\qty{5}{\volt\per\micro\meter}$')
+        grid.axes_row[0][0].set_title(rf'$F=\qty{{{F[F0]*1e-6:.1f}}}{{\volt\per\micro\meter}}$')
+        grid.axes_row[0][1].set_title(rf'$F=\qty{{{F[F1]*1e-6:.0f}}}{{\volt\per\micro\meter}}$')
     case _:
-        grid.axes_row[0][0].set_title('$F=0$ V/μm')
-        grid.axes_row[0][1].set_title('$F=5$ V/μm')
+        grid.axes_row[0][0].set_title(f'$F={F[F0]*1e-6:.1f}$ V/μm')
+        grid.axes_row[0][1].set_title(f'$F={F[F1]*1e-6:.0f}$ V/μm')
 
 fig.savefig(SAVE_PATH / 'wavefunction.pdf')
 
@@ -403,43 +429,38 @@ fig.savefig(SAVE_PATH / 'wavefunction.pdf')
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, ax1 = plt.subplots(2, sharex=True,
                             layout='constrained',
-                            figsize=(MARGINWIDTH, 1.55),
-                            gridspec_kw=dict(height_ratios=[3, 2]))
+                            figsize=(MARGINWIDTH, 1.75),
+                            gridspec_kw=dict(height_ratios=[2, 2]))
     ax2 = [ax1[0].twinx(), ax1[1].twinx()]
 
     for i in (1, 0):
-        ax2[1].plot(F * 1e-6, T[0, i], ls='--', color=LINE_COLORS_50[i])
-        ax2[1].plot(F * 1e-6, T[1, i], ls='-.', color=LINE_COLORS_50[i])
+        # i are the energy levels
+        ax2[1].plot(F * 1e-6, Γ_T[0, i]*1e-6, ls='--', color=LINE_COLORS_50[i])
+        ax2[1].plot(F * 1e-6, Γ_T[1, i]*1e-6, ls='-.', color=LINE_COLORS_50[i])
 
-        ax2[0].plot(F * 1e-6, np.gradient(Delta_E[i], F, axis=-1).T/const.e * 1e9,
+        ax2[0].plot(F * 1e-6, np.gradient(Delta_Ez[i], F, axis=-1).T/const.e * 1e9,
                     ls='--', color=LINE_COLORS_50[i])
-        for p, line_colors in enumerate([LINE_COLORS_50, LINE_COLORS_75, LINE_COLORS]):
-            if i == 1 and p != 2:
-                continue
-            ax1[0].plot(F * 1e-6, (Delta_E[i, -p-1]/const.e - E_g_GaAs) * 1e3,
-                        color=line_colors[i])
-            ax1[1].plot(F * 1e-6, f_3d[i, -p-1] / f_3d[0, 0, 0],
-                        color=line_colors[i])
+        ax1[0].plot(F * 1e-6, (Delta_Ez[i]/const.e - E_g_GaAs) * 1e3, color=LINE_COLORS[i])
+        ax1[1].plot(F * 1e-6, f_1d[i] / f_1d[0, 0], color=LINE_COLORS[i])
 
     ax2[0].set_yticks([0, -5, -10])
-    ax2[1].set_ylim(5e-4)
-    # ax1[1].set_yscale('log')
-    # ax1[1].set_ylim(1e-2, 2e0)
+    ax2[1].set_ylim(1)
     ax2[1].set_yscale('log')
+    ax2[1].set_yticks([1e-6, 1, 1e6])
     ax1[0].set_ylim(ylim := ax1[0].get_ylim())  # to freeze them
     ax1[0].plot([0, 3.7165, 3.7165], [0, 0, -ylim[1]], ls=':', color=RWTH_COLORS_50['black'],
                 zorder=1)
 
-    ax1[1].set_ylabel(r'$\tilde{f}_{np}$')
-    ax2[1].set_ylabel(r'$\mathscr{T}$')
+    ax1[1].set_ylabel(r'$\tilde{f}_{n}$')
+    ax2[1].set_ylabel(r'$\Gamma$ (MHz)')
     match backend:
         case 'pgf':
-            ax1[0].set_ylabel(r'$\Delta E_{np} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
+            ax1[0].set_ylabel(r'$\Delta E_{n} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
             ax1[1].set_xlabel(r'$F$ (\unit{\volt\per\micro\meter})')
             ax2[0].set_ylabel(r'$\pdv*{\Delta E}{F}$ (\unit{\electron\nano\meter})')
         case _:
             ax1[1].set_xlabel('$F$ (V/μm)')
-            ax1[0].set_ylabel(r'$\Delta E - E_\mathrm{g}$ (meV)')
+            ax1[0].set_ylabel(r'$\Delta E_{n} - E_\mathrm{g}$ (meV)')
             ax2[0].set_ylabel(r'$\partial\Delta E/\partial F$ ($e$nm)')
 
     fig.get_layout_engine().set(h_pad=1/72)

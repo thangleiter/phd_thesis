@@ -291,6 +291,10 @@ da_bot = ds_bot['ccd_ccd_data_rate_bg_corrected']
 fig, grid, cbs = plot_pl((da_bot, da_top), ylabel=r'$V_{\mathrm{gate}}$ (V)',
                          figsize=(TEXTWIDTH, 1.1), nrows_ncols=(1, 2), axes_pad=0.35,
                          cbar_mode='each')
+
+for ax in grid:
+    ax.axhline(-0.7, ls=':', color=RWTH_COLORS_50['black'], alpha=0.66)
+
 cbs[0].set_label(None)
 grid[0].set_ylim(top=0.55)
 fig.savefig(SAVE_PATH / 'honey_H13_stark_shift_vs_gate.pdf')
@@ -560,7 +564,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
         functions=(lambda x: x*fit.polyfit_coefficients[0].item()*1e3,
                    lambda x: x/fit.polyfit_coefficients[0].item()/1e3)
     )
-    ax2y.set_ylabel(r'$\Delta x$ (μm)', labelpad=2)
+    ax2y.set_ylabel(r'$\Delta y$ (μm)', labelpad=2)
 
     cax = axs[0, 0]['img'].inset_axes([0.05, 0.075, 0.05, 0.85])
     cb = fig.colorbar(img, cax=cax)

@@ -232,7 +232,32 @@ As the selection rules only allow in-plane dipole transitions for heavy holes, w
 \end{subequations}
 and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and conduction band, respectively, that we have neglected so far.
 From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$!
-This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor two larger than assumed by \citet{Descamps2021}.
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
+
+As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n}\sim eFd$ with $d$ the width of the barrier.
+This allows confined carriers to escape the \gls{qw} with a finite probability by tunneling through the barrier, an effect known as Fowler-Nordheim tunneling.
+Following \citer{Davies2009}, we can estimate the tunneling probability as\sidenote{
+    The same result up to a slightly different numerical prefactor in the exponent is obtained more formally from the WKB approximation~\cite{Descamps2021}.
+}
+\begin{equation}\label{eq:exp:theory:qcse:tunneling:probability}
+    \mathscr{T}_n(F) \approx \exp\left\lbrace -\frac{\sqrt{4 m^\ast [\Delta E_{\mr{c}(\mr{hh})} - \eps_n]^3}}{e F\hbar}\right\rbrace.
+\end{equation}
+The tunneling rate $\Gamma_n$ can then be estimated by the frequency that a confined charge carrier \enquote{visits} the edge of the \gls{qw} multiplied by the probability that it tunnels, $\mathscr{T}_n$~\cite{Larsson1988}.
+That is, we take $\eps_n$ to be a kinetic energy and calculate the velocity as
+\begin{equation}
+    v_n = \frac{\hbar k_n}{m^\ast_{\mr{c}(\mr{hh})}} = \sqrt{\frac{2 \eps_n}{m^\ast_{\mr{c}(\mr{hh})}}}.
+\end{equation}
+Then the frequency of one round trip inside the \gls{qw} is
+\begin{equation}
+    \tau_n\inverse = \frac{v_n}{2L} = \frac{1}{L}\sqrt{\frac{\eps_n}{2 m^\ast_{\mr{c}(\mr{hh})}}}
+\end{equation}
+and
+\begin{equation}\label{eq:exp:theory:qcse:tunneling:rate}
+    \Gamma_n = \frac{\mathscr{T}_n}{\tau_n}.
+\end{equation}
+What is the order of magnitude of $\tau_n$?
+For an energy of $\eps_n = \qty{10}{\milli\electronvolt}$, $\tau_n\approx\qty{200}{\femto\second}$ for electrons and \qty{400}{\femto\second} for holes.
+The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small indeed for the rate $\Gamma_n$ to remain small.
 
 \begin{marginfigure}
     \centering
@@ -243,8 +268,7 @@ This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton
         Dashed lines (right axis) show the derivative, revealing that the excited state is actually raised in energy at low fields.
         Bottom: oscillator strengths (same color code as above).
         Despite the fact that the wavefunctions are pulled apart by the electric field, the oscillator strength of the ground state has a maximum at around \qty{2.5}{\volt\per\micro\meter}.
-        Dashed lines (right axis) show the tunneling probability through the barrier.
-        Only the excited electron state is appreciably non-zero at large fields.
+        Dashed lines (right axis) show the electron tunneling probability through the barrier, dash-dotted the holes.
     }
     \label{fig:exp:theory:qcse:field}
 \end{marginfigure}
@@ -253,7 +277,7 @@ This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton
 The top panel shows the exciton transition energy $\Delta E_{np}$ for $\Delta n = \Delta p = 0$ in solid lines.\sidenote{
     Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduce the dispersion~\cite{Miller1984}.
 }
-The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
+The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$. % TODO: in-plane confinement strength only valid at a single F
 The ground state shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
 Drawn as a dashed line is the induced dipole moment,
 \begin{equation}
@@ -264,15 +288,11 @@ For the first excited state, the induced dipole moment is actually positive belo
 The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
 It decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially into the \gls{qw} themselves, is reduced.
 Higher sublevels of the \gls{qw} ground state (magenta, decreasing saturation) vary slightly in magnitude but show the same qualitative behavior while the first excited \gls{qw} state (green) vanishes at a finite field before increasing again, in line with the behavior of the wavefunction, which has a node close to the center of the \gls{qw}.
-Finally, the green dashed line shows the estimated tunneling probability (\cref{eq:exp:theory:qcse:tunneling}) of the electron excited state.
-Tilting the \gls{qw} results in a finite probability for the charge carriers confined within the well to escape as -- for infinitely thick barriers -- lower-lying states become available at some distance away, an effect known as Fowler-Nordheim tunneling.
-Following \citer{Davies2009}, we can estimate the tunneling probability as
-\begin{equation}\label{eq:exp:theory:qcse:tunneling}
-    \mathscr{T}_n(F) \approx \exp\left\lbrace -\frac{\sqrt{4 m^\ast [\Delta E_{\mr{c}(\mr{hh})} - \eps_n]^3}}{\hbar e F}\right\rbrace,
-\end{equation}
-where $\Delta E_{\mr{c}(\mr{hh})}$ is the conduction (valence) band offset.
-Even at very large fields it remains below \qty{1}{\percent} while the other states have a smaller probability still at below \qty{1}{\permill}, suggesting that tunneling out of the well can be neglected at reasonably small fields.
-For doped structures, this conclusion may need to be revisited as remote dopants pull the conduction band edge down and thus narrow the tunneling barrier to the \gls{qw}.
+
+Finally, the right axis shows the estimated tunneling rates (\cref{eq:exp:theory:qcse:tunneling:rate}) of the electron (hole) ground (excited) states in dashed (dash-dotted) magenta (green) lines, respectively.
+Rates of electrons are at least four orders of magnitude larger than those of holes owing to their smaller effective mass despite the larger band offset.
+At $F=\qty{5}{\volt\per\micro\meter}$ corresponding to a voltage of \qty{1}{\volt} across a membrane of \qty{200}{\nano\meter} thickness, the electron tunnel rate is on the order of \qty{1}{\hertz}, but rises very quickly above that.
+Considering once again a \gls{qw} hosting a \gls{2deg} and neglecting associated band bending effects, this rate corresponds to a current through a circular area of \qty{1}{\micro\meter} in diameter of \qty{600}{\atto\ampere} at an electron density of $n = \qty{5e11}{\per\centi\meter\squared}$, but already \qty{600}{\pico\ampere} at \qty{7.5}{\volt\per\micro\meter}.
 
 \section{Excitonic complexes}\label{sec:exp:theory:complexes}
 If we liken the exciton to a Hydrogen atom\sidenote{Although positronium is a better analogon.} with modified binding energy $E_{\mr{b}}$ and Bohr radius $a_{\mr{B}}$, it is natural to expect molecules and ions of these states to exist.
@@ -285,5 +305,5 @@ Conversely, the probability to form a two-body bound state is proportional to th
 
 Besides the neutral biexciton, there exist also charged states consisting of three or more bodies.
 Here, additional electrons or holes bind to an exciton, forming negative or positively charged trions similar to \ch{H-} or \ch{He+} ions.
-Naturally, this process is favored when a large number of surplus charge carriers is present in the sample such as is the case in doped \glspl{qw} with a \gls{2deg} (or \gls{2dhg}).
+Naturally, this process is favored when a large number of surplus charge carriers is present in the sample such as is the case in doped \glspl{qw} with a \gls{2deg} (or \gls{2dhg})~\cite{Finkelstein1995}.
 In these structures, the trion binding energy has been found to also be on the order of \qty{1}{\milli\electronvolt}~\cite{Esser2000,Bar-Joseph2005}.
