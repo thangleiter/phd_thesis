@@ -209,14 +209,16 @@ def eps_triangular_large_field(F, m, N: int):
 def psi_harmonic_oscillator(rho, phi, m, omega, p=0, ell=0):
     # 10.1103/PhysRevA.89.063813 with slight changes of notation:
     # alpha -> 1/xi (oscillator length)
-    xi = np.sqrt(const.hbar/(m*np.atleast_1d(omega)[:, None, None]))
+    omega = np.atleast_1d(omega)[:, None, None]
+    with np.errstate(divide='ignore'):
+        xi = np.sqrt(const.hbar/(m*omega))
     A_n_ell = (
         np.sqrt(2*sc.special.factorial(p)/(xi**2*sc.special.factorial(p + abs(ell))))
         * np.exp(-0.5*(rho/xi)**2)
         * (rho/xi)**abs(ell)
         * sc.special.genlaguerre(p, abs(ell))((rho/xi)**2)
     )
-    return A_n_ell*math.cexp(ell*phi)/np.sqrt(2*np.pi)
+    return np.where(omega != 0, A_n_ell*math.cexp(ell*phi)/np.sqrt(2*np.pi), 1)
 
 
 def psi_square(z, L, N: int):
@@ -313,6 +315,7 @@ with np.errstate(invalid='ignore'):
         for j in range(F.size):
             psi[i, :, j] = psi_triangular(z, F[j], L, m[i, 0], N)
             psi[i, :, j] /= np.sqrt(np.trapezoid(math.abs2(psi[i, :, j]), z))[:, None]
+            psi[i, :, j, [0, -1]] = 0  # get rid of artefacts, per BC zero
             psi_a[i, :, j] = psi_triangular_large_field(z, F[j], m[i, 0], N)
             psi_a[i, :, j] /= np.sqrt(np.trapezoid(math.abs2(psi_a[i, :, j]), z))[:, None]
 
@@ -344,6 +347,7 @@ T = tunneling_probability(F, ΔV, eps, m[:, None])
 omega = 7.38e11 * F / 5e6
 rho = np.linspace(0, 75e-9, 151)
 zz = z - L/2
+mu = reduced_mass()
 P = 3
 
 f = np.empty((P, F.size), dtype=complex)
@@ -361,45 +365,44 @@ Delta_Ez = E_g_GaAs*const.e + (eps - const.e*F*L/2).sum(axis=0)
 Delta_E = Delta_Ez[:, None] + eps_com
 # 3d wavefunction
 PSI = psi[:, :, None, :, :, None] * psi_com
-PSI_exc = PSI[0] * PSI[1, ..., ::-1, :]
-# 1d wavefunction with plane integrated out
-PSI_perp = sc.integrate.simpson(2*np.pi*rho*PSI, rho, axis=-1)
-f_3d = oscillator_strength(zz, PSI_perp[0], PSI_perp[1, ..., ::-1], Delta_E, m.sum())
-f_1d = oscillator_strength(zz, psi[0], psi[1, ..., ::-1], Delta_Ez, m.sum())
+# ψ_e * ψ_h
+psi_exc = psi[0] * psi[1, ..., ::-1]
+# 2π\int dρ ρ χ(r)
+psi_com_perp = sc.integrate.simpson(2*np.pi*rho*psi_com, rho, axis=-1)
+f_3d = oscillator_strength(zz, psi_exc[:, None], psi_com_perp, Delta_E, mu, in_plane=True)
+f_1d = oscillator_strength(zz, psi[0], psi[1, ..., ::-1], Delta_Ez, mu, in_plane=False)
 
 # %%% For fun plot higher orbital angular momenta (unused)
 phi = np.arange(0, 2*np.pi, 2.5e-2)
 
 fig, axs = plt.subplots(2, 3, subplot_kw={'projection': 'polar'}, layout='constrained')
 for p in range(P):
-    psi = psi_harmonic_oscillator(rho, phi, m.sum(), omega=7.38e11, p=p, ell=1)
-    img = axs[0, p].pcolormesh(phi, rho * 1e9, psi.real, cmap=DIVERGING_CMAP,
+    wf = psi_harmonic_oscillator(rho[:, None], phi, m.sum(), omega=7.38e11, p=p, ell=1)
+    img = axs[0, p].pcolormesh(phi, rho * 1e9, wf[0].real, cmap=DIVERGING_CMAP,
                                norm=mpl.colors.CenteredNorm(0))
-    img = axs[1, p].pcolormesh(phi, rho * 1e9, psi.imag, cmap=DIVERGING_CMAP,
+    img = axs[1, p].pcolormesh(phi, rho * 1e9, wf[0].imag, cmap=DIVERGING_CMAP,
                                norm=mpl.colors.CenteredNorm(0))
     axs[0, p].tick_params(labelbottom=False)
     axs[1, p].tick_params(labelbottom=False)
 
 # %%% 3d wavefunction
 fig = plt.figure(figsize=(TEXTWIDTH, 1.8))
-grid = ImageGrid(fig, 111, (min(P, 2), 2), cbar_mode='single', cbar_pad=0.075, cbar_size='2.5%',
-                 axes_pad=0.1, share_all=False)
+grid = ImageGrid(fig, 111, (min(P, 3), 2), cbar_mode='single', cbar_pad=0.075, cbar_size='2.5%',
+                 axes_pad=0.1)
 norm = mpl.colors.CenteredNorm(0)
 n = 0
-F0 = 10
+F0 = 20
 F1 = 100
 
-for p in range(min(2, P)):
+for p in range(min(3, P)):
     # plot holes since they couple more strongly to the field
     img1 = grid.axes_row[p][0].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F0, :, :].real,
                                         cmap=DIVERGING_CMAP,
-                                        # norm=norm,
-                                        norm=mpl.colors.CenteredNorm(0),
+                                        norm=norm,
                                         levels=21)
     img2 = grid.axes_row[p][1].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F1, :, :].real,
                                         cmap=DIVERGING_CMAP,
-                                        # norm=norm,
-                                        norm=mpl.colors.CenteredNorm(0),
+                                        norm=norm,
                                         levels=21)
     grid.axes_row[p][0].text(rho[-1]*1e9 - 1.5, -8.5,
                              '\n'.join(['$n=0$', f'$p={p}$', r'$\ell=0$']),
@@ -409,18 +412,19 @@ for p in range(min(2, P)):
                              fontsize='small', horizontalalignment='right')
 
 cbar = grid.cbar_axes[0].colorbar(img1)
-cbar.set_ticks([])
-cbar.set_label(r'$\Psi_{np\ell}(r, z_{\mathrm{h}})$')
+cbar.set_ticks([0])
+cbar.set_label(r'$\mathrm{Re}\Psi_{np\ell}(r, z_{\mathrm{h}})$', loc='top')
+cbar.ax.yaxis.set_label_coords(1.5, 1)
 
 grid.axes_row[-1][0].set_ylabel(r'$z_{\mathrm{h}}$ (nm)')
 grid.axes_row[-1][0].set_xlabel(r'$\rho$ (nm)')
 
 match backend:
     case 'pgf':
-        grid.axes_row[0][0].set_title(rf'$F=\qty{{{F[F0]*1e-6:.1f}}}{{\volt\per\micro\meter}}$')
+        grid.axes_row[0][0].set_title(rf'$F=\qty{{{F[F0]*1e-6:.0f}}}{{\volt\per\micro\meter}}$')
         grid.axes_row[0][1].set_title(rf'$F=\qty{{{F[F1]*1e-6:.0f}}}{{\volt\per\micro\meter}}$')
     case _:
-        grid.axes_row[0][0].set_title(f'$F={F[F0]*1e-6:.1f}$ V/μm')
+        grid.axes_row[0][0].set_title(f'$F={F[F0]*1e-6:.0f}$ V/μm')
         grid.axes_row[0][1].set_title(f'$F={F[F1]*1e-6:.0f}$ V/μm')
 
 fig.savefig(SAVE_PATH / 'wavefunction.pdf')
@@ -440,22 +444,29 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
         ax2[0].plot(F * 1e-6, np.gradient(Delta_Ez[i], F, axis=-1).T/const.e * 1e9,
                     ls='--', color=LINE_COLORS_50[i])
-        ax1[0].plot(F * 1e-6, (Delta_Ez[i]/const.e - E_g_GaAs) * 1e3, color=LINE_COLORS[i])
-        ax1[1].plot(F * 1e-6, f_1d[i] / f_1d[0, 0], color=LINE_COLORS[i])
+        for p, line_colors in enumerate([LINE_COLORS_50, LINE_COLORS_75, LINE_COLORS]):
+            if i != 0 and p != 2:
+                continue
+            ax1[0].plot(F * 1e-6, (Delta_E[i, -p-1]/const.e - E_g_GaAs) * 1e3,
+                        color=line_colors[i])
+            ax1[1].plot(F * 1e-6, f_3d[i, -p-1] / f_3d[0, 0, 0],
+                        color=line_colors[i])
 
     ax2[0].set_yticks([0, -5, -10])
     ax2[1].set_ylim(1)
     ax2[1].set_yscale('log')
     ax2[1].set_yticks([1e-6, 1, 1e6])
+    ax1[1].set_ylim(1.25e-3, 1.5)
+    ax1[1].set_yscale('log')
     ax1[0].set_ylim(ylim := ax1[0].get_ylim())  # to freeze them
     ax1[0].plot([0, 3.7165, 3.7165], [0, 0, -ylim[1]], ls=':', color=RWTH_COLORS_50['black'],
                 zorder=1)
 
-    ax1[1].set_ylabel(r'$\tilde{f}_{n}$')
+    ax1[1].set_ylabel(r'$\tilde{f}_{np}$')
     ax2[1].set_ylabel(r'$\Gamma$ (MHz)')
     match backend:
         case 'pgf':
-            ax1[0].set_ylabel(r'$\Delta E_{n} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
+            ax1[0].set_ylabel(r'$\Delta E_{np} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
             ax1[1].set_xlabel(r'$F$ (\unit{\volt\per\micro\meter})')
             ax2[0].set_ylabel(r'$\pdv*{\Delta E}{F}$ (\unit{\electron\nano\meter})')
         case _:
@@ -467,9 +478,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig.savefig(SAVE_PATH / 'qcse_field_dependence.pdf')
 
 # %% Sketch in-plane field
-F = 1e5
+F0 = 1e5
 r = np.linspace(-100, 100, 1001)*1e-9
-a_B = 2*np.pi*const.epsilon_0*eps_r*(const.hbar/const.e)**2/reduced_mass(lh=False)
+a_B = 2*np.pi*const.epsilon_0*eps_r*(const.hbar/const.e)**2/mu
 phi = coulomb(r, eps_r)/const.e
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
@@ -477,10 +488,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     ax.axhline(-8, ls=':', color=RWTH_COLORS_50['black'])
     ax.axline((0, 0), slope=0, ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
-    ax.axline((1, (coulomb(1, eps_r)/const.e + F*a_B) * 1e3), slope=F*a_B * 1e3, ls='--',
+    ax.axline((1, (coulomb(1, eps_r)/const.e + F0*a_B) * 1e3), slope=F0*a_B * 1e3, ls='--',
               color=RWTH_COLORS_50['black'], alpha=0.66)
     ax.plot(r/a_B, phi * 1e3, color=LINE_COLORS[0])
-    ax.plot(r/a_B, (phi + F*r) * 1e3, color=LINE_COLORS[1])
+    ax.plot(r/a_B, (phi + F0*r) * 1e3, color=LINE_COLORS[1])
     ax.plot(r/a_B, 12.5*np.exp(-abs(r)/a_B) - 8, color=RWTH_COLORS['black'])
     ax.set_ylim(-14, 10)
 
@@ -498,7 +509,7 @@ zw = np.linspace(z[1], z[2], 101)
 
 band_color = RWTH_COLORS['black']
 # %%% Plot untilted well
-F = E0 = 0
+F0 = E0 = 0
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, axs = plt.subplots(2, sharex=True)
@@ -513,7 +524,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.annotate(r'$E_\mathrm{c}$', (z[2] + 14, .5*E_g_GaAs + ΔE_c - 0.02),
                 verticalalignment='top')
     # Wave function
-    plot_states(ax, zw*1e-9, z[1]*1e-9, F, E0, +1, N, scale=1e-5)
+    plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.7, 1.05)
 
@@ -527,53 +538,53 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.annotate(r'$E_\mathrm{hh}$', (z[2] + 14,  -.5*E_g_GaAs - ΔE_v + 0.02),
                 verticalalignment='bottom')
     # Wave function
-    plot_states(ax, zw*1e-9, z[1]*1e-9, F, E0, -1, N, scale=1e-5)
+    plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.0, -0.65)
 
     sketch_style(fig, axs)
-    fig.savefig(SAVE_PATH / f'qw_undoped_{F*200e-9:1g}V.pdf')
+    fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')
 
 # %%% Plot tilted well
 zz = [np.linspace(*z[i:i+2], 101) for i in range(3)]
-F = 1/200e-9  # 1V/200nm
+F0 = 1/200e-9  # 1V/200nm
 # Stark shift of the edge of the WE wrt the center
-E0 = F*L/2
+E0 = F0*L/2
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, axs = plt.subplots(2, sharex=True)
 
     # Conduction band
     ax = axs[0]
-    ax.plot(zz[0], F*1e-9*(zz[0] - z0) + .5*E_g_GaAs + ΔE_c, color=band_color)
+    ax.plot(zz[0], F0*1e-9*(zz[0] - z0) + .5*E_g_GaAs + ΔE_c, color=band_color)
     ax.plot(z[[1, 1]], np.array([.5*E_g_GaAs + ΔE_c - E0, .5*E_g_GaAs - E0]),
             color=band_color)
-    ax.plot(zz[1], F*1e-9*(zz[1] - z0) + .5*E_g_GaAs, color=band_color)
+    ax.plot(zz[1], F0*1e-9*(zz[1] - z0) + .5*E_g_GaAs, color=band_color)
     ax.plot(z[[2, 2]], np.array([.5*E_g_GaAs + E0, .5*E_g_GaAs + ΔE_c + E0]),
             color=band_color)
-    ax.plot(zz[2], F*1e-9*(zz[2] - z0) + .5*E_g_GaAs + ΔE_c, color=band_color)
-    ax.annotate(r'$E_\mathrm{c}$', (z[2] + 14, F*1e-9*(z[2] - z0) + .5*E_g_GaAs + ΔE_c + 0.05),
+    ax.plot(zz[2], F0*1e-9*(zz[2] - z0) + .5*E_g_GaAs + ΔE_c, color=band_color)
+    ax.annotate(r'$E_\mathrm{c}$', (z[2] + 14, F0*1e-9*(z[2] - z0) + .5*E_g_GaAs + ΔE_c + 0.05),
                 verticalalignment='top')
 
     # Wave function
-    plot_states(ax, zw*1e-9, z[1]*1e-9, F, E0, +1, N, scale=1e-5)
+    plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.675, 1.175)
 
     # Valence band
     ax = axs[1]
-    ax.plot(zz[0], F*1e-9*(zz[0] - z0) - .5*E_g_GaAs - ΔE_v, color=band_color)
+    ax.plot(zz[0], F0*1e-9*(zz[0] - z0) - .5*E_g_GaAs - ΔE_v, color=band_color)
     ax.plot(z[[1, 1]], np.array([-.5*E_g_GaAs - ΔE_v - E0, -.5*E_g_GaAs - E0]), color=band_color)
-    ax.plot(zz[1], F*1e-9*(zz[1] - z0) - .5*E_g_GaAs, color=band_color)
+    ax.plot(zz[1], F0*1e-9*(zz[1] - z0) - .5*E_g_GaAs, color=band_color)
     ax.plot(z[[2, 2]], np.array([-.5*E_g_GaAs + E0, -.5*E_g_GaAs - ΔE_v + E0]), color=band_color)
-    ax.plot(zz[2], F*1e-9*(zz[2] - z0) - .5*E_g_GaAs - ΔE_v, color=band_color)
-    ax.annotate(r'$E_\mathrm{hh}$', (z[2] + 14, F*1e-9*(z[2] - z0) - .5*E_g_GaAs - ΔE_v + 0.125),
+    ax.plot(zz[2], F0*1e-9*(zz[2] - z0) - .5*E_g_GaAs - ΔE_v, color=band_color)
+    ax.annotate(r'$E_\mathrm{hh}$', (z[2] + 14, F0*1e-9*(z[2] - z0) - .5*E_g_GaAs - ΔE_v + 0.125),
                 verticalalignment='bottom')
 
     # Wave function
-    plot_states(ax, zw*1e-9, z[1]*1e-9, F, E0, -1, N, scale=1e-5)
+    plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.125, -0.625)
 
     sketch_style(fig, axs)
-    fig.savefig(SAVE_PATH / f'qw_undoped_{F*200e-9:1g}V.pdf')
+    fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')

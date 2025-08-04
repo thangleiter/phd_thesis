@@ -171,13 +171,16 @@ The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} 
 The latter should have a small effect on the ground state energy as argued above.
 
 \subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
-% Motivate why we do all this! -> oscillator strength
+% TODO: Motivate why we do all this! -> oscillator strength
 So far, we have considered the \gls{qcse} in a single dimension, as if we were to apply a global electric field.
 However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
-\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of \qty{20}{\milli\electronvolt} at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential with confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
+\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wavefunction of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - E_0$, with confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$ and $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$.
+To obtain a qualitative picture, let us interpolate this result for different fields.
+The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
+At vanishing field, there should be no in-plane potential, $\omega=0$.
+Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/ - \alpha F^{2}$.
 
 How does this in-plane confinement modify the wavefunction?
-The harmonic potential applies to the center-of-mass wavefunction of the exciton with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$.
 We ignore the relative motion of electron and hole as the optical properties of the exciton are dominated by the behavior at zero separation for $a_{\mr{B}}/\xi < 1$~\cite{Kavokin1994}, and consider only $\Delta n = 0$ transitions, \ie, electron and hole in the same $z$ quantum state, as $\Delta n\neq 0$ transitions are much weaker~\cite{Davies2009}.
 Let us further initially assume a separable wavefunction and choose cylindrical coordinates according to the symmetry of the potential.
 We then have
@@ -198,15 +201,16 @@ The eigenenergies of the harmonic oscillator solution, \cref{eq:exp:theory:qcse:
 \end{equation}
 To account for a finite well width ($L\approx\xi$ in our case), we can to a first approximation perform the replacement $\rho\to r = \sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi}.
 The resulting wavefunction $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
+$\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$ for $\ell=0$ as we would expect.
 
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/wavefunction}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
         Center-of-mass exciton wavefunction (hole sector) in a harmonic trap under an electric field.
-        Left column shows the zero-field and right column the high-field case.
-        Top row is the ground state and bottom row the first excited state in the plane.
-        The out-of-plane wavefunction is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$~\cite[Sec.~2.2.2]{Descamps2021}.
+        Left column shows the low-field and right column the high-field case.
+        Top row is the ground state, middle and bottom row the first and second excited state in the plane, respectively.
+        The out-of-plane wavefunction is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ for $F=\qty{5}{\volt\per\micro\meter}$~\cite[Section~2.2.2]{Descamps2021} and linearly interpolated for \qty{1}{\volt\per\micro\meter} (see text).
     }
     \label{fig:exp:theory:qcse:wf}
 \end{figure}
@@ -265,10 +269,12 @@ The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small inde
     \caption[\imgsource{img/py/experiment/qcse.py}]{
         Electric field dependence of the \gls{qcse} for the first two energy levels in the \gls{qw}.
         Top: the ground state energy (magenta) shows the expected quadratic dependence; the confinement energy is compensated at around $F=\qty{3.7}{\volt\per\micro\meter}$.
-        Dashed lines (right axis) show the derivative, revealing that the excited state is actually raised in energy at low fields.
+        Higher in-plane orbital levels are shown for the \gls{qw} ground state in decreasing saturation.
+        For zero field, the splitting is zero as there is no in-plane confinement.
+        At maximum field, the splitting is $2\hbar\omega = \qty{2}{\milli\electronvolt}$.
+        Dashed lines (right axis) show the derivative, revealing that the \gls{qw} excited state is actually raised in energy at low fields.
         Bottom: oscillator strengths (same color code as above).
-        Despite the fact that the wavefunctions are pulled apart by the electric field, the oscillator strength of the ground state has a maximum at around \qty{2.5}{\volt\per\micro\meter}.
-        Dashed lines (right axis) show the electron tunneling probability through the barrier, dash-dotted the holes.
+        Dashed lines (right axis) show the electron tunneling rate through the barrier, dash-dotted the holes.
     }
     \label{fig:exp:theory:qcse:field}
 \end{marginfigure}
@@ -277,7 +283,7 @@ The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small inde
 The top panel shows the exciton transition energy $\Delta E_{np}$ for $\Delta n = \Delta p = 0$ in solid lines.\sidenote{
     Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduce the dispersion~\cite{Miller1984}.
 }
-The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$. % TODO: in-plane confinement strength only valid at a single F
+The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane \gls{qw} subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
 The ground state shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
 Drawn as a dashed line is the induced dipole moment,
 \begin{equation}
@@ -286,8 +292,9 @@ Drawn as a dashed line is the induced dipole moment,
 which is monotonously decreasing for the ground state as function of electric field $F$, consistent with a continuous lowering of energy.
 For the first excited state, the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
 The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
-It decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially into the \gls{qw} themselves, is reduced.
-Higher sublevels of the \gls{qw} ground state (magenta, decreasing saturation) vary slightly in magnitude but show the same qualitative behavior while the first excited \gls{qw} state (green) vanishes at a finite field before increasing again, in line with the behavior of the wavefunction, which has a node close to the center of the \gls{qw}.
+For the ground state it decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially into the \gls{qw} themselves, is reduced.
+$f_{0p}$ for higher in-plane orbital states ($p > 0$, magenta, decreasing saturation) has an envelope following the ground state's exponential decay but vanishes at $p$ points in $F$ due to the fact that the wave function has $p$ nodes.
+By contrast, $f_{10}$ for the first excited \gls{qw} state (green) does not decay to zero at large fields but also has a zero at an intermediate field because of the wave function's node along $z$.
 
 Finally, the right axis shows the estimated tunneling rates (\cref{eq:exp:theory:qcse:tunneling:rate}) of the electron (hole) ground (excited) states in dashed (dash-dotted) magenta (green) lines, respectively.
 Rates of electrons are at least four orders of magnitude larger than those of holes owing to their smaller effective mass despite the larger band offset.

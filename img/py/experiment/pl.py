@@ -210,6 +210,31 @@ def parabola(x, a, b, c):
     return a*(x - b)**2 + c
 
 
+def voigt_lineshape(x, A, mu, sigma, gamma):
+    z = (x - mu + 1j*gamma)/(sigma*np.sqrt(2))
+    result = np.real(sc.special.wofz(z))
+    try:
+        with np.errstate(over='raise', invalid='raise'):
+            norm = (np.exp(gamma**2/(2*sigma**2))
+                    * (1 - sc.special.erf(gamma/(np.sqrt(2)*sigma))))
+        if np.any(norm == 0):
+            raise FloatingPointError
+        norm /= A  # height of peak
+        result /= norm
+    except FloatingPointError:
+        result /= result.max() / A
+    return result
+
+
+def multi_voigt(n: int):
+    def fun(x, *params):
+        result = np.zeros_like(x)
+        for i in range(n):
+            result += voigt_lineshape(x, *params[4*i:4*(i+1)])
+        return result
+    return fun
+
+
 # %% 2DEG PL sketch
 ΔE_g = E_AlGaAs(0.33) - E_AlGaAs(0)
 Q_e = 0.57
@@ -405,31 +430,84 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_power.h5', engine='h5netcdf')[
     'ccd_ccd_data_bg_corrected_per_second'
 ]
+
+# %%%% Fit
+n = 7
+func = multi_voigt(n)
+params = list(itertools.chain.from_iterable(
+    ([f'$A_{i}$', rf'$\mu_{i}$', rf'$\sigma_{i}$', rf'$\gamma_{i}$']
+     for i in range(n))
+))
+
+p0 = {
+    param: val for param, val in zip(params, [
+        15, 1.4815, 2e-3, 1e-3,
+        100, 1.4839, 2e-3, 0,
+        225, 1.4856, 1e-3, 0,
+        30, 1.4884, 7e-4, 0,
+        20, 1.4893, 1e-3, 0,
+        5, 1.4919, 2e-4, 0,
+        1, 1.4942, 1e-4, 1e-4
+    ])
+}
+bounds = {
+    param: val for param, val in zip(params, n * [
+        (0.1, np.inf),
+        (da.ccd_horizontal_axis.min(), da.ccd_horizontal_axis.max()),
+        (0, 1),
+        (0, 1)
+    ])
+}
+
+fit = da[:, da.ccd_horizontal_axis <= 1.498].sel(
+    excitation_path_power_at_sample=1e-6, method='nearest'
+).curvefit(
+    'ccd_horizontal_axis', func=func, param_names=params, p0=p0, bounds=bounds
+)
+# %%%% Plot
 annotate_kwargs = dict(
     color=RWTH_COLORS_50['black'],
     horizontalalignment='center',
+    fontsize='small',
     verticalalignment='top',
-    arrowprops=dict(arrowstyle='->', mutation_scale=7.5, color=RWTH_COLORS_50['black'])
+    arrowprops=dict(arrowstyle='->', linewidth=0.75, mutation_scale=7.5,
+                    color=RWTH_COLORS_50['black'])
 )
 
 with mpl.style.context(MAINSTYLE, after_reset=True):
-    fig, grid, cbs = plot_pl((da,), scaley=1e9, ylabel='$P$ (nW)', nrows_ncols=(1, 1),
-                             cbar_size='4%', cbar_pad=0.1, norm=mpl.colors.AsinhNorm(10))
-    ax = grid[0]
+    fig, axs = plt.subplots(ncols=3, layout='constrained', figsize=(TEXTWIDTH, 1.85),
+                            gridspec_kw=dict(width_ratios=[15, 1, 15]))
+    img = axs[0].pcolormesh(x := da.ccd_horizontal_axis, da.excitation_path_power_at_sample*1e9,
+                            da, norm=mpl.colors.AsinhNorm(10), cmap=SEQUENTIAL_CMAP,
+                            rasterized=True)
+    cb = fig.colorbar(img, cax=axs[1], label='Count rate (cps)')
 
-    ax.set_yscale('log')
-    ax.set_xlim(1.472, 1.497)
-    ax.yaxis.minorticks_on()
-    cbs[0].set_ticks(np.delete(cbs[0].get_ticks(), 0))
+    for i in range(n):
+        axs[2].plot(x, voigt_lineshape(x, *fit.curvefit_coefficients[4*i:4*(i+1)]), ls='--',
+                    alpha=0.66, color=RWTH_COLORS_25['black'])
+    axs[2].plot(x, da.sel(excitation_path_power_at_sample=fit.excitation_path_power_at_sample))
+    axs[2].plot(x, func(x, *fit.curvefit_coefficients))
+
+    axs[0].set_xlabel('$E$ (eV)')
+    axs[0].set_ylabel('$P$ (nW)')
+    axs[0].set_xlim(1.472, 1.497)
+    axs[0].set_yscale('log')
+    axs[0].yaxis.minorticks_on()
+
+    axs[2].set_xlabel('$E$ (eV)')
+    axs[2].set_xlim(right=1.498)
+    axs[2].set_ylim(1.1e-1, 700)
+    axs[2].set_yscale('log')
+
+    cb.set_ticks(np.delete(cb.get_ticks(), 0))
 
     # Guides to the eye
-    # ax.plot([1.4805, 1.4855, 1.487], [1, 7, 1000], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
-    ax.plot([1.4805, 1.4865], [1, 10], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
-    ax.plot([1.4847, 1.4852], [3e0, 1e3], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
+    axs[0].plot([1.4805, 1.4865], [1, 10], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
+    axs[0].plot([1.4847, 1.4852], [3e0, 1e3], ls='--', color=RWTH_COLORS_50['black'], alpha=0.66)
 
-    ax.annotate('1', (1.480, 2e1), (1.480, .66e1), **annotate_kwargs)
-    ax.annotate('2', (1.48175, 2e1), (1.48175, .66e1), **annotate_kwargs)
-    ax.annotate('3', (1.492, 3e2), (1.492, 1e2), **annotate_kwargs)
+    axs[0].annotate('1', (1.480, 2e1), (1.480, .66e1), **annotate_kwargs)
+    axs[0].annotate('2', (1.48175, 2e1), (1.48175, .66e1), **annotate_kwargs)
+    axs[0].annotate('3', (1.492, 3e2), (1.492, 1e2), **annotate_kwargs)
 
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_power.pdf')
 

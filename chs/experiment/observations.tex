@@ -51,7 +51,7 @@ While this is in a sense flying in the dark, it is a quite reliable method for a
     \includegraphics{img/pdf/experiment/2deg_pl}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thewavelength{795}.
+        \thewavelength{795}
         \thepower{0.92}{\micro}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
@@ -111,8 +111,8 @@ Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}. % TOD
     \includegraphics{img/pdf/experiment/honey_H13_stark_shift_vs_gate}
     \caption[
         \sampleid{Honey H13}
-        \thewavelength{795},
-        \thepower{1}{\micro}.
+        \thewavelength{795}
+        \thepower{1}{\micro}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
@@ -150,9 +150,9 @@ I elucidate this issue in \cref{sec:exp:tmm}.
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_difference_mode}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thevoltage{-1.3}{CM},
-        \thewavelength{795}.
-        \thepower{10}{\micro}.
+        \thevoltage{-1.3}{CM}
+        \thewavelength{795}
+        \thepower{10}{\micro}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
@@ -195,7 +195,7 @@ In and of itself, this parameter should not reduce the charge carrier density in
 }
 One possible explanation for the observed behavior is the depletion of the \gls{2deg} by electrons tunneling out of the well and recombining with the donor ions, rendering one of the doped barriers electrically neutral.
 With the doping pulling down the conduction band between \qty{50}{\nano\meter} and \qty{90}{\nano\meter} away from the \gls{qw}, the tunneling rate will be more pronounced than estimated for the undoped case in \cref{sec:exp:theory:qcse}.
-Taking the large trap diameter in this case into account, there are $\sim\num[print-unit-mantissa=false]{1e5}$ electrons in the unbiased \gls{qw} on the area of the trap gates.
+Taking the large trap diameter in this case into account, there are $\sim\num[print-unity-mantissa=false]{1e5}$ electrons in the unbiased \gls{qw} on the area of the trap gates.
 Thus, at a tunneling rate of \qty{1}{\mega\hertz}, all electrons would tunnel out of the \gls{qw} within \qty{100}{\milli\second} on average, putting a response of the system into the steady state within the fairly long time scales of a \gls{pl} measurement\sidenote{
     Say \qtyrange{0.1}{10}{\second}.
 }
@@ -210,23 +210,26 @@ I return to the question of line assignment in \cref{sec:exp:observations:ple}.
 
 \subsection{Power dependence}\label{subsec:exp:observations:pl:power}
 
+
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_power}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thevoltage{-2.7}{DM},
-        \thevoltage{-1.3}{CM},
-        \thewavelength{795}.
+        \thevoltage{-2.7}{DM}
+        \thevoltage{-1.3}{CM}
+        \thewavelength{795}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
-        \Gls{pl} as function of excitation power $P$ plotted on a logarithmic color scale.
-        Two qualitatively different regimes are indicated by dashed gray lines as guides to the eye; below \qty{10}{\nano\watt}, the main peak displays a blueshift logarithmic in excitation power, $E = \qty{1.485}{\electronvolt} + \qty{5}{\milli\electronvolt}\log_{10} P$.
+        \Gls{pl} as function of excitation power $P$.
+        In the left panel two qualitatively different regimes are indicated by dashed gray lines as guides to the eye; below \qty{10}{\nano\watt}, the main peak displays a blueshift logarithmic in excitation power, $E = \qty{1.485}{\electronvolt} + \qty{5}{\milli\electronvolt}\log_{10} P$.
         Above, the blueshift diminishes significantly.
-        Three additional lines, indicated by arrows, with varying power dispersion appear.
+        Three additional lines, indicated by arrows, with varying power dispersion are visible.
+        Right panel shows a fit to data at $P=\qty{1}{\micro\watt}$.
+        A sum of seven individual lines (dashed, gray) is required to fit the data.
     }
-    \label{fig:}
+    \label{fig:exp:pl:doped_M1_05_49-2_power}
 \end{figure}
 
 \begin{figure*}
@@ -234,7 +237,7 @@ I return to the question of line assignment in \cref{sec:exp:observations:ple}.
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_multiplets}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thevoltage{0}{B}.
+        \thevoltage{0}{B}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
@@ -247,9 +250,9 @@ I return to the question of line assignment in \cref{sec:exp:observations:ple}.
 \end{figure*}
 
 \subsection{Spatial dependence}\label{subsec:exp:observations:pl:spatial}
-As I mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.
-The hysteresis is due to the non-adiabicity of the method of movement in the so-called slip-stick mode (\cf \cref{part:setup}).
-What is more, the resistive position readout is also fairly unreliable below, say, \qty{10}{\micro\meter}.
+As mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.
+The hysteresis is due to the non-adiabaticity of the method of movement in the so-called slip-stick mode (\cf \cref{ch:setup:cooling}).
+What is more, the resistive position readout is also fairly unreliable below, say, \qty{5}{\micro\meter} resolution.
 Nonetheless, we can at the very least perform simple one-dimensional sweeps after manually positioning the sample at a given starting position.
 A more sophisticated algorithmic approach using feature detection may allow also two-dimensional maps with a reasonable accuracy.
 
@@ -259,7 +262,7 @@ A more sophisticated algorithmic approach using feature detection may allow also
     \caption[
         \sampleid{Fig F10}
         \thewavelength{795}
-        $V_{y}=\qty{30}{\volt}$.
+        $V_{y}=\qty{30}{\volt}$
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
@@ -273,19 +276,12 @@ A more sophisticated algorithmic approach using feature detection may allow also
 
 \Cref{fig:exp:pl:fig_F10_positioning} shows the \gls{pl} collected from the sample as the positioner is stepped perpendicularly across an unbiased gate.
 The vertical axis also gives a position coordinate which is computed from the steps by fitting the position readout once hysteresis has worn off.
-The blue and green dash-dotted line correspond to the center of and besides the gate, respectively, with line cuts drawn in the upper panel.
+The blue and green dash-dotted line correspond to the center of and beside the gate, respectively, with line cuts drawn in the upper panel.
 Clearly, the \gls{pl} intensity is quenched significantly by the gate, beyond what one could expect from simple reflection and absorption of laser and \gls{pl} radiation.
 I perform \gls{tmm} simulations to explain this behavior in \cref{sec:exp:tmm} (see also \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate}).
 Curiously, the map also shows a shifting of the Fermi edge close to the gate.
-This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
-Band-deformation due to strain from the metallic gates could potentially be the cause. % TODO: phrasing
-
-Next, I show two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_multiplets,fig:exp:pl:doped_M1_05_49-2_ple}.
-While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally localized fashion. % TODO: me, pleeaase
-The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
-Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}).
-Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction.
-Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
+This behavior was consistently observed on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
+The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
 
 \begin{figure}
     \centering
@@ -294,18 +290,39 @@ Regrettably, the resistive position readout did not yield anything but noise in 
         \sampleid{Doped M1_05_49-2}
         \thevoltage{-0.43}{DM}
         \thevoltage{-3.75}{CM}
-        $V_{y}=\qty{30}{\volt}$
-        $V_{z}=\qty{30}{\volt}$
+        $V_{y}=V_{z}=\qty{30}{\volt}$
         \thepower{1}{\micro}
-        \thewavelength{795}.
+        \thewavelength{795}
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
-    % z is along gravity
-    % y is in plane
+        \Gls{pl} of a large exciton trap as function of position perpendicular (left) and parallel (right) to gravity.
+        The trap is biased so that the emission is Stark-shifted towards lower energy.
+        Upper panels show line cuts taken along the dash-dotted lines in the lower panels, demonstrating fairly identical behavior along both axes.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_positioning}
 \end{figure}
+
+Next, I show two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets,fig:exp:pl:doped_M1_05_49-2_ple}.
+While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally localized fashion. % TODO: me, pleeaase
+The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
+Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
+Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
+We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
+Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features the displayed ranges should be roughly the same.
+The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels as usual.
+Both sweeps display very similar features.
+In the center of the trap, the Stark-shifted emission line consists of a single peak.
+Towards the edges, two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
+The increase in effective electric field towards the edge of an exciton trap is reminiscent of the simulation of the same type of experiment for an undoped \gls{qw} by \citet[Figure~6.4]{Descamps2021}, although it was not explained there.
+Indeed, it also appears to be in conflict with Figure~2.16 \ibid, where a monotonic increase in effective exciton potential as function of distance from the trap center closer to our intuition was predicted.
+In the device under study here, there is of course a \gls{2deg} whose presence towards the edge of the trap screens the voltages, in theory contributing to an attenuation of the Stark shift.
+Why we observe to opposite is thus quite puzzling.
+
+The second surprising feature seen in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} is the addition of faint lines that appear to branch out from the main exciton line as the laser spot is moved away from the center of the trap.
+These could be related to the lines observed in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets}.
+
+% TODO: ...
 
 \section{Photoluminescence excitation spectroscopy}\label{sec:exp:observations:ple}
 \cite{Huard2000,Yusa2000}
@@ -316,8 +333,8 @@ Regrettably, the resistive position readout did not yield anything but noise in 
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
     \caption[
         \sampleid{Doped M1_05_49-2}
-        \thevoltage{-1.3}{CM},
-        \thepower{1}{\micro}.
+        \thevoltage{-1.3}{CM}
+        \thepower{1}{\micro}
         \protect\newline
         \imgsource{img/py/experiment/ple.py}
     ]{

@@ -73,6 +73,7 @@ axes.prop_cycle: cycler('color', ['00549f', 'e30066', '57ab27', 'f6a800', '0098a
                   # See also https://matplotlib.org/stable/tutorials/intermediate/color_cycle.html
                   # for more details on prop_cycle usage.
 axes.xmargin : 0  # x margin. See `axes.Axes.margins`
+axes.titlesize:     medium   # font size of the axes title
 
 #### SAVING FIGURES
 savefig.dpi:         1200  # figure dots per inch or 'figure'
