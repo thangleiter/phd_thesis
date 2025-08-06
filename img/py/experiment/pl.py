@@ -525,7 +525,7 @@ fig = plt.figure(layout='constrained', figsize=(TOTALWIDTH, 5))
 axs = generate_mosaic(fig, (3, 4), slc=True, cb='row', cb_width_ratio=1/15, slc_height_ratio=1/3,
                       sharex=True, sharey='row')
 
-Vs = [-1.92, -1.98, -2.02, -2.08]
+Vs = [-2.08, -2.02, -1.98, -1.92]
 Ps = [7e-9, 16e-9, 35e-9]
 wavs = [790, 805, 815]
 
@@ -551,8 +551,8 @@ for i, (ax, wav) in enumerate(zip(axs, wavs)):
         )
         a['img'].set_xlim(1.477, 1.497)
         a['img'].set_yscale('log')
-        a['img'].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
         a['img'].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
+        a['img'].yaxis.set_minor_formatter(mpl.ticker.LogFormatter(minor_thresholds=(1.1, 0.4)))
         a['img'].xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator())
         a['img'].set_xlabel(None)
         a['img'].label_outer()
@@ -585,9 +585,9 @@ for i, (ax, wav) in enumerate(zip(axs, wavs)):
 
     a['slc'].set_ylim(0)
 
-fig.text(0.5, -0.03, r'$E$ (eV)', fontsize='medium')
-fig.supxlabel(r'$\lambda$ (nm)', y=1.05, va='top', fontsize='medium')
-fig.supylabel(r'$P$ (nW)', x=-0.04, fontsize='medium')
+fig.text(0.5, -0.03, r'$E_{\mathrm{det}}$ (eV)', fontsize='medium')
+fig.supxlabel(r'$\lambda_{\mathrm{det}}$ (nm)', y=1.05, va='top', fontsize='medium')
+fig.supylabel(r'$P_{\mathrm{det}}$ (nW)', x=-0.04, fontsize='medium')
 fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
 

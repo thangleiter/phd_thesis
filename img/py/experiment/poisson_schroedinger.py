@@ -15,7 +15,7 @@ def V_BG(V_DM, V_CM):
     return 0.5*(V_CM - V_DM)
 
 
-def setup_structure(doping=6.5e17, cap=10, qr=(1, 2, 3, 4, 5, 6, 7), qw=(2, 6)):
+def setup_structure(doping=6.5e17, cap=10, qw=20, qr_ix=(1, 2, 3, 4, 5, 6, 7), qw_ix=(2, 6)):
     structure = PoissonSchroedingerSolver()
 
     band_offset = 0.24
@@ -23,17 +23,17 @@ def setup_structure(doping=6.5e17, cap=10, qr=(1, 2, 3, 4, 5, 6, 7), qw=(2, 6)):
     structure.add_layer(40, band_offset_eV=band_offset, doping_concentration_per_cm=doping)
     structure.add_layer(40, band_offset_eV=band_offset)
     structure.add_layer(10, band_offset_eV=band_offset)
-    structure.add_layer(20)
+    structure.add_layer(qw)
     structure.add_layer(10, band_offset_eV=band_offset)
     structure.add_layer(40, band_offset_eV=band_offset)
     structure.add_layer(40, band_offset_eV=band_offset, doping_concentration_per_cm=doping)
     structure.add_layer(cap)
 
-    structure.setup(quantum_regions=qr, doping_trap_energy=-(0.33 - 0.22)*0.65,
+    structure.setup(quantum_regions=qr_ix, doping_trap_energy=-(0.33 - 0.22)*0.65,
                     temperature_K=10e-3, z_stepsize_nm=0.5, effective_mass_m0=0.067,
                     number_eigenvectors=2)
 
-    z_qw = structure.z_interface_position_nm[slice(*qw)]
+    z_qw = structure.z_interface_position_nm[slice(*qw_ix)]
     z_qw_ix = np.concat(np.where(structure.z_nm == z_qw[0]) + np.where(structure.z_nm == z_qw[-1]))
 
     return structure, z_qw, z_qw_ix
@@ -48,7 +48,7 @@ def cooldown_structure(structure, V_FP=0.76):
     structure.solve(True, False, verbose=False)
 
 
-def apply_voltage(structure, V_T, V_B):
+def apply_voltage(structure, V_T, V_B, V_FP=0.76):
     structure.set_bias_voltages(V_FP - V_T, V_FP - V_B)
     structure.set_temperature(np.sqrt(100*10e-3))
     structure.solve(False, True, convergence_tolerance_eV=1e-2, verbose=False)
@@ -69,7 +69,7 @@ def extract_params(structure, z_qw_ix):
 
 # %% Simulate single-gate bias
 V_FP = 0.76
-structure, z_qw, z_qw_ix = setup_structure(doping=1.8e18, cap=10, qw=(2, 6))
+structure, z_qw, z_qw_ix = setup_structure(doping=1.8e18, cap=10, qw=20+5.65e-1, qw_ix=(2, 6))
 cooldown_structure(structure, V_FP=V_FP)
 
 npts = 51
