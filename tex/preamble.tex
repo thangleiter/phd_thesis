@@ -118,7 +118,10 @@
 \usepackage{chemformula}
 \usepackage{physics}
 \usepackage{siunitx}
-\sisetup{per-mode = single-symbol}
+\sisetup{%
+    per-mode = single-symbol,%
+    list-final-separator = {\text{, and }}%
+}
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 %! end preamble = math
 %----------------------------------------------------------------------------------------
@@ -147,6 +150,11 @@
 \DeclareCaptionLabelFormat{linked}{\hyperlink{lof}{#1~#2}}
 \captionsetup[figure]{labelformat=linked}
 
+% Hyphenation rules
+\begin{hyphenrules}{english}
+    \hyphenation{Lo-rentz-ian}
+    \hyphenation{Gauss-ian}
+\end{hyphenrules}
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
