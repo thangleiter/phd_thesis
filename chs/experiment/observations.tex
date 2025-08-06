@@ -209,8 +209,6 @@ As can be seen from the cut at \qty{-2.3}{\volt} (orange), the line shape appear
 I return to the question of line assignment in \cref{sec:exp:observations:ple}.
 
 \subsection{Power dependence}\label{subsec:exp:observations:pl:power}
-
-
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_power}
@@ -228,9 +226,49 @@ I return to the question of line assignment in \cref{sec:exp:observations:ple}.
         Three additional lines, indicated by arrows, with varying power dispersion are visible.
         Right panel shows a fit to data at $P=\qty{1}{\micro\watt}$.
         A sum of seven individual lines (dashed, gray) is required to fit the data.
+        The dashed gray lines are the individual contributions.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_power}
 \end{figure}
+
+As outlined in \cref{sec:exp:theory:complexes}, the dependence of emitted \gls{pl} power on excitation power of individual emission lines can help inferring the excitonic species responsible.
+Moreover, as the density of excitons depends on the excitation power, interaction effects between them influence the energy of the emission.
+Such a measurement is shown in the left panel of \cref{fig:exp:pl:doped_M1_05_49-2_power} for the same common-mode voltage as in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} and $\VDM = \qty{-2.7}{\volt}$ (\ie, corresponding to the lowest line in that plot) where the \gls{2deg} is completely depleted..
+Two qualitatively different regimes can be observed as indicated by the dashed gray lines as guides to the eye.
+Below \qty{10}{\nano\watt} excitation power, corresponding to approximately \qty{0.75}{\watt\per\square\centi\meter} at the beam diameter measured in \cref{part:setup}, the main line displays a blueshift logarithmic in excitation power.
+Above this value, the blueshift is much less pronounced.
+At powers above \qty{10}{\nano\watt}, two additional lines on the low-energy side of the main peak become visible that appear to converge towards higher powers, while above \qty{100}{\nano\watt} a line appears on the high-energy side that has a similar blueshift as the main peak at low powers.
+In principle, the blueshift as function of power is to be expected.
+Increasing the excitation power increases the density of excitons, either because they are spatially localized or confined or because of a finite diffusion speed.
+The increased density corresponds to an increased overlap of single exciton's constituents and thus in turn leads to an increasingly repulsive Coulomb interaction that raises their energy.\sidenote{
+    Of course, the opposite -- an attractive interaction -- is also possible for small numbers of excitons, resulting in biexcitons.
+    The two cases can be thought of analagously as bonding and anti-bonding orbital configurations.
+}
+This mechanism underpins the use of exciton traps such as \glspl{saqd} as single-photon sources; upon spectrally filtering on the emission wavelength of a single exciton, only a single photon can be emitted from the trap at a time since the presence of another exciton in the trap would shift the emission energy of both. % TODO: move this somewhere else
+It is not understood though why the blueshift abruptly changes in quality at \qty{10}{\nano\watt} excitation power.
+
+The right panel shows a line cut taken at \qty{1}{\micro\watt}.
+A weighted sum of seven individual Voigt profile line shapes~\cite{VoigtProfileWiki},
+\begin{subequations}\label{eq:exp:voigt}
+    \begin{equation}\tag{\ref{eq:exp:voigt}}
+        V(E; \sigma, \gamma) = G(E; \sigma) \ast L(E; \gamma),
+    \end{equation}
+    that is, a convolution of Gaussian and Lorentzian line shapes given by
+    \begin{align}
+        G(x; \sigma) &= \frac{1}{\sigma\sqrt{2\pi}}\exp(-\frac{x^2}{2\sigma^2}), \label{eq:exp:gaussian} \\
+        L(x; \gamma) &= \frac{1}{\pi}\frac{\gamma}{\gamma^2 + x^2}, \label{eq:exp:lorentzian}
+    \end{align}
+\end{subequations}
+is required to obtain an adequate fit.
+The Voigt profile arises from a combination of two separate line broadening mechanisms that manifest as a Gaussian (\cref{eq:exp:gaussian}) and Lorentzian (\cref{eq:exp:lorentzian}) line shape.
+The former describes inhomogeneous broadening due to noise faster than the data acquisition time, whereas the latter is the homogeneous broadening due to for example the finite lifetime of the emitting state.\sidenote{
+    This is also known as the linewidth's transform limit; energy and (life)time are Fourier pairs by Heisenberg's uncertainty principle.
+}
+All but the two outermost lines in the best fit are dominated by the inhomogeneous, Gaussian contribution to \cref{eq:exp:voigt} with widths $\sigma$ in the range of \qtyrange{0.1}{1}{\milli\electronvolt} and a peak separation on the order of \qty{2}{\milli\electronvolt}.
+According to \citer{Descamps2021}, the lifetime of a Stark-shifted exciton is on the order of \qty{1}{\nano\second} due to the reduced wave function overlap.
+This corresponds to a homogeneous linewidth of $2\gamma = \flatfrac{\hbar}{\tau} \sim \qty{660}{\nano\electronvolt}$, several orders of magnitude below the observed linewidth, and it is thus consistent with the fact that most peaks are best fit by inhomogeneously broadened line shapes.
+The large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
+Where it is possible to track individual peaks as function of excitation power, their power dependence is linear, $\int\dd{E} V(E)\propto P$, suggesting neutral excitons or band-to-band recombination as origins of the emission.
 
 \begin{figure*}
     \centering
@@ -243,11 +281,26 @@ I return to the question of line assignment in \cref{sec:exp:observations:ple}.
     ]{
         Wide-range \gls{pl} parameter sweep on a large exciton trap plotted as function of excitation power and detection energy.
         Rows are data for three different excitation wavelengths, columns for four different top gate voltages \VT and share color and line cut scales.
-        Line cuts are taken at the indicated positions of $P = \qtylist{7;16;35}{\nano\watt}$ and drawn scaled by the fraction of excitation power with respect to \qty{35}{\nano\watt}.
+        Line cuts are taken at the indicated positions of $P_{\mathrm{det}} = \qtylist{7;16;35}{\nano\watt}$ and drawn scaled by the fraction of excitation power with respect to \qty{35}{\nano\watt}.
     % Atomic step fluctuations would shift by ~900 μeV (a = 5.6 Α)
     }
     \label{fig:exp:pl:doped_M1_05_49-2_multiplets}
 \end{figure*}
+
+A possible explanation for the multitude of lines is thus that they originate from different spatial locations, a hypothesis we return to in \cref{subsec:exp:observations:pl:spatial}.
+First, let let us conclude this section with a large parameter sweep of this trap, shown in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets}.
+Each of the three rows (with separate panels for line cuts each) show data for different excitation wavelengths, $\lambda_{\mr{exc}}$, each of the columns show data for different top gate voltage, \VT, and the \gls{pl} is plotted as function of detection energy, $E_{\mr{det}}$, and excitation power, $P_{\mr{exc}}$.
+The line cuts taken at lower powers (blue and green) are scaled to match the one at the highest power (orange) assuming a linear power dependence.
+For all data $\VB = \qty{0}{\volt}$ so that $\VT = \VDM = \VCM$.
+Despite the comparatively small changes in voltage, the behavior of the sample changes significantly.
+Whereas for $\VT = \qty{-2.08}{\volt}$ the observed \gls{pl} features are similar to those in \cref{fig:app:exp:observations:2deg_pl_power_dependence},
+at $\VT = \qty{-1.92}{\volt}$ there is a very large number of lines in the spectrum, most but not all of which share the same blueshift as function of excitation power.
+The effect of a different excitation wavelength appears to mostly be a shift of the features along the excitation power axis and thus simply a change in absorption efficiency, although some features also change qualitatively.
+I discuss the wavelength dependence in more detail in \cref{sec:exp:observations:ple}.
+
+So what is the origin of the substructure of the \gls{pl} emission?
+The peak distance is on the order of \qty{1}{\milli\electronvolt}.
+This value matches fairly closely the order of magnitude of change in ground state energy, \qty{900}{\micro\electronvolt}, we would expect from fluctuations in the width of the \gls{qw} by one atomic layer of \ch{GaAs} with lattice constant $a = \qty{5.65}{\angstrom}$ for the design well width $L = \qty{20}{\nano\meter}$ (\cref{sec:exp:theory:pl}).
 
 \subsection{Spatial dependence}\label{subsec:exp:observations:pl:spatial}
 As mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.

@@ -48,7 +48,7 @@ Many-body effects due to localized photo-holes scattering with electrons of the 
 The intensity of the \gls{pl} at the Fermi edge relative to recombination at the band edge ($k_{\parallel} = 0$) is thus an indicator of the \gls{qw} interface quality and degree of alloy fluctuations, both of which lead to hole localization~\cite{Melin2000,Gabbay2008}.
 
 Free electron-hole pairs created by photo-excitation can form hydrogenic bound states due to the Coulomb attraction of their opposite electric charges, \emph{excitons}.
-In two dimensions, this effect is strongly enhanced due to the increased overlap of electron and hole wavefunctions.
+In two dimensions, this effect is strongly enhanced due to the increased overlap of electron and hole wave functions.
 Furthermore, the reduced dimensionality also enhances the binding energy from $\sim\qty{4}{\milli\electronvolt}$ in bulk \ch{GaAs} to up to four times that in \ch{GaAs} \glspl{qw}~\cite{Andreani1990,Gilliland1997}.
 Rather than the continuum of the joint density of states of valence and conduction band discussed previously, excitons are discrete states whose energy is lower than the band gap energy by the binding energy, $E_X = E_{\mr{g}} - E_{\mr{b}}$.
 In doped \glspl{qw} hosting a \gls{2deg}, the free carriers can screen the exciton binding energy and lead to an ionized electron-hole plasma~\cite{Palmieri2020}.
@@ -63,7 +63,7 @@ For this, we return to undoped structures for simplicity.
     \centering
     \includegraphics{img/pdf/experiment/in_plane_field}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
-        Effect of an in-plane electric field on an exciton wavefunction.
+        Effect of an in-plane electric field on an exciton wave function.
         In the hole's reference frame, the electron sees a static attractive Coulomb potential (magenta), resulting in a bound state (dotted gray line, wave function sketched in black).
         Applying an electric field ($F=\qty{100}{\milli\volt\per\micro\meter}$, dashed gray lines) tilts the Coulomb potential (green) and leads to a transparent barrier through which the electron can tunnel out.
     % In-plane fields -> field ionization -> line broadening \cite{Miller1985}
@@ -77,7 +77,7 @@ The hole generates the Coulomb potential
     V(r) = \frac{e}{4\pi\eps_0\eps_{\mr{r}}\abs{r}},
 \end{equation}
 where $\eps_{\mr{r}} = \num{13.3}$ is the relative permittivity of \ch{GaAs} at low temperatures, which attracts the electron by the Coulomb energy $E(r) = qV(r) = -eV(r)$.
-\Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wavefunction sketched in black.
+\Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wave function sketched in black.
 The electron-hole separation $r$ is shown in units of the exciton Bohr radius in two dimensions~\cite{Olsen2016}
 \begin{equation}
     a_{\mr{B}} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
@@ -86,7 +86,7 @@ with $\mu$ the reduced effective mass of conduction and heavy-hole valence bands
 
 We now apply an electric field $F$.
 This modifies the potential seen by the electron by $erF$ as sketched in green \cref{fig:exp:theory:in_plane_field}.
-Ignoring changes to the electron wavefunction, we can see that the electron can tunnel out of the Coulomb potential, leading to \emph{field-induced ionization} of the exciton.
+Ignoring changes to the electron wave function, we can see that the electron can tunnel out of the Coulomb potential, leading to \emph{field-induced ionization} of the exciton.
 Now place the exciton in a \gls{qw} instead of in bulk with the electric field pointed such that it is out-of-plane of the \gls{qw}.
 The field still tilts the potential, but because electrons and holes are confined into a quasi-two-dimensional plane, they cannot escape and hence do not dissociate.
 This is the \gls{qcse}~\cite{Miller1984}.
@@ -104,12 +104,12 @@ and the eigenstates are
     \psi_n(z) = \sqrt{\frac{2}{L}}\sin(\frac{n\pi z}{L}).
 \end{equation}
 The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above (below) the conduction (valence) band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote{
-    In a finite well, the wavefunctions decay exponentially into the barriers and result in slightly lower eigenenergies.
+    In a finite well, the wave functions decay exponentially into the barriers and result in slightly lower eigenenergies.
     However, the qualitative behavior remains the same.
 }
 while the first excited state lies \qty{42}{\milli\electronvolt} higher than the ground state.
-The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wavefunctions of electrons and holes in a band structure diagram.
-Due to the symmetry of the confining potential, the wavefunctions are symmetric around the center of the well.
+The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wave functions of electrons and holes in a band structure diagram.
+Due to the symmetry of the confining potential, the wave functions are symmetric around the center of the well.
 
 \begin{marginfigure}
     \centering
@@ -118,11 +118,11 @@ Due to the symmetry of the confining potential, the wavefunctions are symmetric 
     \caption[\imgsource{img/py/experiment/qcse.py}]{
         \Gls{qcse} in an undoped \acrshort{qw}.
         Top: conduction and heavy-hole valence band profiles along the growth direction.
-        The wavefunctions of the first two eigenstates in the well are drawn in magenta and green, respectively.
+        The wave functions of the first two eigenstates in the well are drawn in magenta and green, respectively.
         The ground state transition is larger by $\Delta E = \qty{17}{\milli\electronvolt}$ than the gap $E_{\mr{g}}$ due to the confinement.
         Bottom: same structure as above with an out-of-plane electric field applied across the structure ($F=\qty{5}{\volt\per\micro\meter}$).
-        Analytical wavefunctions in the infinite-well approximation are shown in magenta and green again.
-        The wavefunctions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
+        Analytical wave functions in the infinite-well approximation are shown in magenta and green again.
+        The wave functions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
         Excitonic effects are not included.
     }
     \label{fig:exp:theory:qcse:bandstructure}
@@ -162,11 +162,11 @@ For large well widths or fields ($eFL/\eps_n\gg 1$), the second term is exponent
 For zero field, one recovers the square well solution (\cref{eq:exp:theory:square_well:psi,eq:exp:theory:square_well:eps}).
 
 The finite-field case is shown in the lower panel of \cref{fig:exp:theory:qcse:bandstructure} for $F=\qty{5}{\volt\per\micro\meter}$.
-Due to the larger effective mass of the heavy holes, the characteristic length scale $\tilde{z}$ is shorter and hence the corresponding wavefunctions are narrower than their electronic counterparts.
+Due to the larger effective mass of the heavy holes, the characteristic length scale $\tilde{z}$ is shorter and hence the corresponding wave functions are narrower than their electronic counterparts.
 The ground state transition energy at this field is \qty{10}{\milli\electronvolt} below the gap or \qty{27}{\milli\electronvolt} lower than in the zero-field case.
 
 For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
-The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wavefunctions is reduced when applying an electric field, pulling the wavefunctions to opposite interfaces~\cite{Miller1984}.
+The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wave functions is reduced when applying an electric field, pulling the wave functions to opposite interfaces~\cite{Miller1984}.
 \Citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 The latter should have a small effect on the ground state energy as argued above.
 
@@ -174,15 +174,15 @@ The latter should have a small effect on the ground state energy as argued above
 % TODO: Motivate why we do all this! -> oscillator strength
 So far, we have considered the \gls{qcse} in a single dimension, as if we were to apply a global electric field.
 However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
-\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wavefunction of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - E_0$, with confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$ and $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$.
+\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
 To obtain a qualitative picture, let us interpolate this result for different fields.
 The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
 At vanishing field, there should be no in-plane potential, $\omega=0$.
-Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/ - \alpha F^{2}$.
+Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
 
-How does this in-plane confinement modify the wavefunction?
+How does this in-plane confinement modify the wave function?
 We ignore the relative motion of electron and hole as the optical properties of the exciton are dominated by the behavior at zero separation for $a_{\mr{B}}/\xi < 1$~\cite{Kavokin1994}, and consider only $\Delta n = 0$ transitions, \ie, electron and hole in the same $z$ quantum state, as $\Delta n\neq 0$ transitions are much weaker~\cite{Davies2009}.
-Let us further initially assume a separable wavefunction and choose cylindrical coordinates according to the symmetry of the potential.
+Let us further initially assume a separable wave function and choose cylindrical coordinates according to the symmetry of the potential.
 We then have
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi}
     \Psi_{np\ell}(z_{\mr{e}}, z_{\mr{h}}, \rho, \phi) = \psi_n(z_{\mr{e}})\psi_n(z_{\mr{h}})\chi_{p\ell}(\rho)\exp(i\ell\phi)
@@ -200,22 +200,22 @@ The eigenenergies of the harmonic oscillator solution, \cref{eq:exp:theory:qcse:
     \eps_{p\ell} = \hbar\omega\left(2p + \abs{\ell} + 1\right).
 \end{equation}
 To account for a finite well width ($L\approx\xi$ in our case), we can to a first approximation perform the replacement $\rho\to r = \sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi}.
-The resulting wavefunction $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
+The resulting wave function $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
 $\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$ for $\ell=0$ as we would expect.
 
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/wavefunction}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
-        Center-of-mass exciton wavefunction (hole sector) in a harmonic trap under an electric field.
+        Center-of-mass exciton wave function (hole sector) in a harmonic trap under an electric field.
         Left column shows the low-field and right column the high-field case.
         Top row is the ground state, middle and bottom row the first and second excited state in the plane, respectively.
-        The out-of-plane wavefunction is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ for $F=\qty{5}{\volt\per\micro\meter}$~\cite[Section~2.2.2]{Descamps2021} and linearly interpolated for \qty{1}{\volt\per\micro\meter} (see text).
+        The out-of-plane wave function is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ for $F=\qty{5}{\volt\per\micro\meter}$~\cite[Section~2.2.2]{Descamps2021} and linearly interpolated for \qty{1}{\volt\per\micro\meter} (see text).
     }
     \label{fig:exp:theory:qcse:wf}
 \end{figure}
 
-At last, we can use the exciton wavefunction $\Psi_{nm\ell}(r, \phi, z_{\mr{e}}, z_{\mr{h}})$ to estimate the \emph{oscillator strength}, a quantity often quoted in semiconductor spectroscopy.
+At last, we can use the exciton wave function $\Psi_{nm\ell}(r, \phi, z_{\mr{e}}, z_{\mr{h}})$ to estimate the \emph{oscillator strength}, a quantity often quoted in semiconductor spectroscopy.
 The oscillator strength puts in relation the quantum mechanical transition rate with the emission rate of a classical oscillator with frequency $\omega = \Delta E/\hbar$ matching the transition energy~\cite{Hilborn1982}.
 For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be written as~\cite{Davies2009}
 \begin{equation}
@@ -281,7 +281,7 @@ The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small inde
 
 \Cref{fig:exp:theory:qcse:field} summarizes the \gls{qcse} in a \gls{qw} additionally confined in the plane by local electric fields.
 The top panel shows the exciton transition energy $\Delta E_{np}$ for $\Delta n = \Delta p = 0$ in solid lines.\sidenote{
-    Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduce the dispersion~\cite{Miller1984}.
+    Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduces the redshift~\cite{Miller1984}.
 }
 The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane \gls{qw} subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
 The ground state shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
@@ -292,7 +292,7 @@ Drawn as a dashed line is the induced dipole moment,
 which is monotonously decreasing for the ground state as function of electric field $F$, consistent with a continuous lowering of energy.
 For the first excited state, the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
 The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
-For the ground state it decays exponentially with the electric field as the overlap between electron and hole wavefunctions, which decay exponentially into the \gls{qw} themselves, is reduced.
+For the ground state it decays exponentially with the electric field as the overlap between electron and hole wave functions, which decay exponentially into the \gls{qw} themselves, is reduced.
 $f_{0p}$ for higher in-plane orbital states ($p > 0$, magenta, decreasing saturation) has an envelope following the ground state's exponential decay but vanishes at $p$ points in $F$ due to the fact that the wave function has $p$ nodes.
 By contrast, $f_{10}$ for the first excited \gls{qw} state (green) does not decay to zero at large fields but also has a zero at an intermediate field because of the wave function's node along $z$.
 
