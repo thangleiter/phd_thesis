@@ -23,8 +23,9 @@
 
 ### How to read this thesis
 - [ ] PDF viewer
-- [ ] Image sources
+- [ ] Image sources & parameters
 - [ ] Disjunct parts
+- [ ] $\mathrm{asinh}$ scale
 
 ### pyspeck
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
