@@ -11,3 +11,4 @@ if [ "$is_branch_checkout" = "1" ]; then
 fi
 
 exit $?
+

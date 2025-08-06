@@ -1,12 +1,13 @@
 {
   "config": {
+    "options": {},
     "preferences": {
       "ascii": "",
       "asciiBibLaTeX": false,
       "asciiBibTeX": true,
       "autoAbbrev": true,
       "autoExport": "immediate",
-      "autoExportDelay": 5,
+      "autoExportDelay": 9,
       "autoExportIdleWait": 10,
       "autoExportPathReplaceDiacritics": false,
       "autoExportPathReplaceDirSep": "-",

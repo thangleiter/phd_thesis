@@ -49,6 +49,15 @@ def markerprops(color, marker='o', markersize=5, markeredgealpha=1.0, markerface
     )
 
 
+def sliceprops(color, alpha=0.66, linestyle='-.', linewidth=0.75):
+    return dict(
+        color=color,
+        alpha=alpha,
+        linestyle=linestyle,
+        linewidth=linewidth
+    )
+
+
 def _lambda2eV(lambda_):
     with misc.filter_warnings('ignore', RuntimeWarning):
         result = const.lambda2eV(lambda_)
@@ -85,3 +94,25 @@ def n_GaAs(T=0):
     n0 = 3.6520 + 1j*0.075663
     # https://doi.org/10.1063/1.114204, we assume they measured at 25C
     return n0 - 2.67e-4 * (25 + const.zero_Celsius - T)
+
+
+def E_AlGaAs(x):
+    # https://www.ioffe.ru/SVA/NSM/Semicond/AlGaAs/bandstr.html#Temperature
+    return 1.519 + 1.155*x + 0.37*x**2
+
+
+def effective_mass(lh=False):
+    # masses from 10.1103/PhysRevB.29.7085
+    # Although 10.1038/s41598-017-05139-w find a much larger electron mass in QWs
+    # due to non-parabolicities: m_ep = 0.169
+    m_ep = 0.0665
+    m_hp = 0.34
+    m_lp = 0.094
+    if lh:
+        return np.array([[m_ep, m_lp]]).T * const.m_e
+    else:
+        return np.array([[m_ep, m_hp]]).T * const.m_e
+
+
+def reduced_mass(lh=False):
+    return (np.multiply.reduce(effective_mass(lh)) / np.add.reduce(effective_mass(lh))).item()

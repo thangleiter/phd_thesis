@@ -162,7 +162,7 @@ Having picked the lenses defining the characteristics of the microscope, let us 
 In a confocal microscope geometry, light is collected using the same lens that is also used for illumination of the sample.
 For excitation with a Gaussian laser beam but non-Gaussian radiation being emitted, this means that two different beam behaviors need to be matched, a task that is likely not possible to achieve completely.
 In the case of photoluminescence in a pristine semiconductor \gls{qw}, the optical interband transitions are well described by in-plane dipole matrix elements~\cite{Gu2013}.
-If, on the other, the light emerges from a \gls{pcc}, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024}.
+If, on the other, the light emerges from a \gls{pcc}, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024a}.
 Here, I discuss dipole emission from the \gls{qw}, which needs to be coupled into a \gls{smf} with near-Gaussian mode profile, invariably resulting in losses.
 A detailed analysis of the electric field profile to compute the expected coupling efficiency from the sample into the \gls{smf} is beyond our scope here as it would require taking into account the full sample and lens geometries as well as diffraction, a task only possible by employing a full-fledged numerical optics simulation suite.
 However, we can make some crude simplifications of the problem to estimate the order of magnitude of these effects.
@@ -302,7 +302,7 @@ the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
         \label{tab:setup:optics:efficiency:measured}
         \begin{tabularx}{\marginparwidth}{lS}
             \toprule
-            \textsc{Opt. element}                   & {Efficiency (\unit{\percent})} \\
+            \textsc{Opt. element}                   & \multicolumn{1}{c}{\textsc{Efficiency} (\unit{\percent})} \\
             \midrule
             Collection + \acrshort{bs}1\tnote{a}    & 37.8 \\
             Analyzer\tnote{b}                       & 67.6 \\
@@ -448,7 +448,7 @@ Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subse
 \Cref{fig:setup:optics:rejection} shows the measurement when the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
 The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate changes the plane of polarization, so the \quarterwave plate should need to be rotated by the same amount to retain a constant angle between plane of polarization and fast axis of the waveplate).
 The \gls{od} reaches maximum values around \num{6.4} -- corresponding to an extinction ratio of \num{2.5e6} -- but quickly falls off by more than an order of magnitude even for small angular displacements.\sidenote{
-    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016a}.
+    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016}.
 }
 Qualitatively, one finds that close to the extinction maximum, the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
 \begin{equation}
@@ -460,7 +460,7 @@ Inserting into \cref{eq:setup:optics:od:eval} yields
     \OD = \log_{10}\left(\frac{P R\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
 \end{equation}
 a fit to which is shown in the right panel of \cref{fig:setup:optics:rejection}, displaying good agreement with the data.
-From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\textdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\textdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
+From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\txtdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\txtdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
 
 The optics between polarizer and analyzer furthermore display chromatic dispersion.
 When changing the excitation wavelength, the angles of \halfwave and \quarterwave plate therefore need to be re-optimized.

@@ -5,8 +5,7 @@
 .idea/shelf/
 .idea/workspace.xml
 
-build/
-bib/
-
 src/img/py/.idea/
+
+build/
 

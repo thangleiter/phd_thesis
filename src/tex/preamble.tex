@@ -1,9 +1,9 @@
 %----------------------------------------------------------------------------------------
 %    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
-
 % Choose the language
 \ifxetexorluatex
+    % TODO: https://github.com/reutenauer/polyglossia/issues/686
     \usepackage{polyglossia}
     \setmainlanguage[variant=american]{english}
 \else
@@ -14,6 +14,7 @@
 % Load the bibliography package
 \PassOptionsToPackage{
     natbib=true,
+    url=false,
     datamodel=software,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
@@ -27,13 +28,14 @@
     license=true
 }
 
-\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
-\addbibresource[label=ownsoft]{bib/01_own_software.bib}
-\addbibresource[label=main]{bib/02_phd_thesis.bib}
-%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;name:My%20Library/collection/00_own_publications.biblatex.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
+%\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
+%\addbibresource[label=ownsoft]{bib/01_own_software.bib}
+%\addbibresource[label=main]{bib/02_phd_thesis.bib}
+%\addbibresource[label=thesispubs]{bib/03_thesis_publications.bib}
+\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9DZH4WT9/00_own_publications.biblatex}
+\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9JGLAL7M/01_own_software.biblatex}
+\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:EHEBFZ3Q/02_phd_thesis.biblatex}
+\addbibresource[label=thesispubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:CTNSY4GR/03_thesis_publications.biblatex}
 
 %----------------------------------------------------------------------------------------
 % Custom packages
@@ -113,7 +115,10 @@
 \usepackage{chemformula}
 \usepackage{physics}
 \usepackage{siunitx}
-\sisetup{per-mode = symbol}
+\sisetup{%
+    per-mode = single-symbol,%
+    list-final-separator = {\text{, and }}%
+}
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 %! end preamble = math
 %----------------------------------------------------------------------------------------
@@ -142,6 +147,11 @@
 \DeclareCaptionLabelFormat{linked}{\hyperlink{lof}{#1~#2}}
 \captionsetup[figure]{labelformat=linked}
 
+% Hyphenation rules
+\begin{hyphenrules}{english}
+    \hyphenation{Lo-rentz-ian}
+    \hyphenation{Gauss-ian}
+\end{hyphenrules}
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
@@ -177,8 +187,8 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
-    tex/publications,
-    tex/software,
+%    tex/publications,
+%    tex/software,
 %    chs/spectrometer/introduction,
 %    chs/spectrometer/theory,
 %    chs/spectrometer/software,
@@ -189,15 +199,21 @@
 %    chs/setup/vibrations,
 %    chs/setup/conclusion,
     chs/experiment/introduction,
+    chs/experiment/theory,
     chs/experiment/mjolnir,
     chs/experiment/observations,
     chs/experiment/conclusion,
+%    chs/filter_functions/comment,
 %    chs/filter_functions/introduction,
-%    chs/filter_functions/prr,
+%    chs/filter_functions/formalism,
 %    chs/filter_functions/time_domain_methods,
 %    chs/filter_functions/validation,
+%    chs/filter_functions/software,
+%    chs/filter_functions/applications,
+%    chs/filter_functions/conclusion,
 %    chs/appendices/setup/optics,
 %    chs/appendices/setup/vibrations,
     chs/appendices/experiment/tmm,
-%    chs/appendices/filter_functions,
+    chs/appendices/experiment/observations,
+%    chs/appendices/filter_functions/filter_functions.tex,
 }

@@ -11,12 +11,12 @@ import pandas as pd
 from PyMoosh import green
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qutil import functools, itertools
-from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_50, make_diverging_colormap,
-                                   make_sequential_colormap)
+from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50,
+                                   make_diverging_colormap, make_sequential_colormap)
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, PATH, init)  # noqa
+from common import MAINSTYLE, MARGINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init, sliceprops  # noqa
 
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/tmm'
@@ -25,7 +25,7 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
-    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
+    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
 
 # Lengths are in units of nm
 WAV = 825
@@ -221,7 +221,7 @@ def plot_interfaces(axs, yacc, yoff, structure, show_emitter=False):
                 if show_emitter:
                     ax.scatter(0, yy - yoff, s=0.5, color=RWTH_COLORS['black'])
             else:
-                ax.axhline(yy - yoff, color=RWTH_COLORS_50['black'], ls=':', lw=0.5, alpha=0.66)
+                ax.axhline(yy - yoff, color=RWTH_COLORS_75['black'], ls=':', lw=0.5, alpha=0.66)
 
 
 def plot_field(fig, structures, Es, window, beam, xlim, mat):
@@ -231,7 +231,7 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
     )
 
     grid = ImageGrid(fig, 111, (2, 2), aspect=False, share_all=False, cbar_mode='single',
-                     cbar_location='right', cbar_size='7.5%', axes_pad=0.1)
+                     cbar_location='right', cbar_size='10%', axes_pad=0.1)
 
     for i, axs in enumerate(grid.axes_row):
         img = axs[1].pcolormesh(
@@ -251,8 +251,8 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
         axs[0].set_aspect(1/150)
         axs[0].set_ylim(ylims[i])
         axs[0].grid(axis='x')
-        axs[0].set_ylabel('$z$ (nm)')
         if i == 1:
+            axs[0].set_ylabel('$z$ (nm)')
             if backend == 'pgf':
                 axs[1].set_xlabel(r'$\flatfrac{x}{w_0}$')
                 axs[0].set_xlabel(label := r'$\lvert E_y\rvert$ (a.u.)')
@@ -263,7 +263,7 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
         plot_interfaces(axs, yaccs[i], yoffs[i], structures[i])
 
         # line cut indicator
-        axs[1].axvline(0, color=RWTH_COLORS_50['black'], ls='-.', lw=0.75, alpha=0.66)
+        axs[1].axvline(0, **sliceprops(RWTH_COLORS_50['black']))
 
     cb = grid.cbar_axes[0].colorbar(img)
     cb.set_label(label)
@@ -275,14 +275,20 @@ def plot_field(fig, structures, Es, window, beam, xlim, mat):
     grid.axes_column[0][1].set_xticks([0, 0.5, 1])
 
 
-def plot_dipole(fig, structures, Ens, window, xlim, mat):
+def plot_dipole(fig, structures, Ens, window, xlim, mat, **grid_kw):
     func = functools.chain(np.real)
     absmax, maskeds, xmasks, xs, yaccs, ylims, ymasks, yoffs, ys = extract_params(
         Ens, func, mat, structures, window, xlim
     )
 
-    grid = ImageGrid(fig, 111, (len(Ens), 1), cbar_mode='single', cbar_location='top',
-                     cbar_pad=0.05, cbar_size='10%', axes_pad=0.075)
+    grid = ImageGrid(fig, 111,
+                     nrows_ncols=grid_kw.pop('nrows_ncols', (len(Ens), 1)),
+                     cbar_mode=grid_kw.pop('cbar_mode', 'single'),
+                     cbar_location=grid_kw.pop('cbar_location', 'top'),
+                     cbar_size=grid_kw.pop('cbar_size', '10%'),
+                     cbar_pad=grid_kw.pop('cbar_pad', 0.05),
+                     axes_pad=grid_kw.pop('axes_pad', 0.075),
+                     **grid_kw)
 
     for i, ax in enumerate(grid):
         img = ax.pcolormesh(xs[i][xmasks[i]], ys[i][ymasks[i]], maskeds[i] / absmax,
@@ -293,14 +299,18 @@ def plot_dipole(fig, structures, Ens, window, xlim, mat):
         ax.set_xlim(xlim)
         ax.set_ylim(ylims[i])
         ax.invert_yaxis()
+        ax.scatter(0, sum(structures[i].thickness[1:get_source_interface(structures[i])]), 5,
+                   color='k')
 
         plot_interfaces([ax], yaccs[i], yoffs[i], structures[i])
 
-    ax.set_xlabel('$x$ (nm)')
-    ax.set_ylabel('$z$ (nm)')
+    grid.axes_row[-1][0].set_xlabel('$x$ (μm)')
+    grid.axes_row[-1][0].set_ylabel('$z$ (μm)')
 
     cb = grid.cbar_axes[0].colorbar(img)
     cb.set_label(r'$\mathrm{Re}\,E_y$ (a.u.)')
+
+    return grid
 
 
 # %% Materials
@@ -370,11 +380,11 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax.plot(thickness, Rs)
     ax.grid()
     ax.set_xlabel('Epoxy thickness (nm)')
-    ax.set_ylabel(r'$\mathcal{R}$')
+    ax.set_ylabel(r'$\mathscr{R}$')
 
     ax2 = ax.twinx()
     ax2.set_ylim(ax.get_ylim())
-    ax2.set_yticks(ticks=[R], labels=[r'$\mathdefault{\mathcal{R}_{\infty}}$'])
+    ax2.set_yticks(ticks=[R], labels=[r'$\mathdefault{\mathscr{R}_{\infty}}$'])
 
     fig.savefig(SAVE_PATH / 'reflectance_epoxy.pdf')
 # %%% Topgate optical
@@ -409,9 +419,9 @@ with (DATA_PATH / 'absorptance_reflectance.tex').open('w') as file:
     file.write(f'% This table is automatically generated by {FILE_PATH}\n'.replace('\\', '/'))
     (df * 100).to_latex(
         file,
-        header=[r'{{$\mathcal{{' + x + r'}}$ (\unit{{\percent}})}}' for x in df.columns],
+        header=[r'{{$\mathscr{{' + x + r'}}$ (\unit{{\percent}})}}' for x in df.columns],
         column_format='lSS',
-        float_format="%.2f"
+        float_format="%.1f"
     )
 # %%% Optimize barrier thickness
 
@@ -447,11 +457,12 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 
     ax.semilogy(wavelengths, As)
     ax.semilogy(wavelengths, As_opt)
-    ax.set_ylabel(r'$\mathcal{A}$')
-    ax.set_xlabel(r'$\lambda$ (nm)')
+    ax.set_ylabel(r'$\mathscr{A}$')
+    ax.set_xlabel(r'$\lambda_0$ (nm)')
     arr = mpl.patches.FancyArrowPatch((WAV, As[wavelengths == WAV].item()),
                                       (WAV, As_opt[wavelengths == WAV].item()),
-                                      arrowstyle='->', mutation_scale=7.5, zorder=5)
+                                      arrowstyle='->', mutation_scale=7.5, zorder=5,
+                                      linewidth=0.75)
     ax.add_patch(arr)
     ax.annotate(rf'$\times {(As_opt[wavelengths == WAV] / As[wavelengths == WAV]).item():.2g}$',
                 (1, .5), xycoords=arr, ha='left', va='center')
@@ -487,26 +498,18 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
     fig.savefig(SAVE_PATH / 'tmm_field.pdf')
 
 # %%% Dipole emitter
-structures, Ens, window = analyze_dipole(idx=(1, 2), barrier_thickness=90)
-
-# %%% Plot different gate stacks
-with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig = plt.figure(figsize=(MARGINWIDTH, 5))
-    plot_dipole(fig, structures, Ens, window, xlim=(-1000, 1000), mat=epoxy)
-    fig.savefig(SAVE_PATH / 'tmm_green.pdf')
-
-# %%% Dipole emitter optimized
+structures, Ens, window = analyze_dipole(barrier_thickness=90)
 structures_opt, Ens_opt, window = analyze_dipole(barrier_thickness=best)
 
-# %%% Plot different gate stacks
-with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig = plt.figure(figsize=(MARGINWIDTH, 5))
-    plot_dipole(fig, structures_opt, Ens_opt, window, xlim=(-1000, 1000), mat=epoxy)
-    fig.savefig(SAVE_PATH / 'tmm_green_opt.pdf')
+# %%%% Plotit
+with mpl.style.context(MAINSTYLE, after_reset=True):
+    fig = plt.figure(figsize=(TOTALWIDTH, 2.7))
+    grid = plot_dipole(fig, [structures[0], structures[-1], structures_opt[0], structures_opt[-1]],
+                       [Ens[0], Ens[-1], Ens_opt[0], Ens_opt[-1]], window, xlim=(-1000, 1000),
+                       mat=epoxy, nrows_ncols=(2, 2), cbar_location='right', cbar_size='2.5%',
+                       cbar_pad=None)
 
-# %%% Plot optimized
-with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig = plt.figure(figsize=(MARGINWIDTH, 2))
-    plot_dipole(fig, [structures[-1], structures_opt[-1]], [Ens[-1], Ens_opt[-1]], window,
-                xlim=(-1000, 1000), mat=epoxy)
-    fig.savefig(SAVE_PATH / 'tmm_green_opt_tgbg.pdf')
+    grid.axes_row[1][1].set_xticks(t := [-1000, 0, 1000], [rf'$\mathdefault{{{t}}}$' for t in t])
+    grid.axes_row[1][0].set_xticks(t := [-1000, 0, 1000],
+                                   [rf'$\mathdefault{{{t}}}$' for t in t[:-1]] + [''])
+    fig.savefig(SAVE_PATH / 'tmm_green.pdf')

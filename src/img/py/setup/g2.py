@@ -47,7 +47,7 @@ if EXTRACT_DATA:
     save_to_hdf5(20, DATA_PATH / 'g2.h5')
 
 # %% A simple PL spectrum
-power_dependence = xr.load_dataset(DATA_PATH / 'power_dependence.h5')
+power_dependence = xr.load_dataset(DATA_PATH / 'power_dependence.h5', engine='h5netcdf')
 # Plot with interactive sliders
 # fig, ax, sliders = plot_nd(power_dependence, norm=mpl.colors.AsinhNorm(vmin=0))
 
@@ -111,7 +111,7 @@ with plotting.changed_plotting_backend('qtagg'):
     axs[1].set_ylabel('$P$ (yW)')
     axs[0].set_ylabel(r'$\gamma$ (μeV)')
 # %% G2 measurement
-g2 = xr.load_dataset(DATA_PATH / 'g2.h5')
+g2 = xr.load_dataset(DATA_PATH / 'g2.h5', engine='h5netcdf')
 
 g2_data = g2.tagger_correlation_1_data_normalized
 g2_data_log = g2.tagger_histogram_log_bins_1_g2

@@ -37,12 +37,14 @@ def plot_nd(ds_or_id, **kwargs):
         cm = json.loads(ds.attrs['custom_metadata'])
         print(s := f'Run {ds.run_id}: {ds.attrs["ds_name"]}')
         print('='*len(s))
-        print('\nMeasurement initialization settings')
-        print('-'*len(s))
-        pprint.pprint(cm['measurement_initialization_settings'])
-        print('\nMeasurement parameter contexts')
-        print('-'*len(s))
-        pprint.pprint(cm['measurement_parameter_contexts'])
+        if mis := cm.get('measurement_initialization_settings', False):
+            print('\nMeasurement initialization settings')
+            print('-'*len(s))
+            pprint.pprint(mis)
+        if mpc := cm.get('measurement_parameter_contexts', False):
+            print('\nMeasurement parameter contexts')
+            print('-'*len(s))
+            pprint.pprint(mpc)
 
     return plotting.plot_nd(ds, **kwargs), ds
 
@@ -73,6 +75,59 @@ def browse_db(initial_run_id: int = 1, db: str | None = None, **plot_nd_kwargs):
     print('Pass keyword arguments through to mjolnir.plotting.plot_nd() to configure the plot.')
     print('A secondary window opens up that displays some metadata of the currently selected run.')
     print()
+
+
+def print_params(ds, voltages=True, wavelength=True, power=True, tex=False):
+    print('Measurement:', ds.ds_name)
+    s = json.loads(ds.attrs['snapshot'])
+    try:
+        ep = s['station']['instruments']['excitation_path']['parameters']
+        sample = s['station']['instruments'][ds.sample_name]
+    except KeyError:
+        print('No snapshot.')
+        return
+
+    active_trap = sample['parameters']['active_trap']['value']
+    if isinstance(active_trap, int):
+        active_trap = sample['name'] + f'_trap_{active_trap}'
+    elif len(parts := active_trap.split(',')) > 1:
+        active_trap = parts[0].lstrip('Trap(name=')
+    else:
+        active_trap = active_trap.split()[1]
+    gates = sample['submodules']['traps']['channels'][active_trap]['parameters']
+    if all(gate.startswith(active_trap) for gate in gates):
+        prefix = f'{active_trap}_'
+    else:
+        prefix = ''
+
+    if voltages:
+        for typ in ('guard', 'central'):
+            for mode in ('difference_mode', 'common_mode'):
+                if f'{prefix}{typ}_{mode}' in gates:
+                    if tex:
+                        print(r'\thevoltage{', end='')
+                    else:
+                        print(f'Trap {active_trap} {typ} {mode.replace("_", " ")}: ', end='')
+                    print(f"{gates[f'{prefix}{typ}_{mode}']['value']:.2f}",
+                          end='' if tex else '\n')
+                    if tex:
+                        print('}{' + typ[0] + ''.join(m[0] for m in mode.split('_')) + '}')
+    if wavelength:
+        if tex:
+            print(r'\thewavelength{', end='')
+        else:
+            print('Excitation wavelength: ', end='')
+        print(f"{ep['wavelength']['value']:.1f}", end='' if tex else '\n')
+        if tex:
+            print('}')
+    if power:
+        if tex:
+            print(r'\thepower{', end='')
+        else:
+            print('Excitation power at sample: ', end='')
+        print(f"{ep['power_at_sample']['value']*1e6:.2g}", end='' if tex else '\n')
+        if tex:
+            print(r'}{\micro}')
 
 
 @_cleanup_figs

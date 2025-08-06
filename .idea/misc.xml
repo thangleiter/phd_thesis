@@ -3,8 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="py313" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="py313" project-jdk-type="Python SDK" />
-  <component name="PythonCompatibilityInspectionAdvertiser">
-    <option name="version" value="3" />
-  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="TeX Live 2025 SDK" project-jdk-type="TeX Live SDK" />
 </project>

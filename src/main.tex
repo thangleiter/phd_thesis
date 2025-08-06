@@ -129,7 +129,7 @@
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
-% \include{chapters/preface.src.tex}
+% \include{chapters/preface.tex}
 % \index{preface}
 
 %----------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@
 \setchapterstyle{kao} % Choose the default chapter heading style
 
 % TODO: Abstract!
-% \include{chapters/introduction.src.tex}
+% \include{chapters/introduction.tex}
 
 \pagelayout{wide} % No margins
 \part{A Flexible \python Tool For Fourier-Transform Noise Spectroscopy}
@@ -217,6 +217,7 @@
 \glsresetall
 
 \include{chs/experiment/introduction}
+\include{chs/experiment/theory}
 \include{chs/experiment/mjolnir}
 \include{chs/experiment/observations}
 \include{chs/experiment/conclusion}
@@ -227,10 +228,14 @@
 \pagelayout{margin} % Restore margins
 \glsresetall
 
+\include{chs/filter_functions/comment}
 \include{chs/filter_functions/introduction}
-\include{chs/filter_functions/prr}
+\include{chs/filter_functions/formalism}
 \include{chs/filter_functions/time_domain_methods}
 \include{chs/filter_functions/validation}
+\include{chs/filter_functions/software}
+\include{chs/filter_functions/applications}
+\include{chs/filter_functions/conclusion}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
@@ -243,7 +248,8 @@
 \include{chs/appendices/setup/optics}
 \include{chs/appendices/setup/vibrations}
 \include{chs/appendices/experiment/tmm}
-\include{chs/appendices/filter_functions}
+\include{chs/appendices/experiment/observations}
+\include{chs/appendices/filter_functions/filter_functions}
 
 %----------------------------------------------------------------------------------------
 
@@ -279,6 +285,11 @@
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
 
 % \printindex % Output the index
+
+%----------------------------------------------------------------------------------------
+%   DECLARATION OF AUTHORSHIP
+%----------------------------------------------------------------------------------------
+\input{tex/declaration}
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER
