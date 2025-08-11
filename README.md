@@ -19,7 +19,7 @@
 - [ ] Use `\subequations{}` where appropriate
 
 ## Content
-- [ ] Acknowledgements / author contributions
+- [ ] Acknowledgements
 
 ### How to read this thesis
 - [ ] PDF viewer
@@ -41,6 +41,9 @@
 - [ ] Vibration spectra on lab floors?
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 
+### Experiment
+- [ ] author contributions
+
 ### FF
 - [ ] I/we
 - [ ] Hilbert space calculations in appendix
@@ -49,6 +52,7 @@
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
 - [ ] split up `prr.tex`
+- [ ] author contributions
 
 ## Code
 - [ ] `uv pip freeze` *or* just make installable.
@@ -56,6 +60,8 @@
 ## Layout
 - [ ] Tune the bibliography style
     - [ ] arXiv IDs
+    - [x] remove "visited on"
+    - [ ] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
 - [ ] Part title page design
