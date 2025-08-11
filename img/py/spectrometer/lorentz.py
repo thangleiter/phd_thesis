@@ -6,7 +6,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numba as nb
 import numpy as np
-import scipy as sc
+import scipy as sp
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
 from qutil import functools, const, signal_processing as sp
@@ -89,8 +89,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         τ = np.insert(np.geomspace(1e-3, L, L), 0, 0)
         ln, = ax.plot(τ / τ_cs[1], corr(τ, σ, τ_c) / σs[1] ** 2, '-')
 
-        C = np.array([sc.signal.correlate(*[x]*2) for x in X])
-        τ = sc.signal.correlation_lags(L, L)
+        C = np.array([sp.signal.correlate(*[x]*2) for x in X])
+        τ = sp.signal.correlation_lags(L, L)
         # select only a few of the data points
         log_indices = np.logspace(0, np.log10(L), num=25, endpoint=True) - 1
         idx = np.unique(np.round(log_indices).astype(int))
@@ -108,7 +108,7 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ln, = ax.plot(f * 2 * np.pi,
                       psd(f, σ, τ_c) / (2 * τ_cs[1] * σs[1] ** 2))
 
-        fx, Sx = sc.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False, return_onesided=False)
+        fx, Sx = sp.signal.periodogram(X, fs=1/Δt, axis=-1, detrend=False, return_onesided=False)
         # select only a few of the data points
         log_indices = np.logspace(0, np.log10(len(fx)), num=15, endpoint=True) - 1
         idx = np.unique(np.round(log_indices).astype(int))

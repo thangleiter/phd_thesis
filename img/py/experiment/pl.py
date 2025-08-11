@@ -1,23 +1,25 @@
 # %% Imports
+import contextlib
 import os
 import pathlib
 import sys
-from typing import Literal
 from collections.abc import Sequence
+from io import StringIO
+from typing import Literal
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy as sc
+import scipy as sp
 import xarray as xr
 from mjolnir.helpers import save_to_hdf5
 from mjolnir.plotting import plot_nd  # noqa
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qcodes.dataset import initialise_or_create_database_at
 from qutil import const, itertools
-from qutil.plotting import reformat_axis
-from qutil.plotting.colors import (make_sequential_colormap,
-                                   RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50, RWTH_COLORS_25)
+from qutil.plotting import changed_plotting_backend, reformat_axis
+from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_25, RWTH_COLORS_50, RWTH_COLORS_75,
+                                   make_sequential_colormap)
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
@@ -212,11 +214,11 @@ def parabola(x, a, b, c):
 
 def voigt_lineshape(x, A, mu, sigma, gamma):
     z = (x - mu + 1j*gamma)/(sigma*np.sqrt(2))
-    result = np.real(sc.special.wofz(z))
+    result = np.real(sp.special.wofz(z))
     try:
         with np.errstate(over='raise', invalid='raise'):
             norm = (np.exp(gamma**2/(2*sigma**2))
-                    * (1 - sc.special.erf(gamma/(np.sqrt(2)*sigma))))
+                    * (1 - sp.special.erf(gamma/(np.sqrt(2)*sigma))))
         if np.any(norm == 0):
             raise FloatingPointError
         norm /= A  # height of peak
@@ -349,7 +351,7 @@ annotate_kwargs = dict(color=RWTH_COLORS_75['black'], fontsize=txtfontsize, arro
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, ax = plt.subplots(layout='constrained', figsize=(MARGINWIDTH, 1.5))
     ax.plot(x := da.ccd_horizontal_axis, y := da.sel(anc_y_axis_steps=-75))
-    spl = sc.interpolate.make_smoothing_spline(x[y != 0], np.log10(abs(y)[y != 0]), lam=5e-11)
+    spl = sp.interpolate.make_smoothing_spline(x[y != 0], np.log10(abs(y)[y != 0]), lam=5e-11)
     ax.plot(x, 10**spl(x))
     ax.axline((1.49554, 23.7781), (1.5008, 90.1246), alpha=0.66, ls='--',
               color=RWTH_COLORS_75['black'])
@@ -521,6 +523,7 @@ with mpl.style.context(MAINSTYLE, after_reset=True):
 ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_multiplets.h5', engine='h5netcdf')
 print_params(ds)
 
+# %%%% Plot
 fig = plt.figure(layout='constrained', figsize=(TOTALWIDTH, 5))
 axs = generate_mosaic(fig, (3, 4), slc=True, cb='row', cb_width_ratio=1/15, slc_height_ratio=1/3,
                       sharex=True, sharey='row')
@@ -591,6 +594,24 @@ fig.supylabel(r'$P_{\mathrm{det}}$ (nW)', x=-0.04, fontsize='medium')
 fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
 
+# %%%% plot_nd
+with changed_plotting_backend('qtagg'), contextlib.redirect_stderr(StringIO()):
+    fig, axes, sliders = plot_nd(ds, vertical_target='power_at_sample', yscale='log',
+                                 norm=mpl.colors.AsinhNorm(vmin=0), rasterized=True,
+                                 fast=False, style=MAINSTYLE, fig_kw=dict(figsize=(6.33585, 4.6)))
+    sliders['doped_M1_05_49_2_trap_2_central_top'].set_val(-2)
+    sliders['excitation_path_wavelength'].set_val(800)
+    sliders['excitation_path_power_at_sample'].set_val(
+        ds.excitation_path_power_at_sample.sel(
+            excitation_path_power_at_sample=3e-8,
+            method='nearest'
+        )
+    )
+    cbar = axes['plots']['main'].collections[0].colorbar
+    cbar.set_ticks([tick for tick in cbar.get_ticks() if tick != 0.1])
+
+    fig.savefig(SAVE_PATH / 'plot_nd.pdf')
+    plt.close(fig)
 # %%% Positioning
 day = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ypos.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'

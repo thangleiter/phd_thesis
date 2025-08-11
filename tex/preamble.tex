@@ -3,7 +3,6 @@
 %----------------------------------------------------------------------------------------
 % Choose the language
 \ifxetexorluatex
-    % TODO: https://github.com/reutenauer/polyglossia/issues/686
     \usepackage{polyglossia}
     \setmainlanguage[variant=american]{english}
 \else
@@ -119,7 +118,8 @@
 \usepackage{siunitx}
 \sisetup{%
     per-mode = single-symbol,%
-    list-final-separator = {\text{, and }}%
+    list-final-separator = {\text{, and }},%
+    print-unity-mantissa = false,%
 }
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 %! end preamble = math
@@ -137,6 +137,9 @@
 % Make cleveref use "Appendix" instead of "Chapter" after \appendix
 % https://github.com/latex3/hyperref/issues/362
 \AddToHook{cmd/appendix/before}{\crefalias{chapter}{appendix}}
+
+% Add sidenotes to the exceptions for xspace so that macros that end on \xspace don't get a space if followed by \sidenote
+\xspaceaddexceptions{\sidenote}
 
 % Set pdf version, but tectonic still thinks it's 1.5
 % https://tex.stackexchange.com/a/618019
@@ -190,7 +193,7 @@
 %----------------------------------------------------------------------------------------
 \includeonly{
 %    tex/publications,
-%    tex/software,
+    tex/software,
 %    chs/spectrometer/introduction,
 %    chs/spectrometer/theory,
 %    chs/spectrometer/software,
@@ -200,11 +203,11 @@
 %    chs/setup/optics.tex,
 %    chs/setup/vibrations,
 %    chs/setup/conclusion,
-    chs/experiment/introduction,
-    chs/experiment/theory,
+%    chs/experiment/introduction,
+%    chs/experiment/theory,
     chs/experiment/mjolnir,
-    chs/experiment/observations,
-    chs/experiment/conclusion,
+%    chs/experiment/observations,
+%    chs/experiment/conclusion,
 %    chs/filter_functions/comment,
 %    chs/filter_functions/introduction,
 %    chs/filter_functions/formalism,
@@ -215,7 +218,7 @@
 %    chs/filter_functions/conclusion,
 %    chs/appendices/setup/optics,
 %    chs/appendices/setup/vibrations,
-    chs/appendices/experiment/tmm,
-    chs/appendices/experiment/observations,
+%    chs/appendices/experiment/tmm,
+%    chs/appendices/experiment/observations,
 %    chs/appendices/filter_functions/filter_functions.tex,
 }
