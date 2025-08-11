@@ -193,7 +193,7 @@ In and of itself, this parameter should not reduce the charge carrier density in
 }
 One possible explanation for the observed behavior is the depletion of the \gls{2deg} by electrons tunneling out of the well and recombining with the donor ions, rendering one of the doped barriers electrically neutral.
 With the doping pulling down the conduction band between \qty{50}{\nano\meter} and \qty{90}{\nano\meter} away from the \gls{qw}, the tunneling rate will be more pronounced than estimated for the undoped case in \cref{sec:exp:theory:qcse}.
-Taking the large trap diameter in this case into account, there are $\sim\num[print-unity-mantissa=false]{1e5}$ electrons in the unbiased \gls{qw} on the area of the trap gates.
+Taking the large trap diameter in this case into account, there are $\sim\num{1e5}$ electrons in the unbiased \gls{qw} on the area of the trap gates.
 Thus, at a tunneling rate of \qty{1}{\mega\hertz}, all electrons would tunnel out of the \gls{qw} within \qty{100}{\milli\second} on average, putting a response of the system into the steady state within the fairly long time scales of a \gls{pl} measurement\sidenote{
     Say \qtyrange{0.1}{10}{\second}.
 }
@@ -420,7 +420,7 @@ Applying an external electric field should further enhance the light-hole transi
 Furthermore, the electric field depletes the \gls{2deg} as we have seen in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} and should result in a laterally local potential well for excitons with discrete and approximately equidistant energy levels as laid out in \cref{subsec:exp:theory:qcse:trap}.
 If such were the case, we would expect resonances in the \gls{ple} at intervals corresponding to the level spacing $\hbar\omega$ of the potential well that would confirm 0D-confinement.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
     \caption[
@@ -440,7 +440,7 @@ If such were the case, we would expect resonances in the \gls{ple} at intervals 
         The vertical white bar is missing data.
         (c) Line cuts of the \gls{pl} (a, solid lines) and \gls{ple} maps (b, dashed) taken at the horizontal dash-dotted gray lines there.
         At $\VDM = \qty{-2.65}{\volt}$, the \gls{pl} line is split by \qty{3.7}{\milli\electronvolt} which is replicated in the \gls{ple} spectrum \qty{40.6}{\milli\electronvolt} higher.
-%        Arrows indicate the Stokes shift $\Delta E_{\mr{S}}$, which is approximately constant (although assignment of the gap peak is difficult for \qtylist{1.57;0}{\volt}) until the \gls{2deg} is fully depleted and the exciton resonance shifts quadratically with the electric field.
+        The black line shows a fit to a trion and exciton following \citer{Esser2001}.
         The features at around \qty{1.555}{\electronvolt} do not shift with the voltage and are thus likely unrelated to the trap.
         (d) Line cuts of the entire data set at single detection energies indicated by vertical dash-dot-dotted lines in (a).
         Horizontal dash-dotted lines are again the positions of the line cuts shown in (c).
@@ -454,14 +454,57 @@ Due to the high excitation power, the measurement does not resolve the multiplet
 The top left panel (a) shows a regular \gls{pl} map as function of \VDM at $\lambda_{\mr{exc}} = \qty{795}{\nano\meter}$ and essentially reproduces the measurement of \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode}.
 Panel (b) shows the integrated \gls{ple} following \cref{eq:exp:ple}.
 That is, the rightmost column corresponds to panel (a) integrated along $E_{\mr{det}}$.
-Several interesting features are notable.
-Following our considerations above, the onset of \gls{ple} absorption coincides with the high-energy shoulder of the \gls{pl} emission over the entire range of voltages investigated.
-For $\VDM > \qty{-1.6}{\volt}$, the absorption edge is replicated some \qty{10}{\milli\electronvolt} higher, although the splitting reduces for larger Stark shifts.
+Several interesting features are noteworthy.
+In line with our considerations above, the onset of \gls{ple} absorption coincides with the high-energy shoulder of the \gls{pl} emission over the entire range of voltages investigated.
+For $\VDM > \qty{-1.6}{\volt}$, the absorption edge is replicated some \qty{10}{\milli\electronvolt} higher in energy, although the splitting reduces for larger Stark shifts.
+A few possible explanations for this feature come to mind.
+First, the two lines could correspond to the negative trion and the neutral exciton.
+However, the energy difference of $\sim\qty{10}{\milli\electronvolt}$ seems too large for the difference in binding energies, usually on the order of a few \unit{\milli\electronvolt}.
+Although similar features have been observed and assigned as such~\cite{Brown1996,Huard2000,Yusa2000}, the splittings in those studies were smaller while at the same time the \glspl{qw} were thinner and should thus lead to larger binding energies~\cite{Esser2000,Esser2001}.
+A better match with the observed energy difference is the excitonic binding energy of $\sim\qty{8}{\milli\electronvolt}$, which would imply that the feature at higher energy would correspond to free electron-hole pairs.
+Alternatively, the lines could correspond to heavy- and light-hole excitons, whose splittings have been found to be on the order of \qty{7}{\milli\electronvolt} for undoped \glspl{qw} of this width~\cite{ElKhalifi1989} although also smaller values have been reported~\cite{Bataev2022}.
+The difference in electric-field dependence of the respective binding energies is hard to predict, but the Stark shift should be smaller for light-hole excitons due to their smaller effective mass and hence the narrowing of the energy splitting between the lines for higher voltages is counter-intuitive.
+Again, though, the presence of the \gls{2deg} in this regime may crucially alter the physics.
+Finally, we can look to excited \gls{qw} states as candidates.
+From \cref{sec:exp:theory:qcse}, we expect subband splittings to be on the order of \qty{50}{\milli\electronvolt} for the $n_{\mr{c}}=1$ and $n_{\mr{hh}}=1$ transition and \qty{8}{\milli\electronvolt} for the (optically suppressed) $n_{\mr{c}}=0$ and $n_{\mr{hh}}=1$ transition at zero field.
+While the last matches fairly closely what we observe at zero field, it too should increase with increasing electric field rather than decrease.
+Moreover, from the calculation of the oscillator strength (\cref{fig:exp:theory:qcse:field}), we would expect the optical coupling to vanish at a certain electric field value whenever excited states are involved, which is also not observed.
 
-The Stokes shift between Fermi edge of the \gls{pl} emission and the \gls{fes} in the \gls{ple} absorption is small, $\sim\qty{2.5}{\milli\electronvolt}$.
+So far, we have exclusively discussed the duplicated feature following the trend of the \gls{pl} emission edge, but a few more observations can be made by inspecting \cref{fig:exp:pl:doped_M1_05_49-2_ple}(b).
+Most strikingly, also in the regime of a present \gls{2deg} there is again a duplicated feature with a similar energy splitting as before, but which displays an inverted Stark shift, that is, whose energy is raised by application of an electric field.
+We have seen such a behavior for the first $\Delta n=0$ excited state of the \gls{qw} at low fields (\cref{fig:exp:theory:qcse:field}), but similar arguments as above can be made against such an identification.
+Both of the above features vanish as the \gls{2deg} is depleted at \qtylist{-1.6;2.6}{\volt}.
+In their place, a very sharp feature appears at \qty{1.538}{\electronvolt} that is independent of the electric field.
+Going to even more negative voltage and fully depleting the \gls{2deg}, the overall luminosity increases (as can also be seen in the \gls{pl} spectrum) while broad features start to appear as function of excitation power.
 
-\cite{Brown1996,Huard2000,Yusa2000}
-\cite{Esser2000,Esser2001}
+Panel (c) of the figure shows line cuts taken at the voltages indicated by dash-dotted lines in panels (a) and (b) with solid lines corresponding the emission (\gls{pl}) and dashed lines to absorption (\gls{ple}).
+The energy shift of the two most prominent peaks in both spectra is labeled.
+The data for $\VDM = \qty{0.59}{\volt}$ show that the Stokes shift between Fermi edge of the \gls{pl} emission and the \gls{fes} in the \gls{ple} absorption is small, $\Delta E_{\mr{S}} - E_{\mr{F}}\sim\qty{2.5}{\milli\electronvolt}$.
+At the largest voltage, $\VDM = \qty{-2.65}{\volt}$, the \gls{pl} emission splits up into a doublet peak with a splitting of \qty{3.7}{\milli\electronvolt}.
+The same splitting is observed between two peaks in the \gls{ple} spectrum, but shifted by $\Delta E = \qty{40.6}{\milli\electronvolt}$ towards higher energy.
+These two peaks might correspond to the negative trion and neutral excitons.
+In fact, their \gls{pl} emission is well fitted with the lineshape proposed by \citet{Esser2001}, who describe the trion peak as a convolution of the exciton peak, given by a hyperbolic secant, with a thermally broadened exponential edge.
+The fit is drawn in black in the same panel, showing good agreement with the data, and yielding $E_{\mr{T}} = \qty{1.487}{\electronvolt}$, $E_{\mr{X}} = \qty{1.490}{\electronvolt}$, a linewidth of $\Gamma = \qty{770}{\micro\electronvolt}$, and a temperature of $T = \qty{1.2}{\kelvin}$.
+The temperature, while hot compared to the lattice temperature, matches fairly well with the temperature obtained from the Fermi edge (\cref{sec:exp:observations:pl}).
+
+Lastly, panel (d) shows line cuts of the data taken at a single detection energy, $I_{\mr{PLE}}(E_{\mr{exc}}; E_{\mr{det}})$, corresponding to the positions indicated by vertical dash-dot-dotted lines in panel (a).
+The parabolic features discussed previously are clearly not an artefact of integrating over the entire \gls{pl} spectrum.
+In summary, several features that systematically shift with the electric field generated by the difference-mode voltage \VDM have been observed.
+However, the data show no indication of an in-plane level splitting arising from confinement, although the resolution in $E_{\mr{exc}}$ is also likely too low for this large a trap size.
+Interpolating the harmonic potential found by \citet{Descamps2021} for a smaller trap to this trap geometry,\sidenote{
+    For a diameter of \qty{200}{\nano\meter}, $\omega = \qty{738}{\giga\hertz}$, and therefore we can interpolate $\omega = \qty{18.5}{\giga\hertz}$ for a diameter of \qty{5}{\micro\meter} because both $\omega$ and $\rho$ enter the potential quadratically.
+}
+a level splitting of $\Delta E = 2\hbar\omega = \qty{40}{\micro\electronvolt}$ would be expected (see \cref{subsec:exp:theory:qcse:trap}), which is far below the linewidth of the exciton of $\qty{770}{\micro\electronvolt}$.
+
+% TODO: phonons, Δν = 0.12398 meV/cm^{-1}
+% Ilegems at x=0.32:
+% GaAs:
+% - TO: 33 meV
+% - LO: 36 meV
+% AlAs:
+% - TO2: 44 meV
+% - LO2: 46 meV
+\cite{Ilegems1970,Leng1989,Strauch1990,Gammon1991,Ma2018}
 
 \section{Transfer-matrix method simulations of the heterostructure membrane}\label{sec:exp:tmm}
 In the previous sections, we have seen that there is a profound difference in the \gls{pl} intensity emitted from the sample depending on if there is a semi-transparent metallic gate electrode fabricated on either side of the membrane or not.

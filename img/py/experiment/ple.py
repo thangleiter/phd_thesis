@@ -6,13 +6,15 @@ import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy as sp
+import xarray as xr
 from mjolnir.helpers import save_to_hdf5
 from mjolnir.plotting import plot_nd  # noqa
 from qcodes.dataset import initialise_or_create_database_at
 from qutil import const, itertools
 from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75,
                                    make_sequential_colormap)
-import xarray as xr
+from tqdm import tqdm
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
@@ -100,17 +102,83 @@ def annotate_shift(ax, E_1, E_1p, hs=(325, 450), xytext=None):
                 verticalalignment='center', horizontalalignment='center', fontsize='small')
 
 
-def fit_esser(da, p0):
-    def exciton(E, I_X, E_X, Γ_X):
-        return I_X / np.cosh((E - E_X)/Γ_X)
+def esser_lineshape(E, I_T, I_X, E_T, E_X, Γ, T, c_1, eps_1):
+    def exciton(E, E_X, Γ_X):
+        return 1 / np.cosh((E - E_X)/Γ_X)
 
-    def trion(E, I_T, E_T, T, c_1=15, eps_1=1.1e-3*const.e):
+    def trion(E, E_T, T, c_1, eps_1):
         M_X = m[0, 0] + m[1, 0]
         eps = E_T - E
-        MQ = c_1*np.exp(eps/eps_1)
-        return I_T*MQ*np.exp(-eps*m[0, 0]/(const.k*T*M_X))*E[E >= eps]
+        MQ2 = c_1*np.exp(eps/eps_1)
+        return MQ2*np.exp(-const.e*eps*m[0, 0]/(const.k*T*M_X))*(eps >= 0)
 
-    return np.convolve(exciton(), trion(), mode='same')
+    def conv_num():
+        return np.convolve(exciton(E, E_X, Γ), trion(E, E_T, T, c_1, eps_1), mode='same') / E.size
+
+    def conv_ana():
+        M_X = m[0, 0] + m[1, 0]
+        γ = const.e*m[0, 0]/(const.k*T*M_X)
+        λ = γ - 1/eps_1
+        A_T = I_T * c_1
+        s = 0.5 + 0.5 * λ * Γ
+        a = np.asarray(E) - E_T
+        z = np.exp(-2.0 * a / Γ)
+        return A_T * (Γ / s) * np.exp(-a / Γ) * sp.special.hyp2f1(s, 1.0, s + 1.0, -z)
+
+    return I_X * exciton(E, E_X, Γ) + I_T * conv_ana()
+
+
+def func(args, x, y):
+    return np.square(esser_lineshape(x, *args) - y).sum(axis=0)
+
+
+def fit_xr(da, p0, bounds):
+    return da.curvefit('ccd_horizontal_axis', esser_lineshape, p0=p0, bounds=bounds)
+
+
+def fit_de(da, p0, bounds, **kwargs):
+    x = da.ccd_horizontal_axis.values
+    y = da.values
+    return sp.optimize.differential_evolution(
+        func,
+        args=(x, y),
+        bounds=bounds,
+        x0=p0,
+        rng=kwargs.pop('rng', 42),
+        workers=kwargs.pop('workers', -1),
+        **kwargs
+    )
+
+
+def fit_nm(da, p0, bounds, **kwargs):
+    x = da.ccd_horizontal_axis.values
+    y = da.values
+    return sp.optimize.minimize(
+        func,
+        p0,
+        args=(x, y),
+        bounds=bounds,
+        method='Nelder-Mead',
+        **kwargs
+    )
+
+
+def plot_fit(da, res, p0):
+    fig, ax = plt.subplots()
+    da.plot(ax=ax, yscale='log')
+    ax.plot(E := da.ccd_horizontal_axis, esser_lineshape(E, *p0.values()), ls='--',
+            color='tab:gray')
+    ax.plot(E, esser_lineshape(E, *res.curvefit_coefficients.values),
+            label=da.doped_M1_05_49_2_trap_2_central_difference_mode.item())
+    ax.set_ylim(3e-0, 1e3)
+    ax.legend()
+
+
+def plot_params(res):
+    fig, ax = plt.subplots()
+    res.curvefit_coefficients.sel(param=['E_T', 'E_X']).plot.line(
+        x='doped_M1_05_49_2_trap_2_central_difference_mode'
+    )
 
 
 # %% Load data
@@ -124,14 +192,61 @@ if EXTRACT_DATA:
                  'dac_ch06_read_current_A',
                  compress=True)
 
-# %% Plot
 # browse_db(60, max=500, vertical_target='wavelength')
 # browse_db(60, vmax=350, horizontal_target='path_wavelength', vertical_target='difference_mode')
 m = effective_mass()
 ds = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ple.h5', engine='h5netcdf')
 da_ple_full = analyze_ple(ds)
-da_pl = ds.ccd_ccd_data_bg_corrected_per_second.sel(excitation_path_wavelength_constant_power=795)
+da_pl_full = ds.ccd_ccd_data_bg_corrected_per_second.sel(
+    excitation_path_wavelength_constant_power=795
+)
 
+# %% Fit to Esser (2001)
+bounds = {
+    'I_T': (0, np.inf),
+    'I_X': (0, np.inf),
+    'E_T': (0, np.inf),
+    'E_X': (0, np.inf),
+    'Γ': (0, 1e-2),
+    'T': (0, 300),
+    'c_1': (0, np.inf),
+    'eps_1': (0, 1e-2)
+}
+p0 = [{
+    'I_T': 200,
+    'I_X': 100,
+    'E_T': 1.487,
+    'E_X': 1.49,
+    'Γ': 0.0007,
+    'T': 1,
+    'c_1': 15,
+    'eps_1': 0.0011
+}]
+fit = []
+
+for i in tqdm(range(da_pl_full.shape[0]), desc='Fitting trion'):
+    if da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode[i] > -1.73:
+        break
+    if i > 0:
+        p0.append({k: v.item() for k, v in fit[-1].curvefit_coefficients.groupby('param')})
+    try:
+        old = np.seterr(over='ignore', invalid='ignore')
+        fit.append(fit_xr(da_pl_full[i], p0[i], bounds))
+        res_de = fit_de(da_pl_full, fit[-1].curvefit_coefficients,
+                        [np.array([0.8, 1.2])*v.item() for v in fit[-1].curvefit_coefficients],
+                        workers=-1)
+        res_nm = fit_nm(da_pl_full, list(p0.values()), list(bounds.values()),
+                        options=dict(disp=True, maxiter=10**6))
+    except Exception:
+        break
+    else:
+        plot_fit(da_pl_full[i], fit[i], p0[i])
+        # continue
+    finally:
+        np.seterr(**old)
+fit = xr.concat(fit, 'doped_M1_05_49_2_trap_2_central_difference_mode')
+
+# %% Plot
 arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
                   linewidth=0.75, shrinkA=0, shrinkB=0)
 annotate_kwargs = dict(color=RWTH_COLORS_75['black'], arrowprops=arrowprops)
@@ -149,15 +264,12 @@ gs1 = gs[1].subgridspec(5, 1, hspace=0.)
 gs2 = gs[2].subgridspec(1, 4, width_ratios=[15, 15, 15, 1])
 
 # %%%% Upper row
-da_pl = ds.ccd_ccd_data_bg_corrected_per_second.sel(
-    excitation_path_wavelength_constant_power=795)
-
 axs = gs0.subplots()
 
 ax = axs[0]
-img = ax.pcolormesh(da_pl.ccd_horizontal_axis,
-                    da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
-                    da_pl * 1e-3,
+img = ax.pcolormesh(da_pl_full.ccd_horizontal_axis,
+                    da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_pl_full * 1e-3,
                     cmap=SEQUENTIAL_CMAP, vmin=0, rasterized=True)
 
 cb = fig.colorbar(img, cax=axs[1], label='PL count rate (kcps)', ticks=[0, 0.2, 0.4, 0.6])
@@ -262,6 +374,15 @@ axs_ple[2].annotate('FES', (1.5304, 0.57), (1.5304, 0.57 + 1.0), horizontalalign
                     verticalalignment='bottom', fontsize='small',
                     arrowprops=arrowprops | dict(arrowstyle='->'))
 
+popt = fit.curvefit_coefficients.sel(doped_M1_05_49_2_trap_2_central_difference_mode=V_DM[-1],
+                                     method='nearest')
+for param, value in popt.groupby('param'):
+    print(f'{param}\t{value.item():.5g}')
+
+axs_pl[-1].plot(da_pl.ccd_horizontal_axis,
+                esser_lineshape(da_pl.ccd_horizontal_axis, *popt.values),
+                color=RWTH_COLORS['black'])
+
 ax_pl.set_xlim(1.465, const.lambda2eV(da_ple.excitation_path_wavelength_constant_power[0]*1e-9))
 ax_pl.set_xlabel('$E$ (eV)')
 ax2.set_xlabel(rf'$\lambda$ ({unit})')
@@ -328,19 +449,19 @@ fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_ple.pdf')
 
 # %%% PL+PLE in single plot
 E_exc = const.lambda2eV(da_ple_full.excitation_path_wavelength_constant_power*1e-9)
-E_det = da_pl.ccd_horizontal_axis
+E_det = da_pl_full.ccd_horizontal_axis
 
 fig, ax = plt.subplots(layout='constrained')
 green_cmap = make_sequential_colormap('green', endpoint='blackwhite').reversed()
 
 img = ax.pcolormesh(E_det[E_det < E_exc.min()],
-                    da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
-                    da_pl[:, E_det < E_exc.min()] * 1e-3,
+                    da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+                    da_pl_full[:, E_det < E_exc.min()] * 1e-3,
                     cmap=green_cmap, vmin=0, rasterized=True)
 cb = fig.colorbar(img, label='PL count rate (cps)')
 ax.pcolormesh(E_det[E_det >= E_exc.min()],
-              da_pl.doped_M1_05_49_2_trap_2_central_difference_mode,
-              da_pl[:, E_det >= E_exc.min()] * 1e-3,
+              da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode,
+              da_pl_full[:, E_det >= E_exc.min()] * 1e-3,
               alpha=0.5, cmap=green_cmap, vmin=0, rasterized=True)
 img = ax.pcolormesh(E_exc[E_exc > E_det.max().item()],
                     da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
