@@ -405,6 +405,11 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
 da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_difference_mode.h5', engine='h5netcdf')[
     'ccd_ccd_data_bg_corrected_per_second'
 ][0]
+da.assign_coords({
+    'V_DM_prime': (
+        da.doped_M1_05_49_2_trap_2_central_difference_mode + (delta_alpha := .6)*(-1.3)
+    ) / np.sqrt(1 + delta_alpha**2)
+})
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 2))
@@ -598,7 +603,8 @@ fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
 with changed_plotting_backend('qtagg'), contextlib.redirect_stderr(StringIO()):
     fig, axes, sliders = plot_nd(ds, vertical_target='power_at_sample', yscale='log',
                                  norm=mpl.colors.AsinhNorm(vmin=0), rasterized=True,
-                                 fast=False, style=MAINSTYLE, fig_kw=dict(figsize=(6.33585, 4.6)))
+                                 fast=False, style=MAINSTYLE, cmap=SEQUENTIAL_CMAP,
+                                 fig_kw=dict(figsize=(TOTALWIDTH, 4.6)))
     sliders['doped_M1_05_49_2_trap_2_central_top'].set_val(-2)
     sliders['excitation_path_wavelength'].set_val(800)
     sliders['excitation_path_power_at_sample'].set_val(

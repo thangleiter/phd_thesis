@@ -17,6 +17,7 @@
 - [ ] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [ ] `\ch{}` line breaks
 - [ ] Use `\subequations{}` where appropriate
+- [ ] Instrument citations
 
 ## Content
 - [ ] Acknowledgements
@@ -40,6 +41,7 @@
 - [x] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
+- [ ] IRF-convoluted $g^{(2)}$ fit
 
 ### Experiment
 - [ ] author contributions

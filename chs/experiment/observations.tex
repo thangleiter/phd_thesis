@@ -1,12 +1,10 @@
 % mainfile: ../../main.tex
-\chapter{Observations}\label{ch:exp:observations}
-% Membrane measurements?
-% PL measurements of doped membranes?
+\chapter{Photoluminescence measurements of doped semiconductor membranes}\label{ch:exp:observations}
 In this chapter, I present and discuss optical measurements of gated semiconductor membranes.
-All of the samples under investigation had the same nominal heterostructure layout; a \qty{20}{\nano\meter} \ch{GaAs} \gls{qw} sandwiched between two modulation-doped \qty{90}{\nano\meter} \ch{Al_{0.33}Ga_{0.67}As} barriers of which \qty{50}{\nano\meter} are an undoped spacer layer.
-Together with either a \qty{5}{\nano\meter} or \qty{10}{\nano\meter} \ch{GaAs} cap to on both sides to protect the \ch{Al} from oxidation, the membranes had a thickness of \qty{210}{\nano\meter} or \qty{220}{\nano\meter} after thinning.
+All of the samples under investigation had the almost same nominal heterostructure layout; a \qty{20}{\nano\meter} \ch{GaAs} \gls{qw} sandwiched between two modulation-doped \qty{90}{\nano\meter} \ch{Al_{0.33}Ga_{0.67}As} barriers of which \qty{50}{\nano\meter} are an undoped spacer layer.
+Together with either a \qty{5}{\nano\meter} or \qty{10}{\nano\meter} \ch{GaAs} cap to on both sides to protect the aluminium from oxidation, the membranes had a thickness of \qty{210}{\nano\meter} or \qty{220}{\nano\meter} after thinning.
 
-Gate electrodes are patterned on the top and bottom side of the membrane using \gls{ebl}, where here and elsewhere in \thethesis I refer by \enquote{top} to gates on the etched and by \enquote{bottom} to those on the as-grown surface.
+Gate electrodes were patterned on the top and bottom side of the membrane using \gls{ebl}, where here and elsewhere in \thethesis I refer by \enquote{top} to gates on the etched and by \enquote{bottom} to those on the as-grown surface.
 That is, \enquote{top} gates are on the air side facing the microscope objective when the sample is mounted in the fridge, whereas \enquote{bottom} gates are in contact with the epoxy gluing them to the Silicon host chip.
 Typical designs have gates on the top and bottom sides of the membrane that are contacted at different positions on the edge of the mesa and converge towards the exciton trap site, where only there they overlap laterally.
 For details about the fabrication process, refer to \citerr{Descamps2021}{Kindel2025}.
@@ -102,8 +100,7 @@ Finally, we observe that the gap according to the preceding analysis is redshift
 }
 \Citet{Descamps2021} hypothesized that the removal of the \ch{GaAs} substrate and the associated change in strain leads to this lowering of the band gap.
 However, this effect was also already observed by \citet{Pinczuk1984} in \enquote{bulk} modulation-doped \ch{GaAs} \glspl{qw}.
-There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation.
-Indeed, it is likely just bandgap narrowing due to doping~\cite{Jain1992}. % TODO: awkward
+There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation, an interpretation since well-agreed upon~\cite{Jain1992}
 
 \subsection{Quantum-confined Stark shift}\label{subsec:exp:observations:pl:qcse}
 
@@ -131,7 +128,7 @@ The left (right) panel shows the \gls{pl} as function of voltage with the laser 
 In contrast to the intuition obtained in \cref{sec:exp:theory:qcse}, there is no immediate effect to be observed once the voltage is switched on.
 This is most likely due to the presence of the \gls{2deg} screening the external electric field. % TODO: look at literature
 At $V_{\mr{gate}} = \qty{-0.7}{\volt}$, the high-energy shoulder of the emission starts to shift towards lower energies while the low-energy shoulder stays invariant.
-Per the previous section, we can interpret this as the Fermi energy and thereby the charge carrier density being lowered as the \gls{2deg} is depleted.
+Per the previous section, we can interpret this as the charge carrier density and thereby the Fermi energy being lowered as the \gls{2deg} is depleted.
 As the electric field tilts the bands, the band edges of both conduction and valence band shift by the same amount and therefore the band gap is not modified in this regime.\sidenote{
     We would in fact expect a slight increase in confimenent energy as the carrier density is lowered because the band bending due to the surplus electric charge of the \gls{2deg} is lifted.
 }
@@ -171,15 +168,15 @@ We define the virtual gates
     \VDM &= \VT - \VB, \\
     \VCM &= \VT + \VB,
 \end{align}
-where DM (CM) stands for difference (common) mode and T (B) for top and bottom.
+where DM (CM) stands for difference (common) mode and T (B) for top and bottom, respectively.
 Clearly, \VDM should ideally be proportional to the out-of-plane electric field across the membrane, $\VDM = Ft$ with $t$ the membrane thickness, whereas \VCM should tune the band edge offset from the Fermi level $\mu$.
 As we observed previously, the presence of the \gls{2deg} screens the electric field generated by \VDM.
 A good operating point is therefore at a negative \VCM which should deplete the \gls{2deg} (or at least reduce the charge carrier density).
 \Cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} shows a \gls{pl} map as function of the difference mode voltage \VDM at $\VCM = \qty{-1.3}{\volt}$.
 From \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate}, where the optical measurement of the charge carrier density results in a similar value as for the sample in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode}, $n\sim\qty{5e11}{\per\centi\meter\squared}$, we would expect this common mode voltage to suffice in at least overcoming the screening and reducing the carrier density in the \gls{qw}.
-However, there is clearly still a \gls{2deg} emission present for a large range of \VDM, and the Fermi edge is at the same energy as without a gate bias.
+However, there is clearly still \gls{2deg} emission present for a large range of \VDM, and the Fermi edge is at the same energy as without a gate bias.
 Overall, the Stark shift pattern is symmetric but offset by $\VDM = \qty{0.75}{\volt}$.
-This behavior is also observed in the response of the \gls{pl} to a single gate in this and several other samples, where the onset of an effect by bottom gate is significantly later than that for the top gate, suggesting that the voltage is screened by some mechanism.
+This behavior is also observed in the response of the \gls{pl} to a single gate in this and several other samples, where the onset of an effect by bottom gate is significantly later than that for the top gate, suggesting that the voltage is screened by some mechanism and the bottom gate has a much smaller lever arm than the top gate.
 Perhaps surprisingly, the gates on the \emph{bottom} side of the membrane display this behavior, \ie, the gates on the as-grown surface.\sidenote{
     I note that the sample of \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate} was fabricated on the same heterostructure as the device in Figure 4(d) of \citer{Descamps2023}, which showed little to no electrical hysteresis unlike most other samples investigated by \citet{Descamps2021}.
 }
@@ -187,10 +184,39 @@ This makes surface states an unlikely candidate for the screening as the quality
 A possible cause might be oxygen segregation during growth\footnote{A.~Ludwig, private communication.} or other impurities~\cite{Nguyen2020}.
 
 The fact that the \gls{2deg} is depleted by \VDM in the range \qtyrange{-0.2}{-1.4}{\volt} and above \qty{1.5}{\volt} at all is unexpected.
-Even with an offset as just discussed, the symmetric dependence of the \gls{pl} emission on \VDM implies that the lever arms of both gates are comparable and hence $\VDM - \qty{0.75}{\volt}$ \emph{should} correspond to the out-of-plane electric field such that the energy is unchanged in the middle of the quantum well, $\VDM - \qty{0.75}{\volt} \propto F(z-t/2)$.
-In and of itself, this parameter should not reduce the charge carrier density in an isolated \gls{qw} to first order.\sidenote{
+Even with a difference in lever arms as just discussed, the symmetric dependence of the \gls{pl} emission on \VDM implies that $\VDM - \qty{0.75}{\volt}$ \emph{should} correspond to the out-of-plane electric field such that the energy is unchanged in the middle of the quantum well, $\VDM - \qty{0.75}{\volt} \propto F(z-t/2)$.
+Staying in the virtual gate picture, a difference in relative lever arms\sidenote{
+    Relative gate lever arms are unitless parameters used to quantify the degree of cross-coupling between gates, in contrast to the physical lever arms used to quantify the change in electron energy versus gate voltage employed in \cref{sec:setup:cooling:etemp}.
+    See for example \citer{Volk2019}.
+}
+$\Delta\alpha = \alpha_{\mr{T}} - \alpha_{\mr{B}}$ between \VT and \VB should modify the virtual gates as
+\begin{align}
+    \begin{pmatrix}
+        \tilde{V}_{\mr{DM}} \\
+        \tilde{V}_{\mr{CM}}
+    \end{pmatrix}
+    &= \frac{1}{\sqrt{1 + \Delta\alpha^2}}\begin{pmatrix}
+        1 & \Delta\alpha \\
+        -\Delta\alpha & 1
+    \end{pmatrix}\begin{pmatrix}
+        \VDM \\
+        \VCM
+    \end{pmatrix} \\
+    &= \frac{1}{\sqrt{1 + \Delta\alpha^2}}\begin{pmatrix}
+        1 + \Delta\alpha & -1 + \Delta\alpha \\
+         1 - \Delta\alpha & 1 + \Delta\alpha
+    \end{pmatrix}\begin{pmatrix}
+        \VT \\
+        \VB
+    \end{pmatrix}
+\end{align}
+and as such not modify the qualitative behavior of \VDM besides the offset.\sidenote{
+    Setting $\Delta\alpha = \num{0.6}$ yields a $\tilde{V}_{\mr{DM}}$ for which the Stark shift in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} is symmetric about zero.
+}
+That is, in and of itself, \VDM should not reduce the charge carrier density in an isolated \gls{qw} to first order.\sidenote{
     We might instead expect a small change in the apparent gap energy as the well is tilted.
 }
+
 One possible explanation for the observed behavior is the depletion of the \gls{2deg} by electrons tunneling out of the well and recombining with the donor ions, rendering one of the doped barriers electrically neutral.
 With the doping pulling down the conduction band between \qty{50}{\nano\meter} and \qty{90}{\nano\meter} away from the \gls{qw}, the tunneling rate will be more pronounced than estimated for the undoped case in \cref{sec:exp:theory:qcse}.
 Taking the large trap diameter in this case into account, there are $\sim\num{1e5}$ electrons in the unbiased \gls{qw} on the area of the trap gates.
@@ -231,19 +257,19 @@ I return to the question of line assignment below.
 
 As outlined in \cref{sec:exp:theory:complexes}, the dependence of emitted \gls{pl} power on excitation power of individual emission lines can help inferring the excitonic species responsible.
 Moreover, as the density of excitons depends on the excitation power, interaction effects between them influence the energy of the emission.
-Such a measurement is shown in the left panel of \cref{fig:exp:pl:doped_M1_05_49-2_power} for the same common-mode voltage as in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} and $\VDM = \qty{-2.7}{\volt}$ (\ie, corresponding to the lowest line in that plot) where the \gls{2deg} is completely depleted..
+Such a measurement is shown in the left panel of \cref{fig:exp:pl:doped_M1_05_49-2_power} for the same common-mode voltage as in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} and $\VDM = \qty{-2.7}{\volt}$ (\ie, corresponding to the lowest line in that plot) where the \gls{2deg} is completely depleted.
 Two qualitatively different regimes can be observed as indicated by the dashed gray lines as guides to the eye.
 Below \qty{10}{\nano\watt} excitation power, corresponding to approximately \qty{0.75}{\watt\per\square\centi\meter} at the beam diameter measured in \cref{part:setup}, the main line displays a blueshift logarithmic in excitation power.
 Above this value, the blueshift is much less pronounced.
+It is not understood though why the blueshift abruptly changes in quality at \qty{10}{\nano\watt} excitation power.
 At powers above \qty{10}{\nano\watt}, two additional lines on the low-energy side of the main peak become visible that appear to converge towards higher powers, while above \qty{100}{\nano\watt} a line appears on the high-energy side that has a similar blueshift as the main peak at low powers.
 In principle, the blueshift as function of power is to be expected.
-Increasing the excitation power increases the density of excitons, either because they are spatially localized or confined or because of a finite diffusion speed.
-The increased density corresponds to an increased overlap of single exciton's constituents and thus in turn leads to an increasingly repulsive Coulomb interaction that raises their energy.\sidenote{
+Increasing the excitation power increases the density of excitons, either because they are spatially localized or because of a finite diffusion speed.
+The increased density corresponds to an increased overlap of single excitons' constituents and thus in turn leads to an increasingly repulsive Coulomb interaction that raises their energy.\sidenote{
     Of course, the opposite -- an attractive interaction -- is also possible for small numbers of excitons, resulting in biexcitons.
     The two cases can be thought of analagously as bonding and anti-bonding orbital configurations.
 }
-This mechanism underpins the use of exciton traps such as \glspl{saqd} as single-photon sources; upon spectrally filtering on the emission wavelength of a single exciton, only a single photon can be emitted from the trap at a time since the presence of another exciton in the trap would shift the emission energy of both. % TODO: move this somewhere else
-It is not understood though why the blueshift abruptly changes in quality at \qty{10}{\nano\watt} excitation power.
+This mechanism underpins the use of exciton traps such as \glspl{saqd} as single-photon sources; upon spectrally filtering on the emission wavelength of a single exciton, only a single photon can be emitted from the trap at a time since the presence of another exciton in the trap would shift the emission energy of both. % TODO: move this somewhere else?
 
 The right panel shows a line cut taken at \qty{1}{\micro\watt}.
 A weighted sum of seven individual Voigt profile line shapes~\cite{VoigtProfileWiki},
@@ -263,7 +289,10 @@ The former describes inhomogeneous broadening due to noise faster than the data 
     This is also known as the linewidth's transform limit; energy and (life)time are Fourier pairs by Heisenberg's uncertainty principle.
 }
 or power broadening~\cite{Citron1977}.
-All but the two outermost lines in the best fit are dominated by the inhomogeneous, Gaussian contribution to \cref{eq:exp:voigt} with widths $\sigma$ in the range of \qtyrange{0.1}{1}{\milli\electronvolt} and a peak separation on the order of \qty{2}{\milli\electronvolt}.
+All but the two outermost lines in the best fit are dominated by the inhomogeneous, Gaussian contribution to \cref{eq:exp:voigt} with widths $\sigma$ in the range of \qtyrange{0.1}{1}{\milli\electronvolt} and a peak separation on the order of \qty{2}{\milli\electronvolt}.\sidenote{
+    The large number of Voigt profiles used to fit the data does tend to overfit the data.
+}
+
 According to \citer{Descamps2021}, the lifetime of a Stark-shifted exciton is on the order of \qty{1}{\nano\second} due to the reduced wave function overlap.
 This corresponds to a homogeneous linewidth of $2\gamma = \flatfrac{\hbar}{\tau} \sim \qty{660}{\nano\electronvolt}$, several orders of magnitude below the observed linewidth, and it is thus consistent with the fact that most peaks are best fit by inhomogeneously broadened line shapes.
 The large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
@@ -286,7 +315,7 @@ Where it is possible to track individual peaks as function of excitation power, 
     \label{fig:exp:pl:doped_M1_05_49-2_multiplets}
 \end{figure*}
 
-A possible explanation for the multitude of lines is thus that they originate from different spatial locations, a hypothesis we return to in \cref{subsec:exp:observations:pl:spatial}.
+A possible explanation for the multitude of lines is thus that they originate from different spatial locations, a hypothesis we return to shortly.
 First, let let us conclude this section with a large parameter sweep of this trap, shown in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets}.
 Each of the three rows (with separate panels for line cuts each) show data for different excitation wavelengths, $\lambda_{\mr{exc}}$, each of the columns show data for different top gate voltage, \VT, and the \gls{pl} is plotted as function of detection energy, $E_{\mr{det}}$, and excitation power, $P_{\mr{exc}}$.
 The line cuts taken at lower powers (blue and green) are scaled to match the one at the highest power (orange) assuming a linear power dependence.
@@ -305,7 +334,7 @@ This value is on the order of magnitude of the change in ground state energy, \q
 for the design well width $L = \qty{20}{\nano\meter}$ (\cref{sec:exp:theory:pl}).
 Indeed, there exists a large body of literature that has examined the influence of interface roughness and \gls{qw} thickness fluctuations on the exciton \gls{pl}~\cite{Tanaka1987,Gammon1991,Leosson2000}.
 Not only do atomic steps and islands lead to increased \gls{pl} linewidth and energy shifts, but in fact also to the possible localization of single excitons~\cite{Brunner1994,Brunner1994a,Zrenner1994}.
-That is to say, \glspl{qd} have been found to form by such interface fluctuations.
+That is to say, \glspl{qd} have been found to form at such interface fluctuations.
 Comparing the spectra shown in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets} to those shown by \citet[Figure~1]{Brunner1994}, our main \gls{pl} line is more reminiscent of what the authors there label as the 2D exciton; our spectra do not show well-separated and sharp lines on the low-energy side of the spectrum.
 By contrast, the \gls{pl} spectrum shown by \citet[Figure~1]{Zrenner1994} is very similar to the one observed here, although they assign this peak to indirect transitions from the \ch{AlAs} $X$ valley to the \ch{GaAs} $\Gamma$ valence band valley in their \ch{AlAs/GaAs} coupled \gls{qw} structure, a situation quite unlike ours.
 
@@ -319,12 +348,6 @@ However, after \qty{48}{\hour} no deviation from a flat and uncorrelated \g2 cou
 % TODO: g2 on single line, #218?
 
 \subsection{Spatial dependence}\label{subsec:exp:observations:pl:spatial}
-As mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.
-The hysteresis is due to the non-adiabaticity of the method of movement in the so-called slip-stick mode (\cf \cref{ch:setup:cooling}).
-What is more, the resistive position readout is also fairly unreliable below, say, \qty{5}{\micro\meter} resolution.
-Nonetheless, we can at the very least perform simple one-dimensional sweeps after manually positioning the sample at a given starting position and assume that the displacement per step has some sufficiently narrow distribution around a fixed mean.
-A more sophisticated algorithmic approach using feature detection may allow also two-dimensional maps with a reasonable accuracy.
-
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/fig_F10_positioning}
@@ -343,13 +366,19 @@ A more sophisticated algorithmic approach using feature detection may allow also
     \label{fig:exp:pl:fig_F10_positioning}
 \end{marginfigure}
 
+As mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.
+The hysteresis is due to the non-adiabaticity of the method of movement in the so-called slip-stick mode (\cf \cref{ch:setup:cooling}).
+What is more, the resistive position readout is also fairly unreliable below, say, \qty{5}{\micro\meter} resolution.
+Nonetheless, we can at the very least perform simple one-dimensional sweeps after manually positioning the sample at a given starting position and assume that the displacement per step has some sufficiently narrow distribution around a fixed mean.
+A more sophisticated algorithmic approach using feature detection may allow also two-dimensional maps with a reasonable accuracy.
+
 \Cref{fig:exp:pl:fig_F10_positioning} shows the \gls{pl} collected from the sample as the positioner is stepped perpendicularly across an unbiased gate.
 The vertical axis also gives a position coordinate which is computed from the steps by fitting the position readout once hysteresis has worn off.
 The blue and green dash-dotted line correspond to the center of and beside the gate, respectively, with line cuts drawn in the upper panel.
 Clearly, the \gls{pl} intensity is quenched significantly by the gate, beyond what one could expect from simple reflection and absorption of laser and \gls{pl} radiation.
 I perform \gls{tmm} simulations to explain this behavior in \cref{sec:exp:tmm} (see also \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate}).
 Curiously, the map also shows a shifting of the Fermi edge close to the gate.
-This behavior was consistently observed on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
+This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
 The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
 
 \begin{figure}
@@ -373,7 +402,7 @@ The former effect could potentially be caused by band-deformation due to strain 
 \end{figure}
 
 \Cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets}.
-While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally localized fashion. % TODO: me, pleeaase
+While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally local fashion. % TODO: me, pleeaase
 The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
 Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
 Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
@@ -391,9 +420,7 @@ Why we observe to opposite is thus quite puzzling.
 The second surprising feature seen in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} is the addition of faint lines that appear to branch out from the main exciton line as the laser spot is moved away from the center of the trap.
 These could be related to the lines observed in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets} as well as the large number of lines required to fit the peak in \cref{fig:exp:pl:doped_M1_05_49-2_power}.
 If the origin of these are indeed atomic steps or islands in the \gls{qw}, it makes sense that we observe them in these measurements.
-The Stark shift of the different lines appears depend on the position as well, indicating different coupling to the electric field.
-
-% TODO: ...
+The Stark shift of the different lines appears depend on the position as well, indicating different coupling to the electric field and further strengthening the hypothesis that they originate from different spatial locations.
 
 \section{Photoluminescence excitation spectroscopy}\label{sec:exp:observations:ple}
 The technique of \acrfull{ple} can be used to gain insight into the energy level structure of optically active states~\cite{Gilliland1997}.
@@ -434,9 +461,9 @@ If such were the case, we would expect resonances in the \gls{ple} at intervals 
         (a) \gls{pl} map as function of difference-mode voltage for $\lambda_{\mr{exc}} = \qty{795}{\nano\meter}$ (\cf \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode}).
         (b) \gls{ple} map.
         Each column corresponds to a map like in (a) integrated up to the laser line at $E_{\mr{det}} = E_{\mr{exc}}$.
-        While a \gls{2deg} exists ($\VDM\in[\qty{-1.6}{\volt}, \qty{2.6}{\volt}]$), absorption in \gls{ple} sets on just as emission stops in \gls{pl} at the Fermi edge $\mu$ (see \cref{fig:app:exp:pl:doped_M1_05_49-2_ple}).
+        While a \gls{2deg} exists ($\VDM\in[\qty{-1.6}{\volt}, \qty{2.6}{\volt}]$), absorption in \gls{ple} sets on just as emission stops in \gls{pl} at the Fermi edge $\mu$ (see also \cref{fig:app:exp:pl:doped_M1_05_49-2_ple}).
         The Fermi edge feature is replicated at least once at approximately \qty{10}{\milli\electronvolt} above $\mu$, while a feature with positive Stark shift $\alpha>0$ duplicated at least once as well appears with apexes at $E_{\mr{exc}} = \qtylist{1.536;1.546}{\electronvolt}$.
-        A sharp feature appears as the \gls{2deg} is close to depletion at \qty{1.538}{\electronvolt}
+        A sharp feature appears as the \gls{2deg} is close to depletion at \qty{1.538}{\electronvolt}.
         The vertical white bar is missing data.
         (c) Line cuts of the \gls{pl} (a, solid lines) and \gls{ple} maps (b, dashed) taken at the horizontal dash-dotted gray lines there.
         At $\VDM = \qty{-2.65}{\volt}$, the \gls{pl} line is split by \qty{3.7}{\milli\electronvolt} which is replicated in the \gls{ple} spectrum \qty{40.6}{\milli\electronvolt} higher.
@@ -456,7 +483,7 @@ Panel (b) shows the integrated \gls{ple} following \cref{eq:exp:ple}.
 That is, the rightmost column corresponds to panel (a) integrated along $E_{\mr{det}}$.
 Several interesting features are noteworthy.
 In line with our considerations above, the onset of \gls{ple} absorption coincides with the high-energy shoulder of the \gls{pl} emission over the entire range of voltages investigated.
-For $\VDM > \qty{-1.6}{\volt}$, the absorption edge is replicated some \qty{10}{\milli\electronvolt} higher in energy, although the splitting reduces for larger Stark shifts.
+For $\VDM > \qty{-1.6}{\volt}$, the absorption edge is replicated some \qty{10}{\milli\electronvolt} higher in energy, although the splitting reduces as the carrier density is decreased.
 A few possible explanations for this feature come to mind.
 First, the two lines could correspond to the negative trion and the neutral exciton.
 However, the energy difference of $\sim\qty{10}{\milli\electronvolt}$ seems too large for the difference in binding energies, usually on the order of a few \unit{\milli\electronvolt}.
@@ -471,40 +498,36 @@ While the last matches fairly closely what we observe at zero field, it too shou
 Moreover, from the calculation of the oscillator strength (\cref{fig:exp:theory:qcse:field}), we would expect the optical coupling to vanish at a certain electric field value whenever excited states are involved, which is also not observed.
 
 So far, we have exclusively discussed the duplicated feature following the trend of the \gls{pl} emission edge, but a few more observations can be made by inspecting \cref{fig:exp:pl:doped_M1_05_49-2_ple}(b).
-Most strikingly, also in the regime of a present \gls{2deg} there is again a duplicated feature with a similar energy splitting as before, but which displays an inverted Stark shift, that is, whose energy is raised by application of an electric field.
-We have seen such a behavior for the first $\Delta n=0$ excited state of the \gls{qw} at low fields (\cref{fig:exp:theory:qcse:field}), but similar arguments as above can be made against such an identification.
+Most strikingly, also in the regime of an undepleted \gls{2deg} there is again a duplicated feature with a similar energy splitting as before, but which displays an inverted Stark shift, that is, whose energy is raised by the application of an electric field, or, more phenomenologically, a reduction in charge carrier density.
+We have seen such a behavior in the theoretical discussion for the first $\Delta n=0$ excited state of the \gls{qw} at low fields (\cref{fig:exp:theory:qcse:field}), but similar arguments as above can be made against such an identification.
 Both of the above features vanish as the \gls{2deg} is depleted at \qtylist{-1.6;2.6}{\volt}.
 In their place, a very sharp feature appears at \qty{1.538}{\electronvolt} that is independent of the electric field.
 Going to even more negative voltage and fully depleting the \gls{2deg}, the overall luminosity increases (as can also be seen in the \gls{pl} spectrum) while broad features start to appear as function of excitation power.
 
 Panel (c) of the figure shows line cuts taken at the voltages indicated by dash-dotted lines in panels (a) and (b) with solid lines corresponding the emission (\gls{pl}) and dashed lines to absorption (\gls{ple}).
 The energy shift of the two most prominent peaks in both spectra is labeled.
-The data for $\VDM = \qty{0.59}{\volt}$ show that the Stokes shift between Fermi edge of the \gls{pl} emission and the \gls{fes} in the \gls{ple} absorption is small, $\Delta E_{\mr{S}} - E_{\mr{F}}\sim\qty{2.5}{\milli\electronvolt}$.
+Although not a perfect match, the shift of around \qty{28}{\milli\electronvolt} is not far off the energy of \gls{to} phonons in \ch{GaAs}, known in bulk to be \qty{33}{\milli\electronvolt}~\cite{Strauch1990}.
+Similarly, the shift of \qty{40}{\milli\electronvolt} at $\VDM=-\qty{2.65}{\volt}$ is off by approximately the same amount from the second, \ch{AlAs}-like \gls{to} phonon mode in \ch{Al_{0.32}Ga_{0.68}As}, \qty{44}{\milli\electronvolt}~\cite{Ilegems1970,Leng1989,Gammon1991}.
+It is conceivable that the thinning of the heterostructure to a membrane modifies the phonon energies by $\qty{5}{\milli\electronvolt}$ and it would be interesting to perform Raman spectroscopy on the membranes to investigate this further.
+
+The data for $\VDM = \qty{0.59}{\volt}$ show that the Stokes shift between Fermi edge of the \gls{pl} emission and the \gls{fes} in the \gls{ple} absorption is small, $E_{\mr{S}} - E_{\mr{F}}\sim\qty{2.5}{\milli\electronvolt}$.
 At the largest voltage, $\VDM = \qty{-2.65}{\volt}$, the \gls{pl} emission splits up into a doublet peak with a splitting of \qty{3.7}{\milli\electronvolt}.
 The same splitting is observed between two peaks in the \gls{ple} spectrum, but shifted by $\Delta E = \qty{40.6}{\milli\electronvolt}$ towards higher energy.
 These two peaks might correspond to the negative trion and neutral excitons.
 In fact, their \gls{pl} emission is well fitted with the lineshape proposed by \citet{Esser2001}, who describe the trion peak as a convolution of the exciton peak, given by a hyperbolic secant, with a thermally broadened exponential edge.
 The fit is drawn in black in the same panel, showing good agreement with the data, and yielding $E_{\mr{T}} = \qty{1.487}{\electronvolt}$, $E_{\mr{X}} = \qty{1.490}{\electronvolt}$, a linewidth of $\Gamma = \qty{770}{\micro\electronvolt}$, and a temperature of $T = \qty{1.2}{\kelvin}$.
 The temperature, while hot compared to the lattice temperature, matches fairly well with the temperature obtained from the Fermi edge (\cref{sec:exp:observations:pl}).
-
+The fact that the peak splits into a doublet structure here whereas it did not in the measurement of \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} might be explained by slightly different focal spot positions.
 Lastly, panel (d) shows line cuts of the data taken at a single detection energy, $I_{\mr{PLE}}(E_{\mr{exc}}; E_{\mr{det}})$, corresponding to the positions indicated by vertical dash-dot-dotted lines in panel (a).
 The parabolic features discussed previously are clearly not an artefact of integrating over the entire \gls{pl} spectrum.
-In summary, several features that systematically shift with the electric field generated by the difference-mode voltage \VDM have been observed.
+
+To summarize the \gls{ple} measurement, several features that systematically shift with the electric field generated by the difference-mode voltage \VDM have been observed.
 However, the data show no indication of an in-plane level splitting arising from confinement, although the resolution in $E_{\mr{exc}}$ is also likely too low for this large a trap size.
 Interpolating the harmonic potential found by \citet{Descamps2021} for a smaller trap to this trap geometry,\sidenote{
     For a diameter of \qty{200}{\nano\meter}, $\omega = \qty{738}{\giga\hertz}$, and therefore we can interpolate $\omega = \qty{18.5}{\giga\hertz}$ for a diameter of \qty{5}{\micro\meter} because both $\omega$ and $\rho$ enter the potential quadratically.
 }
 a level splitting of $\Delta E = 2\hbar\omega = \qty{40}{\micro\electronvolt}$ would be expected (see \cref{subsec:exp:theory:qcse:trap}), which is far below the linewidth of the exciton of $\qty{770}{\micro\electronvolt}$.
-
-% TODO: phonons, Δν = 0.12398 meV/cm^{-1}
-% Ilegems at x=0.32:
-% GaAs:
-% - TO: 33 meV
-% - LO: 36 meV
-% AlAs:
-% - TO2: 44 meV
-% - LO2: 46 meV
-\cite{Ilegems1970,Leng1989,Strauch1990,Gammon1991,Ma2018}
+I put forth several alternative hypotheses for the origin of the various features, although none match quite precisely with values expected from the literature.
 
 \section{Transfer-matrix method simulations of the heterostructure membrane}\label{sec:exp:tmm}
 In the previous sections, we have seen that there is a profound difference in the \gls{pl} intensity emitted from the sample depending on if there is a semi-transparent metallic gate electrode fabricated on either side of the membrane or not.
