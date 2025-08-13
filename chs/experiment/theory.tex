@@ -22,6 +22,15 @@ In the following, I discuss the optical behavior of these structures under illum
 }
 
 \section{Photoluminescence in doped \GaAsAlGaAs heterostructures}\label{sec:exp:theory:pl}
+Consider an intrinsic, direct-gap, Zincblende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature~\cite{Vurgaftman2001}.
+At the $\Gamma$-point, the conduction band is well approximated by a parabolic band with effective mass $m^\ast_{\mr{c}}/m_{\mr{e}} = 0.067$ and is offset by $E_{\mr{g}}/2$ above the Fermi level $\mu$.
+Offset by the same absolute amount in the opposite direction is the valence band, which close to $\Gamma$ is fourfold degenerate with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
+The third valence band\sidenote{
+    The valence bands are $p$-like and hence contain contributions from three twofold degenerate atomic orbitals.
+}
+is split off by the spin-orbit interaction and lies \qty{0.34}{\electronvolt} below the other valence bands~\cite{Davies2009}.
+Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \gls{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
+
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/2deg_sketch}
@@ -33,14 +42,6 @@ In the following, I discuss the optical behavior of these structures under illum
     }
     \label{fig:exp:theory:bandstructure:doped}
 \end{marginfigure}
-Consider an intrinsic, direct-gap, Zincblende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature~\cite{Vurgaftman2001}.
-At the $\Gamma$-point, the conduction band is well approximated by a parabolic band with effective mass $m^\ast_{\mr{c}}/m_{\mr{e}} = 0.067$ and is offset by $E_{\mr{g}}/2$ above the Fermi level $\mu$.
-Offset by the same absolute amount in the opposite direction is the valence band, which close to $\Gamma$ is fourfold degenerate with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
-The third valence band\sidenote{
-    The valence bands are $p$-like and hence contain contributions from three twofold degenerate atomic orbitals.
-}
-is split off by the spin-orbit interaction and lies \qty{0.34}{\electronvolt} below the other valence bands~\cite{Davies2009}.
-Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \gls{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
 
 Doping in sufficiently high concentration then raises the Fermi level from mid-gap to inside the conduction band in the plane of confinement, resulting in a band structure as sketched in \cref{fig:exp:theory:bandstructure:doped}.
 The bands remain parabolic as function of the in-plane wave vector $k_{\parallel}$ close to $\Gamma$.
@@ -121,23 +122,6 @@ while the first excited state lies \qty{42}{\milli\electronvolt} higher than the
 The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wave functions of electrons and holes in a band structure diagram.
 Due to the symmetry of the confining potential, the wave functions are symmetric around the center of the well.
 
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/experiment/qw_undoped_0V}
-    \includegraphics{img/pdf/experiment/qw_undoped_1V}
-    \caption[\imgsource{img/py/experiment/qcse.py}]{
-        \Gls{qcse} in an undoped \acrshort{qw}.
-        Top: conduction and heavy-hole valence band profiles along the growth direction.
-        The wave functions of the first two eigenstates in the well are drawn in magenta and green, respectively.
-        The ground state transition is larger by $\Delta E = \qty{17}{\milli\electronvolt}$ than the gap $E_{\mr{g}}$ due to the confinement.
-        Bottom: same structure as above with an out-of-plane electric field applied across the structure ($F=\qty{5}{\volt\per\micro\meter}$).
-        Analytical wave functions in the infinite-well approximation are shown in magenta and green again.
-        The wave functions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
-        Excitonic effects are not included.
-    }
-    \label{fig:exp:theory:qcse:bandstructure}
-\end{marginfigure}
-
 Now, applying an out-of-plane electric field tilts the bands and pulls electrons and holes to opposite interfaces of the \gls{qw}.
 The Hamiltonian for the electrons in this case reads~\cite{Rabinovitch1971,Miller1985,Davies2009}
 \begin{equation}\label{eq:exp:theory:qcse:hamiltonian}
@@ -170,6 +154,23 @@ As we assumed infinitely high barriers at $z = 0$ and $z = L$, the boundary cond
 which completely determines the eigenstates and -energies.
 For large well widths or fields ($eFL/\eps_n\gg 1$), the second term is exponentially suppressed and the eigenenergies are given by the zeros of $\Ai(Z_n)$.
 For zero field, one recovers the square well solution (\cref{eq:exp:theory:square_well:psi,eq:exp:theory:square_well:eps}).
+
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/qw_undoped_0V}
+    \includegraphics{img/pdf/experiment/qw_undoped_1V}
+    \caption[\imgsource{img/py/experiment/qcse.py}]{
+        \Gls{qcse} in an undoped \acrshort{qw}.
+        Top: conduction and heavy-hole valence band profiles along the growth direction.
+        The wave functions of the first two eigenstates in the well are drawn in magenta and green, respectively.
+        The ground state transition is larger by $\Delta E = \qty{17}{\milli\electronvolt}$ than the gap $E_{\mr{g}}$ due to the confinement.
+        Bottom: same structure as above with an out-of-plane electric field applied across the structure ($F=\qty{5}{\volt\per\micro\meter}$).
+        Analytical wave functions in the infinite-well approximation are shown in magenta and green again.
+        The wave functions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
+        Excitonic effects are not included.
+    }
+    \label{fig:exp:theory:qcse:bandstructure}
+\end{marginfigure}
 
 The finite-field case is shown in the lower panel of \cref{fig:exp:theory:qcse:bandstructure} for $F=\qty{5}{\volt\per\micro\meter}$.
 Due to the larger effective mass of the heavy holes, the characteristic length scale $\tilde{z}$ is shorter and hence the corresponding wave functions are narrower than their electronic counterparts.
