@@ -392,13 +392,23 @@ da = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_2deg_power_dependence.h5', en
     'ccd_ccd_data_rate_bg_corrected'
 ]
 
-with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig, grid, cbs = plot_pl([da], 'Power (nW)', scaley=1e9, norm=mpl.colors.AsinhNorm(1),
-                             cbar_extend='neither')
-    grid[0].set_yscale('log')
-    grid[0].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
-    grid[0].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
-    cbs[0].set_ticks([0, 1, 10, 100])
+with mpl.style.context(MAINSTYLE, after_reset=True):
+    fig = plt.figure(layout='constrained', figsize=(TEXTWIDTH, 3))
+    axs = generate_mosaic(fig, (1, 1), slc=True, slc_height_ratio=1/3, cb_width_ratio=1/25,
+                          sharex=True)
+    img, prefix, ax2 = plot_pl_slice(fig, axs[0, 0], da, ylabel='Power (nW)', sel=dict(),
+                                     slice_vals=[P := 5e-10, 5e-8], slice_scales=[1e2, 1],
+                                     scaley=1e9, norm=mpl.colors.AsinhNorm(1))
+
+    axs[0, 0]['img'].set_yscale('log')
+    axs[0, 0]['img'].yaxis.set_major_formatter(mpl.ticker.LogFormatter())
+    axs[0, 0]['img'].yaxis.set_minor_formatter(mpl.ticker.LogFormatter())
+
+    axs[0, 0]['slc'].text(0.025, 0.3, r'$\times 100$', color='tab:blue',
+                          verticalalignment='center', horizontalalignment='left',
+                          transform=axs[0, 0]['slc'].transAxes, fontsize='medium')
+
+    img.colorbar.set_ticks([0, 1, 10, 100])
 
     fig.savefig(SAVE_PATH / '2deg_pl_power_dependence.pdf')
 # %%% Difference mode

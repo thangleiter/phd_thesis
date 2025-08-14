@@ -1,6 +1,8 @@
 % mainfile: ../../../main.tex
 \chapter{Additional measurements}\label{ch:app:exp:observations}
+In this appendix, I give additional information on simulation parameters and show further measurements.
 
+\section{Self-consistent Poisson-Schrödinger simulation of the membrane band structure}\label{sec:app:exp:observations:ps}
 \begin{margintable}
     \centering
     \footnotesize
@@ -19,7 +21,6 @@
         \bottomrule
     \end{tabularx}
 \end{margintable}
-
 \begin{margintable}
     \centering
     \footnotesize
@@ -48,20 +49,13 @@
         \end{tablenotes}
     \end{threeparttable}
 \end{margintable}
-%
 
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/experiment/2deg_pl_power_dependence}
-    \caption[
-        \sampleid{Doped M1_05_49-2}
-        \thewavelength{795}
-        \protect\newline
-        \imgsource{img/py/experiment/pl.py}
-    ]{}
-    \label{fig:app:exp:observations:2deg_pl_power_dependence}
-\end{marginfigure}
+The samples studied in \cref{ch:exp:observations} were all grown using \gls{mbe} and had similar nominal designs.
+To compare the design charge carrier density with the measurements obtained from \gls{pl} of the Fermi edge, I simulated the band structure using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}.
+\Cref{tab:app:exp:samples} shows the nominal doping concentration $N_{\mr{d}}$ as well as the charge carrier density in the \gls{qw}, $n$, obtained from a simulation using the parameters given in \cref{tab:app:exp:samples:ps}.
 
+\section{Additional data}\label{sec:app:exp:observations:meas}
+\subsection{Combined plot of \texorpdfstring{\acrshort{pl}}{PL} and \texorpdfstring{\acrshort{ple}}{PLE} data}\label{subsec:app:exp:observations:meas:pl_ple}
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple_single}
@@ -72,6 +66,36 @@
         \protect\newline
         \imgsource{img/py/experiment/ple.py}
     ]{
+        Combined plot of the \gls{pl} with excitation at \qty{795}{\nano\meter} (green) and \gls{ple} (magenta).
+        The data overlap in the range of \qtyrange{801}{825}{\nano\meter}, where they are plotted with \qty{50}{\percent} transparency.
+        The onset of the absorption edge in \gls{ple} coincides with the high-energy shoulder of the \gls{pl} emission.
     }
     \label{fig:app:exp:pl:doped_M1_05_49-2_ple}
 \end{figure}
+
+In \cref{sec:exp:observations:ple}, I showed \gls{ple} measurements of a large exciton trap.
+When integrating the \gls{pl} spectrum over the detection energy, the data showed several distinct features including an onset of the absorption that depends on the electric field applied by the difference-mode voltage \VDM.
+\Cref{fig:app:exp:pl:doped_M1_05_49-2_ple} shows the same data as panels (a) and (b) of \cref{fig:exp:pl:doped_M1_05_49-2_ple}, but drawn in the same plot.
+It is clear that the onset of absorption occurs just as the \gls{pl} emission drops off, indicating a small Stokes shift.
+
+\subsection{\texorpdfstring{\acrshort{2deg}}{2DEG} \texorpdfstring{\acrshort{pl}}{PL} as function of power}\label{subsec:app:exp:observations:meas:2deg}
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/2deg_pl_power_dependence}
+    \caption[
+        \sampleid{Doped M1_05_49-2}
+        \thewavelength{795}
+        \protect\newline
+        \imgsource{img/py/experiment/pl.py}
+    ]{
+        \Gls{2deg} \gls{pl} of an unbiased \gls{qw} as function of excitation power.
+        The Fermi edge at \qty{1.5275}{\electronvolt} does not broaden over two orders of magnitude as the line cuts in the upper panels also show.
+    }
+    \label{fig:app:exp:observations:2deg_pl_power_dependence}
+\end{figure}
+
+In \cref{sec:exp:observations:pl}, it was determined that the electrons recombining from the Fermi edge of the \gls{2deg} were much hotter at $\sim\qty{1}{\kelvin}$ than the cryostat temperature at $\sim\qty{10}{\milli\kelvin}$.
+The fit to the trion-exciton lineshape in \cref{sec:exp:observations:ple} yielded similar results.
+\Cref{fig:app:exp:observations:2deg_pl_power_dependence} demonstrates that this is not a local heating of the lattice due to excess laser power.
+Shown is the \gls{2deg} \gls{pl} as function of excitation power from \qtyrange{5}{500}{\nano\watt}, with the upper panel showing line cuts at highest and lowest power.
+There is no discernible broadening in the Fermi edge on the high-energy side of the spectrum.

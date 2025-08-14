@@ -16,7 +16,8 @@ from qutil.plotting.colors import (RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50,
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import MAINSTYLE, MARGINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init, sliceprops  # noqa
+from common import (MAINSTYLE, MARGINSTYLE, MARGINWIDTH, TEXTWIDTH, TOTALWIDTH, PATH, init,
+                    sliceprops)
 
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/tmm'
@@ -350,8 +351,7 @@ tbl = {'A': {}, 'R': {}}
 # ebeam etched gate: 2/7
 # optical: 7/150
 # epoxy: thickness of a few microns. Since the thickness varies significantly, let's assume that
-#        there is no coherent backscattering at the epoxy/Si interface, which we implement by a
-#        large imaginary part of the permittivity
+#        there is no coherent backscattering at the epoxy/Si interface
 # %%% Bare stack
 print('Bare stack:\n --> 10/90/20/90/10')
 structure = setup_bare_structure(barrier_thickness=90, epoxy_thickness=None, verbose=False)
@@ -369,22 +369,28 @@ print(f'R = {R + T_reverse*R_epoxy_Si:.2g}')
 # %%%% Sweep epoxy thickness
 thickness = np.linspace(000, 1000, 1001)
 Rs = np.empty_like(thickness)
+As = np.empty_like(thickness)
 for i, t in enumerate(thickness):
     structure = setup_bare_structure(barrier_thickness=90, epoxy_thickness=t, verbose=False)
-    Rs[i] = pm.coefficient(structure, WAV, INC, POL)[2]
+    A, r, t, R, T = analyze_absorptance(structure, verbose=False)
+    As[i] = extract_absorptance(structure, A)
+    Rs[i] = R
 
+# %%%%% Plot
 with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig, ax = plt.subplots(layout='constrained')
+    fig, axs = plt.subplots(2, sharex=True, layout='constrained', figsize=(MARGINWIDTH, 2))
 
-    ax.axhline(R, ls='--', color=RWTH_COLORS_50['blue'])
-    ax.plot(thickness, Rs)
-    ax.grid()
-    ax.set_xlabel('Epoxy thickness (nm)')
-    ax.set_ylabel(r'$\mathscr{R}$')
+    for xs, xinf, s, ax in zip([Rs, As], [tbl['R']['Bare'], tbl['A']['Bare']], ['R', 'A'], axs):
+        ax.axhline(xinf*100, ls='--', color=RWTH_COLORS_50['blue'])
+        ax.plot(thickness, xs*100)
+        ax.grid()
+        ax.set_xlabel('Epoxy thickness (nm)')
+        ax.set_ylabel(rf'$\mathscr{{{s}}}$ $(\%)$')
+        ax.label_outer()
 
-    ax2 = ax.twinx()
-    ax2.set_ylim(ax.get_ylim())
-    ax2.set_yticks(ticks=[R], labels=[r'$\mathdefault{\mathscr{R}_{\infty}}$'])
+        ax2 = ax.twinx()
+        ax2.set_ylim(ax.get_ylim())
+        ax2.set_yticks(ticks=[xinf*100], labels=[rf'$\mathdefault{{\mathscr{{{s}}}_{{\infty}}}}$'])
 
     fig.savefig(SAVE_PATH / 'reflectance_epoxy.pdf')
 # %%% Topgate optical
