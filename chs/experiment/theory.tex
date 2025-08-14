@@ -5,7 +5,7 @@ In large parts, this is due to their favorable optical properties, determined ch
 Semiconductors can be classified into \emph{direct} and \emph{indirect} categories, where the terminology refers to the location of the band gap, that is, the smallest energy difference between valence and conduction band in the Brillouin zone.
 A direct semiconductor's band gap features a valence band maximum at the same point in $k$-space as a conduction band minimum.
 Such materials, a prime example of which is the compound \ch{GaAs} with a band gap of $E_{\mr{g}}=\qty{1.519}{\electronvolt}$ at $T=\qty{0}{\kelvin}$ in the \gls{nir} spectrum~\cite{Vurgaftman2001}, emit electromagnetic radiation with energy $h\nu = E_{\mr{g}}$ when electrons are excited from the valence into the conduction band.
-When the excitation occurs through optical absorption, this effect is known as \gls{pl}.
+When the excitation occurs through optical absorption, this effect is known as \acrlong{pl}.
 
 Of course, besides their optical applications, semiconductors are also the backbone of the modern electronics industry.
 Their band gap allows tuning the conductivity by means of the field effect wherein the potential and thereby the band structure is locally modified by means of a voltage applied to a gate electrode.
@@ -122,6 +122,23 @@ while the first excited state lies \qty{42}{\milli\electronvolt} higher than the
 The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wave functions of electrons and holes in a band structure diagram.
 Due to the symmetry of the confining potential, the wave functions are symmetric around the center of the well.
 
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/qw_undoped_0V}
+    \includegraphics{img/pdf/experiment/qw_undoped_1V}
+    \caption[\imgsource{img/py/experiment/qcse.py}]{
+        \Gls{qcse} in an undoped \acrshort{qw}.
+        Top: conduction and heavy-hole valence band profiles along the growth direction.
+        The wave functions of the first two eigenstates in the well are drawn in magenta and green, respectively.
+        The ground state transition is larger by $\Delta E = \qty{17}{\milli\electronvolt}$ than the gap $E_{\mr{g}}$ due to the confinement.
+        Bottom: same structure as above with an out-of-plane electric field applied across the structure ($F=\qty{5}{\volt\per\micro\meter}$).
+        Analytical wave functions in the infinite-well approximation are shown in magenta and green again.
+        The wave functions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
+        Excitonic effects are not included.
+    }
+    \label{fig:exp:theory:qcse:bandstructure}
+\end{marginfigure}
+
 Now, applying an out-of-plane electric field tilts the bands and pulls electrons and holes to opposite interfaces of the \gls{qw}.
 The Hamiltonian for the electrons in this case reads~\cite{Rabinovitch1971,Miller1985,Davies2009}
 \begin{equation}\label{eq:exp:theory:qcse:hamiltonian}
@@ -154,23 +171,6 @@ As we assumed infinitely high barriers at $z = 0$ and $z = L$, the boundary cond
 which completely determines the eigenstates and -energies.
 For large well widths or fields ($eFL/\eps_n\gg 1$), the second term is exponentially suppressed and the eigenenergies are given by the zeros of $\Ai(Z_n)$.
 For zero field, one recovers the square well solution (\cref{eq:exp:theory:square_well:psi,eq:exp:theory:square_well:eps}).
-
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/experiment/qw_undoped_0V}
-    \includegraphics{img/pdf/experiment/qw_undoped_1V}
-    \caption[\imgsource{img/py/experiment/qcse.py}]{
-        \Gls{qcse} in an undoped \acrshort{qw}.
-        Top: conduction and heavy-hole valence band profiles along the growth direction.
-        The wave functions of the first two eigenstates in the well are drawn in magenta and green, respectively.
-        The ground state transition is larger by $\Delta E = \qty{17}{\milli\electronvolt}$ than the gap $E_{\mr{g}}$ due to the confinement.
-        Bottom: same structure as above with an out-of-plane electric field applied across the structure ($F=\qty{5}{\volt\per\micro\meter}$).
-        Analytical wave functions in the infinite-well approximation are shown in magenta and green again.
-        The wave functions get pushed to opposite interfaces of the \acrshort{qw}, lowering the ground state transition energy by $\Delta E = -\qty{10}{\milli\electronvolt}$.
-        Excitonic effects are not included.
-    }
-    \label{fig:exp:theory:qcse:bandstructure}
-\end{marginfigure}
 
 The finite-field case is shown in the lower panel of \cref{fig:exp:theory:qcse:bandstructure} for $F=\qty{5}{\volt\per\micro\meter}$.
 Due to the larger effective mass of the heavy holes, the characteristic length scale $\tilde{z}$ is shorter and hence the corresponding wave functions are narrower than their electronic counterparts.

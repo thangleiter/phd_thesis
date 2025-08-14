@@ -31,8 +31,7 @@ In the best-case scenario, the cryostat vibration noise is on the order of \qty{
 Resolving features only a few pixels in size is thus clearly on the edge of the microscope's capabilities.
 Positioning the sample in this way is usually fairly reliable with some experience if one takes visual identification of the exciton trap gates as a target.
 In practice, it is still necessary to fine-tune the position once the light source is switched to the laser because first, the focal distance of the objective lens shifts slightly when switching from a broadband to a monochromatic light source, and second, the focal spot of the laser is much smaller than that of the white light.\sidenote{
-    The white light is launched from a \qty{400}{\micro\meter} diameter \gls{mmf} and collimated by a \num{0.13} \gls{na} lens, compared to a \qty{5}{\micro\meter} diameter \gls{smf} collimated by a \num{0.18} \gls{na} lens for the laser.
-    % TODO: check mmf lens NA
+    The white light is launched from a \qty{400}{\micro\meter} diameter \gls{mmf}, compared to a \qty{5}{\micro\meter} diameter \gls{smf} for the laser, resulting in a spot \num{80} times larger.
 }
 
 The second approach is to roughly align the position on a large gate feature using the camera image, switch to laser illumination, and monitor the \gls{pl} signal when biasing the gate.
@@ -223,7 +222,7 @@ Taking the large trap diameter in this case into account, there are $\sim\num{1e
 Thus, at a tunneling rate of \qty{1}{\mega\hertz}, all electrons would tunnel out of the \gls{qw} within \qty{100}{\milli\second} on average, putting a response of the system into the steady state within the fairly long time scales of a \gls{pl} measurement\sidenote{
     Say \qtyrange{0.1}{10}{\second}.
 }
-well within reasonable bounds. % TODO: phrasing
+well within reasonable bounds.
 In the literature, this is known as carrier sweep-out and has been studied in the context of solar cells and other electroabsorptive devices~\cite{Larsson1988,Schneider1988,Fox1991}.
 
 The dashed gray line in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} shows a parabola, $\Delta E\propto \alpha\VDM^2$, with curvature $\alpha = \qty{-3.5}{\milli\electronvolt\per\volt\squared}$ as a guide to the eye.
@@ -343,9 +342,10 @@ If the individual lines originated from 0D-confined \glspl{qd}, we would expect 
 I therefore performed a \g2 measurement (see \cref{sec:setup:optics:g2}) on a line that was narrow ($\sim\qty{1}{\milli\electronvolt}$) and fairly well-separated such that at its \gls{fwhm} was resolvable.
 I excited the sample above the gap and spectrally filtered the emitted \gls{pl} by using the spectrometer as a monochromator with bandwidth given by the line \gls{fwhm}.
 Due to the low brightness, a compromise between high excitation power (leading to power broadening) and measurement duration (to gather statistics) was chosen at \qty{100}{\nano\watt}.
-However, after \qty{48}{\hour} no deviation from a flat and uncorrelated \g2 could be observed.
-% TODO: discuss regimes where not many lines are visible
-% TODO: g2 on single line, #218?
+However, after \qty{48}{\hour} no deviation from a flat and uncorrelated \g2 could be observed.\sidenote{
+    I also attempted a \g2 measurement to no avail in a different parameter regime where a single, isolated emission line appears.
+    % TODO: #218; expand, show data?
+}
 
 \subsection{Spatial dependence}\label{subsec:exp:observations:pl:spatial}
 \begin{marginfigure}
