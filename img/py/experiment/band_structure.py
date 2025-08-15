@@ -1,3 +1,5 @@
+import sys
+
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
@@ -66,6 +68,11 @@ def extract_params(structure, z_qw_ix):
                           dx=structure.z_stepsize_nm*1e-7)
     return E, V, psi, n_tot, n_2DEG
 
+
+# %%
+if __name__ == '__main__':
+    # don't run this script in batched mode. there's nothing to plot
+    sys.exit(0)
 
 # %% Simulate single-gate bias
 V_FP = 0.76

@@ -9,7 +9,8 @@ import numpy as np
 import scipy as sp
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
-from qutil import functools, const, signal_processing as sp
+from qutil import functools, const
+from qutil.signal_processing.real_space import rms
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
@@ -82,7 +83,7 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         # Timetrace
         ax = axes[0]
         t = np.linspace(0, 1, L)
-        ax.plot(t, X[0] / sp.real_space.rms(X[0]), '-')
+        ax.plot(t, X[0] / rms(X[0]), '-')
 
         # Correlation
         ax = axes[1]
