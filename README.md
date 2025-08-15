@@ -18,6 +18,8 @@
 - [ ] `\ch{}` line breaks
 - [ ] Use `\subequations{}` where appropriate
 - [ ] Instrument citations
+- [ ] migrate repo to github
+- [ ] migrate `lindblad_mc_tools` repo
 
 ## Content
 - [ ] Acknowledgements
