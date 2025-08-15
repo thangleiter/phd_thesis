@@ -71,8 +71,11 @@ Once excited, they quickly relax down to the Fermi edge at $\mu$ from where they
 As the Fermi sea is at a finite temperature, the high-energy shoulder of the \gls{pl} spectrum is hence thermally broadened according to the Fermi distribution function of the electron gas (dashed gray line).
 The associated temperature is around \qty{1.5}{\kelvin} and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}.
 This effect has already been observed by \citet{Pinczuk1984}.
-Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making carrier heating due to high excitation power an unlikely cause~\cite{Ulbrich1973}.
+Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making local heating of the lattice due to high excitation power an unlikely cause~\cite{Ulbrich1973}.
 I show a power-dependence measurement of the Fermi edge supporting this statement in \cref{ch:app:exp:observations}.
+\citet{Bockelmann1990} showed that in low-dimensional electron gases electron cooling by phonon emission is limited by a finite scattering rate.
+Thus, under continuous excitation a quasi-equilibrium is established as hot electrons cannot loose heat quickly enough.
+Although their simulations were performed for higher temperatures and smaller confinement widths, their results of electron temperatures in the range of \qty{2}{\kelvin} for lattice temperatures of \qty{300}{\milli\kelvin} is comparable to ours.
 
 \Gls{pl} emission is possible also at lower energies as electrons inside the Fermi sea recombine with the free photo-hole that scatters towards the valence band ege.
 The band gap then defines the low-energy shoulder of the \gls{pl} spectrum, below which there are -- ideally -- no states available (dotted gray line).
@@ -180,7 +183,7 @@ Perhaps surprisingly, the gates on the \emph{bottom} side of the membrane displa
     I note that the sample of \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate} was fabricated on the same heterostructure as the device in Figure 4(d) of \citer{Descamps2023}, which showed little to no electrical hysteresis unlike most other samples investigated by \citet{Descamps2021}.
 }
 This makes surface states an unlikely candidate for the screening as the quality of the grown surface should be better than that of the etched surface~\cite{Descamps2021}.
-A possible cause might be oxygen segregation during growth\footnote{A.~Ludwig, private communication.} or other impurities~\cite{Nguyen2020}.
+A possible cause might be oxygen segregation during growth\sidenote{A.~Ludwig, private communication.} or other impurities~\cite{Nguyen2020}.
 
 The fact that the \gls{2deg} is depleted by \VDM in the range \qtyrange{-0.2}{-1.4}{\volt} and above \qty{1.5}{\volt} at all is unexpected.
 Even with a difference in lever arms as just discussed, the symmetric dependence of the \gls{pl} emission on \VDM implies that $\VDM - \qty{0.75}{\volt}$ \emph{should} correspond to the out-of-plane electric field such that the energy is unchanged in the middle of the quantum well, $\VDM - \qty{0.75}{\volt} \propto F(z-t/2)$.
@@ -189,7 +192,7 @@ Staying in the virtual gate picture, a difference in relative lever arms\sidenot
     See for example \citer{Volk2019}.
 }
 $\Delta\alpha = \alpha_{\mr{T}} - \alpha_{\mr{B}}$ between \VT and \VB should modify the virtual gates as
-\begin{align}
+\begin{align}\label{eq:exp:virtual_gates}
     \begin{pmatrix}
         \tilde{V}_{\mr{DM}} \\
         \tilde{V}_{\mr{CM}}
@@ -488,6 +491,7 @@ A few possible explanations for this feature come to mind.
 First, the two lines could correspond to the negative trion and the neutral exciton.
 However, the energy difference of $\sim\qty{10}{\milli\electronvolt}$ seems too large for the difference in binding energies, usually on the order of a few \unit{\milli\electronvolt}.
 Although similar features have been observed and assigned as such~\cite{Brown1996,Huard2000,Yusa2000}, the splittings in those studies were smaller while at the same time the \glspl{qw} were thinner and should thus lead to larger binding energies~\cite{Esser2000,Esser2001}.
+Similarly, excitons bound to impurities such as ionized donors typically show much lower energy separation to the neutral exciton~\cite{Essaoudi2001}.
 A better match with the observed energy difference is the excitonic binding energy of $\sim\qty{8}{\milli\electronvolt}$, which would imply that the feature at higher energy would correspond to free electron-hole pairs.
 Alternatively, the lines could correspond to heavy- and light-hole excitons, whose splittings have been found to be on the order of \qty{7}{\milli\electronvolt} for undoped \glspl{qw} of this width~\cite{ElKhalifi1989} although also smaller values have been reported~\cite{Bataev2022}.
 The difference in electric-field dependence of the respective binding energies is hard to predict, but the Stark shift should be smaller for light-hole excitons due to their smaller effective mass and hence the narrowing of the energy splitting between the lines for higher voltages is counter-intuitive.
@@ -509,6 +513,7 @@ The energy shift of the two most prominent peaks in both spectra is labeled.
 Although not a perfect match, the shift of around \qty{28}{\milli\electronvolt} is not far off the energy of \gls{to} phonons in \ch{GaAs}, known in bulk to be \qty{33}{\milli\electronvolt}~\cite{Strauch1990}.
 Similarly, the shift of \qty{40}{\milli\electronvolt} at $\VDM=-\qty{2.65}{\volt}$ is off by approximately the same amount from the second, \ch{AlAs}-like \gls{to} phonon mode in \ch{Al_{0.32}Ga_{0.68}As}, \qty{44}{\milli\electronvolt}~\cite{Ilegems1970,Leng1989,Gammon1991}.
 It is conceivable that the thinning of the heterostructure to a membrane modifies the phonon energies by $\qty{5}{\milli\electronvolt}$ and it would be interesting to perform Raman spectroscopy on the membranes to investigate this further.
+Additionally, temperature-dependent measurements could reveal information on the possible existence of a phonon bottleneck~\cite{Murdin1997}, which would show as a change in decay rate at a certain temperature corresponding to a crossover in acoustic-phonon--dominated and optical-phonon--dominated cooling of hot electrons.
 
 The data for $\VDM = \qty{0.59}{\volt}$ show that the Stokes shift between Fermi edge of the \gls{pl} emission and the \gls{fes} in the \gls{ple} absorption is small, $E_{\mr{S}} - E_{\mr{F}}\sim\qty{2.5}{\milli\electronvolt}$.
 At the largest voltage, $\VDM = \qty{-2.65}{\volt}$, the \gls{pl} emission splits up into a doublet peak with a splitting of \qty{3.7}{\milli\electronvolt}.
