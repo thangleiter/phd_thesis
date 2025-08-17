@@ -12,18 +12,21 @@ import matplotlib.colors as mpc
 from filter_functions import util
 from scipy import odr
 from mpl_toolkits.axes_grid1 import ImageGrid
+from matplotlib import cycler
 
 from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition)
 
-plt.style.use('thesis')
+plt.style.use('publication')
 # Hotfix latex preamble
 for key in ('text.latex.preamble', 'pgf.preamble'):
     plt.rcParams.update({key: '\n'.join(plt.rcParams.get(key).split('|'))})
 
 golden_ratio = (np.sqrt(5) - 1.)/2.
 figsize_narrow = (3.40457, 3.40457*golden_ratio)
-figsize_wide = (5.65071, 5.65071*golden_ratio)
-exts = ('pdf', 'eps', 'pgf')
+figsize_wide = (7.05826, 7.05826*golden_ratio)
+
+ls_cycle = plt.rcParams['axes.prop_cycle'][:4] + cycler(linestyle=('-.','--',':','-',))
+ms_cycle = plt.rcParams['axes.prop_cycle'][:4] + cycler(marker=('.', 'x', '+', 's'))
 # %% Functions
 
 
@@ -128,19 +131,27 @@ def shift_zero_bwr_colormap(z: float, transparent: bool = True):
 
 
 # %% Load pickled files
-sha = '9754468'  # '3baa09e'
-date = '20190822-153458'  # '20190716-162957'
+"""current in paper
+sha = '7fddd61'
+date = '20200615-164906'
+"""
+sha = '6fac17f'  # thesis:'9754468'  # '3baa09e' 500 traces:'c0d179b'
+date = '20200615-170254'  # thesis:'20190822-153458'  # '20190716-162957' 500 traces:'20191219-170932' 250 traces: '20191219-181356'
 folder = 'RB_normalized_XYZ_noise_no_sensitivities'
 m_min, m_max = 1, 101
 
-thesis_path = Path('/home/tobias/Physik/Master/Thesis')
-# thesis_path = Path('C:/Users/Tobias/Documents/Uni/Physik/Master/Thesis')
-# thesis_path = Path('Z:/MA/')
-data_path = thesis_path / 'data'
-save_path = thesis_path / 'thesis' / 'img'
-spath = save_path
+# dpath = Path(r'Z:/MA/data')
+dpath = Path(r'C:/Users/Tobias/Documents/Uni/Physik/Master/Thesis/data')
+# dpath = Path('/home/tobias/Physik/Master/Thesis/data')
+# dpath = Path('/run/media/tobias/janeway/Hangleiter/MA/data')
+# spath = Path(r'Z:/Publication/efficient_calculation_of_generalized_filter_' +
+#               r'functions_for_sequences_of_quantum_gates/img')
+spath = Path(r'C:/Users/Tobias/Documents/Uni/Physik/Publication/efficient_' +
+              r'calculation_of_generalized_filter_functions/img')
+# spath = Path(r'/home/tobias/Physik/Publication/efficient_' +
+#              r'calculation_of_generalized_filter_functions/img')
 
-gate_types = ['naive', 'optimized', 'single']  # , 'zyz']
+gate_types = ['naive', 'optimized', 'single', ]  # 'zyz']
 noise_types = ['white', 'correlated']
 infid_types = ['tot', 'nocorr']
 calc_types = ['FF', 'MC']
@@ -154,26 +165,26 @@ for gate_type in gate_types:
     data['MC'][gate_type] = {'tot': {}}
     data['FF'][gate_type] = {'tot': {}, 'nocorr': {}}
     data['single_clifford'][gate_type] = {'tot': {}}
-    with np.load(data_path / folder / sha / date /
-                 f'RB_FF_infids_tot_{gate_type}_gates_m1-{m_max}.npz') as arch:
+    with np.load(dpath / folder / sha / date /
+                 f'RB_FF_infids_tot_{gate_type}_gates_m{m_min}-{m_max}.npz') as arch:
         for file in arch.files:
             data['FF'][gate_type]['tot'][file] = arch[file]
 
-    with np.load(data_path / folder / sha / date /
-                 f'RB_FF_infids_nocorr_{gate_type}_gates_m1-{m_max}.npz') as arch:
+    with np.load(dpath / folder / sha / date /
+                 f'RB_FF_infids_nocorr_{gate_type}_gates_m{m_min}-{m_max}.npz') as arch:
         for file in arch.files:
             data['FF'][gate_type]['nocorr'][file] = arch[file]
 
     data['single_clifford'][gate_type]['avg'] = {}
     fname = f'single_clifford_FF_en_infids_{gate_type}_gates.npz'
-    with np.load(data_path / folder / sha / date / fname) as arch:
+    with np.load(dpath / folder / sha / date / fname) as arch:
         for file in arch.files:
             data['single_clifford'][gate_type]['tot'][file] = arch[file]
             data['single_clifford'][gate_type]['avg'][file] = arch[file]*2/3
 
     try:
-        with np.load(data_path / folder / sha / date /
-                     f'RB_MC_gates_{gate_type}_gates_m1-{m_max}.npz') as arch:
+        with np.load(dpath / folder / sha / date /
+                     f'RB_MC_gates_{gate_type}_gates_m{m_min}-{m_max}.npz') as arch:
             for file in arch.files:
                 MC_gates[gate_type][file] = arch[file]
 
@@ -185,7 +196,7 @@ for gate_type in gate_types:
     except FileNotFoundError:
         pass
 
-    with np.load(data_path / folder / sha /date /
+    with np.load(dpath / folder / sha / date /
                  f'single_clifford_FF_avg_{gate_type}_gates.npz') as arch:
         for file in arch.files:
             single_clifford_FF[gate_type][file] = arch[file]
@@ -272,7 +283,7 @@ for calc_type, c in data.items():
 
 #         fit_tot = ax[i, j].plot(
 #             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color='tab:red', linestyle='--'
+#             color='tab:red', linestyle='--', linewidth=1
 #         )
 
 #         mean_nocorr = ax[i, j].errorbar(
@@ -284,7 +295,7 @@ for calc_type, c in data.items():
 
 #         fit_nocorr = ax[i, j].plot(
 #             m, linear(fit['FF'][gate_type]['nocorr'][noise_type]['tot'].beta, m),
-#             color='tab:green', linestyle='--'
+#             color='tab:green', linestyle='--', linewidth=1
 #         )
 
 #         rb_theory = ax[i, j].plot(
@@ -329,8 +340,9 @@ for calc_type, c in data.items():
 # fig.tight_layout(w_pad=0.5, h_pad=0.5)
 # fname = 'RB_{}_vs_{}_gates_white_vs_correl_{}_{}_{}'.format(*gates, folder,
 #                                                             sha, date)
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'),
+#             transparent=False)
 
 # %% Plot white vs correlated, gate type vs gate type
 
@@ -354,7 +366,7 @@ for calc_type, c in data.items():
 
 #             fit_tot = ax[i, j].plot(
 #                 m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#                 color='tab:red', linestyle='--'
+#                 color='tab:red', linestyle='--', linewidth=1
 #             )
 
 #             mean_nocorr = ax[i, j].errorbar(
@@ -366,7 +378,7 @@ for calc_type, c in data.items():
 
 #             fit_nocorr = ax[i, j].plot(
 #                 m, linear(fit['FF'][gate_type]['nocorr'][noise_type]['sep'][k].beta, m),
-#                 color='tab:green', linestyle='--'
+#                 color='tab:green', linestyle='--', linewidth=1
 #             )
 
 #             rb_theory = ax[i, j].plot(
@@ -412,14 +424,15 @@ for calc_type, c in data.items():
 #     fname = 'RB_{}_vs_{}_gates_white_vs_correl_{}_{}_{}_{}-noise'.format(
 #         *gates, folder, sha, date, identifier
 #     )
-#     for ext in exts:
-#         fig.savefig(save_path / ext / '.'.join((fname, ext)))
+#     fig.savefig(spath / (fname + '.pdf'))
+#     fig.savefig(spath / (fname + '.eps'),
+#                 transparent=False)
 
 # # %% Correlation infidelities
 # infids = {}
 # for gate_type in gate_types:
 #     infids[gate_type] = {}
-#     with np.load(data_path / folder / sha / date /
+#     with np.load(dpath / folder / sha / date /
 #                  f'RB-correl_infids_{gate_type}_gates_m30.npz') as f:
 #         for file in f:
 #             infids[gate_type][file] = f[file]
@@ -446,25 +459,25 @@ for calc_type, c in data.items():
 # # cmap = shift_zero_bwr_colormap(.580)  # optimized vs zyz
 # cmap = plt.get_cmap('bwr')
 # cmap.set_over((1/256, 0, 0, 1))
-
+#
 # fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(4.8, 4))
 # for i, (a, n) in enumerate(zip(alpha, noise_types)):
 #     for j, g in enumerate(gates):
 #         ax[i, j].set_aspect('equal', 'box')
 #         mean = means[i, j].sum(-1)
-
+#
 #         pcm = ax[i, j].pcolor(
 #             mean, norm=mpc.SymLogNorm(linthresh=1e-7, vmin=vmin, vmax=vmax),
 #             cmap=cmap
 #         )
-
+#
 # for i in range(2):
 #     ax[0, i].set_xlabel(gates[i])
 #     ax[0, i].xaxis.set_label_position("top")
 # for j in range(2):
 #     ax[j, 1].set_ylabel(noise_types[j])
 #     ax[j, 1].yaxis.set_label_position("right")
-
+#
 # ax[0, 0].set_xticks(np.linspace(0, m, 6))
 # ax[0, 1].set_xticks(np.linspace(0, m, 6))
 # ax[0, 0].set_yticks(np.linspace(0, m, 6))
@@ -473,18 +486,18 @@ for calc_type, c in data.items():
 # ax[1, 1].set_xlabel(r"$g$")
 # ax[0, 0].set_ylabel(r"$g'$")
 # ax[1, 0].set_ylabel(r"$g'$")
-
+#
 # fig.tight_layout(h_pad=0, w_pad=0)
-
+#
 # cb = fig.colorbar(pcm, ax=ax.ravel().tolist(), fraction=0.045, pad=0.1)
 # cb.set_label(r"$\mathcal{I}^{(gg')}$")
-
+#
 # fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_one_cbar'.format(
 #     *gates,
 # )
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'))
+#
 # # %% imagegrid plots each noise operator separately
 # for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
 #     mask = ~np.eye(m, dtype=bool)
@@ -495,25 +508,25 @@ for calc_type, c in data.items():
 #     # cmap = shift_zero_bwr_colormap(.580)  # optimized vs zyz
 #     cmap = plt.get_cmap('bwr')
 #     cmap.set_over((1/256, 0, 0, 1))
-
+#
 #     fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(4.8, 4))
 #     for i, (a, n) in enumerate(zip(alpha, noise_types)):
 #         for j, g in enumerate(gates):
 #             ax[i, j].set_aspect('equal', 'box')
 #             mean = means[i, j, ..., k]
-
+#
 #             pcm = ax[i, j].pcolor(
 #                 mean, norm=mpc.SymLogNorm(linthresh=1e-7, vmin=vmin, vmax=vmax),
 #                 cmap=cmap
 #             )
-
+#
 #     for i in range(2):
 #         ax[0, i].set_xlabel(gates[i])
 #         ax[0, i].xaxis.set_label_position("top")
 #     for j in range(2):
 #         ax[j, 1].set_ylabel(noise_types[j])
 #         ax[j, 1].yaxis.set_label_position("right")
-
+#
 #     ax[0, 0].set_xticks(np.linspace(0, m, 6))
 #     ax[0, 1].set_xticks(np.linspace(0, m, 6))
 #     ax[0, 0].set_yticks(np.linspace(0, m, 6))
@@ -522,19 +535,19 @@ for calc_type, c in data.items():
 #     ax[1, 1].set_xlabel(r"$g$")
 #     ax[0, 0].set_ylabel(r"$g'$")
 #     ax[1, 0].set_ylabel(r"$g'$")
-
+#
 #     fig.tight_layout(h_pad=0, w_pad=0)
-
+#
 #     cb = fig.colorbar(pcm, ax=ax.ravel().tolist(), fraction=0.045, pad=0.1)
 #     cb.set_label(r"$\mathcal{I}^{(gg')}$")
-
+#
 #     fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_one_cbar_{}-noise'.format(
 #         *gates, identifier
 #     )
-#     for ext in exts:
-#         fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% linecuts
+#     fig.savefig(spath / (fname + '.pdf'))
+#     fig.savefig(spath / (fname + '.eps'))
+#
+# # %% linecuts
 # rng = np.arange(m)
 # fig, ax = plt.subplots(2, 1, sharex=True, figsize=(4, 5))
 # color = ('tab:green', 'tab:orange')
@@ -568,8 +581,8 @@ for calc_type, c in data.items():
 # fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_linecuts'.format(
 #     *gates,
 # )
-# fig.savefig(spath / (fname + '.pdf'), dpi=600)
-# fig.savefig(spath / (fname + '.eps'), dpi=600)
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'))
 
 # %% linecuts
 # for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
@@ -606,16 +619,16 @@ for calc_type, c in data.items():
 #     fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_linecuts_{}-noise'.format(
 #         *gates, identifier
 #     )
-#     fig.savefig(spath / (fname + '.pdf'), dpi=600)
-#     fig.savefig(spath / (fname + '.eps'), dpi=600)
+#     fig.savefig(spath / (fname + '.pdf'))
+#     fig.savefig(spath / (fname + '.eps'))
 
 # # %% all gate types in one
 # colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
 #           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-
+#
 # fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
 #                          figsize=(3.4, 3.4))
-
+#
 # m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
 # for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
 #     for g, gate_type in enumerate(gate_types):
@@ -626,12 +639,12 @@ for calc_type, c in data.items():
 #              np.sqrt(N_G)),
 #             fmt='.', color=colors[g]
 #         )
-
+#
 #         fit_tot = ax.plot(
 #             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color=colors[g], linestyle='--',
+#             color=colors[g], linestyle='--', linewidth=1
 #         )
-
+#
 #     rb_theory = ax.plot(
 #         m,
 #         1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
@@ -642,7 +655,7 @@ for calc_type, c in data.items():
 #     ax.tick_params(top=True, bottom=True, left=True, right=True,
 #                    direction='in')
 #     # ax.set_ylabel(r'Survival probability')
-
+#
 # # Add proxy subplot for common axis labels
 # common_ax = fig.add_subplot(111, frameon=False)
 # common_ax.tick_params(labelcolor='none', top=False, bottom=False,
@@ -657,13 +670,13 @@ for calc_type, c in data.items():
 # ax.set_xlim(0, 100)
 # ax.set_ylim(ymax=1)
 # ax.set_xlabel(r'Sequence length $m$')
-
-# fig.tight_layout()
+#
+# fig.tight_layout(h_pad=0, w_pad=0)
 # fname = 'RB_all_gates_white_vs_correl'
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% all gate types in one
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'))
+#
+# # %% all gate types in one
 # colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
 #           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
 
@@ -715,16 +728,16 @@ for calc_type, c in data.items():
 
 #     fig.tight_layout()
 #     fname = 'RB_all_gates_white_vs_correl_{}-noise'.format(identifier)
-#     fig.savefig(spath / (fname + '.pdf'), dpi=600)
-#     fig.savefig(spath / (fname + '.eps'), dpi=600)
+#     fig.savefig(spath / (fname + '.pdf'))
+#     fig.savefig(spath / (fname + '.eps'))
 
 # # %% all gate types in one, individual noise operator contributions
 # colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
 #           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-
+#
 # fig, axes = plt.subplots(2, 2, sharex=True, sharey=False,
 #                          figsize=figsize_wide)
-
+#
 # m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
 # noise_type = 'correlated'
 # for k, (ax, subfig, identifier) in enumerate(zip(axes.ravel(),
@@ -738,12 +751,12 @@ for calc_type, c in data.items():
 #              np.sqrt(N_G)),
 #             fmt='.', color=colors[g]
 #         )
-
+#
 #         fit_tot = ax.plot(
 #             m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#             color=colors[g], linestyle='--'
+#             color=colors[g], linestyle='--', linewidth=1
 #         )
-
+#
 #     rb_theory = ax.plot(
 #         m,
 #         1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
@@ -754,7 +767,7 @@ for calc_type, c in data.items():
 #     ax.tick_params(top=True, bottom=True, left=True, right=True,
 #                    direction='in')
 #     ax.set_title(f'{identifier}-noise')
-
+#
 # ax = axes.ravel()[3]
 # subfig = '(d)'
 # for g, gate_type in enumerate(gate_types):
@@ -765,12 +778,12 @@ for calc_type, c in data.items():
 #          np.sqrt(N_G)),
 #         fmt='.', color=colors[g]
 #     )
-
+#
 #     fit_tot = ax.plot(
 #         m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#         color=colors[g], linestyle='--'
+#         color=colors[g], linestyle='--', linewidth=1
 #     )
-
+#
 # rb_theory = ax.plot(
 #     m,
 #     1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
@@ -781,7 +794,7 @@ for calc_type, c in data.items():
 # ax.tick_params(top=True, bottom=True, left=True, right=True,
 #                direction='in')
 # ax.set_title(f'Sum of all noise')
-
+#
 # # Add proxy subplot for common axis labels
 # common_ax = fig.add_subplot(111, frameon=False)
 # common_ax.tick_params(labelcolor='none', top=False, bottom=False,
@@ -795,44 +808,42 @@ for calc_type, c in data.items():
 #                   labels=gate_types + ['0th order SRB theory'])
 # ax.set_xlim(0, 100)
 # ax.set_ylim(ymax=1)
-
+#
 # fig.tight_layout()
 # fname = 'RB_all_gates_noise_comparison'
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'))
+#
 # %% all gates white vs correl with inset
-colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-gate_types = ['naive', 'optimized', 'single']
+gate_types = ['naive', 'optimized', 'single']  # , 'zyz'
 
-fig, axes = plt.subplots(1, 2, sharex=True, sharey=True,
-                         figsize=(figsize_wide[0], figsize_wide[1]*.6))
+fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
+                         figsize=(figsize_narrow[0], figsize_narrow[1]*np.sqrt(2)),
+                         gridspec_kw={'height_ratios': [4, 5]})
 
 m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
+for i, (ax, noise_type, subfig) in enumerate(zip(axes, noise_types, ('(a)', '(b)'))):
     means = []
-    for g, gate_type in enumerate(gate_types):
+    for gate_type, ms_style, ls_style in zip(gate_types, ms_cycle, ls_cycle):
         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
         means.append(ax.errorbar(
             m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-            (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-             np.sqrt(N_G)),
-            fmt='.', color=colors[g]
+            (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1)),
+            linestyle='None', **ms_style
         ))
 
         fit_tot = ax.plot(
             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-            color=colors[g], linestyle='--', linewidth=1
+            linewidth=1, **ls_style
         )
 
     rb_theory = ax.plot(
         m,
         1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-        '-', zorder=4, color='k'
+        linestyle='-', zorder=4, color='k'
     )
     ax.grid(False)
-    ax.text(0.85, 0.8, subfig, transform=ax.transAxes, fontsize=10)
+    ax.text(0.90, 0.875 - .05*(1 - i), subfig, transform=ax.transAxes, fontsize=10)
     # ax.tick_params(top=True, bottom=True, left=True, right=True,
     #                direction='out')
     # ax.set_ylabel(r'Survival probability')
@@ -844,15 +855,15 @@ common_ax.tick_params(labelcolor='none', top=False, bottom=False,
 common_ax.set_xticks([])
 common_ax.set_yticks([])
 common_ax.grid(False)
-common_ax.set_xlabel(r'Sequence length $m$', labelpad=20.)
-# common_ax.set_ylabel(r'Survival probability', labelpad=30.)
+# common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
+common_ax.set_ylabel(r'Survival probability $p(\lvert\psi\rangle\!)$',
+                     labelpad=35.)
 axes[0].legend(loc='lower left', frameon=False,
                labels=gate_types + ['0th order SRB theory'],
                handles=means + rb_theory)
-axes[0].set_xlim(0, 100)
-axes[0].set_ylim(0.9, 1)
-# axes[1].set_xlabel('Sequence length $m$')
-axes[0].set_ylabel(r'Survival probability $p(|\psi\rangle\!)$')
+ax.set_xlim(0, 100)
+axes[0].set_ylim(0.90, ymax=1)
+ax.set_xlabel(r'Sequence length $m$')
 
 # INSET
 ins_ax = inset_axes(axes[1], 1, 1)
@@ -861,139 +872,49 @@ ins_ax.set_axes_locator(inset_position)
 
 k = 2
 identifier = 'Z'
-for g, gate_type in enumerate(gate_types):
+for gate_type, ms_style, ls_style in zip(gate_types, ms_cycle, ls_cycle):
     N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
     mean_tot = ins_ax.errorbar(
         m[:-1], 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1)[:-1],
-        (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1)[:-1] /
-         np.sqrt(N_G)),
-        fmt='.', color=colors[g],
-        linewidth=0.75, markersize=2
+        (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1)[:-1]),
+        linewidth=0.75, markersize=2, linestyle='None', **ms_style
     )
 
     fit_tot = ins_ax.plot(
         m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-        color=colors[g], linestyle='--', linewidth=0.75
+        linewidth=0.75, **ls_style
     )
 
 rb_theory = ins_ax.plot(
     m,
     1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-    '-', zorder=4, color='k', linewidth=0.75
+    linestyle='-', zorder=4, color='k', linewidth=0.75
 )
 ins_ax.grid(False)
 ins_ax.set_xlim(0, 100)
 ins_ax.set_ylim(ymax=1)
-ins_ax.tick_params(direction='in', which='both', labelsize=8)
+ins_ax.tick_params(direction='in', which='both', labelsize=6)
 ins_ax.set_xticks(axes[1].get_xticks())
 # ins_ax.set_xticklabels([])
-ins_ax.set_yticks([0.98, 0.99, 1])
+ins_ax.set_yticks([0.96, 0.98, 1])
 ins_ax.spines['right'].set_visible(False)
 ins_ax.spines['top'].set_visible(False)
 ins_ax.patch.set_alpha(0)
 
+plt.draw()
+
+yticks = axes[0].get_yticks()
+yticklabels = axes[0].get_yticklabels()
+yticklabels[0].set_text('')
+axes[0].set_yticks(yticks)
+axes[0].set_yticklabels(yticklabels)
+
+plt.draw()
+
 fig.tight_layout(h_pad=0, w_pad=0, pad=0)
 fname = 'RB_{}-{}-{}_gates_white_vs_correl_with_Z_noise_inset'.format(*gate_types)
-
-for ext in exts:
-    fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# # %% all gates white vs correl with inset 2 row
-# colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-#           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-# gate_types = ['naive', 'optimized', 'single']
-
-# fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
-#                          figsize=(5, 4))
-
-# m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-# for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
-#     means = []
-#     for g, gate_type in enumerate(gate_types):
-#         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#         means.append(ax.errorbar(
-#             m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-#             (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color=colors[g]
-#         ))
-
-#         fit_tot = ax.plot(
-#             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color=colors[g], linestyle='--', linewidth=1
-#         )
-
-#     rb_theory = ax.plot(
-#         m,
-#         1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-#         '-', zorder=4, color='k'
-#     )
-#     ax.grid(False)
-#     ax.text(0.85, 0.8, subfig, transform=ax.transAxes)
-#     # ax.tick_params(top=True, bottom=True, left=True, right=True,
-#     #                direction='out')
-#     ax.set_ylabel('Survival probability')
-
-# # Add proxy subplot for common axis labels
-# # common_ax = fig.add_subplot(111, frameon=False)
-# # common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-# #                       left=False, right=False)
-# # common_ax.set_xticks([])
-# # common_ax.set_yticks([])
-# # common_ax.grid(False)
-# # common_ax.set_xlabel(r'Sequence length $m$', labelpad=20.)
-# # common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-# axes[0].legend(loc='lower left', frameon=False,
-#                labels=gate_types + ['0th order SRB theory'],
-#                handles=means + rb_theory)
-# axes[0].set_xlim(0, 100)
-# axes[0].set_ylim(0.9, 1)
-# axes[1].set_xlabel('Sequence length $m$')
-# # axes[0].set_ylabel('Survival probability')
-
-# # INSET
-# ins_ax = inset_axes(axes[1], 1, 1)
-# inset_position = InsetPosition(axes[1], [0.1, 0.075, 0.5, 0.4])
-# ins_ax.set_axes_locator(inset_position)
-
-# k = 2
-# identifier = 'Z'
-# for g, gate_type in enumerate(gate_types):
-#     N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#     mean_tot = ins_ax.errorbar(
-#         m[:-1], 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1)[:-1],
-#         (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1)[:-1] /
-#          np.sqrt(N_G)),
-#         fmt='.', color=colors[g],
-#         linewidth=0.75, markersize=2
-#     )
-
-#     fit_tot = ins_ax.plot(
-#         m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#         color=colors[g], linestyle='--', linewidth=0.75
-#     )
-
-# rb_theory = ins_ax.plot(
-#     m,
-#     1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-#     '-', zorder=4, color='k', linewidth=0.75
-# )
-# ins_ax.grid(False)
-# ins_ax.set_xlim(0, 100)
-# ins_ax.set_ylim(ymax=1)
-# ins_ax.tick_params(direction='in', which='both')
-# ins_ax.set_xticks(axes[1].get_xticks())
-# ins_ax.set_xticklabels([])
-# ins_ax.set_yticks([0.98, 1])
-# ins_ax.spines['right'].set_visible(False)
-# ins_ax.spines['top'].set_visible(False)
-# ins_ax.patch.set_alpha(0)
-
-# fig.tight_layout(h_pad=0, w_pad=0, pad=0)
-# fname = 'RB_{}-{}-{}_gates_white_vs_correl_with_Z_noise_inset'.format(*gate_types)
-
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
+fig.savefig(spath / (fname + '.pdf'))
+fig.savefig(spath / (fname + '.eps'))
 
 # # %% avg filter function for single clifford
 # fig, ax = plt.subplots(3, 1, sharex=True, sharey=True,
@@ -1004,7 +925,7 @@ for ext in exts:
 #     dta = single_clifford_FF[gate_type]
 #     ax[g].loglog(dta['omega'][250:],
 #                  dta['filter_function'][range(3), range(3), 250:].real.T)
-#     ax[g].text(0.9, 0.8, subfig, transform=ax[g].transAxes, fontsize=10)
+#     ax[g].text(0.9, 0.8, subfig, transform=ax[g].transAxes)
 #
 # ax[g].set_xlim(dta['omega'][250], dta['omega'][-1])
 # ax[g].set_xlabel(r'$\omega$ (a.u.)')
@@ -1022,5 +943,5 @@ for ext in exts:
 #
 # fig.tight_layout(pad=0)
 # fname = 'single_clifford_avg_FF_{}-{}-{}_gates'.format(*gate_types)
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
+# fig.savefig(spath / (fname + '.pdf'))
+# fig.savefig(spath / (fname + '.eps'))
