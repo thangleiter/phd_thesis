@@ -137,4 +137,3 @@ dependencies:
     - sortedcontainers==2.4.0
     - txaio==25.6.1
 
-prefix: "/home/tobias/miniforge3/envs/thesis"
