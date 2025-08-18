@@ -21,7 +21,9 @@ def execute_file(file, timeout=None):
         # [sys.executable, '-c', 'import time; time.sleep(1)'],
         timeout=timeout,
         capture_output=True,
-        text=True
+        text=True,
+        encoding="utf-8",
+        env=dict(os.environ, PYTHONUTF8="1")
     )
     ptime = time.perf_counter() - start
     return file, ptime, result.returncode, result.stdout, result.stderr
@@ -63,6 +65,64 @@ def gather_files(root, args):
     return files
 
 
+def run_sequential(files, root):
+    results = {}
+    with tqdm(total=len(files), unit='files') as pbar:
+        for file in files:
+            pbar.set_description(f'Running {(file.relative_to(root))}')
+            pbar.update()
+
+            results[file] = execute_file(file)
+            file, utime, returncode, stdout, stderr = results[file]
+
+            if returncode == 0:
+                if stdout:
+                    print(stdout)
+            else:
+                print(f'{(file.relative_to(root))} failed with exit code {returncode} after '
+                      f'{utime:.1f} s.')
+                if stderr:
+                    print(stderr)
+
+    total = pbar.format_dict['elapsed']
+    print(f'Processed {len(files)} scripts in {total:.1f} seconds.')
+    return results
+
+
+def run_parallel(files, root, workers, timeout):
+    results = {}
+    with (
+        concurrent.futures.ProcessPoolExecutor(workers) as executor,
+        tqdm(total=len(files), unit='file') as pbar
+    ):
+        futures = {executor.submit(execute_file, file, timeout): file for file in files}
+        pbar.set_description(f'Running {len(files)} scripts')
+        pbar.update(n=0)
+
+        for future in concurrent.futures.as_completed(futures):
+            results[future] = future.result()
+            file, ptime, returncode, stdout, stderr = results[future]
+
+            if returncode == 0:
+                pbar.set_description(f'{(file.relative_to(root))} ran successfully in '
+                                     f'{ptime:.1f} s')
+                if stdout:
+                    print(stdout)
+            else:
+                pbar.set_description(f'{(file.relative_to(root))} failed with exit code '
+                                     f'{returncode} after {ptime:.1f} s')
+                if stderr:
+                    print(stderr)
+
+            pbar.update()
+
+    total = pbar.format_dict['elapsed']
+    ptimes = sum(result[1] for result in results.values())
+    print(f'Processed {len(files)} scripts with {workers} processes in {total:.1f} seconds. '
+          f'Speedup: {round((1 - total / ptimes) * 100)} %')
+    return results
+
+
 def main():
     # Set up CLI argument parsing.
     parser = argparse.ArgumentParser(
@@ -85,6 +145,12 @@ def main():
         help="Run scripts in parallel processes."
     )
     parser.add_argument(
+        "--workers",
+        type=int,
+        default=os.cpu_count(),
+        help="Number of workers if --parallel is True"
+    )
+    parser.add_argument(
         "--timeout",
         type=float,
         help="Timeout in seconds for jobs."
@@ -99,62 +165,13 @@ def main():
         print('Found the following files:')
         print('\n'.join(str(file) for file in files))
 
-    results = {}
-
     if args.parallel:
-        workers = min(len(files), os.cpu_count())
-        with (
-                concurrent.futures.ThreadPoolExecutor(workers) as executor,
-                tqdm(total=len(files), unit='file') as pbar
-        ):
-            futures = {executor.submit(execute_file, file, args.timeout): file for file in files}
-            pbar.set_description(f'Running {len(files)} scripts')
-            pbar.update(n=0)
-
-            for future in concurrent.futures.as_completed(futures):
-                results[future] = future.result()
-                file, ptime, returncode, stdout, stderr = results[future]
-
-                if returncode == 0:
-                    pbar.set_description(f'{(file.relative_to(root))} ran successfully in '
-                                         f'{ptime:.1f} s')
-                    if stdout:
-                        print(stdout)
-                else:
-                    pbar.set_description(f'{(file.relative_to(root))} failed with exit code '
-                                         f'{returncode} after {ptime:.1f} s')
-                    if stderr:
-                        print(stderr)
-
-                pbar.update()
-
-        total = pbar.format_dict['elapsed']
-        ptimes = sum(result[1] for result in results.values())
-        print(f'Processed {len(files)} scripts with {workers} processes in {total:.1f} seconds. '
-              f'Speedup: {round((1 - total/ptimes)*100)} %')
+        results = run_parallel(files, root, args.workers, args.timeout)
     else:
-        with tqdm(total=len(files), unit='files') as pbar:
-            for file in files:
-                pbar.set_description(f'Running {(file.relative_to(root))}')
-                pbar.update()
-
-                results[file] = execute_file(file)
-                file, utime, returncode, stdout, stderr = results[file]
-
-                if returncode == 0:
-                    if stdout:
-                        print(stdout)
-                else:
-                    print(f'{(file.relative_to(root))} failed with exit code {returncode} after '
-                          f'{utime:.1f} s.')
-                    if stderr:
-                        print(stderr)
-
-        total = pbar.format_dict['elapsed']
-        print(f'Processed {len(files)} scripts in {total:.1f} seconds.')
+        results = run_sequential(files, root)
 
     return results
 
 
 if __name__ == '__main__':
-    results = main()
+    main()
