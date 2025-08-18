@@ -2,7 +2,7 @@ import pathlib
 import sys
 import matplotlib as mpl
 import numpy as np
-import scipy as sc
+import scipy as sp
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from qutil import math
@@ -331,21 +331,21 @@ def E_airy(q, R, a, k, E_fun):
     # a is the radius of the aperture
 
     def _aperture(ρ, q, R):
-        return ρ*sc.special.j0(k*q*ρ/R)
+        return ρ*sp.special.j0(k*q*ρ/R)
 
-    return sc.integrate.quad_vec(lambda ρ: _aperture(ρ, q, R)*E_fun(ρ), 0, a)[0]
+    return sp.integrate.quad_vec(lambda ρ: _aperture(ρ, q, R)*E_fun(ρ), 0, a)[0]
 
 
 def E_airy_flattop(q, f_oc, w, k):
     with np.errstate(divide='ignore', invalid='ignore'):
-        E = 2 * np.pi * w**2 / f_oc * math.cexp(k * f_oc) * sc.special.j1(x := k*w*q/f_oc) / x
+        E = 2 * np.pi * w**2 / f_oc * math.cexp(k * f_oc) * sp.special.j1(x := k*w*q/f_oc) / x
     E /= np.pi * w**2 / f_oc  # normalize to 1 at center
     return _sanitize(E)
 
 
 def P_cumulative(fn, q, *args):
     E = fn(q, *args)
-    return sc.integrate.cumulative_simpson(q*np.abs(E)**2, x=q, initial=0)
+    return sp.integrate.cumulative_simpson(q*np.abs(E)**2, x=q, initial=0)
 
 
 def rayleigh_range(MFD, λ):
@@ -376,9 +376,9 @@ def mode_overlap_dipole(w0, w, f_oc, k, f_ob, n, N=1001):
     # quadrature integration does not converge in a reasonable amount of time
     q = np.geomspace(1e-4, 1000*w0, N-1)
     q = np.insert(q, 0, 0)
-    I1 = sc.integrate.simpson(i1(q, w0, k), q)
-    I2 = sc.integrate.simpson(i2(q, w, f_oc, k, E_dipole_radial_func(f_ob, n)), q)
-    I3 = sc.integrate.simpson(i3(q, w0, w, f_oc, k, E_dipole_radial_func(f_ob, n)), q)
+    I1 = sp.integrate.simpson(i1(q, w0, k), q)
+    I2 = sp.integrate.simpson(i2(q, w, f_oc, k, E_dipole_radial_func(f_ob, n)), q)
+    I3 = sp.integrate.simpson(i3(q, w0, w, f_oc, k, E_dipole_radial_func(f_ob, n)), q)
     return math.abs2(I3) / I1 / I2
 
 
@@ -396,9 +396,9 @@ def mode_overlap_flattop(w0, w, f_oc, k, n, N=1001):
     # quadrature integration does not converge in a reasonable amount of time
     q = np.geomspace(1e-4, 1000*w0, N-1)
     q = np.insert(q, 0, 0)
-    I1 = sc.integrate.simpson(i1(q, w0, k), q)
-    I2 = sc.integrate.simpson(i2(q, w, f_oc, k, n), q)
-    I3 = sc.integrate.simpson(i3(q, w0, w, f_oc, k, n), q)
+    I1 = sp.integrate.simpson(i1(q, w0, k), q)
+    I2 = sp.integrate.simpson(i2(q, w, f_oc, k, n), q)
+    I3 = sp.integrate.simpson(i3(q, w0, w, f_oc, k, n), q)
     return math.abs2(I3) / I1 / I2
 
 
@@ -437,7 +437,7 @@ w0 = MFD / 2
 ws = [ρ_m, w]
 zs = [dn, f_ob]
 # %%% Compute values
-result = sc.optimize.minimize_scalar(lambda f: (1 - mode_overlap_flattop(w0, w, f, kn, nn))**2,
+result = sp.optimize.minimize_scalar(lambda f: (1 - mode_overlap_flattop(w0, w, f, kn, nn))**2,
                                      bounds=[1e-3, 1e3])
 f_opt = result.x
 

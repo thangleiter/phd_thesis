@@ -6,7 +6,7 @@ import time
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy as sc
+import scipy as sp
 from python_spectrometer import daq, Spectrometer
 from qutil import const, domains, functools
 from qutil.plotting import make_sequential_colormap
@@ -34,7 +34,7 @@ def spectrum(f, A=1e-4, exp=1, add_colored=True, add_50hz=False, baseline=0, npe
         # sophisticated algorithm!
         harmonics = abs(f % 50) < np.diff(f).mean()
         idx, = harmonics.nonzero()
-        p = sc.stats.beta.sf(np.linspace(0, 1, idx.size, endpoint=False), 5, 2)
+        p = sp.stats.beta.sf(np.linspace(0, 1, idx.size, endpoint=False), 5, 2)
         idx = rng.choice(idx, size=(min(10, idx.size) if npeaks is None else npeaks),
                          replace=False, p=p/p.sum())
         S[(idx,)] += 5e0 * A / (10 * f[f.nonzero()].min()) ** rng.random(size=idx.size)

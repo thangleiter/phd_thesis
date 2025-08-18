@@ -17,9 +17,10 @@
 - [ ] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [ ] `\ch{}` line breaks
 - [ ] Use `\subequations{}` where appropriate
+- [ ] Instrument citations
 
 ## Content
-- [ ] Acknowledgements / author contributions
+- [ ] Acknowledgements
 
 ### How to read this thesis
 - [ ] PDF viewer
@@ -40,6 +41,10 @@
 - [x] Go over derivation in appendix.
 - [ ] Vibration spectra on lab floors?
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
+- [ ] IRF-convoluted $g^{(2)}$ fit
+
+### Experiment
+- [ ] author contributions
 
 ### FF
 - [ ] I/we
@@ -49,6 +54,7 @@
 - [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [ ] `\mathcal{}` for FF, regular for fidelity.
 - [ ] split up `prr.tex`
+- [ ] author contributions
 
 ## Code
 - [ ] `uv pip freeze` *or* just make installable.
@@ -56,6 +62,8 @@
 ## Layout
 - [ ] Tune the bibliography style
     - [ ] arXiv IDs
+    - [x] remove "visited on"
+    - [ ] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
 - [ ] Part title page design

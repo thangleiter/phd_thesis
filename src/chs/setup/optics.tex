@@ -282,13 +282,13 @@ Indeed, evaluating \cref{eq:setup:optics:coupling:efficiency:mode_matching} for 
     \eta_{\mr{m}}(E_{\mr{l}}, E_{\mr{g}})\approx\qty{83}{\percent}
 \end{equation}
 for our parameters, slightly better than the naive result using the flattop beam.
-Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $T\approx\qty{87}{\percent}$,\sidenote[][*-2]{
+Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $\transmittance\approx\qty{87}{\percent}$,\sidenote[][*-2]{
     \label{sidenote:setup:optics:bs}
-    While the specifications of the beamsplitter are $T\div R = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $T\div R\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
+    While the specifications of the beamsplitter are $\transmittance\div\reflectance = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $\transmittance\div \reflectance\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
-    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} T \approx\qty{1.0}{\percent}.
+    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} \transmittance \approx\qty{1.0}{\percent}.
 \end{equation}
 
 \begin{margintable}[*-3]
@@ -409,8 +409,8 @@ Here, excitation rejection is achieved by cross-polarization of the polarizer (P
 As demonstrated by \citet{Benelajla2021}, this technique enables extinction ratios\sidenote{
     Defined as incident power over transmitted power.
 }
-up to \num[print-unity-mantissa=false]{1e10} in a confocal geometry, far beyond the bare polarizer extinction ratio of up to $\sim\num[print-unity-mantissa=false]{1e8}$~\cite{ThorlabsLPVIS050-MP2}.
-In our case, vibrations and rough sample surfaces off which the light is reflected limit the extinction ratio to $\sim\num[print-unity-mantissa=false]{1e6}$.
+up to \num{1e10} in a confocal geometry, far beyond the bare polarizer extinction ratio of up to $\sim\num{1e8}$~\cite{ThorlabsLPVIS050-MP2}.
+In our case, vibrations and rough sample surfaces off which the light is reflected limit the extinction ratio to $\sim\num{1e6}$.
 
 As the laser beam launched from the excitation fiber is already polarized, rather than rotate the polarizer, the plane of polarization is rotated using a \halfwave plate.
 To compensate for ellipticities introduced by the \gls{bs}, windows, and sample reflection, a \quarterwave plate is inserted after the \halfwave plate~\cite{Kuhlmann2013}.
@@ -426,13 +426,13 @@ It is hence advisable to insert another \halfwave plate on a rotation stage befo
 To analyze the properties of the excitation rejection, I measured the \gls{od} as a function of the relative waveplate angles $\Delta\phi_{\lbrace\halfwave,\quarterwave\rbrace}$.
 The \gls{od} is defined as
 \begin{equation}\label{eq:setup:optics:od}
-    \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right),
+    \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right) = \log_{10}\left(\frac{1}{\transmittance}\right),
 \end{equation}
-where $P_{\mr{t}}$ is the transmitted power after and $P_{\mr{i}}$ the incident power before the analyzer.
+where $P_{\mr{t}}$ is the transmitted power after, $P_{\mr{i}}$ the incident power before the analyzer, and \transmittance the transmittance of the analyzer.
 To evaluate this expression, I measured the photon flux $\dot{\Phi}_{\mr{t}}$ after the spectrometer using the \glspl{spcm} when irradiating a sample with the laser and compared it to the power $P$ measured at the optical head.
-Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $T\div R$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
+Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $\transmittance\div\reflectance$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
 \begin{equation}\label{eq:setup:optics:od:eval}
-    \OD = \log_{10}\left(\frac{P\times\flatfrac{R}{T}}{\flatfrac{hc}{\lambda}\times\dot{\Phi}_{\mr{t}}/\eta_{\mr{o,tot}}\eta_{\QE}}\right).
+    \OD = \log_{10}\left(\frac{P\times\flatfrac{\reflectance}{\transmittance}}{\flatfrac{hc}{\lambda}\times\dot{\Phi}_{\mr{t}}/\eta_{\mr{o,tot}}\eta_{\QE}}\right).
 \end{equation}
 
 \begin{figure}
@@ -457,14 +457,14 @@ Qualitatively, one finds that close to the extinction maximum, the count rate $\
 with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$, and $R(\theta)$ a rotation matrix.
 Inserting into \cref{eq:setup:optics:od:eval} yields
 \begin{equation}\label{eq:setup:optics:od:fit}
-    \OD = \log_{10}\left(\frac{P R\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
+    \OD = \log_{10}\left(\frac{P \reflectance\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
 \end{equation}
 a fit to which is shown in the right panel of \cref{fig:setup:optics:rejection}, displaying good agreement with the data.
 From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\txtdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\txtdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
 
 The optics between polarizer and analyzer furthermore display chromatic dispersion.
 When changing the excitation wavelength, the angles of \halfwave and \quarterwave plate therefore need to be re-optimized.
-I describe the automatic calibration procedure implemented in the measurement framework to this end in \cref{part:exp}.
+I describe the automatic calibration procedure implemented in the measurement framework to this end in \cref{subsec:sec:exp:mjolnir:calibration:rejection}.
 
 \section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
 As a demonstration of the optical capabilities of the setup, I performed second-order coherence measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.

@@ -1,0 +1,66 @@
+\begin{tikzpicture}[
+    >=stealth,
+    auto,
+    box/.style={
+        draw,
+        rectangle,
+        rounded corners,
+        thick,
+        align=center,
+        inner sep=2mm,
+%        drop shadow,
+    },
+    logical/.style={box, fill=RWTHmagenta25, text=RWTHmagenta100},
+    physical/.style={box, fill=RWTHgreen25, text=RWTHgreen100},
+    calibration/.style={box, fill=RWTHorange25, text=RWTHorange100},
+    main/.style={circle, draw, thick, minimum size=12mm},
+    sub/.style={circle, draw, thin, minimum size=6mm, font=\small},
+    arrow/.style={thick}
+]
+
+    % Logical instruments
+    \node[logical] (sam) {\mjolnirapidoc{mjolnir.instruments.logical_instruments.html\#mjolnir.instruments.logical_instruments.Sample}{\code{Sample}}};
+    \node[logical, above left=2cm and 0.9cm of sam] (det) {\mjolnirapidoc{mjolnir.instruments.logical_instruments.html\#mjolnir.instruments.logical_instruments.DetectionPath}{\code{DetectionPath}}};
+    \node[logical, above right=2cm and 0.9cm of sam] (exc) {\mjolnirapidoc{mjolnir.instruments.logical_instruments.html\#mjolnir.instruments.logical_instruments.ExcitationPath}{\code{ExcitationPath}}};
+
+    % Physical instruments
+    \node[physical] (dac) at ($(sam)+(195:2.5cm)$) {QDAC-II};
+    \node[physical] (fridge) at ($(sam)+(240:2.5cm)$) {Triton 450};
+    \node[physical] (magnet) at ($(sam)+(300:2.5cm)$) {Mercury iPS};
+    \node[physical] (samdot) at ($(sam)+(345:2.5cm)$) {\dots};
+
+    \node[physical] (spectrometer) at ($(det)+(165:3cm)$) {FHR1000};
+    \node[physical] (ccd) at ($(det)+(195:3cm)$) {iDus 416};
+    \node[physical] (tagger) at ($(det)+(225:2.5cm)$) {TimeTagger 20};
+    \node[physical] (detdot) at ($(det)+(285:2cm)$) {\dots};
+
+    \node[physical] (laser) at ($(exc)+(15:3cm)$) {M² Solstis};
+    \node[physical] (shutter) at ($(exc)+(345:3cm)$) {MFF101/M};
+    \node[physical] (ndfilter) at ($(exc)+(315:2.5cm)$) {K10CR1/M};
+    \node[physical] (excdot) at ($(exc)+(255:2cm)$) {\dots};
+
+    % Calibration handlers
+    \node[calibration] (ccdcal) at ($(det)+(0cm,2cm)$) {\mjolnirapidoc{mjolnir.calibration.html\#mjolnir.calibration.CcdCalibrationHandler}{\code{CcdCalibrationHandler}}};
+    \node[calibration] (power) at ($(exc)+(-2cm,1cm)$) {\mjolnirapidoc{mjolnir.calibration.html\#mjolnir.calibration.PowerCalibrationHandler}{\code{PowerCalibrationHandler}}};
+    \node[calibration] (rejection) at ($(exc)+(+1cm,2cm)$) {\mjolnirapidoc{mjolnir.calibration.html\#mjolnir.calibration.RejectionFeedbackHandler}{\code{RejectionFeedbackHandler}}};
+
+    % Arrows from physical to logical instruments
+    \foreach \subnode in {dac,fridge,magnet,samdot}
+        \draw[arrow, ->] (\subnode) -- (sam);
+    \foreach \subnode in {spectrometer,ccd,tagger,detdot}
+        \draw[arrow, ->] (\subnode) -- (det);
+    \foreach \subnode in {laser,shutter,ndfilter,excdot}
+        \draw[arrow, ->] (\subnode) -- (exc);
+
+    % Arrows from logical instruments to calibration handlers
+    \foreach \subnode in {ccdcal}
+        \draw[arrow, ->] (det) -- (\subnode);
+    \foreach \subnode in {power,rejection}
+        \draw[arrow, ->] (exc) -- (\subnode);
+
+    % Connections between logical instruments
+    \draw[arrow, dashed, <->] (exc) -- (sam);
+    \draw[arrow, dashed, <->] (sam) -- (det);
+    \draw[arrow, dashed, <->] (det) -- (exc);
+
+\end{tikzpicture}

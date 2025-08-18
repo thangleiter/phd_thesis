@@ -5,7 +5,7 @@ import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy as sc
+import scipy as sp
 from scipy.optimize import elementwise
 from mpl_toolkits.axes_grid1 import ImageGrid
 
@@ -46,7 +46,7 @@ def coulomb(r, eps_r):
 
 def oscillator_strength(z, i, j, Delta_E, m, in_plane=True):
     return 2*m*Delta_E/const.hbar**2*math.abs2(
-        sc.integrate.simpson(j*i*(z if not in_plane else 1), z)
+        sp.integrate.simpson(j*i*(z if not in_plane else 1), z)
     )
 
 
@@ -76,14 +76,14 @@ def thermionic_emission_rate(F, T, ΔV, E, L, m):
     return np.sqrt(kT/(2*np.pi*m*L**2))*np.exp(-H/kT)
 
 
-@functools.wraps(sc.special.airy)
+@functools.wraps(sp.special.airy)
 def airy(*args, **kwargs):
-    return sc.special.airy(*args, **kwargs)[0]
+    return sp.special.airy(*args, **kwargs)[0]
 
 
-@functools.wraps(sc.special.ai_zeros)
+@functools.wraps(sp.special.ai_zeros)
 def airy_zeros(*args, **kwargs):
-    return sc.special.ai_zeros(*args, **kwargs)[0]
+    return sp.special.ai_zeros(*args, **kwargs)[0]
 
 
 def eps_tilde(F, m):
@@ -124,8 +124,8 @@ def eps_triangular(F, L, m):
         Z_0 = Z(0, eps, FF, m)
         Z_L = Z(L, eps, FF, m)
 
-        Ai_0, Aip_0, Bi_0, Bip_0 = sc.special.airy(Z_0.real)
-        Ai_L, Aip_L, Bi_L, Bip_L = sc.special.airy(Z_L.real)
+        Ai_0, Aip_0, Bi_0, Bip_0 = sp.special.airy(Z_0.real)
+        Ai_L, Aip_L, Bi_L, Bip_L = sp.special.airy(Z_L.real)
 
         deps = Z_0/eps
         return (
@@ -146,7 +146,7 @@ def eps_triangular(F, L, m):
         else:
             x0 = eps[i-1]
 
-        result = sc.optimize.root_scalar(fn, args=(FF,), fprime=True, x0=x0, xtol=1e-4*eps_sq)
+        result = sp.optimize.root_scalar(fn, args=(FF,), fprime=True, x0=x0, xtol=1e-4*eps_sq)
         if not result.converged:
             print(result)
             raise RuntimeError("Not converged")
@@ -166,8 +166,8 @@ def eps_triangular_vec(F, L, m, N: int):
         Z_L = Z(L, eps[mask], FF[mask], m)
 
         # Compute the Airy functions Ai and Bi for Zp and Zm
-        Ai_0, _, Bi_0, _ = sc.special.airy(Z_0)
-        Ai_L, _, Bi_L, _ = sc.special.airy(Z_L)
+        Ai_0, _, Bi_0, _ = sp.special.airy(Z_0)
+        Ai_L, _, Bi_L, _ = sp.special.airy(Z_L)
 
         val[mask] = Ai_0 * Bi_L - Ai_L * Bi_0
         val[~mask] = 0
@@ -180,7 +180,7 @@ def eps_triangular_vec(F, L, m, N: int):
     eps_sq = eps_square(L, m, N)
     eps_tri = eps_triangular_large_field(F, m, N)
 
-    a_n, *_ = sc.special.ai_zeros(N)
+    a_n, *_ = sp.special.ai_zeros(N)
 
     mask = F != 0
     for n in range(1, N):
@@ -213,10 +213,10 @@ def psi_harmonic_oscillator(rho, phi, m, omega, p=0, ell=0):
     with np.errstate(divide='ignore'):
         xi = np.sqrt(const.hbar/(m*omega))
     A_n_ell = (
-        np.sqrt(2*sc.special.factorial(p)/(xi**2*sc.special.factorial(p + abs(ell))))
+        np.sqrt(2*sp.special.factorial(p)/(xi**2*sp.special.factorial(p + abs(ell))))
         * np.exp(-0.5*(rho/xi)**2)
         * (rho/xi)**abs(ell)
-        * sc.special.genlaguerre(p, abs(ell))((rho/xi)**2)
+        * sp.special.genlaguerre(p, abs(ell))((rho/xi)**2)
     )
     return np.where(omega != 0, A_n_ell*math.cexp(ell*phi)/np.sqrt(2*np.pi), 1)
 
@@ -234,8 +234,8 @@ def psi_triangular(z, F: float, L, m, N: int):
     Z_ = Z(z, eps, F, m)
     Z_L = Z(L, eps, F, m)
 
-    Ai, _, Bi, _ = sc.special.airy(Z_)
-    Ai_L, _, Bi_L, _ = sc.special.airy(Z_L)
+    Ai, _, Bi, _ = sp.special.airy(Z_)
+    Ai_L, _, Bi_L, _ = sp.special.airy(Z_L)
 
     res = Ai - Ai_L/Bi_L*Bi
     # Consistent phase
@@ -357,7 +357,7 @@ for p in range(P):
     # phi = 0 since ell != 0 does not couple
     psi_com[p] = psi_harmonic_oscillator(np.hypot(*np.meshgrid(rho, zz)), 0, m.sum(), omega, p, 0)
     psi_com[p] /= np.sqrt(
-        sc.integrate.simpson(2*np.pi*rho*math.abs2(psi_com[p]), rho, axis=-1)
+        sp.integrate.simpson(2*np.pi*rho*math.abs2(psi_com[p]), rho, axis=-1)
     )[..., None]
 
 # Axes (e/h, n, p, F, z, rho)
@@ -368,7 +368,7 @@ PSI = psi[:, :, None, :, :, None] * psi_com
 # ψ_e * ψ_h
 psi_exc = psi[0] * psi[1, ..., ::-1]
 # 2π\int dρ ρ χ(r)
-psi_com_perp = sc.integrate.simpson(2*np.pi*rho*psi_com, rho, axis=-1)
+psi_com_perp = sp.integrate.simpson(2*np.pi*rho*psi_com, rho, axis=-1)
 f_3d = oscillator_strength(zz, psi_exc[:, None], psi_com_perp, Delta_E, mu, in_plane=True)
 f_1d = oscillator_strength(zz, psi[0], psi[1, ..., ::-1], Delta_Ez, mu, in_plane=False)
 
