@@ -1,55 +1,46 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 23 11:57:50 2018
-
-@author: Tobias Hangleiter (tobias.hangleiter@rwth-aachen.de)
-"""
-import git
-import matplotlib
-# matplotlib.use('ps')
-
+# %% Imports
+import pathlib
+import sys
 from itertools import product
-from pathlib import Path
 
+import filter_functions as ff
+import git
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import qutip as qt
-from matplotlib import cycler
-from scipy import constants, io, odr
-
-import filter_functions as ff
+from cycler import cycler
 from filter_functions import plotting, util
-
-from matplotlib import colors, lines
+from matplotlib import colors
 from matplotlib.gridspec import GridSpec
-from mpl_toolkits.axes_grid1 import ImageGrid, make_axes_locatable
-from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition)
+from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
+from qutil.plotting.colors import RWTH_COLORS, make_diverging_colormap
+from scipy import constants, io
 
-plt.style.use('publication')
-golden_ratio = (np.sqrt(5) - 1.)/2.
-figsize_narrow = (3.40457, 3.40457*golden_ratio)
-figsize_wide = (7.05826, 7.05826*golden_ratio)
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-cycle = plt.rcParams['axes.prop_cycle'][:4] + cycler(linestyle=('-','-.','--',':'))
+from common import MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init
+
+with np.errstate(divide='ignore', invalid='ignore'):
+    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
+
+LINE_COLORS = list(RWTH_COLORS.values())[1:]
+DATA_PATH = PATH.parent / 'data/filter_functions'
+DATA_PATH.mkdir(exist_ok=True)
+SAVE_PATH = PATH / 'pdf/filter_functions'
+SAVE_PATH.mkdir(exist_ok=True)
+
+init(MAINSTYLE, backend := 'pgf')
+
+cycle = mpl.rcParams['axes.prop_cycle'][:4] + cycler(linestyle=('-', '-.', '--', ':'))
 
 _force_overwrite = True
-# %% Load the data
-# thesis_path = Path('/home/tobias/Physik/Master/Thesis')
-# thesis_path = Path('Z:/MA/')
-# thesis_path = Path('../../../MA')
-thesis_path = Path('C:/Users/Tobias/Documents/Uni/Physik/Master/Thesis/')
-# project_path = Path('/home/tobias/Physik/Publication/')
-# project_path = Path('Z:/Publication/')
-# project_path = Path('../../')
-project_path = Path('C:/Users/Tobias/Documents/Uni/Physik/Publication/')
-name = 'efficient_calculation_of_generalized_filter_functions'
-save_path = project_path / name / 'img'
 
 # %% set up the operators
 gates = ['X2ID', 'Y2ID', 'CNOT']
-struct = {'X2ID': io.loadmat(str(thesis_path / 'data' / 'X2ID.mat')),
-          'Y2ID': io.loadmat(str(thesis_path / 'data' / 'Y2ID.mat')),
-          'CNOT': io.loadmat(str(thesis_path / 'data' / 'CNOT.mat'))}
+struct = {'X2ID': io.loadmat(str(DATA_PATH / 'X2ID.mat')),
+          'Y2ID': io.loadmat(str(DATA_PATH / 'Y2ID.mat')),
+          'CNOT': io.loadmat(str(DATA_PATH / 'CNOT.mat'))}
 eps = {key: np.asarray(struct[key]['eps'], order='C', dtype=float)
        for key in gates}
 dt = {key: np.asarray(struct[key]['t'].ravel(), order='C', dtype=float)
@@ -164,14 +155,7 @@ for key in gates:
     pulses_complete[key].diagonalize()
     pulses_ggm[key].diagonalize()
 
-# for pulse in pulses_complete.values():
-#     pulse._Q = ff.pulse_sequence.closest_unitary(pulse._Q, qubit_subspace_inds)
-#     pulse.total_propagator = ff.pulse_sequence.closest_unitary([pulse.total_propagator],
-#                                                       qubit_subspace_inds)[0]
-
 # %% constants
-delta = 20
-n_samples = np.arange(21, 261+delta, delta)
 infid = {key: [np.ones(2)] for key in gates}
 delta_infid = {key: [] for key in gates}
 xi = {key: [] for key in gates}
@@ -239,260 +223,6 @@ basis_labels.extend([''.join(tup) for tup in
                      product(['I', 'X', 'Y', 'Z'], repeat=2)][1:])
 basis_labels.extend(['$C_{{{}}}$'.format(i) for i in range(16, 36)])
 
-# %% fit high frequency behavior
-
-
-# def log_fitfun(beta, x):
-#     return beta[0]*np.cos(x*beta[1]) + beta[2]
-
-
-# def fjacb(beta, x):
-#     return np.array([np.cos(x*beta[1]),
-#                      -beta[0]*x*np.sin(beta[1]*x),
-#                      np.ones_like(x)])
-
-
-# def fjacd(beta, x):
-#     return np.array([-beta[0]*beta[1]*np.sin(beta[1]*x)])
-
-
-# # plt.close('all')
-# key = 'CNOT'
-# pulse = pulses_subspace[key]
-# labels = [rf'$\epsilon_{{{i}{i+1}}}$' for i in range(1, 4)]
-# omega = np.linspace(1e-2, 1e2, 300)
-# omega = np.geomspace(1/T[key], 1e2, n)
-# F = pulses_subspace[key].get_filter_function(omega)
-# beta0 = [2, dt[key][0]/pulses_subspace[key].t[-1], 1]
-# log_model = odr.Model(log_fitfun, fjacb=fjacb, fjacd=fjacd)
-# for i in range(3):
-#     logdata = odr.Data(omega*T[key], np.log10(F[i, i].real*omega**2))
-#     ODR = odr.ODR(logdata, log_model, beta0, ifixb=[0, 0, 1])
-#     output = ODR.run()
-#     print(output.beta)
-
-#     fig, ax = plt.subplots()
-#     ax.set_yscale('log')
-#     ax.set_xscale('log')
-#     ax.plot(omega*T[key], F[i, i].real, '.--', label=labels[i])
-#     ax.plot(omega*T[key], 10**log_fitfun(output.beta, omega*T[key])/omega**2,
-#             label=r'$C e^{A\cos(b\omega)}/\omega^2$')
-#     ax.plot(omega*T[key], F[i, i].real / 10**log_fitfun(output.beta, omega*T[key]),
-#             label=r'FF / fit')
-#     ax.legend()
-#     ax.set_xlim(min(omega*T[key]), max(omega*T[key]))
-#     ax.grid()
-
-# %% inset plot, linear
-# omega = np.linspace(0, 1e2, n)
-# fig, ax, leg = plotting.plot_filter_function(pulses_subspace[key], omega, [0, 1, 2],
-#                                        n_oper_labels=labels,
-#                                        xscale='linear', yscale='log',
-#                                        figsize=figsize_narrow,
-#                                        plot_kw=dict(linewidth=1))
-# ax.set_ylim(ax.get_ylim()[0], top=1e8)
-# ax.grid()
-# ax.legend(frameon=False)
-# ax.set_ylabel(r'$F_{\epsilon_{ij}}(\omega)$')
-# plt.rcParams['font.size'] = 8
-# ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-# ax.tick_params(direction='in', which='both', labelsize=8)
-#
-# omega = np.linspace(0, 1e2/T[key], n)
-# F = pulses_subspace[key].get_filter_function(omega)
-# ins_ax = inset_axes(ax, 1, 1)
-# inset_position = InsetPosition(ax, [0.15, 0.6, 0.5, 0.4])
-# ins_ax.set_axes_locator(inset_position)
-#
-# for i in range(3):
-#     ins_ax.plot(omega*T[key], F[i], linewidth=1)
-#
-# ins_ax.set_xlim(0, omega.max()*T[key])
-# ins_ax.set_yscale('linear')
-# ins_ax.tick_params(direction='in', which='both', labelsize=6)
-#
-# fig.tight_layout()
-#
-# fname = f'filter_function_{key}_linear_with_inset'
-# fig.savefig(save_path / Path(fname + '.png'), dpi=300)
-
-# %% Pulse Train
-# plt.rcParams['font.size'] = 8
-# fig, ax, leg = plotting.plot_pulse_train(
-#     pulses_subspace[key], c_oper_identifiers=identifiers[:3],
-#     figsize=figsize_narrow, plot_kw=dict(linewidth=1)
-# )
-# ax.set_xlim(0, 50)
-# ax.set_xlabel(r'$t$ (ns)')
-# ax.set_ylabel(r'$J(\epsilon_{ij})$ (ns$^{-1}$)')
-# fig.tight_layout()
-# fname = f'pulse_train_{key}'
-# fig.savefig(save_path / Path(fname + '.eps'))
-
-# %% inset plot, log
-# omega = np.geomspace(1/T[key], 1e2, n)
-# fig, ax, leg = plotting.plot_filter_function(
-#     pulses_subspace[key], omega, n_oper_identifiers=identifiers[:3],
-#     xscale='log', yscale='log', omega_in_units_of_tau=False,
-#     figsize=figsize_narrow, plot_kw=dict(linewidth=1)
-# )
-# # ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
-# # ax.set_ylim(1e-15, ax.get_ylim()[1])
-# ax.legend(identifiers[:3], frameon=False, loc='upper right')
-# ax.grid()
-# # ax.set_xlabel(ax.get_xlabel() + ' (GHz)')
-# ax.set_ylabel(r'$F_{\epsilon_{ij}}(\omega)$')
-# # ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-# ax.tick_params(direction='out', which='both', labelsize=8)
-# ax.set_ylim(bottom=1.0501675711991102e-09, top=1e3)
-
-# omega = np.linspace(0, 1e2/T[key], n)
-# F = pulses_subspace[key].get_filter_function(omega)
-# ins_ax = inset_axes(ax, 1, 1)
-# inset_position = InsetPosition(ax, [0.1, 0.1, 0.5, 0.5])
-# ins_ax.set_axes_locator(inset_position)
-
-# for i in range(3):
-#     ins_ax.plot(omega, F[i, i], linewidth=1)
-
-# ins_ax.set_xlim(0, omega.max())
-# ins_ax.set_yscale('linear')
-# ins_ax.tick_params(direction='in', which='both', labelsize=6)
-# ins_ax.spines['right'].set_visible(False)
-# ins_ax.spines['top'].set_visible(False)
-# ins_ax.patch.set_alpha(0)
-
-# fig.tight_layout()
-
-# fname = f'filter_function_{key}_log_with_inset'
-# fig.savefig(save_path / Path(fname + '.eps'))
-
-# %% Pulse train + filter function in one figure
-# fig, ax = plt.subplots(2, 1,
-#                        figsize=(figsize_narrow[0], figsize_narrow[1]*1.5),
-#                        gridspec_kw={'height_ratios': [1, 2]})
-
-# *_, leg = plotting.plot_pulse_train(
-#     pulses_subspace[key], c_oper_identifiers=identifiers[:3], axes=ax[0],
-#     fig=fig, plot_kw=dict(linewidth=1)
-# )
-
-# ax[0].set_xlabel(r'$t$ (ns)')
-# ax[0].set_ylabel(r'$J(\epsilon_{ij})$ (ns$^{-1}$)')
-# ax[0].grid(False)
-# ax[0].text(0.02, 0.8, '(a)', transform=ax[0].transAxes)
-# leg.remove()
-
-# omega = np.geomspace(1/T[key], 1e2, n)
-# *_, leg = plotting.plot_filter_function(
-#     pulses_subspace[key], omega, n_oper_identifiers=identifiers[:3],
-#     yscale='log', omega_in_units_of_tau=False, axes=ax[1], fig=fig,
-#     plot_kw=dict(linewidth=1)
-# )
-# # ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
-# # ax.set_ylim(1e-15, ax.get_ylim()[1])
-# ax[1].legend(identifiers[:3], frameon=False, loc='upper right')
-# ax[1].grid(False)
-# ax[1].set_xlabel(ax[1].get_xlabel() + r' (ns$^{-1}$)')
-# ax[1].set_ylabel(r'$F_{\epsilon_{ij}}(\omega)$')
-# # ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-# ax[1].tick_params(direction='out', which='both', labelsize=8)
-# ax[1].set_ylim(bottom=1.0501675711991102e-09, top=1e3)
-
-# omega = np.linspace(0, 1e2/T[key], n)
-# F = pulses_subspace[key].get_filter_function(omega)
-# ins_ax = inset_axes(ax[1], 1, 1)
-# inset_position = InsetPosition(ax[1], [0.1, 0.15, 0.5, 0.5])
-# ins_ax.set_axes_locator(inset_position)
-
-# for i in range(3):
-#     ins_ax.plot(omega, F[i, i], linewidth=1)
-
-# ins_ax.set_xlim(0, omega.max())
-# ins_ax.set_yscale('linear')
-# ins_ax.tick_params(direction='in', which='both', labelsize=6)
-# ins_ax.spines['right'].set_visible(False)
-# ins_ax.spines['top'].set_visible(False)
-# ins_ax.patch.set_alpha(0)
-
-# ax[1].text(0.02, 0.9, '(b)', transform=ax[1].transAxes)
-
-# fig.tight_layout(h_pad=0)
-
-# fname = f'pulse_train_filter_function_{key}'
-# fig.savefig(save_path / Path(fname + '.eps'))
-# fig.savefig(save_path / Path(fname + '.pdf'))
-
-# plt.close('all')
-# %% transfer matrices all in one, logscale
-# for key in pulses_complete.keys():
-#     for i, a in enumerate(alpha):
-#         fig, grid = plotting.plot_error_transfer_matrix(
-#             P=P[key][a][:3], n_oper_identifiers=identifiers[:3],
-#             figsize=figsize_wide, grid_kw=dict(axes_pad=0.1, cbar_pad=0.1),
-#             colorscale='log', basis_labels=basis_labels, basis_labelsize=4,
-#             imshow_kw=dict(origin='upper')
-#         )
-
-#         a = '-'.join(str(a).split('.'))
-#         fname = f'error_transfer_matrix_alpha-{a}_log_{key}'
-#         fig.tight_layout()
-#         fig.savefig(save_path / Path(fname + '.eps'))
-#         fig.savefig(save_path / Path(fname + '.pdf'))
-
-# plt.close('all')
-# %% transfer matrices all in one, linear scale
-# for key in pulses_complete.keys():
-#     for i, a in enumerate(alpha):
-#         fig, grid = plotting.plot_error_transfer_matrix(
-#             P=P[key][a][:3], n_oper_identifiers=identifiers[:3],
-#             figsize=figsize_wide, grid_kw=dict(axes_pad=0.1, cbar_pad=0.1),
-#             colorscale='linear', basis_labels=basis_labels, basis_labelsize=4,
-#             imshow_kw=dict(origin='upper')
-#         )
-
-#         a = '-'.join(str(a).split('.'))
-#         fname = f'error_transfer_matrix_alpha-{a}_linear_{key}'
-#         fig.tight_layout()
-#         fig.savefig(save_path / Path(fname + '.eps'))
-#         fig.savefig(save_path / Path(fname + '.pdf'))
-
-# plt.close('all')
-# %% transfer matrices all in one, logscale, subspace only
-# for key in pulses_complete.keys():
-#     for i, a in enumerate(alpha):
-#         fig, grid = plotting.plot_error_transfer_matrix(
-#             P=P[key][a][:3, :16, :16], n_oper_identifiers=identifiers[:3],
-#             figsize=figsize_wide, grid_kw=dict(axes_pad=0.1, cbar_pad=0.1),
-#             colorscale='log', basis_labels=basis_labels[:16],
-#             imshow_kw=dict(origin='upper')
-#         )
-
-#         a = '-'.join(str(a).split('.'))
-#         fname = f'error_transfer_matrix_alpha-{a}_log_subspace_{key}'
-#         fig.tight_layout()
-#         fig.savefig(save_path / Path(fname + '.eps'))
-#         fig.savefig(save_path / Path(fname + '.pdf'))
-
-# plt.close('all')
-# %% transfer matrices all in one, linear scale, subspace only
-# for key in pulses_complete.keys():
-#     for i, a in enumerate(alpha):
-#         fig, grid = plotting.plot_error_transfer_matrix(
-#             P=P[key][a][:3, :16, :16], n_oper_identifiers=identifiers[:3],
-#             figsize=figsize_wide, grid_kw=dict(axes_pad=0.1, cbar_pad=0.1),
-#             colorscale='linear', basis_labels=basis_labels[:16],
-#             imshow_kw=dict(origin='upper')
-#         )
-#
-#         a = '-'.join(str(a).split('.'))
-#         fname = f'error_transfer_matrix_alpha-{a}_linear_subspace_{key}'
-#         fig.tight_layout()
-#         fig.savefig(save_path / Path(fname + '.eps'))
-#         fig.savefig(save_path / Path(fname + '.pdf'))
-#
-# plt.close('all')
-
 # %% everything together
 key = 'CNOT'
 a = 0.7
@@ -500,17 +230,18 @@ K = K_complete[key][a][:3].real
 colorscale = 'linear'
 # colorscale = 'log'
 
-fig = plt.figure(constrained_layout=False, figsize=figsize_wide)
-gs = GridSpec(5, 9, figure=fig)
+fig = plt.figure(figsize=(TOTALWIDTH, 4))
+gs = GridSpec(5, 10, figure=fig, width_ratios=[1.5]*9 + [1])
 
 # Pulse train
 pt_ax = fig.add_subplot(gs[:2, :4])
 *_, leg = plotting.plot_pulse_train(
     pulses_complete[key], c_oper_identifiers=identifiers[:3],
-    axes=pt_ax, fig=fig, cycler=cycle
+    axes=pt_ax, fig=fig,
+    # cycler=cycle
 )
 pt_ax.set_xlabel(r'$t$ (ns)')
-pt_ax.set_ylabel(r'$J(\epsilon_{ij})$ (ns$^{-1}$)')
+pt_ax.set_ylabel(r'$J(\epsilon_{ij})$ ($2\pi$GHz)')
 pt_ax.grid(False)
 pt_ax.text(0.015, 0.875, '(a)', transform=pt_ax.transAxes, fontsize=10)
 leg.remove()
@@ -525,7 +256,7 @@ cache_filter_function(pulses_complete[key], omega, cache_idx)
 *_, leg = plotting.plot_filter_function(
     pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
     yscale='log', omega_in_units_of_tau=False, axes=ff_ax, fig=fig,
-    cycler=cycle
+    # cycler=cycle
 )
 # ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
 # ax.set_ylim(1e-15, ax.get_ylim()[1])
@@ -541,12 +272,10 @@ omega = np.linspace(0, 1e2/T[key], n)
 cache_filter_function(pulses_complete[key], omega, cache_idx)
 
 F = pulses_complete[key].get_filter_function(omega)
-ins_ax = inset_axes(ff_ax, 1, 1)
-inset_position = InsetPosition(ff_ax, [0.1, 0.15, 0.5, 0.5])
-ins_ax.set_axes_locator(inset_position)
+ins_ax = ff_ax.inset_axes([0.1, 0.15, 0.5, 0.5])
 
 for i, props in enumerate(cycle[:3]):
-    ins_ax.plot(omega, F[i, i].real, linewidth=1, **props)
+    ins_ax.plot(omega, F[i, i].real, linewidth=1)#, **props)
 
 ins_ax.set_xlim(0, omega.max())
 ins_ax.set_yscale('linear')
@@ -562,7 +291,7 @@ Kmax = abs(K[:, :16, :16]).max()
 Kmin = -Kmax
 if colorscale == 'log':
     linthresh = np.abs(K).mean()/10
-    norm = colors.SymLogNorm(linthresh=linthresh, vmin=Kmin, vmax=Kmax, base=10)
+    norm = colors.AsinhNorm(linear_width=linthresh, vmin=Kmin, vmax=Kmax, base=10)
 elif colorscale == 'linear':
     norm = colors.Normalize(vmin=Kmin, vmax=Kmax)
 
@@ -584,7 +313,8 @@ for i, (n_oper_identifier, tm_ax) in enumerate(zip(identifiers, tm_axes)):
     else:
         idx = [np.ravel_multi_index((i, j), (4, 4))
                for i in range(4) for j in range(4)]
-    im = tm_ax.imshow(K[i][..., idx][idx, ...], **imshow_kw)
+    im = tm_ax.imshow(K[i][..., idx][idx, ...], origin='upper', interpolation='nearest', norm=norm,
+                      cmap=DIVERGING_CMAP, rasterized=True)
     tm_ax.text(0.01, 1.05, subfigs[i] + ' ' + n_oper_identifier,
                transform=tm_ax.transAxes, fontsize=10)
     tm_ax.set_xticks(np.arange(16))
@@ -598,23 +328,14 @@ for i, (n_oper_identifier, tm_ax) in enumerate(zip(identifiers, tm_axes)):
 
 gs.tight_layout(fig, h_pad=0., w_pad=0., pad=0.)
 
-# cb_ax = fig.add_subplot(gs[1:, -1])
 # cb_ax = fig.add_axes([1, 0.105, 0.015, 0.375])
 cb_ax = fig.add_axes([1, 0.105, 0.015, 0.405])
 # divider = make_axes_locatable(tm_axes)
 # cb_ax = divider.append_axes('right', size='5%', pad=0.05)
-cb = fig.colorbar(im, ax=tm_axes, cax=cb_ax, fraction=0.045, pad=0.04)
+cb = fig.colorbar(im, cax=cb_ax)
 cb.set_label(r"Cumulant function $\mathcal{K}_{\epsilon_{ij}}(\tau)$")
 
-a = '-'.join(str(a).split('.'))
-fname = f'all_in_one_alpha-{a}_linear_complete_{key}'
-# fname = f'all_in_one_alpha-{a}_log_complete_{key}'
-
-for ext in ('pdf', 'eps', 'png'):
-    if (not (file := save_path / '.'.join([fname, ext])).exists()
-            or _force_overwrite):
-        fig.savefig(file)
-
+fig.savefig(SAVE_PATH / f'CNOT_FF.pdf')
 # %% filter function unitary vs complete
 key = 'CNOT'
 
