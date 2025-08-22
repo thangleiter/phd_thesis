@@ -2,29 +2,29 @@
 import pathlib
 import sys
 from itertools import product
+from unittest import mock
 
 import filter_functions as ff
-import git
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import qutip as qt
-from cycler import cycler
+import pandas as pd
 from filter_functions import plotting, util
-from matplotlib import colors
 from matplotlib.gridspec import GridSpec
-from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
+from mpl_toolkits.axes_grid1 import ImageGrid
+from qutil import misc
 from qutil.plotting.colors import RWTH_COLORS, make_diverging_colormap
 from scipy import constants, io
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init
+from common import MAINSTYLE, MARGINSTYLE, TOTALWIDTH, MARGINWIDTH, PATH, init
 
 with np.errstate(divide='ignore', invalid='ignore'):
-    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 LINE_COLORS = list(RWTH_COLORS.values())[1:]
+FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/filter_functions'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/filter_functions'
@@ -32,10 +32,7 @@ SAVE_PATH.mkdir(exist_ok=True)
 
 init(MAINSTYLE, backend := 'pgf')
 
-cycle = mpl.rcParams['axes.prop_cycle'][:4] + cycler(linestyle=('-', '-.', '--', ':'))
-
-_force_overwrite = True
-
+pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else r' (ns$^{-1}$)'
 # %% set up the operators
 gates = ['X2ID', 'Y2ID', 'CNOT']
 struct = {'X2ID': io.loadmat(str(DATA_PATH / 'X2ID.mat')),
@@ -176,6 +173,13 @@ S_0 = 4e-11/eps0**2
 A = S_0*(2*np.pi*1e-3)**alpha
 
 n = 1001
+omega = {key: np.geomspace(1e-2/val, 1e2, n) for key, val in T.items()}
+S = {key: {alpha[i]: A[i]/val**alpha[i] for i in range(len(alpha))} for key, val in omega.items()}
+
+basis_labels = ['']
+basis_labels.extend([''.join(tup) for tup in
+                     product(['I', 'X', 'Y', 'Z'], repeat=2)][1:])
+basis_labels.extend(['$C_{{{}}}$'.format(i) for i in range(16, 36)])
 # %% function to cache projected filter function
 
 d_c = 4
@@ -196,58 +200,37 @@ def cache_filter_function(pulse, omega, proj=None):
     ))
 
 
-# %% calculate transfer matrix
-K_complete = {}
-K_ggm = {}
-P_complete = {}
-P_ggm = {}
-for key, pulse in pulses_complete.items():
-    K_complete[key] = {}
-    K_ggm[key] = {}
-    P_complete[key] = {}
-    P_ggm[key] = {}
-    for i, a in enumerate(alpha):
-        omega = np.geomspace(1e-2/T[key], 1e2, n)
-        S = A[i]/omega**a
-        K_complete[key][a] = ff.numeric.calculate_cumulant_function(pulse, S, omega,
-                                                                    show_progressbar=True)
-        K_ggm[key][a] = ff.numeric.calculate_cumulant_function(pulses_ggm[key], S, omega,
-                                                               show_progressbar=True)
-        P_complete[key][a] = ff.error_transfer_matrix(pulse,
-                                                      cumulant_function=K_complete[key][a][:3])
-        P_ggm[key][a] = ff.error_transfer_matrix(pulses_ggm[key],
-                                                 cumulant_function=K_ggm[key][a][:3])
-
-basis_labels = ['']
-basis_labels.extend([''.join(tup) for tup in
-                     product(['I', 'X', 'Y', 'Z'], repeat=2)][1:])
-basis_labels.extend(['$C_{{{}}}$'.format(i) for i in range(16, 36)])
-
-# %% everything together
+# %% Big plot (main text)
 key = 'CNOT'
 a = 0.7
-K = K_complete[key][a][:3].real
-colorscale = 'linear'
-# colorscale = 'log'
+K = ff.numeric.calculate_cumulant_function(pulses_complete[key], S[key][a], omega[key],
+                                           n_oper_identifiers=identifiers[:3],
+                                           show_progressbar=True)
 
-fig = plt.figure(figsize=(TOTALWIDTH, 4))
-gs = GridSpec(5, 10, figure=fig, width_ratios=[1.5]*9 + [1])
+fig = plt.figure(figsize=(TOTALWIDTH, 4.25))
+gs = GridSpec(5, 9, figure=fig)
+
+pt_ax = fig.add_subplot(gs[:2, :4])
+ff_ax = fig.add_subplot(gs[:2, 4:9])
+
+ins_ax = ff_ax.inset_axes([0.075, 0.15, 0.55, 0.5])
+grid = ImageGrid(fig, gs[2:, 0:9], (1, 3), axes_pad=0.1, cbar_mode=None, label_mode='L')
 
 # Pulse train
-pt_ax = fig.add_subplot(gs[:2, :4])
 *_, leg = plotting.plot_pulse_train(
     pulses_complete[key], c_oper_identifiers=identifiers[:3],
     axes=pt_ax, fig=fig,
-    # cycler=cycle
 )
-pt_ax.set_xlabel(r'$t$ (ns)')
-pt_ax.set_ylabel(r'$J(\epsilon_{ij})$ ($2\pi$GHz)')
-pt_ax.grid(False)
-pt_ax.text(0.015, 0.875, '(a)', transform=pt_ax.transAxes, fontsize=10)
 leg.remove()
+pt_ax.set_xlabel(r'$t$ (ns)')
+pt_ax.set_ylabel(r'$J(\epsilon_{ij}(t))$' + pernanosecond)
+pt_ax.grid(False)
+pt_ax.text(0.015, 0.875, '(a)', transform=pt_ax.transAxes)
+
+pt_ax.legend(identifiers[:3], bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
+             ncols=3, mode="expand", borderaxespad=0., frameon=False)
 
 # Filter functions
-ff_ax = fig.add_subplot(gs[:2, 4:])
 omega = np.geomspace(1/T[key], 1e2, n)
 
 cache_idx = np.diag([0, *[1]*15, *[0]*20])
@@ -255,482 +238,145 @@ cache_filter_function(pulses_complete[key], omega, cache_idx)
 
 *_, leg = plotting.plot_filter_function(
     pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
-    yscale='log', omega_in_units_of_tau=False, axes=ff_ax, fig=fig,
-    # cycler=cycle
+    yscale='log', omega_in_units_of_tau=False,
+    axes=ff_ax, fig=fig,
 )
-# ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
-# ax.set_ylim(1e-15, ax.get_ylim()[1])
-ff_ax.legend(identifiers[:3], frameon=False, loc='upper right')
+leg.remove()
+# ff_ax.legend(identifiers[:3], frameon=True, loc='upper right')
 ff_ax.grid(False)
-ff_ax.set_xlabel(ff_ax.get_xlabel() + r' (ns$^{-1}$)')
-ff_ax.set_ylabel(r'$F_{\epsilon_{ij}}(\omega)$')
-# ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-ff_ax.tick_params(direction='out', which='both', labelsize=8)
+ff_ax.yaxis.tick_right()
+ff_ax.yaxis.set_label_position('right')
+ff_ax.set_xlabel(ff_ax.get_xlabel() + pernanosecond)
+ff_ax.set_ylabel(r'$\mathcal{F}_{\epsilon_{ij}}(\omega)$')
+ff_ax.tick_params(direction='out', which='both')
 ff_ax.set_ylim(bottom=1e-9, top=1e3)
 
+# Inset
 omega = np.linspace(0, 1e2/T[key], n)
 cache_filter_function(pulses_complete[key], omega, cache_idx)
 
-F = pulses_complete[key].get_filter_function(omega)
-ins_ax = ff_ax.inset_axes([0.1, 0.15, 0.5, 0.5])
+*_, leg = plotting.plot_filter_function(
+    pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
+    xscale='linear', yscale='linear', omega_in_units_of_tau=False,
+    axes=ins_ax, fig=fig
+)
+leg.remove()
 
-for i, props in enumerate(cycle[:3]):
-    ins_ax.plot(omega, F[i, i].real, linewidth=1)#, **props)
-
-ins_ax.set_xlim(0, omega.max())
-ins_ax.set_yscale('linear')
-ins_ax.tick_params(direction='in', which='both', labelsize=6)
+ins_ax.set_xlabel(None)
+ins_ax.set_ylabel(None)
+ins_ax.grid(False)
+ins_ax.tick_params(direction='in', which='both', labelsize='x-small')
 ins_ax.spines['right'].set_visible(False)
 ins_ax.spines['top'].set_visible(False)
 ins_ax.patch.set_alpha(0)
 
-ff_ax.text(0.015, 0.875, '(b)', transform=ff_ax.transAxes, fontsize=10)
+ff_ax.text(0.015, 0.875, '(b)', transform=ff_ax.transAxes)
 
 # Transfer matrices
-Kmax = abs(K[:, :16, :16]).max()
-Kmin = -Kmax
-if colorscale == 'log':
-    linthresh = np.abs(K).mean()/10
-    norm = colors.AsinhNorm(linear_width=linthresh, vmin=Kmin, vmax=Kmax, base=10)
-elif colorscale == 'linear':
-    norm = colors.Normalize(vmin=Kmin, vmax=Kmax)
-
-imshow_kw = {}
-imshow_kw.setdefault('origin', 'upper')
-imshow_kw.setdefault('interpolation', 'nearest')
-imshow_kw.setdefault('cmap', plt.get_cmap('RdBu'))
-imshow_kw.setdefault('norm', norm)
+norm = mpl.colors.CenteredNorm(0)
 basis_labels = np.array([
     ''.join(tup) for tup in product(['I', 'X', 'Y', 'Z'], repeat=2)
 ])
-
-tm_axes = [fig.add_subplot(gs[2:, 3*i:3*(i+1)]) for i in range(3)]
 subfigs = ['(c)', '(d)', '(e)']
-for i, (n_oper_identifier, tm_ax) in enumerate(zip(identifiers, tm_axes)):
-    if i == 2:
-        idx = [np.ravel_multi_index((j, i), (4, 4))
-               for i in range(4) for j in range(4)]
-    else:
-        idx = [np.ravel_multi_index((i, j), (4, 4))
-               for i in range(4) for j in range(4)]
-    im = tm_ax.imshow(K[i][..., idx][idx, ...], origin='upper', interpolation='nearest', norm=norm,
-                      cmap=DIVERGING_CMAP, rasterized=True)
+
+for i, (n_oper_identifier, tm_ax) in enumerate(zip(identifiers, grid)):
+    idx = np.arange(16).reshape(4, 4).ravel(order='C' if i != 2 else 'F')
+    im = tm_ax.imshow(K[i, *np.ix_(idx, idx)], interpolation=None, norm=norm, cmap=DIVERGING_CMAP)
     tm_ax.text(0.01, 1.05, subfigs[i] + ' ' + n_oper_identifier,
-               transform=tm_ax.transAxes, fontsize=10)
-    tm_ax.set_xticks(np.arange(16))
-    tm_ax.set_yticks(np.arange(16))
-    tm_ax.set_xticklabels(basis_labels[idx], rotation='vertical', fontsize=8)
-    tm_ax.set_yticklabels(basis_labels[idx], fontsize=8)
-    tm_ax.spines['left'].set_visible(False)
-    tm_ax.spines['right'].set_visible(False)
-    tm_ax.spines['top'].set_visible(False)
-    tm_ax.spines['bottom'].set_visible(False)
+               transform=tm_ax.transAxes)
+    tm_ax.set_xticks(np.arange(16), basis_labels[idx], rotation='vertical', fontsize='small')
+    tm_ax.set_yticks(np.arange(16), basis_labels[idx], fontsize='small')
 
-gs.tight_layout(fig, h_pad=0., w_pad=0., pad=0.)
+with misc.filter_warnings(action='ignore', category=UserWarning):
+    gs.tight_layout(fig, h_pad=0., w_pad=0.5)
 
-# cb_ax = fig.add_axes([1, 0.105, 0.015, 0.375])
-cb_ax = fig.add_axes([1, 0.105, 0.015, 0.405])
-# divider = make_axes_locatable(tm_axes)
-# cb_ax = divider.append_axes('right', size='5%', pad=0.05)
-cb = fig.colorbar(im, cax=cb_ax)
-cb.set_label(r"Cumulant function $\mathcal{K}_{\epsilon_{ij}}(\tau)$")
+# Only add after applying the tigh layout!
+cb_ax = fig.add_axes([0.9, 0.0958, 0.015, 0.3818])
+cb = fig.colorbar(im, cax=cb_ax, label=r"Cumulant function $\mathcal{K}_{\epsilon_{ij}}(\tau)$")
 
-fig.savefig(SAVE_PATH / f'CNOT_FF.pdf')
-# %% filter function unitary vs complete
+fig.savefig(SAVE_PATH / 'CNOT_FF.pdf')
+# %% Plot unitary vs complete (appendix)
 key = 'CNOT'
 
-fig, axes = plt.subplots(1, 2, sharex=True, sharey=True,
-                         figsize=(figsize_wide[0], figsize_wide[1]/1.75))
-omega = np.geomspace(1/T[key], 4, n)
+with mpl.style.context(MARGINSTYLE, after_reset=True):
+    fig, axes = plt.subplots(2, 1, sharex=True, sharey=True, layout='constrained',
+                             figsize=(MARGINWIDTH, 2))
+    omega = np.geomspace(1/T[key], 4, n)
 
-# Excluding identity element
-cache_filter_function(pulses_complete[key], omega,
-                      np.diag([0, *[1]*15, *[0]*20]))
+    for i, (lab, ax) in enumerate(zip(['(a)', '(b)'], axes)):
 
-*_, leg = plotting.plot_filter_function(
-    pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
-    yscale='log', omega_in_units_of_tau=False, axes=axes[0], fig=fig,
-    cycler=cycle
-)
-leg.remove()
-# ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
-# ax.set_ylim(1e-15, ax.get_ylim()[1])
-axes[0].grid(False)
-axes[0].set_xlabel(axes[0].get_xlabel() + r' (ns$^{-1}$)')
-axes[0].set_ylabel(r'$F_{\epsilon_{ij}}(\omega)$')
-# ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-axes[0].tick_params(direction='out', which='both', labelsize=8)
-axes[0].set_ylim(bottom=1e-2, top=1e2)
-# axes[0].set_title(r'Excluding $\mathrm{diag}(1,1,1,1,0,0)$')
-axes[0].text(0.90, 0.90, '(a)', transform=axes[0].transAxes, fontsize=10)
+        # Excluding identity element
+        cache_filter_function(pulses_complete[key], omega,
+                              np.diag([i, *[1]*15, *[0]*20]))
 
+        *_, leg = plotting.plot_filter_function(
+            pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
+            yscale='log', omega_in_units_of_tau=False, axes=ax, fig=fig,
+        )
+        leg.remove()
+        ax.grid(True)
+        ax.set_xlabel(ax.get_xlabel() + pernanosecond)
+        ax.set_ylabel(r'$\mathcal{F}_{\epsilon_{ij}}(\omega)$')
+        ax.label_outer()
+        ax.tick_params(direction='out', which='both')
+        ax.text(0.04, 0.1, lab, transform=ax.transAxes)
 
-# Including identity element
-cache_filter_function(pulses_complete[key], omega,
-                      np.diag([1, *[1]*15, *[0]*20]))
+fig.savefig(SAVE_PATH / 'CNOT_FF_unitary_v_complete.pdf')
 
-*_, leg = plotting.plot_filter_function(
-    pulses_complete[key], omega, n_oper_identifiers=identifiers[:3],
-    yscale='log', omega_in_units_of_tau=False, axes=axes[1], fig=fig,
-    cycler=cycle
-)
-# ax.plot(omega, 10**log_fitfun(output.beta, omega*T[key]), '--')
-# ax.set_ylim(1e-15, ax.get_ylim()[1])
-axes[1].legend(identifiers[:3], frameon=True, loc='lower left', framealpha=1)
-axes[1].grid(False)
-axes[1].set_xlabel(axes[1].get_xlabel() + r' (ns$^{-1}$)')
-axes[1].set_ylabel('')
-# axes[1].set_title(r'Including $\mathrm{diag}(1,1,1,1,0,0)$')
-# ax.set_yticks([1e-8, 1e-5, 1e-2, 1e1])
-# axes[1].tick_params(direction='out', which='both', labelsize=8)
-# axes[1].set_ylim(bottom=1e-9, top=1e3)
-axes[1].text(0.90, 0.90, '(b)', transform=axes[1].transAxes, fontsize=10)
-axes[1].legend(handlelength=1.95, frameon=False)
+# %% Fidelities table
+infidelities_ff_etm = np.empty((2, 3, 3))
+infidelities_ff = np.empty((2, 3, 3))
+infidelities_mc = np.empty((2, 3))
 
-fig.tight_layout()
-fname = f'filter_function-{key}_unitary_v_complete'
-for ext in ('pdf', 'eps', 'png'):
-    if (not (file := save_path / '.'.join([fname, ext])).exists()
-            or _force_overwrite):
-        fig.savefig(file)
+for i, a in enumerate(alpha):
+    for j, (key, pulse) in enumerate(pulses_subspace.items()):
+        omega = np.geomspace(1e-2/T[key], 1e2, n)
+        S = A[i]/omega**a
+        with mock.patch.object(pulse, 'd', 4):
+            infidelities_ff[i, j] = ff.infidelity(pulse, S, omega, identifiers[:3])
 
-# %% fidelities
-# repo = git.Repo('Z:/Code/filter_functions')
-repo = git.Repo('~/Code/filter_functions')
-sha = repo.head.object.hexsha
+        # Just for comparison
+        for k in range(3):
+            infidelities_ff_etm[i, j, k] = 1 - ff.error_transfer_matrix(
+                pulse, S, omega, identifiers[k]
+            ).trace()/d_c**2
 
-fname = 'fidelities_commit-{}.txt'.format(sha[:7])
+for i, a in enumerate(alpha):
+    for j, (key, pulse) in enumerate(pulses_complete.items()):
+        F_e = infid_fast[key][i]
+        infidelities_mc[i, j] = infid_fast[key][i]
 
-PI_c_liouville_ggm = ff.superoperator.liouville_representation(PI_c_op,
-                                                               ff.Basis.ggm(6))
+data = {
+    (r"\textsc{This work}", r"\sisetup{round-precision=1} 0"):
+        infidelities_ff[alpha.tolist().index(0.0)].sum(-1),
+    (r"\textsc{This work}", r"\sisetup{round-precision=1} 0.7"):
+        infidelities_ff[alpha.tolist().index(0.7)].sum(-1),
+    (r"\textsc{\citer{Cerfontaine2020b}}", r"\sisetup{round-precision=1} 0"):
+        infidelities_mc[alpha.tolist().index(0.0)],
+    (r"\textsc{\citer{Cerfontaine2020b}}", r"\sisetup{round-precision=1} 0.7"):
+        infidelities_mc[alpha.tolist().index(0.7)],
+}
 
-with open(save_path / fname, 'w+') as f:
-    infidelities = np.empty((2, 3, 6))
-    f.write(f'Git commit hash: {sha}\n\n')
-    f.write('==========================================================\n')
-    f.write('calculated using ff.infidelity (subspace)\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_subspace.items()):
-            pulse.d = 4
-            omega = np.geomspace(1e-2/T[key], 1e2, n)
-            S = A[i]/omega**a
-            infidelities[i, j] = ff.infidelity(pulse, S, omega)
-            f.write(f'{key}\t{a}\t\t{infidelities[i, j, :3].sum():.3e}\t\t\t' +
-                    f'{infidelities[i, j, :3].sum()*4/5:.3e}\n')
-            pulse.d = 6
-    f.write('==========================================================\n')
-    f.write('calculated using ff.error_transfer_matrix, separated basis\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            infid = 1 - np.einsum('...ii',
-                                  P_complete[key][a][:16, :16]).sum().real/d_c**2
-            f.write(f'{key}\t{a}\t\t{infid:.3e}\t\t\t{infid*4/5:.3e}\n')
-    f.write('==========================================================\n')
-    f.write('calculated using cumulant function, excl. identity\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            infid = np.einsum('...ii',
-                              -K_complete[key][a][:3, 1:16, 1:16]).sum().real/d_c**2
-            f.write(f'{key}\t{a}\t\t{infid:.3e}\t\t\t{infid*4/5:.3e}\n')
-    f.write('==========================================================\n')
-    f.write('calculated using cumulant function, separated basis\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            infid = np.einsum('...ii',
-                              -K_complete[key][a][:3, :16, :16]).sum().real/d_c**2
-            f.write(f'{key}\t{a}\t\t{infid:.3e}\t\t\t{infid*4/5:.3e}\n')
-    f.write('==========================================================\n')
-    f.write('calculated using ff.error_transfer_matrix, excl. identity\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            infid = 1 - np.einsum('...ii',
-                                  P_complete[key][a][1:16, 1:16]).sum().real/d_c**2
-            f.write(f'{key}\t{a}\t\t{infid:.3e}\t\t\t{infid*4/5:.3e}\n')
-    f.write('==========================================================\n')
-    f.write('MC\n')
-    f.write('==========================================================\n')
-    f.write('Gate\talpha\tF_ent (eps only)\tF_avg (eps only)\n')
-    for i, a in enumerate(alpha):
-        f.write('----------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            F_e = infid_fast[key][i]
-            f.write(f'{key}\t{a}\t\t{F_e:.3e}\t\t\t{F_e*4/5:.3e}\n')
-    f.write('==========================================================')
+index = [r"\XID2", r"\YID2", r"\CNOT"]
+# entanglement -> average gate fidelity: *4/5
+rows = [[label] + [col[i] * 4/5 for col in data.values()] for i, label in enumerate(index)]
+cols = pd.MultiIndex.from_tuples([("", "$a$")] + list(data.keys()))
+df = pd.DataFrame(rows, columns=cols)
 
-# %% leakage
-repo = git.Repo('~/Code/filter_functions')
-# repo = git.Repo('Z:/Code/filter_functions')
-sha = repo.head.object.hexsha
+with (DATA_PATH / 'gate_fidelities.tex').open('w') as file:
+    latex = df.to_latex(
+        column_format=(
+            'l *{4}{S[table-number-alignment=center,table-text-alignment=left,'
+            'table-format=+1.1e+3,round-mode=figures,round-precision=2]}'
+        ),
+        escape=False, index=False, multicolumn=True, multicolumn_format="c", float_format="%.6e"
+    ).replace(
+        '$a$', r'\cmidrule(lr){2-3}\cmidrule(lr){4-5}' + '\n$a$'
+    ).replace(
+        r'\begin{tabular}', r'\begin{tabularx}{\textwidth}'
+    ).replace(
+        r'\end{tabular}', r'\end{tabularx}'
+    )
 
-fname = 'leakage_commit-{}.txt'.format(sha[:7])
-pulse = pulses_complete['CNOT']
-
-d_c = 4
-d_l = 2
-PI_c_op = np.zeros((6, 6))
-PI_l_op = np.zeros((6, 6))
-PI_c_op[range(1, 5), range(1, 5)] = 1
-PI_l_op[(0, 5), (0, 5)] = 1
-PI_c_vec = ff.basis.expand(PI_c_op, pulse.basis)
-PI_l_vec = ff.basis.expand(PI_l_op, pulse.basis)
-
-
-def leakage(E):
-    return (PI_l_vec.T @ E @ PI_c_vec/d_c).real
-
-
-def seepage(E):
-    return (1 - PI_l_vec.T @ E @ PI_l_vec/d_l).real
-
-
-with open(save_path / fname, 'w+') as f:
-    infidelities = np.empty((2, 3, 6))
-    f.write(f'Git commit hash: {sha}\n\n')
-    f.write('====================================================\n')
-    f.write('                   CNOT (eps_23)\n')
-    f.write('====================================================\n')
-    f.write('----------------------------------------------------\n')
-    f.write('\t\tSystematic (L(Q))\n')
-    f.write('alpha\tLeakage\t\t\tSeepage\n')
-    f.write('----------------------------------------------------\n')
-    for i, a in enumerate(alpha):
-        Q_liouville = pulse.total_propagator_liouville.real
-        Uerr_liouville = np.eye((d_c + d_l)**2) + K_complete['CNOT'][a][1]
-        L_c = leakage(Q_liouville)
-        L_l = seepage(Q_liouville)
-        f.write(f'{a}\t\t{L_c:.3e}\t\t{L_l:.3e}\n')
-
-    f.write('----------------------------------------------------\n')
-    f.write('\t\tDecoherence (L(Uerr))\n')
-    f.write('alpha\tLeakage\t\t\tSeepage\n')
-    f.write('----------------------------------------------------\n')
-    for i, a in enumerate(alpha):
-        Q_liouville = pulse.total_propagator_liouville.real
-        Uerr_liouville = np.eye((d_c + d_l)**2) + K_complete['CNOT'][a][1]
-        L_c = leakage(Uerr_liouville)
-        L_l = seepage(Uerr_liouville)
-        f.write(f'{a}\t\t{L_c:.3e}\t\t{L_l:.3e}\n')
-
-    f.write('----------------------------------------------------\n')
-    f.write('\t\tBoth (L(Q @ Uerr))\n')
-    f.write('alpha\tLeakage\t\t\tSeepage\n')
-    f.write('----------------------------------------------------\n')
-    for i, a in enumerate(alpha):
-        Q_liouville = pulse.total_propagator_liouville.real
-        Uerr_liouville = np.eye((d_c + d_l)**2) + K_complete['CNOT'][a][1]
-        L_c = leakage(Q_liouville @ Uerr_liouville)
-        L_l = seepage(Q_liouville @ Uerr_liouville)
-        f.write(f'{a}\t\t{L_c:.3e}\t\t{L_l:.3e}\n')
-    f.write('====================================================')
-
-# %% Leakage Wood & Gambetta
-
-
-def apply_channel(dmat, ops):
-    if dmat.shape[0] == d:
-        res = ops @ dmat @ ops.conj().swapaxes(-1, -2)
-        return res.sum(0) if ops.ndim == 3 else res
-    else:
-        return ops @ dmat
-
-
-def leakage_op(channel, PI_l, PI_c, d_c):
-    return np.trace(PI_l @ apply_channel(PI_c, channel)).real/d_c
-
-
-def leakage_vec(channel, PI_lvec, PI_cvec, d_c):
-    return np.einsum('i,...i', PI_lvec, apply_channel(PI_cvec, channel)).real/d_c
-
-
-d_c = 4
-d_l = 2
-d = d_c + d_l
-# basis = ff.Basis.ggm(d)
-
-d_c = 4
-d_l = 2
-PI_c_op = np.zeros((6, 6))
-PI_l_op = np.zeros((6, 6))
-PI_c_op[range(1, 5), range(1, 5)] = 1
-PI_l_op[(0, 5), (0, 5)] = 1
-
-# %%% basis transform
-computational_basis_vec = np.eye(d**2)
-computational_basis_c = ff.Basis(
-    [np.reshape(qt.basis(d**2, i).full(), (d, d), order='C')
-     for i in range(d**2)],
-)
-computational_basis_r = ff.Basis(
-    [np.reshape(qt.basis(d**2, i).full(), (d, d), order='F')
-     for i in range(d**2)],
-)
-
-# Convert from column stacking to complete basis and v.v.
-T_sc_complete = np.einsum('ai,aj', computational_basis_vec,
-                          ff.basis.expand(computational_basis_c, complete_basis))
-# Convert from row stacking to complete basis and v.v.
-T_sr_complete = np.einsum('ai,aj', computational_basis_vec,
-                          ff.basis.expand(computational_basis_r, complete_basis))
-
-# Convert from column stacking to GGM basis and v.v.
-T_sc_ggm = np.einsum('ai,aj', computational_basis_vec,
-                     ff.basis.expand(computational_basis_c, ff.Basis.ggm(d)))
-# Convert from row stacking to GGM basis and v.v.
-T_sr_ggm = np.einsum('ai,aj', computational_basis_vec,
-                     ff.basis.expand(computational_basis_r, ff.Basis.ggm(d)))
-
-# Convert from complete basis to GGM basis and v.v.
-T_ssp = np.einsum('ai,aj', computational_basis_vec,
-                  ff.basis.expand(complete_basis, ff.Basis.ggm(d)))
-
-a = np.random.randn(6, 6) + np.random.randn(6, 6)*1j
-a += a.conj().T
-
-A_rvec = np.zeros((36), dtype=complex)
-eye = np.eye(6)
-for i in range(6):
-    for j in range(6):
-        A_rvec += a[i, j]*np.kron(eye[i], eye[j]).T
-
-A_cvec = np.zeros((36), dtype=complex)
-eye = np.eye(6)
-for i in range(6):
-    for j in range(6):
-        A_cvec += a[i, j]*np.kron(eye[j], eye[i])
-
-A_svec_complete = ff.basis.expand(a, complete_basis)
-A_svec_ggm = ff.basis.expand(a, ff.Basis.ggm(d))
-
-PI_cvec_complete = ff.basis.expand(PI_c_op, complete_basis)
-PI_lvec_complete = ff.basis.expand(PI_l_op, complete_basis)
-PI_cvec_ggm = ff.basis.expand(PI_c_op, ff.Basis.ggm(d))
-PI_lvec_ggm = ff.basis.expand(PI_l_op, ff.Basis.ggm(d))
-
-P_col = {key: {a: T_sc_ggm @ P @ T_sc_ggm.conj().T for a, P in p.items()}
-         for key, p in K_ggm.items()}
-P_row = {key: {a: T_sr_ggm @ P @ T_sr_ggm.conj().T for a, P in p.items()}
-         for key, p in K_ggm.items()}
-
-# %%% test correct transform of vectors
-print('complete vs row:', np.allclose(T_sr_complete @ A_svec_complete, A_rvec))
-print('complete vs col:', np.allclose(T_sc_complete @ A_svec_complete, A_cvec))
-print('ggm vs row:', np.allclose(T_sr_ggm @ A_svec_ggm, A_rvec))
-print('ggm vs col:', np.allclose(T_sc_ggm @ A_svec_ggm, A_cvec))
-print('inverse complete vs row:', np.allclose(T_sr_complete.conj().T @ A_rvec, A_svec_complete))
-print('inverse complete vs col:', np.allclose(T_sc_complete.conj().T @ A_cvec, A_svec_complete))
-print('inverse ggm vs row:', np.allclose(T_sr_ggm.conj().T @ A_rvec, A_svec_ggm))
-print('inverse ggm vs col:', np.allclose(T_sc_ggm.conj().T @ A_cvec, A_svec_ggm))
-
-# %%% test correct transform of superoperators
-S_s_complete = -K_complete['CNOT'][0.0].sum(0)
-S_s_ggm = -K_ggm['CNOT'][0.0].sum(0)
-S_c = -P_col['CNOT'][0.0].sum(0)
-S_r = -P_row['CNOT'][0.0].sum(0)
-
-print('superoperator ggm to complete:', np.allclose(T_ssp@S_s_ggm@T_ssp.conj().T, S_s_complete))
-print('superoperator complete to ggm:', np.allclose(T_ssp.conj().T@S_s_complete@T_ssp, S_s_ggm))
-
-# %%% leakage
-for a in (0.0, 0.7):
-    L = leakage_vec(np.eye(d**2) + K_complete['CNOT'][a], PI_lvec_complete,
-                    PI_cvec_complete, d_c)
-    print(f'leakage complete\t {a}:', L[:3])
-    L = leakage_vec(np.eye(d**2) + K_ggm['CNOT'][a], PI_lvec_ggm,
-                    PI_cvec_ggm, d_c)
-    print(f'leakage ggm\t\t {a}:', L[:3])
-
-# %%% process fidelity
-for key in pulses_ggm.keys():
-    for a in (0.0, 0.7):
-        i = np.einsum('...ii', -K_complete[key][a][:3, :16, :16])/d_c**2
-        print(f'fidelity complete \t {key} {a}:', i.real)
-        i = np.einsum('ij,...ji', np.kron(PI_c_op, PI_c_op), -P_col[key][a][:3])/d_c**2
-        print(f'fidelity col\t\t {key} {a}:', i.real)
-        i = np.einsum('ij,...ji', np.kron(PI_c_op, PI_c_op), -P_row[key][a][:3])/d_c**2
-        print(f'fidelity row\t\t {key} {a}:', i.real)
-        i = np.einsum('ij,...ji',
-                      ff.superoperator.liouville_representation(PI_c_op, complete_basis),
-                      -K_complete[key][a][:3])/d_c**2
-        print(f'fidelity complete proj.\t {key} {a}:', i.real)
-        i = np.einsum('ij,...ji',
-                      ff.superoperator.liouville_representation(PI_c_op, ff.Basis.ggm(d)),
-                      -K_ggm[key][a][:3])/d_c**2
-        print(f'fidelity ggm proj.\t {key} {a}:', i.real)
-
-# %%% average gate fidelity without leakage
-for key in pulses_complete.keys():
-    for a in (0.0, 0.7):
-        l = leakage_vec(np.eye(d**2) + K_complete['CNOT'][a][:3],
-                        PI_lvec_complete, PI_cvec_complete, d_c)
-        i = np.einsum('...ii', -K_complete[key][a][:3, :16, :16])/d_c**2
-        f = (d_c*(1 - i.real) + 1 - l.real)/(d_c + 1)
-        print(f'avg gate fidelity complete \t {key} {a}:', 1 - f)
-        i = np.einsum('ij,...ji', np.kron(PI_c_op, PI_c_op), -P_col[key][a][:3])/d_c**2
-        f = (d_c*(1 - i.real) + 1 - l.real)/(d_c + 1)
-        print(f'avg gate fidelity col\t\t {key} {a}:', 1 - f)
-
-# %%% save average gate fidelity without leakage
-# repo = git.Repo('Z:/Code/filter_functions')
-sha = repo.head.object.hexsha
-
-fname = 'fidelity-leakage_commit-{}.txt'.format(sha[:7])
-pulse = pulses_complete['CNOT']
-
-with open(save_path / fname, 'w+') as f:
-    infidelities = np.empty((2, 3, 6))
-    f.write(f'Git commit hash: {sha}\n\n')
-    f.write('============================================================\n')
-    f.write('Only eps contributions\n')
-    f.write('============================================================\n\n')
-
-    f.write('============================================================\n')
-    f.write('calculated using ff.error_transfer_matrix separated basis\n')
-    f.write('============================================================\n')
-    f.write('Gate\talpha\tF_ent\t\tF_avg\t\tF_avg sans L\n')
-    for k, a in enumerate(alpha):
-        f.write('------------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            l = leakage_vec(np.eye(d**2) + K_complete[key][a][:3],
-                            PI_lvec_complete, PI_cvec_complete, d_c).real
-            proj = ff.superoperator.liouville_representation
-            i = np.einsum('...ii', -K_complete[key][a][:3, :16, :16]).real/d_c**2
-            iav = 1 - (d_c*(1 - i) + 1 - l)/(d_c + 1)
-            f.write(f'{key}\t{a}\t\t{i.sum():.3e}\t{i.sum()*4/5:.3e}\t{iav.sum():.3e}\n')
-    f.write('============================================================\n')
-    f.write('calculated using ff.error_transfer_matrix projected \n')
-    f.write('============================================================\n')
-    f.write('Gate\talpha\tF_ent\t\tF_avg\t\tF_avg sans L\n')
-    for k, a in enumerate(alpha):
-        f.write('------------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            l = leakage_vec(np.eye(d**2) + K_complete[key][a][:3],
-                            PI_lvec_complete, PI_cvec_complete, d_c).real
-            infid = np.einsum('ij,...ji', PI_c_liouville_ggm,
-                              -K_ggm[key][a][:3]).real/d_c**2
-            iav = 1 - (d_c*(1 - infid) + 1 - l)/(d_c + 1)
-            f.write(f'{key}\t{a}\t\t{infid.sum():.3e}\t{infid.sum()*4/5:.3e}\t{iav.sum():.3e}\n')
-    f.write('============================================================\n')
-    f.write('\t\t\tMC\n')
-    f.write('============================================================\n')
-    f.write('Gate\talpha\tF_ent\t\tF_avg\t\tF_avg sans L\n')
-    for i, a in enumerate(alpha):
-        f.write('------------------------------------------------------------\n')
-        for j, (key, pulse) in enumerate(pulses_complete.items()):
-            F_e = infid_fast[key][i]
-            f.write(f'{key}\t{a}\t\t{F_e:.3e}\t{F_e*4/5:.3e}\t{F_e*4/5:.3e}\n')
-    f.write('============================================================')
+    file.write(f'% This table is automatically generated by {FILE_PATH} \n '.replace('\\', '/'))
+    file.write(latex)

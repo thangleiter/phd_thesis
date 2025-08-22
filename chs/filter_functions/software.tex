@@ -3,11 +3,11 @@
 In this section we give an overview over the \filterfunctions software package implementing the main features of the formalism derived above.
 This includes the calculation of the decay amplitudes \decayamps and fidelities as well as the calculation of the control matrices for single gates and both generic and periodic sequences of gates.
 Moreover, control matrices may be efficiently extended to and merged on larger Hilbert spaces.
-Calculations using unitary conjugation instead of transfer matrices are implemented but at this point not available in the high-level API.
+Calculations using unitary conjugation instead of transfer matrices are implemented but at this point not available in the high-level \gls{api}.
 
 Our software is written in Python and available on GitHub~\cite{Hangleiter_ff} under the GPLv3 license.
 We also provide a current snapshot in the Supplementary Material~\cite{prrSupp}.\todo{ref}
-It features a broad coverage through unit tests and extensive API documentation as well as didactic examples (see \cref{ch:ff:examples}).
+It features a broad coverage through unit tests and extensive \gls{api} documentation as well as didactic examples (see \cref{ch:ff:examples}).
 The package relies on the \numpy~\cite{Harris2020} and \scipy~\cite{Virtanen2020} libraries for vectorized array operations.
 Data visualization is handled by \matplotlib~\cite{Hunter2007}.
 For tensor multiplications with optimized contraction order we use \opteinsum~\cite{Smith2018} for which \sparse~\cite{Pydata2019}, a library aiming to extend the \scipy sparse module to multi-dimensional arrays, serves as a backend in the calculation of the trace tensor from \cref{eq:ff:trace_tensor}.
@@ -36,9 +36,9 @@ Operator bases fulfilling \cref{eq:ff:basis} are implemented by the \verb|Basis|
 There are two predefined types of bases:
 \begin{enumerate}
     \item Pauli bases for $n = 2^d$ qubits from \cref{eq:ff:basis:pauli} and
-    \item generalized Gell-Mann (GGM) bases of arbitrary dimension $d$ from \cref{eq:ff:basis:ggm}.
+    \item \gls{ggm} bases of arbitrary dimension $d$ from \cref{eq:ff:basis:ggm}.
 \end{enumerate}
-The Pauli basis is both unitary and separable while the GGM basis is sparse for large dimensions but neither unitary nor separable.
+The Pauli basis is both unitary and separable while the \gls{ggm} basis is sparse for large dimensions but neither unitary nor separable.
 As mentioned in \cref{sec:ff:performance:extending_hilbert_spaces} (see also \cref{sec:ff:examples:qft}), using a separable basis can provide significant performance benefits for calculating the filter functions of algorithms.
 On the other hand, a sparse basis makes the calculation of the trace tensor $T_{ijkl}$ and therefore also of the error transfer matrix \liouvUe much faster (\cf \cref{sec:ff:performance:basis}).
 Additionally, the user can define custom bases using the class constructor.
@@ -85,7 +85,7 @@ Calculating the filter function of the pulse for a given frequency vector \verb|
 \begin{lstlisting}{language=Python}
 F = ECHO.get_filter_function(omega)
 \end{lstlisting}
-where \verb|F| is the dephasing filter function $F_{zz}(\omega)$ as we only defined a single noise operator.
+where \verb|F| is the dephasing filter function $\FF_{zz}(\omega)$ as we only defined a single noise operator.
 Finally, we calculate the error transfer matrix \liouvUe for the noise spectral density $S_{zz}(\omega) = \omega^{-2}$,
 \begin{lstlisting}{language=Python}
 S = 1/omega**2

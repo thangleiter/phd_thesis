@@ -143,7 +143,7 @@ Since there is no obvious way to extend the Pauli basis for two qubits to the co
 \end{equation}
 where the $P_i$ are normalized two-qubit Pauli matrices (\cf \cref{eq:ff:basis:pauli}) in the basis $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu\rbrace$.
 To complete the basis we require an additional 20 elements orthogonal to the 16 padded Pauli matrices.
-We obtain the remaining elements by first expanding the $C_i^c$ in an arbitrary basis $\left\lbrace\Lambda_i\right\rbrace_{i=0}^{35}$ of the complete space (we choose a GGM, \cf \cref{eq:ff:basis:ggm}, for simplicity), yielding a $16\times 36$ matrix of expansion coefficients:
+We obtain the remaining elements by first expanding the $C_i^c$ in an arbitrary basis $\left\lbrace\Lambda_i\right\rbrace_{i=0}^{35}$ of the complete space (we choose a \gls{ggm}, \cf \cref{eq:ff:basis:ggm}, for simplicity), yielding a $16\times 36$ matrix of expansion coefficients:
 \begin{equation}
     M_{ij} = \tr(C_i^c\Lambda_j).
 \end{equation}
@@ -160,21 +160,21 @@ Hence, excluding $\liouvUe_{00}$ from the trace corresponds to partially disrega
 Although not the only element that differs compared to the closest subspace unitary, $\cumulantfun_{00}$ contains the most obvious contribution, whereas those of other elements are more difficult to disentangle into unitary and non-unitary components.
 
 Similar to the fidelity, we also obtain the canonical filter function shown in panel (b) of \cref{fig:ff:CNOT} by summing only over columns one through 15 of the control matrix, $F_{\epsilon_{ij}}(\omega) = \sum_{k=1}^{15}\bigl\lvert\ctrlmat_{\epsilon_{ij} k}(\omega)\bigr\rvert^2$.
-In fact, including the first column, corresponding to the padded identity matrix $C_0^c$, in the filter function removes the DCG character of $F_{\epsilon_{12}}(\omega)$ and $F_{\epsilon_{34}}(\omega)$, which instead approach a constant level of around 20 (note that the filter function is dimensionless in our units) at zero frequency.
+In fact, including the first column, corresponding to the padded identity matrix $C_0^c$, in the filter function removes the \gls{dcg} character of $F_{\epsilon_{12}}(\omega)$ and $F_{\epsilon_{34}}(\omega)$, which instead approach a constant level of around 20 (note that the filter function is dimensionless in our units) at zero frequency.
 This is consistent with the fact that the gates were optimized using quasistatic and fast white noise contributions to the fidelity after mapping to the closest unitary on the computational subspace.
 We have performed Monte Carlo resimulations that support this reading.
 In \cref{appfig:ff:filter_function:cnot} we show the filter functions once including and once excluding the contributions from $C_0^c$.
 
-\begin{figure}
+\begin{marginfigure}
     \centering
-    \includegraphics{img/pdf/filter_functions/filter_function-CNOT_unitary_v_complete}
-    \caption{
+    \includegraphics{img/pdf/filter_functions/CNOT_FF_unitary_v_complete}
+    \caption[\imgsource{img/py/filter_functions/cnot_FF.py}]{
         Filter functions of the voltage detunings $\epsilon_{ij}$ excluding (a) and including (b) the zero-padded identity matrix basis element $C_0^c\propto\text{diag}(1,1,1,1,0,0)$ for the computational subspace.
-        Evidently, including $C_0^c$ removes the DCG character, namely that $F_{\epsilon_{ij}}(\omega)\rightarrow 0$ as $\omega\rightarrow 0$, of the gates but has little effect on the high-frequency behavior.
+        Evidently, including $C_0^c$ removes the \gls{dcg} character, namely that $F_{\epsilon_{ij}}(\omega)\rightarrow 0$ as $\omega\rightarrow 0$, of the gates but has little effect on the high-frequency behavior.
         As the pulse optimization minimizes, among other figures of merit, the infidelity of the final propagator mapped to the closest unitary on the computational subspace due to quasistatic and fast white noise, this indicates that excluding $C_0^c$ from the filter function corresponds to partially neglecting non-unitary components of the propagator on the computational subspace.
 }
     \label{appfig:ff:filter_function:cnot}
-\end{figure}
+\end{marginfigure}
 
 % ==================================================
 %           QFT GATES SECTION
@@ -260,12 +260,12 @@ Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise 
         \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
                                  \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \\
                               &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
-                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g'=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g')}(t_2)
-                                 s_\alpha\gth{m} s_\alpha^{(g')} \norm{B_\alpha}^2} \\
+                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g^\prime=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g^\prime)}(t_2)
+                                 s_\alpha\gth{m} s_\alpha^{(g^\prime)} \norm{B_\alpha}^2} \\
                               &\leq\sum_{\alpha}\norm{B_\alpha}^2
                                  \underbrace{\expval{b_\alpha^2(0)}}_{\int\frac{\dd{\omega}}{2\pi}S_\alpha(\omega)}
-                                 \sum_{g,g'=1}^{G} s_\alpha\gth{m} s_\alpha^{(g')}
-                                 \abs\Bigg{\int_{t_{g'-1}}^{t_{g'}}\dd{t_2}\int_{t_{g-1}}^{t_g}\dd{t_1}
+                                 \sum_{g,g^\prime=1}^{G} s_\alpha\gth{m} s_\alpha^{(g^\prime)}
+                                 \abs\Bigg{\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t_2}\int_{t_{g-1}}^{t_g}\dd{t_1}
                                  \underbrace{\overline{\expval{b_\alpha(t_1)b_\alpha(t_2)}}}_{\abs{\placeholder}\leq 1}} \\
                               &\leq\sum_{\alpha}\left[\norm{B_\alpha}^2
                                  \int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi}S_\alpha(\omega)

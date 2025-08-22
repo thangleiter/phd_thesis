@@ -166,6 +166,12 @@
 \newcommand{\ddf}[1]{\ensuremath{\frac{\dd{#1}}{2\pi}}\xspace}
 \newcommand{\intinf}{\ensuremath{\int_{-\infty}^{\infty}}\xspace}
 \newcommand{\set}[2]{\ensuremath{\left\lbrace {#1}_{#2}\right\rbrace_{#2}}\xspace}
+% Gates
+\newcommand{\CNOT}[0]{\ensuremath{\mr{CNOT}}\xspace}
+\newcommand{\X}[1]{\ensuremath{\mr{X}_{\flatfrac{\pi}{#1}}}\xspace}
+\newcommand{\Y}[1]{\ensuremath{\mr{Y}_{\flatfrac{\pi}{#1}}}\xspace}
+\newcommand{\XID}[1]{\ensuremath{\mr{X}_{\flatfrac{\pi}{#1}}\otimes\mr{I}}\xspace}
+\newcommand{\YID}[1]{\ensuremath{\mr{Y}_{\flatfrac{\pi}{#1}}\otimes\mr{I}}\xspace}
 % Filter function math
 \newcommand{\Li}{\ensuremath{\mathcal{L}}\xspace}
 \newcommand{\Lc}{\ensuremath{\mathcal{L}_\mr{c}}\xspace}
@@ -185,11 +191,16 @@
 \newcommand{\Bab}{\ensuremath{\bar{B}_\alpha}\xspace} % interaction picture noise operators
 \newcommand{\Qc}{\ensuremath{\mathcal{Q}}\xspace}
 % Superoperator formalism
-\newcommand{\FF}[0]{\ensuremath{\mc{F}(\omega;\tau)}\xspace}
 \newcommand{\decayamps}[0]{\ensuremath{\Gamma}\xspace}
 \newcommand{\freqshifts}[0]{\ensuremath{\Delta}\xspace}
 \newcommand{\cumulantfun}[0]{\ensuremath{\mc{K}}\xspace}
 \newcommand{\ctrlmat}[0]{\ensuremath{\tilde{\mc{B}}}\xspace}
+\newcommand{\FF}[0]{\ensuremath{\mc{F}}\xspace}
+\newcommand{\FFot}[0]{\ensuremath{\FF(\omega;\tau)}\xspace}
+\newcommand{\FFi}[0]{\ensuremath{\FF_{\decayamps}}\xspace}
+\newcommand{\FFc}[0]{\ensuremath{\FF_{\freqshifts}}\xspace}
+\newcommand{\FFim}[1]{\ensuremath{\FF_{\decayamps,#1}}\xspace}
+\newcommand{\FFcm}[1]{\ensuremath{\FF_{\freqshifts,#1}}\xspace}
 \newcommand{\liouvP}[0]{\ensuremath{\mc{P}}\xspace}
 \newcommand{\liouvQ}[0]{\ensuremath{\mc{Q}}\xspace}
 \newcommand{\liouvU}[0]{\ensuremath{\mc{U}}\xspace}

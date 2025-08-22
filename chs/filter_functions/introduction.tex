@@ -43,7 +43,7 @@ Moreover, we show that the formalism naturally lends itself as a tool for numeri
 On top of providing methods to handle individual quantum gates, the package also implements the concatenation operation as well as parallelized execution of pulses on different groups of qubits, allowing for a highly modular and hence computationally powerful treatment of quantum algorithms in the presence of correlated noise.
 Given an arbitrary, classical noise spectral density, it can be used to calculate a matrix representation of the error process.
 From this matrix one can extract average gate fidelities, transition probabilities, and leakage rates as we derive below.
-To simplify adaptation the software's API is strongly inspired by and compatible with \qutip~\cite{Johansson2012} as well as \qopt~\cite{Teske2022a}.
+To simplify adaptation the software's \gls{api} is strongly inspired by and compatible with \qutip~\cite{Johansson2012} as well as \qopt~\cite{Teske2022a}.
 This allows users to use these packages in conjunction.
 Assessing the computational performance, we show that our method outperforms Monte Carlo simulations for single gates.
 New analytic results applicable to periodic Hamiltonians and employing the concatenation property make this advantage even more pronounced for sequences of gates.
@@ -55,7 +55,7 @@ It is structured as follows: In \cref{ch:ff:theory} we derive a closed-form expr
 We review the concatenation of quantum operations shown in~\citer{Cerfontaine2021} and furthermore adapt the method by~\citet{Green2013} to calculate the filter function of an arbitrary control sequence numerically.
 We will specifically focus on computational aspects of the formalism and lay out how to compute various quantities of interest.
 Moreover, we classify its computational complexity for calculating average gate fidelities and remark on simplifications that allow for drastic improvements in performance in certain applications.
-In \cref{ch:ff:software}, we introduce the software package by outlining the programmatic structure and giving a brief overview over the API.
+In \cref{ch:ff:software}, we introduce the software package by outlining the programmatic structure and giving a brief overview over the \gls{api}.
 Lastly, in \cref{ch:ff:examples}, we show the application of the software by means of four examples that highlight various features of the formalism and its implementation.
 Therein, we first demonstrate that the formalism can predict average gate fidelities for complex two-qubit quantum gates in agreement with computationally much more costly Monte Carlo calculations.
 Next, we show how it can be applied to periodically driven systems to efficiently analyze Rabi oscillations.
