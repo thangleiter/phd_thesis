@@ -56,7 +56,7 @@ These may carry a general, deterministic time dependence and without loss of gen
     The identity commutes with the control Hamiltonian at all times and hence does not generate any evolution in the interaction picture in which we work later on (\cf \cref{eq:ff:cumulant:truncated:substituted})
 }
 The $b_\alpha(t)$ are random variables drawn from (not necessarily Gaussian) distributions with zero mean that are assumed to be \gls{iid} both with respect to repetitions of the experiment.
-Note that this concept of independence does not preclude correlations between different noise sources $\alpha\neq\beta$ nor between one noise source at different times $t\neq t'$, but only serves to obtain a well-defined ensemble average.
+Note that this concept of independence does not preclude correlations between different noise sources $\alpha\neq\beta$ nor between one noise source at different times $t\neq t^\prime$, but only serves to obtain a well-defined ensemble average.
 Lastly, to be able to later on relate the correlation functions of the $b_\alpha(t)$ to their spectral density, we require the noise fields to be wide-sense stationary, meaning that their correlation function depends only on the time difference.
 
 For noise operators without explicit time dependence, \cref{eq:ff:hamiltonian:noise} constitutes a universal decomposition as can be seen by choosing the $B_\alpha$ from an orthonormal basis for $\mathsf{L}(\Hspace)$.
@@ -355,17 +355,17 @@ This makes their evaluation more involved than that of the decay amplitudes $\de
 However, we can still apply the approximation of piecewise constant control and follow a similar approach as in \cref{subsec:ff:theory:control_matrix:pulse} to compute \freqshifts in Fourier space.
 Since these terms correspond to a coherent gate error that can in principle be calibrated out in experiments we will not go into much detail here.
 
-We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t')}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
+We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t^\prime)}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
 Inserting this equation into the definition of the frequency shifts in the time domain, \cref{eq:ff:frequency_shift:time}, yields
 \begin{equation}\label{eq:ff:frequency_shifts:time}
 \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
 \int_0^\tau\dd{t}\ctrlmat_{\alpha k}(t)\e^{-\i\omega t}
-\int_0^t\dd{t'}\ctrlmat_{\beta l}(t')\e^{\i\omega t'}.
+\int_0^t\dd{t^\prime}\ctrlmat_{\beta l}(t^\prime)\e^{\i\omega t^\prime}.
 \end{equation}
 We again assume piecewise constant time segments so that the inner time integral can be split up into a sum of integrals over complete constant segments $(t_{g^\prime-1},t_{g^\prime}]$ as well as a single integral that contains the last, incomplete segment up to time $t$.
 That is, taking the time $t$ of the outer integral to be within the interval $(t_{g-1}, t_g]$ we perform the replacement
 \begin{equation}
-    \int_0^t\dd{t'} \rightarrow \sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t'} + \int_{t_{g-1}}^{t}\dd{t'}.
+    \int_0^t\dd{t^\prime} \rightarrow \sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t^\prime} + \int_{t_{g-1}}^{t}\dd{t^\prime}.
 \end{equation}
 We have thus divided our task into two: The first term allows, as before in \cref{subsec:ff:theory:control_matrix:sequence,subsec:ff:theory:control_matrix:pulse}, to identify the Fourier transform of the control matrix during time steps $g'$ and $g$ for both the inner and the outer integral according to \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}.
 The second term remains a nested double integral, but now the integrand contains only products of complex exponentials because we assume the control to be constant within the limits of integration.
@@ -374,8 +374,8 @@ As a next step, we also replace the outer time integral by a sum of integrals ov
 \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
 \sum_{g=1}^{G}\int_{t_{g-1}}^{t_{g}}\dd{t} \\
 \times\e^{-\i\omega t}\ctrlmat_{\alpha k}(t)
-\left\lbrace\sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t'} + \int_{t_{g-1}}^{t}\dd{t'}\right\rbrace
-\e^{\i\omega t'}\ctrlmat_{\beta l}(t').
+\left\lbrace\sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t^\prime} + \int_{t_{g-1}}^{t}\dd{t^\prime}\right\rbrace
+\e^{\i\omega t^\prime}\ctrlmat_{\beta l}(t').
 \end{multline}
 Before continuing, we ease notation and define $\ctrlmat(\omega) \eqqcolon \sum_g\mc{G}\gth{g}(\omega)$ with $\mc{G}\gth{g}(\omega)$ obtained from \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} and furthermore adopt the Einstein summation convention for the remainder of this section, meaning multiple subscript indices that appear on only one side of an equality are summed over implicitly.
 We now proceed like in \cref{subsec:ff:theory:control_matrix:pulse} and make use of the piecewise constant approximation to diagonalize the control Hamiltonian during each segment.

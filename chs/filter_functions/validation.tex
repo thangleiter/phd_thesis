@@ -1,9 +1,9 @@
 % mainfile: ../../main.tex
 \chapter{Reconstruction by frequency-comb time-domain simulation}\label{ch:ff:validation}
-For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouvUe resulting from the quantum system's evolution under the noise fully characterized by its one-sided \gls{psd} $S(\omega)$, we define the \gls{ff} \FF by
+For a {\color{RWTHmagenta75} given} interaction-picture quantum operation \liouvUe resulting from the quantum system's evolution under the noise fully characterized by its one-sided \gls{psd} $S(\omega)$, we define the \gls{ff} \FFot by
 \begin{align}
     \label{eq:ff:filter_function:definition}
-    \liouvUe(\tau) = \exp\left\{-\int\frac{\dd{\omega}}{2\pi}\FF S(\omega)\right\}.
+    \liouvUe(\tau) = \exp\left\{-\int\frac{\dd{\omega}}{2\pi}\FFot S(\omega)\right\}.
 \end{align}
 Now, suppose that
 \begin{equation}
@@ -20,7 +20,7 @@ Then \cref{eq:ff:filter_function:definition} becomes
 \begin{equation}
     \label{eq:ff:filter_function:monochromatic}
     \begin{split}
-        \liouvUe_i(\tau) =& \exp\left\lbrace -2\pi\sigma_i^2\int\frac{\dd{\omega}}{2\pi}\FF\delta(\omega - \omega_i)\right\rbrace \\
+        \liouvUe_i(\tau) =& \exp\left\lbrace -2\pi\sigma_i^2\int\frac{\dd{\omega}}{2\pi}\FFot\delta(\omega - \omega_i)\right\rbrace \\
                                   =& \exp\left\lbrace -\sigma_i^2\mc{F}(\omega_i;\tau)\right\rbrace,
     \end{split}
 \end{equation}

@@ -1,70 +1,37 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Implementing a Quantum Fourier Transform (QFT)
-# In this example we want to bring everything together to efficiently calculate filter functions of a QFT. We will optimize atomic gates using QuTiP and set up `PulseSequence`s with the optimized parameters. Using those, we will assemble a QFT circuit with interactions limited to nearest neighbors, thus requiring us to swap qubits around the registers to perform controlled rotations.
-#
-# The circuit for the algorithm on four qubits is as follows (for simplicity we run the transformations of each qubit sequentially):
-#
-# ![qft.png](../_static/qft.png)
-#
-# Here, unlike in the canonical circuit ([Wikipedia](https://en.wikipedia.org/wiki/Quantum_Fourier_transform#Circuit_implementation)), the qubits are already swapped when the algorithm finishes.
-#
-# ## Physical model
-# We will consider a qubit model where single-qubit operations are performed using I-Q manipulation and two-qubit operations using nearest-neighbor exchange interaction. Concretely, the single-qubit control Hamiltonian is given by
-#
-# $$
-# H_c^{(1)}(t) = I(t)\:\sigma_x + Q(t)\:\sigma_y
-# $$
-#
-# and the two-qubit control Hamiltonian by
-#
-# $$
-# H_c^{(2)}(t) = I_1(t)\; \sigma_x \otimes \mathbb{1} + Q_1(t)\;\sigma_y \otimes \mathbb{1} + J(t)\:\sigma_z \otimes \sigma_z + I_2(t)\; \mathbb{1} \otimes \sigma_x + Q_2(t)\;\mathbb{1} \otimes \sigma_y.
-# $$
-#
-# ## Optimizing pulses using GRAPE
-# We would like to keep the size of our optimized gate set as small as possible and thus compile the required gates from the set $\left\lbrace\mathrm{X(\pi/2)}, \mathrm{Y(\pi/2)}, \mathrm{CZ(\pi/2^4)}\right\rbrace$ for a four-qubit QFT.
-
-# In[1]:
-from copy import deepcopy
-from pathlib import Path
-import string
+# %% Imports
+import pathlib
+import sys
 import time
-import warnings
+from copy import deepcopy
 
+import filter_functions as ff
 import matplotlib.pyplot as plt
-from matplotlib import colors, cycler, lines
 import numpy as np
 import qutip as qt
-from scipy import integrate
+from filter_functions import plotting
+from filter_functions.util import get_indices_from_identifiers
+from matplotlib import colors, cycler, lines
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50
 from qutip.control import pulseoptim
 from qutip.qip import operations
 from qutip.qip.algorithms.qft import qft as qt_qft
+from scipy import integrate
 
-import filter_functions as ff
-from filter_functions.util import get_indices_from_identifiers
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-warnings.simplefilter('ignore', DeprecationWarning)
+from common import MAINSTYLE, TOTALWIDTH, PATH, init
 
-plt.style.use('publication')
-golden_ratio = (np.sqrt(5) - 1.)/2.
-figsize_narrow = (3.40457, 3.40457*golden_ratio)
-figsize_wide = (7.05826, 7.05826*golden_ratio)
+SHOW_PROGRESSBAR = False
+LINE_COLORS = list(RWTH_COLORS.values())
+FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
+DATA_PATH = PATH.parent / 'data/filter_functions'
+DATA_PATH.mkdir(exist_ok=True)
+SAVE_PATH = PATH / 'pdf/filter_functions'
+SAVE_PATH.mkdir(exist_ok=True)
 
-cycle = plt.rcParams['axes.prop_cycle'][:5] + cycler(linestyle=('-','--','-.',':', (0, (5, 1))))
-
-# thesis_path = Path('/home/tobias/Physik/Master/Thesis')
-# thesis_path = Path('Z:/MA/')
-# project_path = Path('/home/tobias/Physik/Publication/')
-# project_path = Path('Z:/Publication/')
-project_path = Path('C:/Users/Tobias/Documents/Uni/Physik/Publication')
-name = ('efficient_calculation_of_generalized_filter_functions')
-# name = ('efficient_calculation_of_generalized_filter_functions')
-save_path = project_path / name / 'img'
-
-_force_overwrite = False
-# %%
+init(MAINSTYLE, backend := 'pgf')
+pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else r' (ns$^{-1}$)'
+# %% GRAPE optimization
 
 np.random.seed(10)
 n_qubits = 4
@@ -142,10 +109,6 @@ grape_results = {
     ) for name, target in target_gates.items()
 }
 
-
-# With the pulses optimized, we can now set up the `PulseSequence`s for each and assert their correct action:
-
-
 identifiers = {
     'X_pi2': r'X$_{0}(\pi/2)$',
     'Y_pi2': r'Y$_{0}(\pi/2)$',
@@ -172,83 +135,20 @@ for name, result in grape_results.items():
     )
     pulses[name] = pulse
 
-    print(name, '\t:', ff.util.oper_equiv(
-        pulse.total_propagator, target_gates[name], eps=1e-10
-    ))
+    # print(name, '\t:', ff.util.oper_equiv(
+    #     pulse.total_propagator, target_gates[name], eps=1e-10
+    # ))
+    # result.stats.report()
 
-    result.stats.report()
-
-
-# ## Assembling the circuit
-# For simplicity, we are going to assume periodic boundary conditions, i.e., the qubits sit on a ring such that each qubit has two nearest neighbors. This allows us to make the best use of the caching of filter functions.
-#
-# To this end, we first explicitly cache the control matrices for the optimized, elementary pulses and then extend them to the four-qubit Hilbert space.
-
-from filter_functions import plotting
-
-omega = np.geomspace(1e-4, 1e2, 1000)
-omega = np.concatenate([np.arange(0, omega[0], omega[0]/10), omega])
-
-# omega = np.linspace(0, 1e2, 1000)
-S = 1e-9/omega
-
-fig, ax = plt.subplots(2, 3, sharey='row', sharex='row', figsize=figsize_wide)
-
-print('Caching control matrices for single- and two-qubit pulses:')
-for i, (name, pulse) in enumerate(pulses.items()):
-    n = len(pulse.c_opers)
-    cycle = cycler(color=plt.get_cmap('Blues')(np.linspace(1/n, n/n, n)[::-1]))
-
-    pulse.cache_control_matrix(omega, show_progressbar=True)
-
-    fig, ax[0, i], leg = plotting.plot_pulse_train(pulse, fig=fig, axes=ax[0, i],
-                                                   cycler=cycle)
-    if i == 2:
-        leg = ax[0, i].legend(ncol=2, frameon=False)
-    else:
-        leg = ax[0, i].legend(frameon=False)
-
-    ax[0, i].set_xlabel('$t$ (ns)')
-    ax[0, i].grid(False)
-
-    fig, ax[1, i], leg = plotting.plot_filter_function(pulse, fig=fig, axes=ax[1, i],
-                                                       omega_in_units_of_tau=False,
-                                                       cycler=cycle)
-    if i == 2:
-        leg = ax[1, i].legend(ncol=2, frameon=False)
-    else:
-        leg = ax[1, i].legend(frameon=False)
-
-    # leg.set_title(identifiers[name])
-    ax[1, i].set_xlabel(r'$\omega$ (ns$^{-1})$')
-    ax[1, i].grid(False)
-
-    ax[0, i].text(0.05 + 0.05*(i == 1), 0.90, f'({string.ascii_lowercase[2*i]})',
-                  transform=ax[0, i].transAxes, fontsize=10)
-    ax[1, i].text(0.05, 0.075, f'({string.ascii_lowercase[2*i+1]})',
-                  transform=ax[1, i].transAxes, fontsize=10)
-
-ax[0, 0].set_ylabel('Control (ns$^{-1}$)')
-ax[0, 1].set_ylabel('')
-ax[0, 2].set_ylabel('')
-ax[1, 1].set_ylabel('')
-ax[1, 2].set_ylabel('')
-
-fig.tight_layout()
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_atomic_pulses.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_atomic_pulses.{ext}')
-# ### Extending single- and two-qubit pulses to the four-qubit register
-# In order to extend the pulses, we first need to define the noise Hamiltonians on the other qubits so that each four-qubit pulse has the complete set of noise operators.
-
+omega = np.concatenate([np.arange(0, 1e-4, 1e-4/10), np.geomspace(1e-4, 1e2, 1000)])
+with np.errstate(divide='ignore'):
+    S = 1e-9/omega
+S[0] = S[1]
+# %%% Extend pulses
 t_start_fast = time.perf_counter()
-
-print('Caching control matrices for single- and two-qubit pulses:')
-pulses['X_pi2'].cache_control_matrix(omega, show_progressbar=True)
-pulses['Y_pi2'].cache_control_matrix(omega, show_progressbar=True)
-pulses['CZ_pi8'].cache_control_matrix(omega, show_progressbar=True)
-
+pulses['X_pi2'].cache_control_matrix(omega, show_progressbar=SHOW_PROGRESSBAR)
+pulses['Y_pi2'].cache_control_matrix(omega, show_progressbar=SHOW_PROGRESSBAR)
+pulses['CZ_pi8'].cache_control_matrix(omega, show_progressbar=SHOW_PROGRESSBAR)
 
 IDs = [qt.qeye(2)]*(n_qubits - 1)
 four_qubit_X = [
@@ -293,55 +193,21 @@ H_n_two = (
 # Extend the pulses to four qubits and cache the filter functions for the
 # dditional noise operators
 four_qubit_pulses = {name: {} for name in pulses.keys()}
-print('Caching control matrices for four-qubit pulses:')
 four_qubit_pulses['X_pi2'][0] = ff.extend([(pulses['X_pi2'], 0, identifier_mapping)],
                                           N=n_qubits, omega=omega,
                                           additional_noise_Hamiltonian=H_n_one,
                                           cache_filter_function=True,
-                                          show_progressbar=True)
+                                          show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['Y_pi2'][0] = ff.extend([(pulses['Y_pi2'], 0, identifier_mapping)],
                                           N=n_qubits, omega=omega,
                                           additional_noise_Hamiltonian=H_n_one,
                                           cache_filter_function=True,
-                                          show_progressbar=True)
+                                          show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['CZ_pi8'][(0, 1)] = ff.extend([(pulses['CZ_pi8'], (0, 1), identifier_mapping)],
                                                 N=n_qubits, omega=omega,
                                                 additional_noise_Hamiltonian=H_n_two,
                                                 cache_filter_function=True,
-                                                show_progressbar=True)
-
-print('Correct action:')
-print('X_pi2: ', ff.util.oper_equiv(four_qubit_pulses['X_pi2'][0].total_propagator,
-                                    operations.rotation(qt.sigmax(), np.pi/2, N=4)))
-print('Y_pi2: ', ff.util.oper_equiv(four_qubit_pulses['Y_pi2'][0].total_propagator,
-                                    operations.rotation(qt.sigmay(), np.pi/2, N=4)))
-print('CZ_pi8: ', ff.util.oper_equiv(four_qubit_pulses['CZ_pi8'][(0, 1)].total_propagator,
-                                     operations.cphase(np.pi/2**4, N=4), eps=1e-9))
-
-
-
-# ### Compiling the required gates
-# Next, we compile all required single- and two-qubit gates from our elementary pulses. The Hadamard is given by
-#
-# $$
-#     \mathrm{H}\doteq\mathrm{X(\pi/2)}\circ\mathrm{X(\pi/2)}\circ\mathrm{Y(\pi/2)},
-# $$
-#
-# the controlled-X by
-#
-# $$
-#     \mathrm{CX_{ij}(\phi)}\doteq\mathrm{H_j}\circ\mathrm{CZ_{ij}(\phi)}\circ\mathrm{H_j},
-# $$
-#
-# and finally the SWAP by
-#
-# $$
-#     \mathrm{SWAP_{ij}}\doteq\mathrm{CX_{ij}(\pi)}\circ\mathrm{CX_{ji}(\pi)}\circ\mathrm{CX_{ij}(\pi)}.
-# $$
-#
-# Trivially, controlled rotations about multiples of $\pi/2^4$ are implemented by repeated applications of $\mathrm{CZ(\pi/2^4)}$.
-
-
+                                                show_progressbar=SHOW_PROGRESSBAR)
 
 four_qubit_pulses['hadamard'] = {}
 four_qubit_pulses['CZ_pi4'] = {}
@@ -353,37 +219,21 @@ four_qubit_pulses['swap'] = {}
 four_qubit_pulses['hadamard'][0] = ff.concatenate((four_qubit_pulses['Y_pi2'][0],
                                                    four_qubit_pulses['X_pi2'][0],
                                                    four_qubit_pulses['X_pi2'][0]),
-                                                  show_progressbar=True)
+                                                  show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['CZ_pi4'][(0, 1)] = ff.concatenate((four_qubit_pulses['CZ_pi8'][(0, 1)],
                                                       four_qubit_pulses['CZ_pi8'][(0, 1)]),
-                                                     show_progressbar=True)
+                                                     show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['CZ_pi2'][(0, 1)] = ff.concatenate((four_qubit_pulses['CZ_pi4'][(0, 1)],
                                                       four_qubit_pulses['CZ_pi4'][(0, 1)]),
-                                                     show_progressbar=True)
+                                                     show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['CZ_pi'][(0, 1)] = ff.concatenate((four_qubit_pulses['CZ_pi2'][(0, 1)],
                                                      four_qubit_pulses['CZ_pi2'][(0, 1)]),
-                                                    show_progressbar=True)
+                                                    show_progressbar=SHOW_PROGRESSBAR)
 # CNOT with control on the second, target on the first qubit
 four_qubit_pulses['CX_pi'][(1, 0)] = ff.concatenate((four_qubit_pulses['hadamard'][0],
                                                      four_qubit_pulses['CZ_pi'][(0, 1)],
                                                      four_qubit_pulses['hadamard'][0]),
-                                                    show_progressbar=True)
-
-print('Correct action:')
-print('hadamard: ', ff.util.oper_equiv(four_qubit_pulses['hadamard'][0].total_propagator,
-                                       operations.snot(4, 0), eps=1e-9))
-print('CZ_pi4: ', ff.util.oper_equiv(four_qubit_pulses['CZ_pi4'][(0, 1)].total_propagator,
-                                     operations.cphase(np.pi/2**2, N=4), eps=1e-8))
-print('CZ_pi2: ', ff.util.oper_equiv(four_qubit_pulses['CZ_pi2'][(0, 1)].total_propagator,
-                                     operations.cphase(np.pi/2**1, N=4), eps=1e-7))
-print('CZ_pi: ', ff.util.oper_equiv(four_qubit_pulses['CZ_pi'][(0, 1)].total_propagator,
-                                    operations.cphase(np.pi/2**0, N=4), eps=1e-7))
-print('CX_pi: (1, 0)', ff.util.oper_equiv(four_qubit_pulses['CX_pi'][(1, 0)].total_propagator,
-                                          operations.cnot(4, 1, 0), eps=1e-7))
-
-
-# ### Remapping pulses to different qubits
-# To get the CNOT with control and target interchanged, we simply remap the Hadamard pulse to the first qubit by cyclically moving the qubits
+                                                    show_progressbar=SHOW_PROGRESSBAR)
 
 
 def cyclical_mapping(shift: int):
@@ -416,10 +266,12 @@ def cyclical_mapping(shift: int):
     })
     mapping.update({
         r'$\sigma_z^{{({})}}\sigma_z^{{({})}}$'.format(i, (i+1) % n_qubits):
-        r'$\sigma_z^{{({})}}\sigma_z^{{({})}}$'.format((i+shift) % n_qubits, (i+shift+1) % n_qubits)
+        r'$\sigma_z^{{({})}}\sigma_z^{{({})}}$'.format((i+shift) % n_qubits,
+                                                       (i+shift+1) % n_qubits)
         for i in range(n_qubits)
     })
     return mapping
+
 
 four_qubit_pulses['hadamard'][1] = ff.remap(four_qubit_pulses['hadamard'][0],
                                             order=(3, 0, 1, 2),
@@ -427,24 +279,11 @@ four_qubit_pulses['hadamard'][1] = ff.remap(four_qubit_pulses['hadamard'][0],
 four_qubit_pulses['CX_pi'][(0, 1)] = ff.concatenate((four_qubit_pulses['hadamard'][1],
                                                      four_qubit_pulses['CZ_pi'][(0, 1)],
                                                      four_qubit_pulses['hadamard'][1]),
-                                                    show_progressbar=True)
+                                                    show_progressbar=SHOW_PROGRESSBAR)
 four_qubit_pulses['swap'][(0, 1)] = ff.concatenate((four_qubit_pulses['CX_pi'][(1, 0)],
                                                     four_qubit_pulses['CX_pi'][(0, 1)],
                                                     four_qubit_pulses['CX_pi'][(1, 0)]),
-                                                   show_progressbar=True)
-
-print('Correct action:')
-print('hadamard: (1)', ff.util.oper_equiv(four_qubit_pulses['hadamard'][1].total_propagator,
-                                          operations.snot(4, 1), eps=1e-9))
-print('CX_pi: (0, 1)', ff.util.oper_equiv(four_qubit_pulses['CX_pi'][(0, 1)].total_propagator,
-                                          operations.cnot(4, 0, 1), eps=1e-7))
-print('swap: (0, 1)', ff.util.oper_equiv(four_qubit_pulses['swap'][(0, 1)].total_propagator,
-                                         operations.swap(4, [0, 1]), eps=1e-6))
-
-
-# Now we can simply remap the four-qubit pulses to apply to qubits other than 0 and 1:
-
-
+                                                   show_progressbar=SHOW_PROGRESSBAR)
 
 for q in range(2, n_qubits):
     # We remap the operators cyclically
@@ -477,17 +316,6 @@ for q in range(1, n_qubits-1):
     four_qubit_pulses['swap'][(q, q+1)] = ff.remap(four_qubit_pulses['swap'][(0, 1)],
                                                    order,
                                                    oper_identifier_mapping=mapping)
-
-
-# ### Grouping reoccuring gates
-# As a last step before finally calculating the complete pulse we precompute pulses that appear in the algorithm multiple times in order to salvage the concatenation performance gain. As a first step, we can precompute the gates $\mathrm{SWAP_{10}}\circ\mathrm{CZ_{10}(\pi/2)}\circ\mathrm{H_0}$ and $\mathrm{SWAP_{21}}\circ\mathrm{CZ_{21}(\pi/4)}$ as depicted below:
-#
-# ![qft-HR2R3-boxed-separately.png](../_static/qft_HR2R3_boxed_separately.png)
-#
-# Afterwards, we can precompute the gate combination $\mathrm{SWAP_{21}}\circ\mathrm{CZ_{21}(\pi/4)}\circ\mathrm{SWAP_{10}}\circ\mathrm{CZ_{10}(\pi/2)}\circ\mathrm{H_0}$ from those pulses:
-#
-# ![qft-HR2R3-boxed.png](../_static/qft_HR2R3_boxed.png)
-
 
 idle = ff.PulseSequence(
     list(zip(H_c_single, np.zeros((2, n_sample)), c_identifiers['X_pi2'])),
@@ -525,7 +353,7 @@ four_qubit_pulses['CZ_pi4_echo'][(1, 2)] = ff.extend(
                                    '$\\sigma_x^{(3)}$', '$\\sigma_y^{(3)}$',
                                    '$\\sigma_z^{(1)}\\sigma_z^{(2)}$']],
     cache_filter_function=True,
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 
 H_n_add = list(zip(four_qubit_pulses['CZ_pi2'][(0, 1)].n_opers,
@@ -549,7 +377,7 @@ four_qubit_pulses['CZ_pi2_echo'][(0, 1)] = ff.extend(
                                    '$\\sigma_x^{(3)}$', '$\\sigma_y^{(3)}$',
                                    '$\\sigma_z^{(0)}\\sigma_z^{(1)}$']],
     cache_filter_function=True,
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 
 four_qubit_pulses['hadamard-CZ_pi2_echo-swap'] = {}
@@ -557,402 +385,170 @@ four_qubit_pulses['hadamard-CZ_pi2_echo-swap'][(0, 1)] = ff.concatenate(
     (four_qubit_pulses['hadamard'][0],
      four_qubit_pulses['CZ_pi2_echo'][(0, 1)],
      four_qubit_pulses['swap'][(0, 1)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['hadamard-CZ_pi2-swap'] = {}
 four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)] = ff.concatenate(
     (four_qubit_pulses['hadamard'][0],
      four_qubit_pulses['CZ_pi2'][(0, 1)],
      four_qubit_pulses['swap'][(0, 1)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['CZ_pi4_echo-swap'] = {}
 four_qubit_pulses['CZ_pi4_echo-swap'][(1, 2)] = ff.concatenate(
     (four_qubit_pulses['CZ_pi4_echo'][(1, 2)],
      four_qubit_pulses['swap'][(1, 2)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['CZ_pi4-swap'] = {}
 four_qubit_pulses['CZ_pi4-swap'][(1, 2)] = ff.concatenate(
     (four_qubit_pulses['CZ_pi4'][(1, 2)],
      four_qubit_pulses['swap'][(1, 2)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['CZ_pi8-swap'] = {}
 four_qubit_pulses['CZ_pi8-swap'][(2, 3)] = ff.concatenate(
     (four_qubit_pulses['CZ_pi8'][(2, 3)],
      four_qubit_pulses['swap'][(2, 3)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'] = {}
 four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'][(0, 1, 2)] = ff.concatenate(
     (four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)],
      four_qubit_pulses['CZ_pi4-swap'][(1, 2)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'] = {}
 four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'][(0, 1, 2)] = ff.concatenate(
     (four_qubit_pulses['hadamard-CZ_pi2_echo-swap'][(0, 1)],
      four_qubit_pulses['CZ_pi4_echo-swap'][(1, 2)]),
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
-
-
-# At last we can concatenate those pulses to get the quantum fourier transform and plot the filter function.
-
 
 qft_pulse_echo = ff.concatenate(
-    (four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'][(0, 1, 2)],  # rotations on first qubit
-     four_qubit_pulses['CZ_pi8-swap'][(2, 3)],                          # ...
-     four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'][(0, 1, 2)],  # rotations on second qubit
-     four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)],                 # rotation on third qubit
-     four_qubit_pulses['hadamard'][0]),                                 # rotation on fourth qubit
-    show_progressbar=True
+    (
+        # rotations on first qubit
+        four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'][(0, 1, 2)],
+        # ...
+        four_qubit_pulses['CZ_pi8-swap'][(2, 3)],
+        # rotations on second qubit
+        four_qubit_pulses['hadamard-CZ_pi2_echo-swap-CZ_pi4_echo-swap'][(0, 1, 2)],
+        # rotation on third qubit
+        four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)],
+        # rotation on fourth qubit
+        four_qubit_pulses['hadamard'][0]
+    ),
+    show_progressbar=SHOW_PROGRESSBAR
 )
+
 qft_pulse = ff.concatenate(
-    (four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'][(0, 1, 2)],  # rotations on first qubit
-     four_qubit_pulses['CZ_pi8-swap'][(2, 3)],                          # ...
-     four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'][(0, 1, 2)],  # rotations on second qubit
-     four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)],                 # rotation on third qubit
-     four_qubit_pulses['hadamard'][0]),                                 # rotation on fourth qubit
-    show_progressbar=True
+    (
+        # rotations on first qubit
+        four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'][(0, 1, 2)],
+        # ...
+        four_qubit_pulses['CZ_pi8-swap'][(2, 3)],
+        # rotations on second qubit
+        four_qubit_pulses['hadamard-CZ_pi2-swap-CZ_pi4-swap'][(0, 1, 2)],
+        # rotation on third qubit
+        four_qubit_pulses['hadamard-CZ_pi2-swap'][(0, 1)],
+        # rotation on fourth qubit
+        four_qubit_pulses['hadamard'][0],
+    ),
+    show_progressbar=SHOW_PROGRESSBAR
 )
 
-print('Correct action:',
-      ff.util.oper_equiv(qt_qft(4), qft_pulse.total_propagator), ff.util.oper_equiv(qt_qft(4), qft_pulse_echo.total_propagator))
-print('Trace fidelity:',
-      abs(np.trace(qt_qft(4).dag().full() @ qft_pulse.total_propagator))/2**4,
-      abs(np.trace(qt_qft(4).dag().full() @ qft_pulse_echo.total_propagator))/2**4)
-print('Filter function cached:', qft_pulse.is_cached('filter_function'))
-qt.matrix_histogram_complex(qft_pulse.total_propagator)
+assert ff.util.oper_equiv(qt_qft(4), qft_pulse.total_propagator)
+assert ff.util.oper_equiv(qt_qft(4), qft_pulse_echo.total_propagator)
+# %% Plot
+arrowprops = dict(arrowstyle='->', mutation_scale=7.5, color=RWTH_COLORS['black'],
+                  linewidth=0.75, shrinkA=0, shrinkB=0)
+annotate_kwargs = dict(color=RWTH_COLORS['black'], arrowprops=arrowprops)
+# %%% Atomic pulses and filter function
+fig, axes = plt.subplots(3, 2, sharey='col', sharex='col',
+                         gridspec_kw=dict(hspace=0., wspace=0.04))
 
+pretty_names = {
+    'X_pi2': r'$\mathrm{X}_{0}(\pi/2)$',
+    'Y_pi2': r'$\mathrm{Y}_{0}(\pi/2)$',
+    'CZ_pi8': r'$\mathrm{CZ}_{01}(\pi/8)$',
+}
 
-# In[10]:
+for i, (name, pulse) in enumerate(pulses.items()):
+    cycle = cycler(color=[LINE_COLORS[c_identifiers['CZ_pi8'].index(identifier)]
+                          for identifier in pulse.c_oper_identifiers])
+    *_, leg = ff.plotting.plot_pulse_train(pulse, fig=fig, axes=axes[i, 0], cycler=cycle)
+    leg.remove()
 
+    axes[i, 0].grid(False)
+    axes[i, 0].set_xlabel(None)
+    axes[i, 0].set_ylabel(None)
 
-import matplotlib.pyplot as plt
+    *_, leg = ff.plotting.plot_filter_function(pulse, fig=fig, axes=axes[i, 1], cycler=cycle)
+    leg.remove()
 
-single_qubit_identifiers = [
-    i for i in qft_pulse.n_oper_identifiers if len(i) < 17
-]
-two_qubit_identifiers = [
-    i for i in qft_pulse.n_oper_identifiers if len(i) > 16
-]
-fig, ax = plt.subplots(2, 1, sharex=True, sharey=True, figsize=(3.4, 3.4/golden_ratio))
-_ = plotting.plot_filter_function(qft_pulse, axes=ax[0],
-                                  yscale='log', omega_in_units_of_tau=False,
-                                  n_oper_identifiers=single_qubit_identifiers)
-_ = plotting.plot_filter_function(qft_pulse, axes=ax[1],
-                                  yscale='log', omega_in_units_of_tau=False,
-                                  n_oper_identifiers=two_qubit_identifiers[:-1])
+    axes[i, 1].grid(False)
+    axes[i, 1].set_xlabel(None)
+    axes[i, 1].set_ylabel(None)
+    axes[i, 1].yaxis.tick_right()
+    axes[i, 1].yaxis.set_label_position('right')
 
-for n in (1, 2, 3, 4):
-    ax[0].axvline(n*2*np.pi/30, color='k', zorder=0, linestyle='--', alpha=0.3)
-    ax[1].axvline(n*2*np.pi/30, color='k', zorder=0, linestyle='--', alpha=0.3)
+    axes[i, 0].text(0.975, 0.85, pretty_names[name], transform=axes[i, 0].transAxes,
+                    verticalalignment='top', horizontalalignment='right')
+    axes[i, 1].text(0.975, 0.85, pretty_names[name], transform=axes[i, 1].transAxes,
+                    verticalalignment='top', horizontalalignment='right')
 
-ax[0].set_title('Single-qubit filter functions')
-ax[0].legend(ncol=4, fontsize=6)
-ax[0].set_xlabel('')
-ax[1].set_title('Multi-qubit filter functions')
-ax[1].legend(ncol=4, fontsize=6)
+axes[2, 0].set_xlabel('$t$ (ns)')
+axes[2, 1].set_xlabel(r'$\omega$' + pernanosecond)
+axes[1, 0].set_ylabel('Control' + pernanosecond)
+axes[1, 1].set_ylabel(r'$\mathcal{F}(\omega)$')
 
-fig.tight_layout(h_pad=0)
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_filter_function.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_filter_function.{ext}')
+axes[0, 0].legend(handles=axes[2, 0].get_lines(), labels=pulse.c_oper_identifiers.tolist(),
+                  bbox_to_anchor=(-.075, 1.02, 2.2, .102), loc='lower left',
+                  ncols=5, mode="expand", borderaxespad=0., frameon=False)
 
-# Evidently, the DC regime is dominated by the $X_3$ and $Y_3$ filter functions. This is obvious, since the third qubit idles for most of the algorithm in this circuit arrangement. In a realistic setting, the idling periods would be filled with dynamical decoupling sequences, thus cancelling most of the slow noise on the third qubit. Similarly, the $ZZ_{23}$ exchange is turned on least frequently and thus dominates the exchange filter functions.
-#
-# The sharp peaks, some of which are indicated by grey dashed lines, are harmonics located at frequencies which are multiples of the inverse duration of a a single atomic pulse, $t_\mathrm{clock} = 30$, i.e. $\omega_n = 2\pi n/t_\mathrm{clock}$. Interestingly, the filter function has a baseline of around $10^4$ in the range $\omega\in[10^{-1}, 10^{1}]$ before it drops down to follow the usual $1/\omega^2$ behavior.
+fig.savefig(SAVE_PATH / 'qft_atomic_pulses.pdf')
+# %%% FF with cumulative FF
+identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$', r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
+cycle = cycler(color=[LINE_COLORS[n_identifiers['CZ_pi8'].index(identifier)]
+                      for identifier in identifiers])
 
-# In[10]:
-
-
-import matplotlib.pyplot as plt
-
-single_qubit_identifiers = [
-    i for i in qft_pulse.n_oper_identifiers if len(i) < 17
-]
-two_qubit_identifiers = [
-    i for i in qft_pulse.n_oper_identifiers if len(i) > 16
-]
-fig, ax = plt.subplots(2, 1, sharex=True, sharey=True, figsize=figsize_wide)
-_ = plotting.plot_filter_function(qft_pulse, axes=ax[0],
-                                  yscale='log', omega_in_units_of_tau=False,
-                                  n_oper_identifiers=single_qubit_identifiers,
-                                  plot_kw=dict(linewidth=1))
-_ = plotting.plot_filter_function(qft_pulse, axes=ax[1],
-                                  yscale='log', omega_in_units_of_tau=False,
-                                  n_oper_identifiers=two_qubit_identifiers[:-1],
-                                  plot_kw=dict(linewidth=1))
+fig, ax = plt.subplots(1, 1, figsize=(TOTALWIDTH, 2), layout='constrained')
+*_, leg = plotting.plot_filter_function(qft_pulse, yscale='log', fig=fig, axes=ax,
+                                        omega_in_units_of_tau=False, cycler=cycle,
+                                        n_oper_identifiers=identifiers)
+leg.remove()
 
 for n in (1, 2, 3, 4):
-    ax[0].axvline(n*2*np.pi/30, color='k', zorder=0, linestyle='--', alpha=0.3,
-                  linewidth=1)
-    ax[1].axvline(n*2*np.pi/30, color='k', zorder=0, linestyle='--', alpha=0.3,
-                  linewidth=1)
-
-ax[0].set_title('Single-qubit filter functions')
-ax[0].set_xlabel('')
-ax[0].legend(ncol=2)
-ax[1].set_title('Multi-qubit filter functions')
-
-fig.tight_layout(h_pad=0)
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_filter_function_wide.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_filter_function_wide.{ext}')
-
-# Evidently, the DC regime is dominated by the $X_3$ and $Y_3$ filter functions. This is obvious, since the third qubit idles for most of the algorithm in this circuit arrangement. In a realistic setting, the idling periods would be filled with dynamical decoupling sequences, thus cancelling most of the slow noise on the third qubit. Similarly, the $ZZ_{23}$ exchange is turned on least frequently and thus dominates the exchange filter functions.
-
-# The sharp peaks, some of which are indicated by grey dashed lines, are harmonics located at frequencies which are multiples of the inverse duration of a a single atomic pulse, $t_\mathrm{clock} = 30$, i.e. $\omega_n = 2\pi n/t_\mathrm{clock}$. Interestingly, the filter function has a baseline of around $10^4$ in the range $\omega\in[10^{-1}, 10^{1}]$ before it drops down to follow the usual $1/\omega^2$ behavior.
-
-# In[10]:
-
-
-import matplotlib.pyplot as plt
-
-identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$',
-               r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-
-fig, ax = plt.subplots(1, 1, figsize=(7, 3))
-_ = plotting.plot_filter_function(qft_pulse, axes=ax,
-                                  yscale='log', omega_in_units_of_tau=False,
-                                  n_oper_identifiers=identifiers,
-                                  plot_kw=dict(linewidth=1))
-
-for n in (1, 2, 3, 4):
-    ax.axvline(n*2*np.pi/30, color='k', zorder=0, linestyle='--', alpha=0.3,
-               linewidth=1)
-
-ax.legend(loc='lower left')
-ax.set_xlabel(r'$\omega$ (ns)')
-
-fig.tight_layout(h_pad=0)
-# fig.savefig(save_path / 'qft_filter_function_first_qubit_wide.eps', dpi=600)
-if not (save_path / 'qft_filter_function_first_qubit_wide.pdf').exists() or _force_overwrite:
-    fig.savefig(save_path / 'qft_filter_function_first_qubit_wide.pdf')
-
-# Evidently, the DC regime is dominated by the $X_3$ and $Y_3$ filter functions. This is obvious, since the third qubit idles for most of the algorithm in this circuit arrangement. In a realistic setting, the idling periods would be filled with dynamical decoupling sequences, thus cancelling most of the slow noise on the third qubit. Similarly, the $ZZ_{23}$ exchange is turned on least frequently and thus dominates the exchange filter functions.
-
-# The sharp peaks, some of which are indicated by grey dashed lines, are harmonics located at frequencies which are multiples of the inverse duration of a a single atomic pulse, $t_\mathrm{clock} = 30$, i.e. $\omega_n = 2\pi n/t_\mathrm{clock}$. Interestingly, the filter function has a baseline of around $10^4$ in the range $\omega\in[10^{-1}, 10^{1}]$ before it drops down to follow the usual $1/\omega^2$ behavior.
-
-# In[10]:
-identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$',
-               r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-
-fig, ax, leg = plotting.plot_filter_function(qft_pulse, yscale='log', omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers[0:3], figsize=(13.33, 7.1),
-                                             plot_kw=dict(linewidth=1), xscale='log')
-
-ax.set_prop_cycle(plt.rcParams['axes.prop_cycle'])
-fig, ax, leg = plotting.plot_filter_function(four_qubit_pulses['X_pi2'][0], yscale='log',
-                                             fig=fig, axes=ax, xscale='log',
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers[0:2],
-                                             plot_kw=dict(linewidth=0.75, alpha=1, linestyle='--'))
-
-ax.set_prop_cycle(plt.rcParams['axes.prop_cycle'])
-fig, ax, leg = plotting.plot_filter_function(four_qubit_pulses['Y_pi2'][0], yscale='log',
-                                             fig=fig, axes=ax, xscale='log',
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers[0:2],
-                                             plot_kw=dict(linewidth=0.75, alpha=1, linestyle='-.'))
-
-ax.set_prop_cycle(plt.rcParams['axes.prop_cycle'])
-fig, ax, leg = plotting.plot_filter_function(four_qubit_pulses['CZ_pi8'][(0, 1)], yscale='log',
-                                             fig=fig, axes=ax, xscale='log',
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers[0:3],
-                                             plot_kw=dict(linewidth=0.75, alpha=1, linestyle=':'))
-
-leg = ax.legend(loc='lower left')
-ax.set_xlabel(r'$\omega$ (ns)')
-ax.grid(False)
-
-fig.tight_layout(h_pad=0)
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_filter_function_first_qubit_wide.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_filter_function_first_qubit_wide.{ext}')
-
-# Evidently, the DC regime is dominated by the $X_3$ and $Y_3$ filter functions. This is obvious, since the third qubit idles for most of the algorithm in this circuit arrangement. In a realistic setting, the idling periods would be filled with dynamical decoupling sequences, thus cancelling most of the slow noise on the third qubit. Similarly, the $ZZ_{23}$ exchange is turned on least frequently and thus dominates the exchange filter functions.
-
-# The sharp peaks, some of which are indicated by grey dashed lines, are harmonics located at frequencies which are multiples of the inverse duration of a a single atomic pulse, $t_\mathrm{clock} = 30$, i.e. $\omega_n = 2\pi n/t_\mathrm{clock}$. Interestingly, the filter function has a baseline of around $10^4$ in the range $\omega\in[10^{-1}, 10^{1}]$ before it drops down to follow the usual $1/\omega^2$ behavior.
-
-# %% FF with cumulative FF
-identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$',
-               r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-
-fig, ax, leg = plotting.plot_filter_function(qft_pulse, yscale='log',
-                                             figsize=(figsize_wide[0], figsize_wide[0]/3),
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers)
-
-# ax.set_xlabel(r'$\omega$ (\si{\per\nano\second})')
-ax.set_xlabel(r'$\omega$ (ns$^{-1}$)')
-ax.grid(False)
-
-width = 4e-4
-head_width = 1.5e-2
-head_length = 1.5e-2
-ax.arrow(.08, .85, -.04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='k')
-ax.arrow(.92, .8, .04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='k')
-
-for n in (1, 2, 3, 4):
-    ax.axvline(n*2*np.pi/30, color='k', zorder=0, linestyle=':', alpha=0.5,
-               linewidth=1)
+    ax.axvline(n*2*np.pi/t_clock, color=RWTH_COLORS_50['black'], zorder=0, linestyle=':')
 
 # calculate cumulative sensitivity, \int_0^\omega_c\dd{\omega} FS(\omega)
 idx = get_indices_from_identifiers(qft_pulse.n_oper_identifiers, identifiers)
 F = qft_pulse.get_filter_function(omega)[idx, idx].real
-FS = integrate.cumtrapz(F, omega, axis=-1, initial=0)
-
-ax2 = ax.twinx()
-ax2.semilogx(omega, FS.T, linestyle='--')
-ax2.set_ylabel(r"$\displaystyle\int_0^\omega\mathrm{d}\omega'F(\omega')$")
-
-ax.legend(loc="lower left", bbox_to_anchor=(0., 0.35), fancybox=False, frameon=False)
-fig.tight_layout()
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_filter_function_first_qubit_with_cumulative.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_filter_function_first_qubit_with_cumulative.{ext}')
-# %% FF with cumulative FF fraction
-identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$',
-               r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-
-cols = np.array([colors.hex2color(colors.TABLEAU_COLORS['tab:blue']),
-                 colors.hex2color(colors.TABLEAU_COLORS['tab:green']),
-                 colors.hex2color(colors.TABLEAU_COLORS['tab:orange'])])
-cols = colors.rgb_to_hsv(cols)
-cols[1, 1] -= 0.10
-cols[1, 2] += 0.10
-cols[2, 1] -= 0.20
-cols[2, 2] -= 0.00
-
-# cycle = cycler(color=colors.hsv_to_rgb(cols))
-cycle = cycler(color=plt.get_cmap('Blues')(np.linspace(1/3, 3/3, 3)[::-1]))
-
-qft_pulse_copy = deepcopy(qft_pulse)
-qft_pulse_copy.omega = np.insert(qft_pulse.omega, 0, 0)
-qft_pulse_copy._control_matrix = np.concatenate([qft_pulse._control_matrix[..., 0:1],
-                                                 qft_pulse._control_matrix], axis=-1)
-qft_pulse_copy._filter_function = np.concatenate([qft_pulse._filter_function[..., 0:1],
-                                                  qft_pulse._filter_function], axis=-1)
-
-fig, ax, leg = plotting.plot_filter_function(qft_pulse_copy, yscale='log',
-                                             figsize=(figsize_wide[0], figsize_wide[0]/3),
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers,
-                                             cycler=cycle)
-
-# ax.set_xlabel(r'$\omega$ (\si{\per\nano\second})')
-ax.set_xlabel(r'$\omega$ (ns$^{-1}$)')
-ax.set_ylabel(r'$F_\alpha(\omega)$')
-ax.grid(False)
-
-ax.set_xlim(1e-4)
-
-width = 4e-4
-head_width = 1.5e-2
-head_length = 1.0e-2
-ax.arrow(.07, .825, -.04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='k')
-ax.arrow(.93, .9, .04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='k')
-
-for n in (1, 2, 3, 4):
-    ax.axvline(n*2*np.pi/30, color='k', zorder=0, linestyle=':', alpha=0.5,
-               linewidth=1)
-
-# calculate cumulative sensitivity, \int_0^\omega_c\dd{\omega} FS(\omega)
-idx = get_indices_from_identifiers(qft_pulse_copy.n_oper_identifiers, identifiers)
-F = qft_pulse_copy.get_filter_function(qft_pulse_copy.omega)[idx, idx].real
-FS = integrate.cumtrapz(F, qft_pulse_copy.omega, axis=-1, initial=0)
+FS = integrate.cumulative_simpson(F, x=omega, axis=-1, initial=0)
+FS /= FS[:, -1:]
 
 ax2 = ax.twinx()
 ax2.set_prop_cycle(cycle)
-ax2.semilogx(qft_pulse_copy.omega, FS.T / FS[:, -1], linestyle='--', zorder=0)
-ax2.set_ylabel(r"$\mathcal{I}_\alpha(0, \omega) / \mathcal{I}_\alpha(0, \infty)$")
+ax2.semilogx(omega, FS.T, linestyle='--')
+ax2.set_ylabel(r'$\chi_\alpha(0, \omega) / \chi(0, \infty)$')
 
-ax.legend(loc="lower left", bbox_to_anchor=(0., 0.35), fancybox=False, frameon=False)
-fig.tight_layout()
-for ext in ('pdf', 'eps'):
-    if (not (save_path / f'qft_filter_function_first_qubit_with_cumulative_fraction.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(save_path / f'qft_filter_function_first_qubit_with_cumulative_fraction.{ext}')
+ax.annotate('', (1e-5*1.2, 5e6), (1e-5*1.2*2.5, 5e6), **annotate_kwargs)
+ax2.annotate('', (1e2/1.2, 0.925), (1e2/1.2/2.5, 0.925), **annotate_kwargs)
 
-# %% FF with cumulative FF fraction twocolored
-identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$',
-               r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-
-qft_pulse_copy = deepcopy(qft_pulse)
-qft_pulse_copy.omega = np.insert(qft_pulse.omega, 0, 0)
-qft_pulse_copy._control_matrix = np.concatenate([qft_pulse._control_matrix[..., 0:1],
-                                                 qft_pulse._control_matrix], axis=-1)
-qft_pulse_copy._filter_function = np.concatenate([qft_pulse._filter_function[..., 0:1],
-                                                  qft_pulse._filter_function], axis=-1)
-
-fig, ax, leg = plotting.plot_filter_function(qft_pulse_copy, yscale='log',
-                                             figsize=(figsize_wide[0], figsize_wide[0]/3),
-                                             omega_in_units_of_tau=False,
-                                             n_oper_identifiers=identifiers,
-                                             cycler=cycler(linestyle=('-','--','-.'),
-                                                           color=('tab:blue',)*3))
-
-# ax.set_xlabel(r'$\omega$ (\si{\per\nano\second})')
-ax.set_xlabel(r'$\omega$ (ns$^{-1}$)')
-ax.set_ylabel(r'$F_\alpha(\omega)$')
 ax.grid(False)
+ax.set_xlabel(r'$\omega$' + pernanosecond)
+ax.set_ylabel(r'$\mathcal{F}_{\alpha}(\omega)$')
+ax.legend(loc="lower left", bbox_to_anchor=(0., 0.1),
+          fancybox=False, frameon=False)
 
-ax.set_xlim(1e-4)
-
-width = 4e-4
-head_width = 1.5e-2
-head_length = 1.5e-2
-ax.arrow(.08, .825, -.04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='tab:blue')
-ax.arrow(.92, .9, .04, 0, transform=ax.transAxes, length_includes_head=False,
-         width=width, head_width=head_width, head_length=head_length, color='tab:orange')
-
-for n in (1, 2, 3, 4):
-    ax.axvline(n*2*np.pi/30, color='k', zorder=0, linestyle=':', alpha=0.5,
-               linewidth=1)
-
-# calculate cumulative sensitivity, \int_0^\omega_c\dd{\omega} FS(\omega)
-idx = get_indices_from_identifiers(qft_pulse_copy.n_oper_identifiers, identifiers)
-F = qft_pulse_copy.get_filter_function(qft_pulse_copy.omega)[idx, idx].real
-FS = integrate.cumtrapz(F, qft_pulse_copy.omega, axis=-1, initial=0)
-
-ax2 = ax.twinx()
-ax2.set_prop_cycle(cycler(linestyle=('-','--','-.'),
-                          color=('tab:orange',)*3))
-ax2.semilogx(qft_pulse_copy.omega, FS.T / FS[:, -1], zorder=0)
-ax2.set_ylabel(r"$\mathcal{I}_\alpha(0, \omega) / \mathcal{I}_\alpha(0, \infty)$")
-
-handles = [lines.Line2D([0], [0], linestyle='-', color='tab:grey'),
-           lines.Line2D([0], [0], linestyle='--', color='tab:grey'),
-           lines.Line2D([0], [0], linestyle='-.', color='tab:grey')]
-
-ax.legend(loc="lower left", handles=handles, labels=identifiers,
-          bbox_to_anchor=(0., 0.35), fancybox=False, frameon=False)
-fig.tight_layout()
-for ext in ('pdf', 'eps'):
-    if (not (file := save_path / f'qft_filter_function_first_qubit_with_cumulative_fraction_twocolor.{ext}').exists()
-            or _force_overwrite):
-        fig.savefig(file)
+fig.savefig(SAVE_PATH / 'qft_filter_function.pdf')
 
 # %% FF with & without echo
 identifiers = ['$\\sigma_y^{(3)}$']
 fig, ax, _ = plotting.plot_filter_function(qft_pulse,
                                            n_oper_identifiers=identifiers,
                                            yscale='log',
-                                           omega_in_units_of_tau=False,
-                                           figsize=(figsize_wide[0], figsize_wide[1]/2))
+                                           omega_in_units_of_tau=False)
 fig, ax, _ = plotting.plot_filter_function(qft_pulse_echo,
                                            n_oper_identifiers=identifiers,
                                            yscale='log',
@@ -971,57 +567,6 @@ ax.set_xscale('symlog', linthresh=1e-4)
 ax.set_xlim(0)
 
 fname = 'qft_filter_function_Y3_echo_vs_no'
-fig.tight_layout()
-for ext in ('png', 'eps', 'pdf'):
-    if (not (f := save_path / '.'.join([fname, ext])).exists() or _force_overwrite):
-        fig.savefig(f)
-
-# %% FF with & without echo with smoothed spectrum
-
-
-def fermi(x, offset, width):
-    return 1 / (np.exp((x - offset)/width*4) + 1)
-
-
-def fermi_highpass(freqs, offset, width):
-    return fermi(freqs, freqs[0] + offset, -width)
-
-
-identifiers = ['$\\sigma_y^{(3)}$']
-fig, ax, _ = plotting.plot_filter_function(qft_pulse,
-                                           n_oper_identifiers=identifiers,
-                                           yscale='log',
-                                           omega_in_units_of_tau=False,
-                                           figsize=figsize_narrow)
-fig, ax, _ = plotting.plot_filter_function(qft_pulse_echo,
-                                           n_oper_identifiers=identifiers,
-                                           yscale='log',
-                                           omega_in_units_of_tau=False,
-                                           axes=ax,
-                                           fig=fig)
-
-ax2 = ax.twinx()
-omega = qft_pulse.omega
-bw = np.ptp(omega)
-ax2.loglog(omega, fermi_highpass(omega, omega[0]/bw*30, omega[0]/bw*10) * 1e-9/omega,
-           color='tab:green')
-ax2.set_ylabel(r'$S(\omega)$ ($2\pi$ GHz$^2$/GHz)')
-
-# ax.axvline(2*np.pi/qft_pulse.duration, color='black', linestyle='--')
-# ax.annotate(r'$2\pi/\tau$', (2*np.pi/qft_pulse.duration, 20), (2*np.pi/qft_pulse.duration*4, 0.2),
-#             arrowprops={'arrowstyle': '->',
-#                         'connectionstyle': 'arc,angleA=120,armA=15,rad=10'})
-ax.grid(False)
-leg = ax.legend(['FF without echo', 'FF with echo'], frameon=False, loc='lower left')
-ax2.legend(['Noise spectrum'], frameon=False, loc=(.027, .282))
-ax.set_xlabel(r'$\omega$ ($2\pi$GHz)')
-ax.set_ylabel(r'$F(\omega)$ (ns/$2\pi)^2$')
-
-fname = 'qft_filter_function_Y3_echo_vs_no_with_spec'
-fig.tight_layout()
-for ext in ('png', 'eps', 'pdf'):
-    if not (f := save_path / '.'.join([fname, ext])).exists() or _force_overwrite:
-        fig.savefig(f)
 # %% Correlations with & without echo
 
 pls = ['hadamard', 'CZ_pi2', 'swap', 'CZ_pi4', 'swap', 'CZ_pi8', 'swap',
@@ -1038,19 +583,17 @@ qubits = [0, (0, 1), (0, 1), (1, 2), (1, 2), (2, 3), (2, 3),
           0, (0, 1), (0, 1),
           0]
 
-# S, omega = S[::2], omega[::2]
-
 qft_pulse_correl = ff.concatenate(
     [four_qubit_pulses[pls][qubits] for pls, qubits in zip(pls, qubits)],
     calc_pulse_correlation_FF=True,
     omega=omega,
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 qft_pulse_echo_correl = ff.concatenate(
     [four_qubit_pulses[pls][qubits] for pls, qubits in zip(pls_echo, qubits)],
     calc_pulse_correlation_FF=True,
     omega=omega,
-    show_progressbar=True
+    show_progressbar=SHOW_PROGRESSBAR
 )
 
 # %%

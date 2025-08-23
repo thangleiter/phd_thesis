@@ -1,12 +1,13 @@
-\newcommand{\Rz}[1]{\gate{R\left(\flatfrac{\pi}{2^{#1}}\right)}}
+\newcommand{\Rz}[1]{\gate{R\left(\frac{\pi}{2^{#1}}\right)}}
+\newcommand{\optX}{\gate{X}\gategroup[style={dashed,inner sep=0pt}]{}}
 
 \begin{quantikz}[
     %thin lines,
-	font=\footnotesize,
-	column sep=1em,
+    font=\footnotesize,
+    column sep=1em,
 ]
-    \lstick{3} &          &     	 &          &          &      	  & \ctrl{1} & \swap{1} &          &     	  &          &          &          &     	  &          	  & \permute{4,2,3,1} & \rstick{3} \\
-    \lstick{2} &          &     	 &          & \ctrl{1} & \swap{1} & \Rz{3}   & \targX{} &          &     	  &          & \ctrl{1} &          &     	  & \permute{2,1} & 			      & \rstick{2} \\
-    \lstick{1} &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{} &      	 &          &          & \ctrl{1} & \swap{1} & \Rz{2}   &          & \ctrl{1} & 		 	  & 			      & \rstick{1} \\
-    \lstick{0} & \gate{H} & \Rz{1}   & \targX{} &          &      	  &          &          & \gate{H} & \Rz{1}   & \targX{} &          & \gate{H} & \Rz{1}   & \gate{H} 	  & 			      & \rstick{0}
+    \lstick{3} &          & \optX    &          & \optX    &            & \ctrl{1} & \swap{1} &          & \optX    &          & \optX    &          &          &          &          &               & \permute{4,2,3,1} & \rstick{3} \\
+    \lstick{2} &          &          &          & \ctrl{1} & \swap{1}   & \Rz{3}   & \targX{} &          &          &          & \ctrl{1} & \swap{1} &          &          &          & \permute{2,1} &                   & \rstick{2} \\
+    \lstick{1} &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{}   &          &          &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{} &          & \ctrl{1} & \swap{1} &               &                   & \rstick{1} \\
+    \lstick{0} & \gate{H} & \Rz{1}   & \targX{} &          &            &          &          & \gate{H} & \Rz{1}   & \targX{} &          &          & \gate{H} & \Rz{1}   & \targX{} & \gate{H}      &                   & \rstick{0}
 \end{quantikz}

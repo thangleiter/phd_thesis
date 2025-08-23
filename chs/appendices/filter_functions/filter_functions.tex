@@ -7,13 +7,13 @@
 \section{Additional derivations}\label{sec:app:ff:derivations:cumulant:pauli}
 In this appendix we show additional derivations omitted from the main text.
 \subsection{Derivation of the single-qubit cumulant function in the Liouville representation}
-For a single qubit, the Pauli basis $\left\lbrace\sigma_i\right\rbrace_{i=0}^3 = \flatfrac{\left\lbrace\eye,\sx,\sy,\sz\right\rbrace}{\sqrt{2}}$ is a natural choice to define the Liouville representation.
+For a single qubit, the Pauli basis $\left\lbrace\sigma_i\right\rbrace_{i=0}^3 = 1/\sqrt{2}\times\left\lbrace\eye,\sx,\sy,\sz\right\rbrace$ is a natural choice to define the Liouville representation.
 In this case, the trace tensor \cref{eq:ff:trace_tensor} can be simplified and thus \cref{eq:ff:cumulant:truncated:liouville} given a more intuitive form which we derive in this appendix.
 Since the cumulant function is linear in the noise indices $\alpha,\beta$ we drop them in the following for legibility.
 Our results hold for both a single pair of noise indices and the total cumulant.
 We start by observing the relation
 \begin{equation}\label{eq:ff:trace_tensor:four_paulis}
-    T_{klij} = \tr(\sigma_k\sigma_l\sigma_i\sigma_j) = \flatfrac{(\delta_{kl}\delta_{ij} - \delta_{ki}\delta_{lj} + \delta_{kj}\delta_{li})}{2}
+    T_{klij} = \tr(\sigma_k\sigma_l\sigma_i\sigma_j) = \frac{1}{2}(\delta_{kl}\delta_{ij} - \delta_{ki}\delta_{lj} + \delta_{kj}\delta_{li})
 \end{equation}
 for the Pauli basis elements $\sigma_k, k\in\lbrace 1, 2, 3\rbrace$.
 Including the identity element $\sigma_0$ in the trace tensor gives additional terms.
@@ -42,15 +42,17 @@ for the decay amplitudes \decayamps and
 for the frequency shifts \freqshifts.
 Hence, only terms with $i,j > 0$ contribute and we can plug the simplified expressions for the trace tensor $T_{klij}$, \cref{eq:ff:trace_tensor:four_paulis}, into \cref{eq:ff:cumulant:truncated:liouville} to write the cumulant function for a single qubit and the Pauli basis concisely as
 \begin{align}
-    \cumulantfun_{ij}(\tau) &= -\frac{1}{2}\sum_{kl}\biggl(\freqshifts_{kl}\left(T_{klji} - T_{lkji} - T_{klij} + T_{lkij}\right)
-                                               + \decayamps_{kl}\left(T_{klji} - T_{kjli} - T_{kilj} + T_{kijl}\right)\biggr) \\
-                            &= -\sum_{kl}\biggl(\freqshifts_{kl}(\delta_{ki}\delta_{lj} - \delta_{kj}\delta_{li})
-                                               + \decayamps_{kl}(\delta_{kl}\delta_{ij} - \delta_{kj}\delta_{li})\biggr) \\
+    \cumulantfun_{ij}(\tau) &= -\frac{1}{2}\sum_{kl}\begin{aligned}[t]\Bigl[
+                                   &\freqshifts_{kl}\left(T_{klji} - T_{lkji} - T_{klij} + T_{lkij}\right) \\
+                                   &+ \decayamps_{kl}\left(T_{klji} - T_{kjli} - T_{kilj} + T_{kijl}\right)
+                               \Bigr]\end{aligned} \\
+                            &= -\sum_{kl}\left[\freqshifts_{kl}(\delta_{ki}\delta_{lj} - \delta_{kj}\delta_{li})
+                                               + \decayamps_{kl}(\delta_{kl}\delta_{ij} - \delta_{kj}\delta_{li})\right] \\
                             &= \freqshifts_{ji} - \freqshifts_{ij} + \decayamps_{ij} - \delta_{ij}\tr\decayamps \\
-                            &= \begin{cases}
+                            &= \begin{dcases}
                                   - \sum_{k\neq i}\decayamps_{kk}                           &\qif* i = j,   \\
                                   - \freqshifts_{ij} + \freqshifts_{ji} + \decayamps_{ij}   &\qif* i\neq j,
-                               \end{cases}
+                               \end{dcases}
 \end{align}
 as given in the main text.
 
@@ -58,30 +60,31 @@ as given in the main text.
 Here we calculate the integrals appearing in the calculation of the frequency shifts \freqshifts, \cref{eq:ff:frequency_shifts:integral}, given by
 \begin{equation}
     I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
-                              \int_{t_{g-1}}^{t}\dd{t'}\e^{\i\Omega_{mn}\gth{g}(t' - t_{g-1}) + \i\omega t'}.
+                              \int_{t_{g-1}}^{t}\dd{t^\prime}\e^{\i\Omega_{mn}\gth{g}(t^\prime - t_{g-1}) + \i\omega t^\prime}.
 \end{equation}
 The inner integration is simple to perform and we get
-\begin{equation}
-    I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega(t - t_{g-1})}\times
-    \begin{cases}
+\begin{multline}
+    I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega(t - t_{g-1})}\\
+    \times\begin{dcases}
         \frac{\e^{\i(\omega + \Omega_{mn}\gth{g})(t - t_{g-1})} - 1}{\i(\omega + \Omega_{mn}\gth{g})}   &\qif* \omega + \Omega_{mn}\gth{g}\neq 0 \\
         t - t_{g-1}                                                                                     &\qif* \omega + \Omega_{mn}\gth{g} = 0.
-    \end{cases}
-\end{equation}
+    \end{dcases}
+\end{multline}
 Shifting the limits of integration and performing integration by parts in the case $\omega + \Omega_{mn}\gth{g} = 0$ then yields
-\begin{equation}
-    I_{ijmn}\gth{g}(\omega) = \begin{cases}
+\begin{align}
+    &I_{ijmn}\gth{g}(\omega) = \\
+    &\begin{cases}
         \frac{1}{\omega + \Omega_{mn}\gth{g}}\left(
             \frac{\e^{\i(\Omega_{ij}\gth{g} - \omega)\Delta t_g} - 1}{\Omega_{ij}\gth{g} - \omega} -
             \frac{\e^{\i(\Omega_{ij}\gth{g} + \Omega_{mn}\gth{g})\Delta t_g} - 1}{\Omega_{ij}\gth{g} + \Omega_{mn}\gth{g}}
-        \right) &\qif* \omega + \Omega_{mn}\gth{g}\neq 0, \\
+        \right) &\text{if } \omega + \Omega_{mn}\gth{g}\neq 0, \\
         \frac{1}{\Omega_{ij}\gth{g} - \omega}\left(
             \frac{\e^{\i(\Omega_{ij}\gth{g} - \omega)\Delta t_g} - 1}{\Omega_{ij}\gth{g} - \omega} -
             \i\Delta t_g\e^{\i(\Omega_{ij}\gth{g} - \omega)\Delta t_g}
-        \right) &\qif* \omega + \Omega_{mn}\gth{g} = 0 \wedge \Omega_{ij}\gth{g} - \omega\neq 0, \\
-        \flatfrac{\Delta t_g^2}{2} &\qif* \omega + \Omega_{mn}\gth{g} = 0 \wedge \Omega_{ij}\gth{g} - \omega = 0.
-    \end{cases}
-\end{equation}
+        \right) &\text{if } \omega + \Omega_{mn}\gth{g} = 0 \wedge \Omega_{ij}\gth{g} - \omega\neq 0, \\
+        \frac{\Delta t_g^2}{2} &\text{if } \omega + \Omega_{mn}\gth{g} = 0 \wedge \Omega_{ij}\gth{g} - \omega = 0.
+    \end{cases} \notag
+\end{align}
 
 \subsection{Simplifying the calculation of the entanglement infidelity}\label{subsec:app:ff:derivations:fidelity}
 In the main text, we claimed that the contribution of noise sources $(\alpha,\beta)$ to the total entanglement infidelity $\entinfid(\liouvUe) = \sum_{\alpha\beta}\infid_{\alpha\beta}$ reduces from the trace of the cumulant function \cumulantfun to
@@ -143,7 +146,7 @@ Since there is no obvious way to extend the Pauli basis for two qubits to the co
 \end{equation}
 where the $P_i$ are normalized two-qubit Pauli matrices (\cf \cref{eq:ff:basis:pauli}) in the basis $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu\rbrace$.
 To complete the basis we require an additional 20 elements orthogonal to the 16 padded Pauli matrices.
-We obtain the remaining elements by first expanding the $C_i^c$ in an arbitrary basis $\left\lbrace\Lambda_i\right\rbrace_{i=0}^{35}$ of the complete space (we choose a \gls{ggm}, \cf \cref{eq:ff:basis:ggm}, for simplicity), yielding a $16\times 36$ matrix of expansion coefficients:
+We obtain the remaining elements by first expanding the $C_i^c$ in an arbitrary basis $\left\lbrace\Lambda_i\right\rbrace_{i=0}^{35}$ of the complete space (we choose a \gls{ggm} basis, \cref{eq:ff:basis:ggm}, for simplicity), yielding a $16\times 36$ matrix of expansion coefficients:
 \begin{equation}
     M_{ij} = \tr(C_i^c\Lambda_j).
 \end{equation}
@@ -159,12 +162,6 @@ since for unitary operations on the CS we have $\cumulantfun_{00} \approx 1 - \l
 Hence, excluding $\liouvUe_{00}$ from the trace corresponds to partially disregarding non-unitary components of the error channel on the computational subspace.
 Although not the only element that differs compared to the closest subspace unitary, $\cumulantfun_{00}$ contains the most obvious contribution, whereas those of other elements are more difficult to disentangle into unitary and non-unitary components.
 
-Similar to the fidelity, we also obtain the canonical filter function shown in panel (b) of \cref{fig:ff:CNOT} by summing only over columns one through 15 of the control matrix, $F_{\epsilon_{ij}}(\omega) = \sum_{k=1}^{15}\bigl\lvert\ctrlmat_{\epsilon_{ij} k}(\omega)\bigr\rvert^2$.
-In fact, including the first column, corresponding to the padded identity matrix $C_0^c$, in the filter function removes the \gls{dcg} character of $F_{\epsilon_{12}}(\omega)$ and $F_{\epsilon_{34}}(\omega)$, which instead approach a constant level of around 20 (note that the filter function is dimensionless in our units) at zero frequency.
-This is consistent with the fact that the gates were optimized using quasistatic and fast white noise contributions to the fidelity after mapping to the closest unitary on the computational subspace.
-We have performed Monte Carlo resimulations that support this reading.
-In \cref{appfig:ff:filter_function:cnot} we show the filter functions once including and once excluding the contributions from $C_0^c$.
-
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/filter_functions/CNOT_FF_unitary_v_complete}
@@ -172,35 +169,42 @@ In \cref{appfig:ff:filter_function:cnot} we show the filter functions once inclu
         Filter functions of the voltage detunings $\epsilon_{ij}$ excluding (a) and including (b) the zero-padded identity matrix basis element $C_0^c\propto\text{diag}(1,1,1,1,0,0)$ for the computational subspace.
         Evidently, including $C_0^c$ removes the \gls{dcg} character, namely that $F_{\epsilon_{ij}}(\omega)\rightarrow 0$ as $\omega\rightarrow 0$, of the gates but has little effect on the high-frequency behavior.
         As the pulse optimization minimizes, among other figures of merit, the infidelity of the final propagator mapped to the closest unitary on the computational subspace due to quasistatic and fast white noise, this indicates that excluding $C_0^c$ from the filter function corresponds to partially neglecting non-unitary components of the propagator on the computational subspace.
-}
-    \label{appfig:ff:filter_function:cnot}
+    }
+    \label{fig:app:ff:filter_function:cnot}
 \end{marginfigure}
+
+Similar to the fidelity, we also obtain the canonical filter function shown in panel (b) of \cref{fig:ff:CNOT} by summing only over columns one through 15 of the control matrix, $F_{\epsilon_{ij}}(\omega) = \sum_{k=1}^{15}\bigl\lvert\ctrlmat_{\epsilon_{ij} k}(\omega)\bigr\rvert^2$.
+In fact, including the first column, corresponding to the padded identity matrix $C_0^c$, in the filter function removes the \gls{dcg} character of $F_{\epsilon_{12}}(\omega)$ and $F_{\epsilon_{34}}(\omega)$, which instead approach a constant level of around 20 (note that the filter function is dimensionless in our units) at zero frequency.
+This is consistent with the fact that the gates were optimized using quasistatic and fast white noise contributions to the fidelity after mapping to the closest unitary on the computational subspace.
+We have performed Monte Carlo resimulations that support this reading.
+In \cref{fig:app:ff:filter_function:cnot} we show the filter functions once including and once excluding the contributions from $C_0^c$.
 
 % ==================================================
 %           QFT GATES SECTION
 % ==================================================
-\section{GRAPE-optimized gate set for QFT}\label{sec:app:ff:qft}
-For completeness, in this appendix we give details on the GRAPE-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\flatfrac{\pi}{2}),\mr{Y}_{i}(\flatfrac{\pi}{2}),\mr{CR}_{ij}(\flatfrac{\pi}{2^3})\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm.
+\section{\texorpdfstring{\acrshort{grape}}{GRAPE}-optimized gate set for \texorpdfstring{\acrshort{qft}}{QFT}}\label{sec:app:ff:qft}
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/filter_functions/qft_atomic_pulses}
+    \caption[\imgsource{img/py/filter_functions/quantum_fourier_transform.py}]{
+        Control fields (top row) and corresponding filter functions (bottom row) of the \gls{grape}-optimized pulses in $\mathbb{G}$.
+        (a),(b) $\mr{X}_0(\pi/2)$; (c),(d) $\mr{Y}_0(\pi/2)$; (e),(f) $\mr{CR}_{01}(\pi/2^3)$.
+        Note that the optimization is neither very sophisticated nor realistic as the algorithm only maximizes the systematic (coherent) fidelity $\mr{tr}\bigl(UQ\adjoint_\mr{targ}\bigr)/d$ and the randomly distributed initial control amplitudes are not subject to any constraints.
+    }
+    \label{fig:app:ff:qft:gates}
+\end{figure}
+
+For completeness, in this appendix we give details on the \gls{grape}-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\pi/2),\mr{Y}_{i}(\pi/2),\mr{CR}_{ij}(\pi/2^3)\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm.
 As mentioned in the main text, we consider a toy Rabi driving model with IQ single-qubit control and exchange to mediate inter-qubit coupling.
 Cast in the language of quantum optimal control theory this translates to a vanishing drift (static) Hamiltonian, $H_\mr{d} =  0$, and a control Hamiltonian in the rotating frame given by
 \begin{gather}
     \Hc(t) = \Hc\gth{0}(t)\otimes\eye + \eye\otimes\Hc\gth{1}(t) + \Hc\gth{01}(t), \\
-    \Hc\gth{i}(t) = I_i(t)\sx\gth{i} + Q_i(t)\sy\gth{i},\qquad\Hc\gth{ij}(t) = J_{ij}(t)\sz\gth{i}\otimes\sz\gth{j},
+    \Hc\gth{i}(t) = I_i(t)\sx\gth{i} + Q_i(t)\sy\gth{i}, \\
+    \Hc\gth{ij}(t) = J_{ij}(t)\sz\gth{i}\otimes\sz\gth{j},
 \end{gather}
-where $I_i(t)$ and $Q_i(t)$ are the in-phase and quadrature pulse envelopes and $\sigma_{x,y}\gth{i}$ are the Pauli matrices acting on the $i$-th and extended trivially to the other qubit.
-As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the GRAPE algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
-The resulting pulses and the corresponding filter functions for the relevant noise operators are shown in \cref{appfig:ff:qft:gates}.
-
-\begin{figure}
-    \centering
-    \includegraphics{img/pdf/filter_functions/qft_atomic_pulses}
-    \caption{
-        Control fields (top row) and corresponding filter functions (bottom row) of the GRAPE-optimized pulses in $\mathbb{G}$.
-        (a),(b) $\text{X}_0(\flatfrac{\pi}{2})$; (c),(d) $\text{Y}_0(\flatfrac{\pi}{2})$; (e),(f) $\text{CR}_{01}(\flatfrac{\pi}{2^3})$.
-        Note that the optimization is neither very sophisticated nor realistic as the algorithm only maximizes the systematic (coherent) fidelity $\mr{tr}\bigl(UQ\adjoint_\mr{targ}\bigr)/d$ and the randomly distributed initial control amplitudes are not subject to any constraints.
-    }
-    \label{appfig:ff:qft:gates}
-\end{figure}
+where $I_i(t)$ and $Q_i(t)$ are the in-phase and quadrature pulse envelopes and $\sigma_{x,y}\gth{i}$ are the Pauli matrices acting on the $i$th and extended trivially to the other qubit.
+As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the \gls{grape} algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
+The resulting pulses and the corresponding filter functions for the relevant noise operators are shown in \cref{fig:app:ff:qft:gates}.
 
 % ==================================================
 %           CONVERGENCE SECTION
@@ -211,7 +215,7 @@ For Gaussian noise, our expansion is exact when including first and second order
 Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
 For non-Gaussian noise, the following considerations apply.
 \subsection{Magnus Expansion}\label{subsec:app:ff:convergence:magnus_expansion}
-The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\abs{A_{ij}}^2$ the Frobenius norm~\cite{Moan1999}.
+The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\lvert A_{ij}\rvert^2$ the Frobenius norm~\cite{Moan1999}.
 We assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
 By the Cauchy-Schwarz inequality we then have
 \begin{equation}
@@ -224,7 +228,7 @@ By the Cauchy-Schwarz inequality we then have
                              s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
     \end{split}
 \end{equation}
-where $b_{\alpha}\gth{m}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$-th time interval and zero else, and where we approximated the time evolution as piecewise constant.
+where $b_{\alpha}\gth{m}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$th time interval and zero else, and where we approximated the time evolution as piecewise constant.
 Then, in order to guarantee convergence of the \gls{me},
 \begin{equation}
     \begin{split}
@@ -255,29 +259,27 @@ Thus, the expansion converges if $\xi < \flatfrac{\pi}{C_m}$.
 However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will often be infinite, limiting the usefulness of this bound for certain noise spectra.
 \subsection{Infidelity}\label{subsec:app:ff:convergence:infidelity}
 Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
-\begin{equation}
-    \begin{split}
-        \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
-                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \\
-                              &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
-                                 \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g^\prime=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g^\prime)}(t_2)
-                                 s_\alpha\gth{m} s_\alpha^{(g^\prime)} \norm{B_\alpha}^2} \\
-                              &\leq\sum_{\alpha}\norm{B_\alpha}^2
-                                 \underbrace{\expval{b_\alpha^2(0)}}_{\int\frac{\dd{\omega}}{2\pi}S_\alpha(\omega)}
-                                 \sum_{g,g^\prime=1}^{G} s_\alpha\gth{m} s_\alpha^{(g^\prime)}
-                                 \abs\Bigg{\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t_2}\int_{t_{g-1}}^{t_g}\dd{t_1}
-                                 \underbrace{\overline{\expval{b_\alpha(t_1)b_\alpha(t_2)}}}_{\abs{\placeholder}\leq 1}} \\
-                              &\leq\sum_{\alpha}\left[\norm{B_\alpha}^2
-                                 \int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi}S_\alpha(\omega)
-                                 \biggl(\sum_{g=1}^{G}s_\alpha\gth{m}\Delta t_g\biggr)^2\right] \\
-                              &= \xi^2,
-    \end{split}
-\end{equation}
+\begin{align}
+    \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+                             \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \notag\\
+                          &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+                             \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g^\prime=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g^\prime)}(t_2)
+                             s_\alpha\gth{m} s_\alpha^{(g^\prime)} \norm{B_\alpha}^2} \notag\\
+                          &\leq\sum_{\alpha}\norm{B_\alpha}^2
+                             \underbrace{\expval{b_\alpha^2(0)}}_{\int\frac{\dd{\omega}}{2\pi}S_\alpha(\omega)}
+                             \sum_{g,g^\prime=1}^{G} s_\alpha\gth{m} s_\alpha^{(g^\prime)}
+                             \abs\Bigg{\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t_2}\int_{t_{g-1}}^{t_g}\dd{t_1}
+                             \underbrace{\overline{\expval{b_\alpha(t_1)b_\alpha(t_2)}}}_{\abs{\placeholder}\leq 1}} \notag\\
+                          &\leq\sum_{\alpha}\left[\norm{B_\alpha}^2
+                             \int_{-\infty}^\infty\frac{\mathrm{d}\omega}{2\pi}S_\alpha(\omega)
+                             \biggl(\sum_{g=1}^{G}s_\alpha\gth{m}\Delta t_g\biggr)^2\right] \notag\\
+                          &= \xi^2,
+\end{align}
 where, going from the second to the third line, we have factored out the total power of noise source $\alpha$ from the cross-correlation function, $\expval{b_\alpha(t_1) b_\alpha(t_2)} = \expval{b_\alpha^2(0)}\bigl\lvert\overline{\expval{b_\alpha(t_1)b_\alpha(t_2)}}\bigr\rvert$.
-Thus, the first order infidelity \cref{eq:ff:fidelity:ent} is upper bounded by $\flatfrac{\xi^2}{d}$, the same parameter also bounding the convergence of the \gls{me}, and higher orders can be neglected if $\xi^2\ll 1$.
+Thus, the first order infidelity \cref{eq:ff:fidelity:ent} is upper-bounded by $d\inverse\xi^2$, the same parameter also bounding the convergence of the \gls{me}, and higher orders can be neglected if $\xi^2\ll 1$.
 
 Note that similar arguments can be made for the higher orders of the \gls{me}~\cite{Green2013}.
-In particular, the $n$-th order \gls{me} term containing $n$-point correlation functions of the noise is of order $\order{\xi^n}$ as stated in the main text.
+In particular, the $n$th order \gls{me} term containing $n$-point correlation functions of the noise is of order $\order{\xi^n}$ as stated in the main text.
 
 \section{Second-order concatenation}\label{sec:app:ff:concatenation}
 In this appendix, I lay out how the second-order filter functions of atomic pulse segments can be re-used to compute the filter function of the concatenated sequence.

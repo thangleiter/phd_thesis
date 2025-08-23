@@ -263,7 +263,7 @@ This behavior is captured by the pulse correlation filter functions whose contri
 
 Notably, the data for the \enquote{optimized} gates agree with the prediction for every noise channel individually which implies that correlations between pulses are suppressed.
 This highlights the formalism's attractiveness for numerical gate optimization as the pulse correlation filter functions $\FF\gth{gg^\prime}(\omega)$ may be exploited to suppress correlation errors.
-To be more explicit, the correlation decay amplitudes $\decayamps\gth{gg^\prime}$ from \cref{eq:ff:decay_amplitudes:pulse_correlation} can be used to construct cost functions for quantum optimal control algorithms like GRAPE~\cite{Khaneja2005,Schulte-Herbruggen2005} or CRAB~\cite{Caneva2011}.
+To be more explicit, the correlation decay amplitudes $\decayamps\gth{gg^\prime}$ from \cref{eq:ff:decay_amplitudes:pulse_correlation} can be used to construct cost functions for quantum optimal control algorithms like \gls{grape}~\cite{Khaneja2005,Schulte-Herbruggen2005} or CRAB~\cite{Caneva2011}.
 By constructing linear combinations of $\decayamps\gth{gg'}$ with different pulse indices $g$ and $g'$, correlations between any number of pulses can be specifically targeted and suppressed using numerical pulse optimization.
 
 \section{Quantum Fourier transform}\label{sec:ff:examples:qft}
@@ -274,7 +274,7 @@ That is, we assume full control of the $x$- and $y$-axes of the individual qubit
 This system allows for native access to the minimal gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\flatfrac{\pi}{2}),\mr{Y}_{i}(\flatfrac{\pi}{2}),\mr{CR}_{ij}(\flatfrac{\pi}{2^3})\rbrace$ where $\mr{CR}_{ij}(\phi)$ denotes a controlled rotation by $\phi$ about $z$ with control qubit $i$ and target qubit $j$.
 Controlled-$z$ rotations by angles $\flatfrac{\pi}{2^m}$ as required for the \gls{qft} can thus be obtained by concatenating $2^{3-m}$ minimal gates $\mr{CR}_{ij}(\flatfrac{\pi}{2^3})$.
 
-Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the GRAPE algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
+Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the \gls{grape} algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
 For the optimization we choose a time step of $\Delta t = \qty{1}{\nano\second}$ and a total gate duration of $\tau = \qty{30}{\nano\second}$.
 For completeness, see \cref{sec:app:ff:qft} for details on the optimized gates.
 We then construct the remaining required gates by sequencing these elementary gates, \ie the Hadamard gate $\mr{H}_i = \mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{X}_{i}(\flatfrac{\pi}{2})\circ\mr{Y}_{i}(\flatfrac{\pi}{2})$, where $\mr{B}\circ\mr{A}$ denotes the composition of gates A and B such that gate A is executed before gate B .
@@ -285,12 +285,13 @@ The complete quantum circuit is shown at the top of \cref{fig:ff:qft}; for the c
 In total, there are \num{442} elementary pulses, \num{198} of which are required for the three SWAPs on the first two qubits, so that the entire algorithm would take $\sim\qty{13}{\micro\second}$ to run.
 Note that the circuit could be compressed in time by parallelizing some operations but for simplicity we only execute gates sequentially and do not execute dedicated idling gates.
 
-\begin{figure*}[tbp]
+\begin{figure*}
     %\resizebox{\columnwidth}{!}{}
     \centering
     \input{img/tikz/circuits/qft}
-    \includegraphics[width=\textwidth]{img/pdf/filter_functions/qft_filter_function_first_qubit_with_cumulative_fraction}
-    \caption[\gls{qft} circuit and filter function]{
+    \bigskip
+    \includegraphics{img/pdf/filter_functions/qft_filter_function}
+    \caption[\imgsource{img/tikz/circuits/qft.tex}\imgsource{img/py/filter_functions/quantum_fourier_transform.py}]{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
         Bottom: Filter functions for noise operators on the first qubit ($i = 0$).

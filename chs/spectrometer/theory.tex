@@ -56,7 +56,7 @@ Finally, I elaborate on relevant parameters and properties.
 \section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
 To see how spectral noise properties may be estimated from time series data, consider a continuous wide-sense stationary\sidenote{
     \label{sidenote:speck:autocorrelation}
-    For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the autocorrelation function $C(t, t') = \ev{x(t)\conjugate x(t^\prime)}$ simplifies to $\ev{x(t)\conjugate x(t + \tau)} = \ev{x(0)\conjugate x(\tau)}$ with $\tau = t^\prime - t$.
+    For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the autocorrelation function $C(t, t^\prime) = \ev{x(t)\conjugate x(t^\prime)}$ simplifies to $\ev{x(t)\conjugate x(t + \tau)} = \ev{x(0)\conjugate x(\tau)}$ with $\tau = t^\prime - t$.
     That is, it is a function of only the time lag $\tau$ and not the absolute point in time.
     For Gaussian processes as discussed here, this also implies stationarity~\cite{Koopmans1995}.
     The property further implies that $C(\tau)$ is an even function.
