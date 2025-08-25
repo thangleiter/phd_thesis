@@ -485,7 +485,7 @@ if RUN_SIMULATION:
 date = '20250823-122351'
 m_min, m_max = 1, 101
 
-gate_types = ['naive', 'optimized', 'single', 'zyz']
+gate_types = ['naive', 'optimized', 'single']
 noise_types = ['white', 'correlated']
 infid_types = ['tot']
 calc_types = ['FF', 'MC']
