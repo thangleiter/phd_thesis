@@ -64,7 +64,7 @@ iniconfig==2.1.0
 ipykernel==6.30.1
 ipympl==0.9.7
 ipynbname==2024.1.0.0
-ipython==9.4.0
+ipython==8.37.0
 ipython-pygments-lexers==1.1.1
 ipywidgets==8.1.7
 isoduration==20.11.0
@@ -90,13 +90,15 @@ kerchunk==0.2.9
 kiwisolver==1.4.9
 lark==1.2.2
 lazy-loader==0.4
-lindblad-mc-tools @ git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools.git@bed48b7ce07bef3caea90dadb435c3069fc8c784
+-e file:///home/tobias/Code/lindblad_mc_tools
+line-profiler==5.0.0
 llvmlite==0.44.0
 locket==1.0.0
 loky==3.5.5
 lxml==6.0.0
 markdown-it-py==3.0.0
 markupsafe==3.0.2
+matlabengine @ file:///home/tobias/.local/MATLAB/R2024b/extern/engines/python
 matplotlib==3.10.5
 matplotlib-inline==0.1.7
 mdit-py-plugins==0.5.0
@@ -154,10 +156,11 @@ python-spectrometer==2025.7.1
 pytz==2025.2
 pyvisa==1.15.0
 pyvisa-py==0.8.0
+pyxdg==0.28
 pyyaml==6.0.2
 pyzmq==27.0.1
 qcodes @ git+https://github.com/qutech/qcodes.git@7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
-qcodes-contrib-drivers @ git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@991f411ca06ccd3c1375a2890b7747991864abb4
+qcodes-contrib-drivers @ git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@192871bb5cb353cc563fbd4513c2d3358ce5bbda
 qcodes-loop==0.1.3
 qopt==1.3.5
 qutech-util==2025.8.1
@@ -195,6 +198,7 @@ sphinxcontrib-jquery==4.1
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
+spyder-kernels==3.0.5
 stack-data==0.6.3
 sympy==1.14.0
 tabulate==0.9.0
@@ -220,8 +224,10 @@ webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.8.0
 websockets==15.0.1
+wheel==0.45.1
 widgetsnbextension==4.0.14
 wrapt==1.17.3
+wurlitzer==3.1.1
 xarray==2025.8.0
 zarr==3.1.1
 zipp==3.23.0
