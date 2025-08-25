@@ -89,19 +89,19 @@ Shifting the limits of integration and performing integration by parts in the ca
 \subsection{Simplifying the calculation of the entanglement infidelity}\label{subsec:app:ff:derivations:fidelity}
 In the main text, we claimed that the contribution of noise sources $(\alpha,\beta)$ to the total entanglement infidelity $\entinfid(\liouvUe) = \sum_{\alpha\beta}\infid_{\alpha\beta}$ reduces from the trace of the cumulant function \cumulantfun to
 \begin{align}
-    \infid_{\alpha\beta} &= -\frac{1}{d^2}\tr\cumulantfun_{\alpha\beta} \label{appeq:ff:infid} \\
+    \infid_{\alpha\beta} &= -\frac{1}{d^2}\tr\cumulantfun_{\alpha\beta} \label{eq:app:ff:infid} \\
                          &= \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{align}
 To show this, we substitute \cumulantfun by its definition in terms of \freqshifts and \decayamps according to \cref{eq:ff:cumulant:truncated:liouville}.
 This yields for the trace
-\begin{equation}\label{appeq:ff:cumulant:trace:1}
+\begin{equation}\label{eq:app:ff:cumulant:trace:1}
     \begin{split}
         \tr\cumulantfun_{\alpha\beta} &= -\frac{1}{2}\sum_{kl}\delta_{ij}(f_{ijkl}\freqshifts_{\alpha\beta,kl} + g_{ijkl}\decayamps_{\alpha\beta,kl}) \\
                                       &= -\frac{1}{2}\sum_{ikl}\decayamps_{\alpha\beta,kl}\left(T_{klii} + T_{lkii} - 2 T_{kili}\right)
     \end{split}
 \end{equation}
 since \freqshifts is antisymmetric.
-In order to further simplify the trace tensors on the right hand side of \cref{appeq:ff:cumulant:trace:1}, we observe that the orthonormality and completeness of the operator basis \basis defining the Liouville representation of \cumulantfun (\cf \cref{eq:ff:basis}) is equivalent to requiring that $\basis\adjoint\basis = \eye$ with \basis reshaped into a $d^2\times d^2$ matrix by a suitable mapping.
+In order to further simplify the trace tensors on the right hand side of \cref{eq:app:ff:cumulant:trace:1}, we observe that the orthonormality and completeness of the operator basis \basis defining the Liouville representation of \cumulantfun (\cf \cref{eq:ff:basis}) is equivalent to requiring that $\basis\adjoint\basis = \eye$ with \basis reshaped into a $d^2\times d^2$ matrix by a suitable mapping.
 This condition may also be written as
 \begin{equation}\label{eq:ff:basis:identity}
 \begin{split}
@@ -110,8 +110,8 @@ This condition may also be written as
 \end{split}
 \end{equation}
 because every element $C_k$ is Hermitian.
-Using this relation in \cref{appeq:ff:cumulant:trace:1} then yields
-\begin{equation}\label{appeq:ff:cumulant:trace:2}
+Using this relation in \cref{eq:app:ff:cumulant:trace:1} then yields
+\begin{equation}\label{eq:app:ff:cumulant:trace:2}
     \begin{split}
         \tr\cumulantfun_{\alpha\beta} &= -\frac{1}{2}\sum_{kl}\decayamps_{\alpha\beta,kl}\left(2d\delta_{kl} - 2\tr(C_k)\tr(C_l)\right) \\
                                       &= -d\tr\decayamps_{\alpha\beta}.
@@ -119,7 +119,7 @@ Using this relation in \cref{appeq:ff:cumulant:trace:1} then yields
 \end{equation}
 The last equality only holds true for bases with a single non-traceless element (the identity), such as the bases discussed in \cref{sec:ff:performance:basis}.
 This is because in this case, $\tr(C_k) = 0$ for $k > 0$ whereas $\decayamps_{\alpha\beta,kl} = 0$ for either $k = 0$ or $l = 0$ since \decayamps is a function of the traceless noise Hamiltonian for which $\tr(C_0\Hn) \propto \tr\Hn = 0$ (\ie the first column of the control matrix is zero, see \cref{eq:ff:control_matrix,eq:ff:decay_amplitudes:time}).
-Finally, substituting \cref{appeq:ff:cumulant:trace:2} into \cref{appeq:ff:infid} we obtain our result
+Finally, substituting \cref{eq:app:ff:cumulant:trace:2} into \cref{eq:app:ff:infid} we obtain our result
 \begin{equation}
     \infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{equation}

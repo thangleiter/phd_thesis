@@ -64,7 +64,7 @@ To motivate the time-dependent form of \cref{eq:ff:hamiltonian:noise}, assume th
 Expanding the Hamiltonian in an orthonormal operator basis yields $H(\bvec{\tilde{\lambda}}(t)) = \sum_\alpha f_\alpha(\bvec{\lambda}(t), \bvec{\delta\lambda}(t)) B_\alpha$.
 In general, however, the expansion coefficients $f_\alpha$ will be arbitrary functions of both the deterministic parameters $\bvec{\lambda}(t)$ and the stochastic noises $\bvec{\delta\lambda}(t)$, which prohibits a factorized form like \cref{eq:ff:hamiltonian:noise}.
 We can address this problem by first expanding $H$ around $\bvec{\lambda}(t)$ for small fluctuations $\bvec{\delta\lambda}(t)$.
-Then, the Hamiltonian approximately becomes $H(\bvec{\tilde{\lambda}}(t)) \approx H(\bvec{\lambda}(t)) + \bvec{\delta\lambda}(t)\times\bvec{\nabla}_{\lambda} H(\bvec{\lambda}(t))$, where we can define the control Hamiltonian as $\Hc(t)\coloneqq H(\bvec{\lambda}(t))$.
+Then, the Hamiltonian approximately becomes $H(\bvec{\tilde{\lambda}}(t)) \approx H(\bvec{\lambda}(t)) + \bvec{\delta\lambda}(t)\cdot\bvec{\nabla}_{\lambda} H(\bvec{\lambda}(t))$, where we can define the control Hamiltonian as $\Hc(t)\coloneqq H(\bvec{\lambda}(t))$.
 Expanding the second term in the operator basis now results in the form~\eqref{eq:ff:hamiltonian:noise} for the noise Hamiltonian as it is linear in $\bvec{\delta\lambda}(t)$ and the deterministic time dependence is contained in $\bvec{\nabla}_{\lambda} H(\bvec{\lambda}(t))$ alone.
 
 This permits us to model complex relations between physical noise sources and the noise operators that capture the coupling to the quantum system, arising for example through control hardware or effective Hamiltonians obtained from \eg Schrieffer-Wolff transformations.
@@ -155,7 +155,7 @@ where $\Bat(t) = \Uc\adjoint(t)\Ba(t)\Uc(t)$ are the noise operators of \cref{eq
 $\ev{b_\alpha(t_1)b_\beta(t_2)}$ is the cross-correlation function of noise sources $\alpha$ and $\beta$ which we will later relate to the spectral density.
 For now, we stay in the time domain and introduce an orthonormal and Hermitian operator basis for the Hilbert space \Hspace to define the Liouville representation,
 \begin{equation}\label{eq:ff:basis}
-\basis = \left\lbrace C_k\in\mathsf{L}(\Hspace): C_k\adjoint = C_k\:\text{and}\:\tr(C_k C_l) = \delta_{kl}\right\rbrace_{k=0}^{d^2-1},
+    \basis = \bigl\lbrace C_k\in\mathsf{L}(\Hspace): C_k\adjoint = C_k\:\text{and}\:\tr(C_k C_l) = \delta_{kl}\bigr\rbrace_{k=0}^{d^2-1},
 \end{equation}
 where we choose $C_0 = d^{-\flatfrac{1}{2}}\eye$ for convenience so that the remaining elements are traceless.
 In order to separate the commutators from the time-dependence and hence the integral in \cref{eq:ff:cumulant:truncated:substituted}, we expand the noise operators in this basis so that
@@ -301,17 +301,16 @@ In \cref{sec:ff:performance:complexity}, we will analyze the computational effic
 As we have seen, the total control matrix of a composite pulse sequence is given by a sum over the individual control matrices.
 Since $\ctrlmat(\omega)$ enters \cref{eq:ff:decay_amplitudes:freq} twice, this leads to correlation terms between two gates at different positions in the sequence when computing the total decay amplitudes $\decayamps_{\alpha\beta,kl}$.
 Inserting \cref{eq:ff:control_matrix:sequence:freq} into \cref{eq:ff:decay_amplitudes:freq} gives
-\begin{equation}\label{eq:ff:decay_amplitudes:pulse_correlation}
-\begin{split}
-    \decayamps_{\alpha\beta,kl} = \sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} &
-    \bigl[\liouvQ\gthv{g^\prime-1}{\dagger}\ctrlmat\gthv{g^\prime}{\dagger}(\omega)\bigr]_{k\alpha}
-    S_{\alpha\beta}(\omega)
-    \bigl[\ctrlmat\gth{g}(\omega)\liouvQ\gth{g-1}\bigr]_{\beta l} \\
-    \times &\e^{\i\omega(t_{g-1} - t_{g^\prime-1})} \\
-    \eqqcolon\sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} &
-    S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)
-\end{split}
-\end{equation}
+\begin{align}\label{eq:ff:decay_amplitudes:pulse_correlation}
+        \decayamps_{\alpha\beta,kl} &= \begin{aligned}[t]
+            \sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} &
+            \bigl[\liouvQ\gthv{g^\prime-1}{\dagger}\ctrlmat\gthv{g^\prime}{\dagger}(\omega)\bigr]_{k\alpha}
+            S_{\alpha\beta}(\omega)
+            \bigl[\ctrlmat\gth{g}(\omega)\liouvQ\gth{g-1}\bigr]_{\beta l} \\
+            &\times\e^{\i\omega(t_{g-1} - t_{g^\prime-1})} \\
+        \end{aligned} \notag\\
+        &\eqqcolon\sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)
+\end{align}
 where we defined the pulse correlation filter function $\FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)$ that captures the temporal correlations between pulses at different positions $g$ and $g'$ in the sequence.
 Unlike regular filter functions, these can be negative for $g\neq g^\prime$ and therefore reduce the overall noise susceptibility of a sequence given by $\FF(\omega) = \sum_{gg^\prime}\FF\gth{gg^\prime}(\omega)$.
 We have thus gained a concise description of the noise-cancelling properties of gate sequences: in this picture, they arise purely from the concatenation of different pulses, quantifying, for instance, the effectiveness of \gls{dd} sequences~\cite{Cerfontaine2021}.
@@ -335,15 +334,15 @@ Using this result together with $Q_{g-1}$, the cumulative propagator up to time 
 We then substitute this relation into the definition of the control matrix, \cref{eq:ff:control_matrix}, and obtain
 \begin{align}
     \ctrlmat_{\alpha k}(t) = s_\alpha\gth{g}&\mr{tr}\Bigl(Q_{g-1}\adjoint V\gth{g} D\gthv{g}{\dagger}(t, t_{g-1}) V\gthv{g}{\dagger} B_\alpha \notag\\
-    &      \times\,V\gth{g} D\gth{g}(t, t_{g-1})V\gthv{g}{\dagger} Q_{g-1} C_k\Bigr) \\
-    \eqqcolon s_\alpha\gth{g}&\sum_{ij}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g}
-    \e^{\i\Omega_{ij}\gth{g}(t - t_{g-1})}, \label{eq:ff:control_matrix:pulse:time:piecewise}
+        & \times\,V\gth{g} D\gth{g}(t, t_{g-1})V\gthv{g}{\dagger} Q_{g-1} C_k\Bigr) \\
+        \eqqcolon s_\alpha\gth{g}&\sum_{ij}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g}
+        \e^{\i\Omega_{ij}\gth{g}(t - t_{g-1})}, \label{eq:ff:control_matrix:pulse:time:piecewise}
 \end{align}
 where $\Omega_{ij}\gth{g} = \omega_i\gth{g} - \omega_j\gth{g}$, $\bar{C}_{k}\gth{g} = V\gthv{g}{\dagger}Q_{g-1} C_k Q_{g-1}\adjoint V\gth{g}$, and $\bar{B}_{\alpha}\gth{g} = V\gthv{g}{\dagger} B_\alpha V\gth{g}$.
 Carrying out the Fourier transform of \cref{eq:ff:control_matrix:pulse:time:piecewise} to get the frequency-domain control matrix of the pulse generated by the Hamiltonian from \cref{eq:ff:hamiltonian:control:piecewise} is now straightforward since the integrals involved are over simple exponential functions.
 We obtain
 \begin{equation}\label{eq:ff:control_matrix:pulse:freq:ff:calculation}
-\ctrlmat_{\alpha k}(\omega) = \sum_{g = 1}^G s_\alpha\gth{g}\e^{\i\omega t_{g-1}}\tr(\bigl[\bar{B}_\alpha\gth{g}\circ I\gth{g}(\omega)\bigr]\bar{C}_k\gth{g})
+    \ctrlmat_{\alpha k}(\omega) = \sum_{g = 1}^G s_\alpha\gth{g}\e^{\i\omega t_{g-1}}\tr(\bigl[\bar{B}_\alpha\gth{g}\circ I\gth{g}(\omega)\bigr]\bar{C}_k\gth{g})
 \end{equation}
 with $I_{ij}\gth{g}(\omega) = -\i(\e^{\i(\omega + \Omega_{ij}\gth{g})\Delta t_g} - 1)/(\omega + \Omega_{ij}\gth{g})$ and the Hadamard product $(A\circ B)_{ij}\coloneqq A_{ij}\times B_{ij}$.
 \Cref{eq:ff:control_matrix:pulse:freq:ff:calculation} is readily evaluated on a computer and thus enables the calculation of filter functions of arbitrary control sequences, either on its own or in conjunction with \cref{eq:ff:control_matrix:sequence:freq}.
@@ -358,9 +357,9 @@ Since these terms correspond to a coherent gate error that can in principle be c
 We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t^\prime)}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
 Inserting this equation into the definition of the frequency shifts in the time domain, \cref{eq:ff:frequency_shift:time}, yields
 \begin{equation}\label{eq:ff:frequency_shifts:time}
-\freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
-\int_0^\tau\dd{t}\ctrlmat_{\alpha k}(t)\e^{-\i\omega t}
-\int_0^t\dd{t^\prime}\ctrlmat_{\beta l}(t^\prime)\e^{\i\omega t^\prime}.
+    \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
+        \int_0^\tau\dd{t}\ctrlmat_{\alpha k}(t)\e^{-\i\omega t}
+        \int_0^t\dd{t^\prime}\ctrlmat_{\beta l}(t^\prime)\e^{\i\omega t^\prime}.
 \end{equation}
 We again assume piecewise constant time segments so that the inner time integral can be split up into a sum of integrals over complete constant segments $(t_{g^\prime-1},t_{g^\prime}]$ as well as a single integral that contains the last, incomplete segment up to time $t$.
 That is, taking the time $t$ of the outer integral to be within the interval $(t_{g-1}, t_g]$ we perform the replacement
@@ -371,34 +370,34 @@ We have thus divided our task into two: The first term allows, as before in \cre
 The second term remains a nested double integral, but now the integrand contains only products of complex exponentials because we assume the control to be constant within the limits of integration.
 As a next step, we also replace the outer time integral by a sum of integrals over single segments, $\int_0^\tau\dd{t}\rightarrow\sum_{g=1}^G\int_{t_{g-1}}^{t_g}\dd{t}$, to obtain
 \begin{multline}\label{eq:ff:frequency_shifts:time:substituted}
-\freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
-\sum_{g=1}^{G}\int_{t_{g-1}}^{t_{g}}\dd{t} \\
-\times\e^{-\i\omega t}\ctrlmat_{\alpha k}(t)
-\left\lbrace\sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t^\prime} + \int_{t_{g-1}}^{t}\dd{t^\prime}\right\rbrace
-\e^{\i\omega t^\prime}\ctrlmat_{\beta l}(t').
+    \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)
+        \sum_{g=1}^{G}\int_{t_{g-1}}^{t_{g}}\dd{t} \\
+        \times\e^{-\i\omega t}\ctrlmat_{\alpha k}(t)
+        \left\lbrace\sum_{g^\prime=1}^{g-1}\int_{t_{g^\prime-1}}^{t_{g^\prime}}\dd{t^\prime} + \int_{t_{g-1}}^{t}\dd{t^\prime}\right\rbrace
+        \e^{\i\omega t^\prime}\ctrlmat_{\beta l}(t').
 \end{multline}
 Before continuing, we ease notation and define $\ctrlmat(\omega) \eqqcolon \sum_g\mc{G}\gth{g}(\omega)$ with $\mc{G}\gth{g}(\omega)$ obtained from \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} and furthermore adopt the Einstein summation convention for the remainder of this section, meaning multiple subscript indices that appear on only one side of an equality are summed over implicitly.
 We now proceed like in \cref{subsec:ff:theory:control_matrix:pulse} and make use of the piecewise constant approximation to diagonalize the control Hamiltonian during each segment.
 For the nested integrals, we obtain $\ctrlmat_{\alpha k}(t)$ from \cref{eq:ff:control_matrix:pulse:time:piecewise}, whereas the remaining integrals factorize and we can identify the Fourier-transformed quantity $\mc{G}\gth{g}(\omega)$.
 \Cref{eq:ff:frequency_shifts:time:substituted} then becomes
 \begin{multline}\label{eq:ff:frequency_shifts:freq}
-\freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)\sum_{g=1}^G\Biggl[
-    \mc{G}_{\alpha k}\gthv{g}{\ast}(\omega)\sum_{g^\prime=1}^{g-1}\mc{G}_{\beta l}\gth{g^\prime}(\omega) \\
-    + s_\alpha\gth{g}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g} I_{ijmn}\gth{g}(\omega)
-    \bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g}
-    \Biggr]
+    \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega)\sum_{g=1}^G\Biggl[
+        \mc{G}_{\alpha k}\gthv{g}{\ast}(\omega)\sum_{g^\prime=1}^{g-1}\mc{G}_{\beta l}\gth{g^\prime}(\omega) \\
+        + s_\alpha\gth{g}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g} I_{ijmn}\gth{g}(\omega)
+        \bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g}
+        \Biggr]
 \end{multline}
 with $\bar{B}_{\alpha,ij}\gth{g},\bar{C}_{k,ij}\gth{g},\Omega_{ij}\gth{g}$ as defined above in \cref{subsec:ff:theory:control_matrix:pulse} and
 \begin{equation}\label{eq:ff:frequency_shifts:integral}
-I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
-\int_{t_{g-1}}^{t}\dd{t'}\e^{\i\Omega_{mn}\gth{g}(t' - t_{g-1}) + \i\omega t'}.
+    I_{ijmn}\gth{g}(\omega) = \int_{t_{g-1}}^{t_g}\dd{t}\e^{\i\Omega_{ij}\gth{g}(t - t_{g-1}) - \i\omega t}
+        \int_{t_{g-1}}^{t}\dd{t'}\e^{\i\Omega_{mn}\gth{g}(t' - t_{g-1}) + \i\omega t'}.
 \end{equation}
 Explicit results for the integration in \cref{eq:ff:frequency_shifts:integral} are given in \cref{subsec:app:ff:derivations:frequency_shifts:integral}.
 To calculate the frequency shifts \freqshifts, we can thus reuse the quantity $\mc{G}\gth{g}(\omega)$ also required for the decay amplitudes \decayamps.
 The only additional computation, apart from contraction, involves the $G$ integrations $I_{ijmn}\gth{g}(\omega)$.
 Importantly, \cref{eq:ff:frequency_shifts:freq} has the same structure as the corresponding \cref{eq:ff:decay_amplitudes:freq} for \decayamps in that the individual entries of \freqshifts are given by an integral over the spectral density of the noise multiplied with a -- in this case second-order -- filter function that describes the susceptibility to noise at frequency $\omega$:
 \begin{equation}\label{eq:ff:frequency_shifts:filter_function}
-\freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{2}(\omega).
+    \freqshifts_{\alpha\beta,kl} = \int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{\Delta}(\omega).
 \end{equation}
 
 \section{Computing derived quantities}\label{sec:ff:theory:derived_quantities}
@@ -408,7 +407,7 @@ We explicitly review the average gate and state fidelities as well as expression
 Because for many applications the noise is weak and hence the parameter $\xi\ll 1$, we will in the following expand the exponential in \cref{eq:ff:error_propagator} to leading order in $\xi$ in the following.
 That is, we approximate (remember that $\cumulantfun(\tau)\in\order{\xi^2})$
 \begin{equation}\label{eq:ff:error_transfer_matrix:approx}
-\ev*{\liouvUe(\tau)}\approx\eye + \cumulantfun(\tau).
+    \ev*{\liouvUe(\tau)}\approx\eye + \cumulantfun(\tau).
 \end{equation}
 For Gaussian noise, higher order corrections can be obtained either by explicitly calculating higher powers of \cumulantfun or by numerically evaluating the exponential of the cumulant function.
 The former method often leads to simpler expressions than \cref{eq:ff:cumulant:truncated:liouville} for which the trace tensor $T_{ijkl}$ need not be computed directly.
@@ -605,7 +604,7 @@ Typical time-domain methods include the simulation of the underlying physical pr
         For increasing $d$ the computational advantage of \acrshort{ff} (\Lspace) over \acrshort{mc} diminishes but is conserved for \acrshort{ff} (\Hspace).
     }
     \label{tab:ff:complexity}
-    \begin{tabularx}{\linewidth}{llc S[table-format=1.1e1]}
+    \begin{tabular}{llc S[table-format=1.1e1]}
         \toprule
         \textsc{Method}                    & \textsc{Reference}                                         & \textsc{Dominating scaling}                                       & \multicolumn{1}{c}{\textsc{Example values}}  \\
         \midrule
@@ -614,9 +613,9 @@ Typical time-domain methods include the simulation of the underlying physical pr
         \acrshort{ff} (\Hspace, explicit)  & \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}      & $n_{\Delta t} n_\omega n_\alpha (d^{2} + d^{b})$                  & 1.4e7 \\
         \acrshort{ff} (\Lspace, concat.)   & \cref{eq:ff:control_matrix:sequence:freq}                  & $G n_\omega n_\alpha d^{4} + G d^{2b}$                            & 2.4e6 \\
         \acrshort{ff} (\Hspace, concat.)   & \cref{eq:ff:control_matrix:sequence:freq}                  & $G n_\omega n_\alpha d^b$                                         & 7.8e5 \\
-        \acrshort{ff} (\Lspace, periodic)  & \cref{eq:ff:control_matrix:sequence:periodic:simplified}   & $n_\omega (n_\alpha d^{4} + d^{2b} + d^{2b}\log{G})$              & 1.0e5 \\
+        \acrshort{ff} (\Lspace, periodic)  & \cref{eq:ff:control_matrix:sequence:periodic:simplified}   & $n_\omega (n_\alpha d^{4} + d^{2b}[1 + \log{G}])$              & 1.0e5 \\
         \bottomrule
-    \end{tabularx}
+    \end{tabular}
 \end{table*}
 
 By contrast, the computational cost of the filter function formalism as realized by \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} is independent of the form of the spectrum.
@@ -629,20 +628,20 @@ In this case the Hadamard product ($\sim d^2$) as well as matrix multiplication 
 We thus find this method to scale with $\sim n_{\Delta t} n_\omega n_\alpha (d^2 + d^b)$.
 
 \Cref{fig:ff:performance:MC_vs_FF} shows exemplary wall times for both methods and $d\in[2,120]$ that confirm our expectation.
-Only for about $d\approx\num{100}$ the overhead from the extra time steps and trajectories over which is averaged is compensated for MC.
-For smaller dimensions the calculation using FFs is faster by almost two orders of magnitude (see the inset showing the same data in a log-log plot).
+Only for about $d\approx\num{100}$ the overhead from the extra time steps and trajectories over which is averaged is compensated for \gls{mc}.
+For smaller dimensions the calculation using \glspl{ff} is faster by almost two orders of magnitude (see the inset showing the same data in a log-log plot).
 The lines show fits to $t = a d^b$.
 The data is not quite in the asymptotic regime due to limited memory so that even for large dimension terms of lower power in $d$ contribute significantly to the run time.
 Even though this causes the fits to underestimate the exponent $b$, the general trend agrees with our expectation.
 Note that the crossover does not always occur at the same dimension $d$.
 On a different system with an \fastprocessor the \gls{ff} method outperformed \gls{mc} even for $d = 120$ beyond which available memory limited the simulation.
 
-\begin{figure}[tbp]
+\begin{figure*}
     \centering
-    \includegraphics{img/pdf/filter_functions/benchmark_MC_vs_FF}
+    \includegraphics[width=\textwidth]{img/pdf/filter_functions/benchmark_MC_vs_FF}
     \caption[\imgsource{img/py/filter_functions/benchmark_monte_carlo.py}]{
         Performance of the formalism using \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} compared to a Monte Carlo method for a single gate as a function of problem dimension $d$.
-        Parameters are: $n_{\Delta t} = \num{1}, n_\alpha = 3, n_\mr{MC} = 100, f_\mr{UV} = \flatfrac{10^2}{\Delta t}, n_\omega = \num{500}$ where $n_\alpha$ is the number of noise operators considered, $n_\mr{MC}$ the number of Monte Carlo trajectories over which is averaged, and $n_\omega$ the number of frequency samples.
+        Parameters are: $n_{\Delta t} = \num{1}, n_\alpha = 3, n_\mr{MC} = 100, f_\mr{UV} = 10^2/\Delta t, n_\omega = \num{500}$ where $n_\alpha$ is the number of noise operators considered, $n_\mr{MC}$ the number of Monte Carlo trajectories over which is averaged, and $n_\omega$ the number of frequency samples.
         The calculation using filter functions clearly outperforms \gls{mc} for small system sizes.
         For dimensions larger than $d\approx\num{100}$ (roughly equivalent to 7 qubits) Monte Carlo (blue squares) performs better than the \gls{ff} calculation with transfer matrices (green triangles) for this set of parameters and processor due to the better scaling behavior.
         Using conjugation by unitaries (orange diamonds) significantly outperforms \gls{mc} also for large dimensions.
@@ -650,7 +649,7 @@ On a different system with an \fastprocessor the \gls{ff} method outperformed \g
         The inset shows the same data on a linear scale, highlighting the different scaling behaviors for large $d$.
     }
     \label{fig:ff:performance:MC_vs_FF}
-\end{figure}
+\end{figure*}
 
 Quantifying the performance gain from using the control matrices' concatenation property to calculate fidelities of gate sequences is more difficult since it strongly depends on the number of gates occurring multiple times in the sequence (enabling reuse of precomputed control matrices) as well as the complexity of the individual gates.
 The evaluation using the concatenation rule \cref{eq:ff:control_matrix:sequence:freq} performs asymptotically worse than the evaluation for a complete pulse according to \cref{eq:ff:control_matrix:pulse:freq:ff:calculation} because of higher powers of $d$ dominating the calculation in the former case.

@@ -210,7 +210,7 @@ ins_ax = ax.inset_axes((0.46, 0.1, 0.45, 0.44))
 
 for dt, popt, space, sty in zip([dt_MC, dt_FF_H, dt_FF_L],
                                 [popt_MC, popt_FF_H, popt_FF_L],
-                                ['MC', r'FF ($\mathsf{{H}}$)', r'FF ($\mathsf{{L}}$)'],
+                                ['MC', r'FF ($\mathscr{{H}}$)', r'FF ($\mathscr{{L}}$)'],
                                 cycle):
     ax.loglog(dims_plot, f(dims_plot, *popt), color=sty['color'])
     ax.loglog(dims, dt, label=rf'{space}: $\mathcal{{O}}(d^{{{popt[1]:.2f}}})$',

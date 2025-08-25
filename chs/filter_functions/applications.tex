@@ -291,7 +291,11 @@ Note that the circuit could be compressed in time by parallelizing some operatio
     \input{img/tikz/circuits/qft}
     \bigskip
     \includegraphics{img/pdf/filter_functions/qft_filter_function}
-    \caption[\imgsource{img/tikz/circuits/qft.tex}\imgsource{img/py/filter_functions/quantum_fourier_transform.py}]{
+    \caption[
+        \imgsource{img/tikz/circuits/qft.tex}
+        \protect\newline
+        \imgsource{img/py/filter_functions/quantum_fourier_transform.py}
+    ]{
         Top: Circuit for a \gls{qft} on four qubits with nearest-neighbor coupling.
         Labels next to the wires indicate the qubit index, showing that the final SWAP operation has already been carried out.
         Bottom: Filter functions for noise operators on the first qubit ($i = 0$).
