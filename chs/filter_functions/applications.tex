@@ -215,9 +215,9 @@ for small gate errors $r\ll 1$ since this is the regime which we can efficiently
 
 We simulate single-qubit \gls{srb} experiments using three different gate sets to generate the 24 elements of the Clifford group.
 For the first gate set we implement the group by naive \enquote{single} rotations about the symmetry axes of the cube.
-Each pulse corresponds to a single time segment during which one rotation is performed so that the $j$th element is given by $Q_j = \exp(-\i\phi_j\vec{n}_j\cdot\vec{\sigma})$.
+Each pulse corresponds to a single time segment during which one rotation is performed so that the $j$th element is given by $Q_j = \exp(-\i\phi_j\bvec{n}_j\cdot\bvec{\sigma})$.
 We compile the other two gate sets from primitive $\flatfrac{\pi}{2}$ $x$- and $y$-rotations so that on average each Clifford gate consists of \num{3.75} primitive gates (see~\citer{Cerfontaine2020}).
-For the specific implementation of the primitive $\flatfrac{\pi}{2}$-gates we compare \enquote{naive} rotations, \ie with a single time segment so that $Q_j = \exp-\i\pi\sigma_j/4)$ for $j\in\lbrace x, y\rbrace$, and the \enquote{optimized} gates from~\citer{Cerfontaine2020b}.
+For the specific implementation of the primitive $\flatfrac{\pi}{2}$-gates we compare \enquote{naive} rotations, \ie with a single time segment so that $Q_j = \exp(-\i\pi\sigma_j/4)$ for $j\in\lbrace x, y\rbrace$, and the \enquote{optimized} gates from~\citer{Cerfontaine2020b}.
 Pulse durations are chosen such that the average duration of all 24 Clifford gates generated from a single gate set is equal for all three gate sets.
 This is to ensure that the different implementations of the Clifford gates are sensitive to the same noise frequencies.
 
@@ -227,7 +227,7 @@ For the integral in \cref{eq:ff:decay_amplitudes:freq} we choose the ultraviolet
 Similarly, the infrared cutoff is chosen as $f_\mr{IR} = 10^{-2}/m_\mr{max}\tau_\mr{max}$ with $m_\mr{max} = 101$ and $\tau_\mr{max} = 7\tau_\mr{min}$ (since the longest gate is compiled from seven primitive gates with duration $\tau_\mr{min}$) to guarantee that all nontrivial structure of the filter functions is resolved at small frequencies.\sidenote{
     For a precise fidelity estimate, the infrared cutoff should be extended to $f=0$.
     However, we are only interested in a qualitative picture and neglect this part of the spectrum here.
-    At frequencies much smaller than $\approx\flatfrac{1}{\tau}$ where $\tau$ is the duration of the entire control operation, the filter function is constant and we therefore do not disregard any interesting features by setting $f_\mr{IR} = \flatfrac{10^{-2}}{\tau} = \flatfrac{10^{-2}}{m_\mr{max}\tau_\mr{max}}$.
+    At frequencies much smaller than $\approx\flatfrac{1}{\tau}$ where $\tau$ is the duration of the entire control operation, the filter function is constant and we therefore do not disregard any interesting features by setting $f_\mr{IR} = 10^{-2}/\tau = 10^{-2}/m_\mr{max}\tau_\mr{max}$.
 }
 %adequately.
 Finally, we fit \cref{eq:ff:fidelity:state:RB:fit} to the infidelities computed for the different noise spectra.
@@ -238,10 +238,10 @@ Hence, fitting the zeroth-order \gls{srb} model to such data will not reveal the
 We note that~\citerr{Epstein2014}{Ball2016} found similar results using different methods for \oneoverf and perfectly correlated DC noise, respectively.
 The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the latter found the mean of the \gls{srb} fidelity distribution to deviate from the mode, thereby giving rise to incorrectly estimated fidelities.
 
-\begin{figure}[tbp]
+\begin{figure*}
     \centering
-    \includegraphics{img/pdf/filter_functions/RB_naive-optimized-single_gates_white_vs_correl_with_Z_noise_inset}
-    \caption{
+    \includegraphics{img/pdf/filter_functions/randomized_benchmarking}
+    \caption[\imgsource{img/py/filter_functions/randomized_benchmarking.py}]{
         Simulation of a \gls{srb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
         Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{srb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
         Errorbars show the standard deviation of the \gls{srb} sequence fidelities, illustrating that for the \enquote{single} gate set noise correlations can lead to amplified destructive and constructive interference of errors.
@@ -253,7 +253,7 @@ The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the 
         Inset: contributions from \sz-noise show that the sequence fidelity can be better than expected for certain gate types and noise channels.
     }
     \label{fig:ff:randomized_benchmarking:noise_comparison}
-\end{figure}
+\end{figure*}
 
 On top of affirming the findings by the references, our results demonstrate that the accuracy of the predictions made by \gls{srb} theory, \ie that the \gls{rb} decay rate directly corresponds to the average error rate of the gates, not only depends on the gate implementation but also on which error channels are assumed.
 This can be seen from the inset of \cref{fig:ff:randomized_benchmarking:noise_comparison}(b), where only dephasing noise (\sz) contributions are shown.

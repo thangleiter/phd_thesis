@@ -6,15 +6,15 @@ import pathlib
 from time import perf_counter
 
 import filter_functions as ff
-import lindblad_mc_tools as lmt
 import matplotlib.pyplot as plt
 import numpy as np
 from cycler import cycler
 from filter_functions import util
-from numpy import linalg as nla, ndarray
+from numpy import ndarray
 from qutil import linalg as qla, math
 from qutil.plotting.colors import RWTH_COLORS
 from scipy.optimize import curve_fit
+from scipy import linalg as sla
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
@@ -25,7 +25,7 @@ DATA_PATH = PATH.parent / 'data/filter_functions'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/filter_functions'
 SAVE_PATH.mkdir(exist_ok=True)
-RUN_BENCHMARK = os.environ.get('RUN_BENCHMARK', 'False') == 'True'
+RUN_SIMULATION = os.environ.get('RUN_SIMULATION', 'False') == 'True'
 
 init(MAINSTYLE, backend := 'pgf')
 # %% Functions
@@ -55,9 +55,11 @@ def monte_carlo_gate(N_MC: int, S0: float, f_min: float, f_max: float,
                      dt: ndarray, T: float, alpha: float, c_opers: ndarray,
                      c_coeffs: ndarray, n_opers: ndarray, n_coeffs: ndarray,
                      loop: bool = True, seed: int | None = None, threads: int = 1):
+    import lindblad_mc_tools as lmt
 
     def evolution(H, dt):
-        HD, HV = nla.eigh(H)
+        # np.linalg.eigh (2.2.6) sometimes does not converge
+        HD, HV = sla.eigh(H, overwrite_a=True)
 
         P = np.einsum('...lij,...jl,...lkj->...lik',
                       HV, util.cexp(-np.asarray(dt)*HD.swapaxes(-1, -2)),
@@ -91,7 +93,8 @@ def monte_carlo_gate(N_MC: int, S0: float, f_min: float, f_max: float,
         return evolution(H, dt_fast)
 
 
-def benchmark(d_max=20, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42, threads=1, alpha=0):
+def run_simulation(d_max=120, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42, threads=1,
+                   alpha=0):
     dims = np.arange(2, d_max+1, 2)
     rng = np.random.default_rng(seed)
 
@@ -174,8 +177,8 @@ def benchmark(d_max=20, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42, threa
 
 
 # %% Run benchmark
-if RUN_BENCHMARK:
-    benchmark()
+if RUN_SIMULATION:
+    run_simulation()
 
 # %% Load data
 with np.load(DATA_PATH / 'benchmark_MC_vs_FF_20200526-153408.npz') as arch:
