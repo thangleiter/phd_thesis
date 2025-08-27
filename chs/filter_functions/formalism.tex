@@ -19,7 +19,7 @@ It is also known as the transfer matrix representation and we will use the terms
 We now briefly review the concept and refer the reader to the literature for further details.
 Concretely, the Liouville representation of an operation $\qp: \rho\rightarrow\qp(\rho)$ acting on density operators in a Hilbert space \Hspace of dimension $d$ is given by
 \begin{equation}\label{eq:ff:liouville_representation}
-\qp_{ij}\doteq\tr(C_i\adjoint\qp(C_j))
+    \qp_{ij}\doteq\tr(C_i\adjoint\qp(C_j))
 \end{equation}
 with an operator basis $\basis=\lbrace C_0, C_1, \dotsc, C_{d^2-1}\rbrace$ for the space of linear operators over \Hspace, $\mathsf{L}(\Hspace)$, orthonormal with respect to the Hilbert-Schmidt product $\dotHS{A}{B}\coloneqq\tr(A\adjoint B)$.
 In the case that the operator basis corresponds to the Pauli matrices \cref{eq:ff:liouville_representation} is known as the \gls{ptm}.
@@ -76,8 +76,8 @@ In a widely used setting electrons confined in solid-state quantum dots are mani
 Since the dominant physical noise source affecting this control is charge noise, one could include the effect on $J(\eps)$ to first order with $s_\eps(t)=\pdv*{J(\eps(t))}{\eps(t)}$ so that $\Hn(t) = b_\eps(t) B_\eps(t)  =  b_\eps(t) s_\eps(t) B_\eps$ for some operator $B_\eps$ which represents the exchange coupling.
 
 We proceed in our derivation by noting that the control Hamiltonian $\Hc$ gives rise to the noise-free Liouville--von Neumann equation
-\begin{equation}\label{liouville-von-neumann}
-\dv{\rho(t)}{t} = -\i\comm{\Hc(t)}{\rho(t)} =  -\i\Lc(t)\rho(t)
+\begin{equation}\label{eq:liouville-von-neumann}
+    \dv{\rho(t)}{t} = -\i\comm{\Hc(t)}{\rho(t)} =  -\i\Lc(t)\rho(t)
 \end{equation}
 on the Hilbert space \Hspace with the Liouvillian superoperator $\Lc(t)$ representing the control.
 Analogous to the Schrödinger equation we may also write this differential equation in terms of time evolution superoperators (superpropagators), $\dv*{\liouvUc(t)}{t} = -\i\Lc(t)\liouvUc(t)$ where the action of \liouvUc on a state $\rho$ is to be understood as $\liouvUc\!: \rho\rightarrow\Uc\rho\Uc\adjoint$ with \Uc the usual time evolution operator satisfying the corresponding Schrödinger equation.
@@ -89,7 +89,7 @@ Next, we transform the noise Liouvillian \Ln to the interaction picture with res
 \end{gather}
 \Cref{eq:ff:le:interaction_picture} may be formally solved using the \acrlong{me}~\cite{Magnus1954} so that at time $t=\tau$
 \begin{equation}\label{eq:ff:error_propagator}
-\liouvUe(\tau) = \exp(-\i\tau\Li_\mr{eff}(\tau))
+    \liouvUe(\tau) = \exp(-\i\tau\Li_\mr{eff}(\tau))
 \end{equation}
 with $\Li_\mr{eff}(\tau) = \sum_{n=1}^\infty\Li_{\mr{eff},n}(\tau)$.
 A sufficient criterion for the convergence of the expansion is given by~\citet{Moan1999} as $\int_0^\tau\dd{t}\norm*{\Lnt(t)} < \pi$ where $\norm{\placeholder} = \sqrt{\dotHS{\placeholder}{\placeholder}}$ is the Frobenius (Hilbert-Schmidt) norm.
@@ -109,7 +109,7 @@ Here, we only state that $\Li_{\mr{eff},n}\sim\xi^n$ (see also~\citer{Green2013}
 We have suggestively written the \gls{me} in terms of an effective Liouvillian $\Li_\mr{eff} = \comm{H_\mr{eff}}{\placeholder}$ to interpret it as the generator of a \emph{time}-averaged evolution of a single noise realization up to time $\tau$.
 In order to obtain the \emph{ensemble}-averaged evolution of many realizations of the stochastic Hamiltonian in \cref{eq:ff:hamiltonian:noise}, we apply the cumulant expansion to \liouvUe (see also~\citerr{Beaudoin2015}{Willick2018}),
 \begin{equation}\label{eq:ff:cumulant_expansion}
-\ev*{\liouvUe(\tau)} = \ev{\exp(-\i\tau\Li_\mr{eff}(\tau))} \eqqcolon \exp\cumulantfun(\tau)
+    \ev*{\liouvUe(\tau)} = \ev{\exp(-\i\tau\Li_\mr{eff}(\tau))} \eqqcolon \exp\cumulantfun(\tau)
 \end{equation}
 with $\ev{\placeholder}$ denoting the ensemble average\sidenote{
     The ensemble average represents the expectation value over identical repetitions of an operation in an experiment.
@@ -118,7 +118,7 @@ with $\ev{\placeholder}$ denoting the ensemble average\sidenote{
 and the cumulant function~\cite{Kubo1962}
 \begin{align}
     \cumulantfun(\tau) &= \sum_{k=1}^\infty\frac{(-\i\tau)^k}{k!}\ev{\Li_\mr{eff}(\tau)^k}_\mr{c} \\
-    &= \sum_{k=1}^\infty\frac{(-\i\tau)^k}{k!}\ev{\left[\sum_{n=1}^\infty \Li_{\mr{eff},n}(\tau)\right]^k}_\mr{c}. \label{eq:ff:cumulant}
+                       &= \sum_{k=1}^\infty\frac{(-\i\tau)^k}{k!}\ev{\left[\sum_{n=1}^\infty \Li_{\mr{eff},n}(\tau)\right]^k}_\mr{c}. \label{eq:ff:cumulant}
 \end{align}
 The notation $\ev{\placeholder}_\mr{c}$ denotes the cumulant average which prescribes a certain averaging operation.
 The first cumulant of a set of random variables $\{X_i(t)\}_i$ is simply the expectation value, $\ev*{X_i(t)}_\mr{c} = \ev*{X_i(t)}$, whereas the second cumulant corresponds to the covariance, $\ev*{X_i(t)X_j(t)}_\mr{c} = \ev*{X_i(t)X_j(t)} - \ev*{X_i(t)}\ev*{X_j(t)}$.
@@ -147,9 +147,9 @@ To see this, we insert the explicit forms of the \gls{me} given in \cref{eq:ff:m
 Together with $\comm{\mc{L}}{\mc{L}'} = \comm{\comm{H}{H'}}{\placeholder}$ and $\mc{L}\mc{L}' = \comm{H}{\comm{H'}{\placeholder}}$, we find that
 \begin{align}
     \cumulantfun(\tau) = -\frac{1}{2}\sum_{\alpha\beta}\Biggl(\int_0^\tau\dd{t_1}\int_0^{t_1}\dd{t_2}
-    \expval{b_\alpha(t_1) b_\beta(t_2)} & \comm{\comm{\tilde{B}_\alpha(t_1)}{\tilde{B}_\beta(t_2)}}{\placeholder} \notag\\
-    +\int_0^\tau\dd{t_1}\int_0^\tau\dd{t_2}
-    \expval{b_\alpha(t_1) b_\beta(t_2)} & \comm{\tilde{B}_\alpha(t_1)}{\comm{\tilde{B}_\beta(t_2)}{\placeholder}}\Biggr), \label{eq:ff:cumulant:truncated:substituted}
+        \expval{b_\alpha(t_1) b_\beta(t_2)} & \comm{\comm{\tilde{B}_\alpha(t_1)}{\tilde{B}_\beta(t_2)}}{\placeholder} \notag\\
+        +\int_0^\tau\dd{t_1}\int_0^\tau\dd{t_2}
+        \expval{b_\alpha(t_1) b_\beta(t_2)} & \comm{\tilde{B}_\alpha(t_1)}{\comm{\tilde{B}_\beta(t_2)}{\placeholder}}\Biggr), \label{eq:ff:cumulant:truncated:substituted}
 \end{align}
 where $\Bat(t) = \Uc\adjoint(t)\Ba(t)\Uc(t)$ are the noise operators of \cref{eq:ff:hamiltonian:noise} in the interaction picture.
 $\ev{b_\alpha(t_1)b_\beta(t_2)}$ is the cross-correlation function of noise sources $\alpha$ and $\beta$ which we will later relate to the spectral density.
@@ -160,11 +160,11 @@ For now, we stay in the time domain and introduce an orthonormal and Hermitian o
 where we choose $C_0 = d^{-\flatfrac{1}{2}}\eye$ for convenience so that the remaining elements are traceless.
 In order to separate the commutators from the time-dependence and hence the integral in \cref{eq:ff:cumulant:truncated:substituted}, we expand the noise operators in this basis so that
 \begin{equation}\label{eq:ff:noise_operators:expanded}
-\Bat(t) \eqqcolon \sum_k\ctrlmat_{\alpha k}(t) C_k.
+    \Bat(t) \eqqcolon \sum_k\ctrlmat_{\alpha k}(t) C_k.
 \end{equation}
 The expansion coefficients $\ctrlmat_{\alpha k}(t)\in\mathbb{R}$ are given by the inner product of a noise operator in the interaction picture on the one hand and a basis element on the other:
 \begin{equation}\label{eq:ff:control_matrix}
-\ctrlmat_{\alpha k}(t) = \langle\Bat(t), C_k\rangle  = \tr(\Uc\adjoint(t)\Ba(t)\Uc(t)C_k).
+    \ctrlmat_{\alpha k}(t) = \langle\Bat(t), C_k\rangle  = \tr(\Uc\adjoint(t)\Ba(t)\Uc(t)C_k).
 \end{equation}
 In line with~\citet{Green2013}, we call these coefficients the control matrix (see also~\citerr{Byrd2002}{Clausen2010}).
 In the transfer matrix (superoperator) picture we can take up the following interpretation for the control matrix by virtue of the cyclicity of the trace: it describes a mapping of a state, represented by the basis element $C_k$ and subject to the control operation $\liouvUc(t): C_k\rightarrow\Uc(t) C_k\Uc\adjoint(t)$, onto the noise operator $\Ba(t)$.
@@ -177,7 +177,7 @@ To see this, we recall the definition of the Liouville representation in \cref{e
 Finally, we insert the expanded noise operators given by \cref{eq:ff:noise_operators:expanded} and obtain the Liouville representation of the cumulant function,
 \begin{equation}
     \cumulantfun_{ij}(\tau) \eqqcolon -\frac{1}{2}\sum_{\alpha\beta} \sum_{kl}\left(
-                                                                                  f_{ijkl}\freqshifts_{\alpha\beta,kl} + g_{ijkl}\decayamps_{\alpha\beta,kl}
+        f_{ijkl}\freqshifts_{\alpha\beta,kl} + g_{ijkl}\decayamps_{\alpha\beta,kl}
     \right). \label{eq:ff:cumulant:truncated:liouville}
 \end{equation}
 Here, we captured the ordering of the noise operators due to the commutators in \cref{eq:ff:cumulant:truncated:substituted} in the coefficients $f_{ijkl}$ and $g_{ijkl}$.
@@ -185,13 +185,13 @@ These are trivial functions of the fourth order trace tensor\sidenote{
     Note the similarity to the relationship of a transfer matrix with the $\chi$--matrix, $\qp_{ij} = \sum_{kl}\chi_{kl} T_{i k j l}$, with $\chi_{kl}$ defined by $\qp(\rho) = \sum_{kl}\chi_{kl} C_k\rho C_l$ or, in terms of the Kraus operators $K_i$ of the quantum operation, $\chi_{kl} = \sum_i \tr(K_i C_k) \mr{tr}(K_i\adjoint C_l)  = \left[\sum_i\dop{K_i}{K_i}\right]_{kl}$~\cite{Greenbaum2015}.
 }
 \begin{equation}\label{eq:ff:trace_tensor}
-T_{ijkl} = \tr(C_i C_j C_k C_l)
+    T_{ijkl} = \tr(C_i C_j C_k C_l)
 \end{equation}
 given by
 \begin{subequations}
     \begin{align}\label{eq:ff:structure_constants}
-    f_{ijkl} &= T_{klji} - T_{lkji} - T_{klij} + T_{lkij}\qand \\
-    g_{ijkl} &= T_{klji} - T_{kjli} - T_{kilj} + T_{kijl}.
+        f_{ijkl} &= T_{klji} - T_{lkji} - T_{klij} + T_{lkij}\qand \\
+        g_{ijkl} &= T_{klji} - T_{kjli} - T_{kilj} + T_{kijl}.
     \end{align}
 \end{subequations}
 Furthermore, we introduced the frequency (Lamb) shifts \freqshifts and decay amplitudes \decayamps which contain all information on the noise and qubit dynamics as captured by the control matrix $\ctrlmat(t)$:
@@ -208,10 +208,10 @@ The approximation of~\citer{Cerfontaine2021} is obtained by expanding the expone
 
 For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{sec:app:ff:derivations:cumulant:pauli})
 \begin{equation}\label{eq:ff:cumulant:truncated:liouville:pauli}
-\cumulantfun_{ij}(\tau) = \begin{cases}
-                              - \sum_{k\neq i}\decayamps_{kk}                         &\qif* i = j,   \\
-                              - \freqshifts_{ij} + \freqshifts_{ji} + \decayamps_{ij} &\qif* i\neq j,
-\end{cases}
+\cumulantfun_{ij}(\tau) = \begin{dcases}
+    - \sum_{k\neq i}\decayamps_{kk}                         &\qif* i = j,   \\
+    - \freqshifts_{ij} + \freqshifts_{ji} + \decayamps_{ij} &\qif* i\neq j,
+\end{dcases}
 \end{equation}
 for $i,j > 0$ and any $\alpha,\beta$.
 As mentioned in \cref{sec:ff:theory:transfer_matrix} the cases $j = 0$ and $i = 0$ encode trace-preservation and unitality, respectively, and as such $\cumulantfun_{0j} = \cumulantfun_{i0} = 0$ since our model is both trace-preserving and unital.
@@ -230,25 +230,25 @@ In the second case, as was shown by~\citet{Green2013}, one can calculate the con
 
 We start by noting that, because we assumed the noise fields $b_\alpha(t)$ to be wide-sense stationary, that is to say the cross-correlation functions evaluated at two different points in time $t_1$ and $t_2$ depend only on their difference $t_1 - t_2$, we can define the two-sided noise power spectral density $S_{\alpha\beta}(\omega)$ as the Fourier transform of the cross-correlation functions $\expval*{b_\alpha(t_1) b_\beta(t_2)}$,
 \begin{equation}\label{eq:ff:spectral_density}
-\expval{b_\alpha(t_1) b_{\beta}(t_2)} = \int_{-\infty}^{\infty}\ddf{\omega} S_{\alpha\beta}(\omega)\e^{-\i\omega (t_1 - t_2)}.
+    \expval{b_\alpha(t_1) b_{\beta}(t_2)} = \int_{-\infty}^{\infty}\ddf{\omega} S_{\alpha\beta}(\omega)\e^{-\i\omega (t_1 - t_2)}.
 \end{equation}
 Note that the spectrum only characterizes the noise fully in the case of Gaussian noise.
 For non-Gaussian components in the noise, additional polyspectra have in principle to be considered for higher-order correlation functions~\cite{Norris2016}.
 However, since we only discuss second-order contributions which involve two-point correlation functions here, we only need to take $S_{\alpha\beta}(\omega)$ into account.
 Inserting the definition of the spectral density into \cref{eq:ff:decay_amplitudes:time}, one finds
 \begin{equation}\label{eq:ff:decay_amplitudes:freq}
-\decayamps_{\alpha\beta,kl} = \int_{-\infty}^{\infty}\ddf{\omega}\ctrlmat^\ast_{\alpha k}(\omega)S_{\alpha\beta}(\omega)\ctrlmat_{\beta l}(\omega)
+    \decayamps_{\alpha\beta,kl} = \int_{-\infty}^{\infty}\ddf{\omega}\ctrlmat^\ast_{\alpha k}(\omega)S_{\alpha\beta}(\omega)\ctrlmat_{\beta l}(\omega)
 \end{equation}
 with $\ctrlmat(\omega) = \int_0^\tau\dd{t}\ctrlmat(t)\e^{\i\omega t}$ the frequency-domain control matrix.
 Note that $\ctrlmat^\ast(\omega) = \ctrlmat(-\omega)$ because $\ctrlmat(t)$ is real.
 In the above equation, the fourth order tensor
 \begin{equation}\label{eq:ff:filter_function:generalized}
-\FF_{\alpha\beta,kl}(\omega)\coloneqq\ctrlmat^\ast_{\alpha k}(\omega)\ctrlmat_{\beta l}(\omega)
+    \FF_{\alpha\beta,kl}(\omega)\coloneqq\ctrlmat^\ast_{\alpha k}(\omega)\ctrlmat_{\beta l}(\omega)
 \end{equation}
 is the generalized filter function that captures the susceptibility of the decay amplitudes to noise at frequency $\omega$.
 For $\alpha = \beta, k = l$, and by summing over the basis elements,
 \begin{equation}\label{eq:ff:filter_function:fidelity}
-\FF_{\alpha}(\omega) = \sum_k\bigl\lvert\ctrlmat_{\alpha k}(\omega)\bigr\rvert^2 = \tr(\Bat\adjoint(\omega)\Bat(\omega)),
+    \FF_{\alpha}(\omega) = \sum_k\bigl\lvert\ctrlmat_{\alpha k}(\omega)\bigr\rvert^2 = \tr(\Bat\adjoint(\omega)\Bat(\omega)),
 \end{equation}
 and this tensor reduces to the canonical \emph{fidelity} filter function~\cite{Green2012} from which the entanglement fidelity can be obtained, see \cref{subsec:ff:theory:derived_quantities:entanglement_fidelity}.
 Thus, if the frequency-domain control matrix $\ctrlmat_{\alpha k}(\omega)$ for noise source $\alpha$ and basis element $k$ is known, the transfer matrix can be evaluated by integrating \cref{eq:ff:decay_amplitudes:freq}.
@@ -280,11 +280,11 @@ A sequence of $G$ gates with propagators $P_g = \Uc(t_g, t_{g-1}), g\in\lbrace 1
 The cumulative propagator of the sequence up to time $t_g$ is then given by $Q_g = \prod_{g^\prime=g}^0 P_{g^\prime}$ with $P_0 = \eye$ and its Liouville representation denoted by $\liouvQ\gth{g}$.
 Furthermore, the control matrix of the $g$ pulse at the time $t - t_{g-1}$ relative to the start of segment $g$ is
 \begin{equation}\label{eq:ff:control_matrix:pulse:time}
-\ctrlmat\gth{g}_{\alpha k}(t - t_{g-1}) = \tr(\Uc\adjoint(t, t_{g-1})B_\alpha(t - t_{g-1}) \Uc(t, t_{g-1}) C_k).
+    \ctrlmat\gth{g}_{\alpha k}(t - t_{g-1}) = \tr(\Uc\adjoint(t, t_{g-1})B_\alpha(t - t_{g-1}) \Uc(t, t_{g-1}) C_k).
 \end{equation}
 We can now exploit the fact that in the transfer matrix picture quantum operations compose by matrix multiplication to write the total control matrix at time $t\in (t_{g-1}, t_g]$ as
 \begin{equation}\label{eq:ff:control_matrix:sequence:time}
-\ctrlmat(t) = \ctrlmat\gth{g}(t - t_{g-1})\liouvQ\gth{g-1}.
+    \ctrlmat(t) = \ctrlmat\gth{g}(t - t_{g-1})\liouvQ\gth{g-1}.
 \end{equation}
 The Fourier transform of \cref{eq:ff:control_matrix:sequence:time} can then be obtained by evaluating the transform of each gate separately,
 \begin{gather}
@@ -302,14 +302,14 @@ As we have seen, the total control matrix of a composite pulse sequence is given
 Since $\ctrlmat(\omega)$ enters \cref{eq:ff:decay_amplitudes:freq} twice, this leads to correlation terms between two gates at different positions in the sequence when computing the total decay amplitudes $\decayamps_{\alpha\beta,kl}$.
 Inserting \cref{eq:ff:control_matrix:sequence:freq} into \cref{eq:ff:decay_amplitudes:freq} gives
 \begin{align}\label{eq:ff:decay_amplitudes:pulse_correlation}
-        \decayamps_{\alpha\beta,kl} &= \begin{aligned}[t]
-            \sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} &
-            \bigl[\liouvQ\gthv{g^\prime-1}{\dagger}\ctrlmat\gthv{g^\prime}{\dagger}(\omega)\bigr]_{k\alpha}
-            S_{\alpha\beta}(\omega)
-            \bigl[\ctrlmat\gth{g}(\omega)\liouvQ\gth{g-1}\bigr]_{\beta l} \\
-            &\times\e^{\i\omega(t_{g-1} - t_{g^\prime-1})} \\
-        \end{aligned} \notag\\
-        &\eqqcolon\sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)
+    \decayamps_{\alpha\beta,kl} &= \begin{aligned}[t]
+        \sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} &
+        \bigl[\liouvQ\gthv{g^\prime-1}{\dagger}\ctrlmat\gthv{g^\prime}{\dagger}(\omega)\bigr]_{k\alpha}
+        S_{\alpha\beta}(\omega)
+        \bigl[\ctrlmat\gth{g}(\omega)\liouvQ\gth{g-1}\bigr]_{\beta l} \\
+        &\times\e^{\i\omega(t_{g-1} - t_{g^\prime-1})} \\
+    \end{aligned} \notag\\
+    &\eqqcolon\sum_{g,g^\prime=1}^{G}\int_{-\infty}^\infty\ddf{\omega} S_{\alpha\beta}(\omega) \FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)
 \end{align}
 where we defined the pulse correlation filter function $\FF_{\alpha\beta,kl}\gth{gg^\prime}(\omega)$ that captures the temporal correlations between pulses at different positions $g$ and $g'$ in the sequence.
 Unlike regular filter functions, these can be negative for $g\neq g^\prime$ and therefore reduce the overall noise susceptibility of a sequence given by $\FF(\omega) = \sum_{gg^\prime}\FF\gth{gg^\prime}(\omega)$.
@@ -325,7 +325,7 @@ This allows carrying out the Fourier transform of the control matrix \cref{eq:ff
 We divide the total duration of the control operation, $\tau$, into $G$ intervals $(t_{g-1}, t_{g}]$ of duration $\Delta t_g$ with $g\in\lbrace 0,\dotsc,G\rbrace$ and $t_0 =  0, t_G = \tau$.
 We then approximate the control Hamiltonian as constant within each interval so that within the $g$
 \begin{align}\label{eq:ff:hamiltonian:control:piecewise}
-\Hc(t) = \Hc\gth{g} = \mr{const.}
+    \Hc(t) = \Hc\gth{g} = \mr{const.}
 \end{align}
 and similarly the deterministic time dependence of the noise operators as $\Ba(t) = s_\alpha(t)\Ba = s_\alpha\gth{g}\Ba$.
 Under this approximation we can diagonalize the time-independent Hamiltonians $\Hc\gth{g}$ with eigenvalues $\omega_i\gth{g}$ numerically and write the time evolution operator that solves the noise-free Schrödinger equation as $\Uc(t, t_{g-1}) = V\gth{g}D\gth{g}(t, t_{g-1})V\gthv{g}{\dagger}$.
@@ -421,22 +421,22 @@ It represents the fidelity between an implementation \liouvU and the ideal gate 
 Since $\avgfid(\liouvU, \liouvQ) = \avgfid(\liouvQ\adjoint\circ\liouvU, \eye) = \avgfid(\liouvUe)$, the average gate fidelity can be obtained from the error channel \liouvUe as~\cite{Horodecki1999,Nielsen2002}
 \begin{align}
     \avgfid(\liouvUe) &= \frac{\tr\liouvUe + d}{d(d+1)} \label{eq:ff:fidelity:avg}\\
-    &= \frac{d\times\entfid(\liouvUe) + 1}{d + 1}, \label{eq:ff:fidelity:avg-ent}
+                      &= \frac{d\times\entfid(\liouvUe) + 1}{d + 1}, \label{eq:ff:fidelity:avg-ent}
 \end{align}
 where $d$ is the system dimension and $\entfid(\liouvUe) = d^{-2}\tr\liouvUe$ is the entanglement fidelity.
 In the low-noise regime where \cref{eq:ff:error_transfer_matrix:approx} holds, we can write the entanglement fidelity in terms of the cumulant function $\cumulantfun_{\alpha\beta}$ approximately as
 \begin{align}\label{eq:ff:fidelity:ent}
-\entfid(\liouvUe) &= 1 + \frac{1}{d^2}\sum_{\alpha\beta}\tr\cumulantfun_{\alpha\beta} \\
-&\eqqcolon 1 - \sum_{\alpha\beta}\infid_{\alpha\beta}(\liouvUe).
+    \entfid(\liouvUe) &= 1 + \frac{1}{d^2}\sum_{\alpha\beta}\tr\cumulantfun_{\alpha\beta} \\
+                      &\eqqcolon 1 - \sum_{\alpha\beta}\infid_{\alpha\beta}(\liouvUe).
 \end{align}
 Here, we defined $\infid_{\alpha\beta}$, the infidelity due to a pair of noise sources $(\alpha,\beta)$.
 As we show in \cref{subsec:app:ff:derivations:fidelity}, we can simplify the trace of the cumulant function so that the infidelity reads
 \begin{equation}\label{eq:ff:infidelity:ent}
-\infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
+    \infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{equation}
 \Cref{eq:ff:infidelity:ent} reduces to Eq.~(32) from~\citer{Green2012} for a single qubit ($d=2$) and pure dephasing noise up to a different normalization convention; by pulling the trace through to the generalized filter function $\FF_{\alpha\beta,kl}(\omega)$ in \cref{eq:ff:decay_amplitudes:freq}, we recover the relation (setting $\alpha=\beta$ for simplicity)
 \begin{equation}\label{eq:ff:infidelity:ent:integral}
-\infid_{\alpha} = \frac{1}{d}\int_{-\infty}^\infty\ddf{\omega} S_{\alpha}(\omega) \FF_{\alpha}(\omega)
+    \infid_{\alpha} = \frac{1}{d}\int_{-\infty}^\infty\ddf{\omega} S_{\alpha}(\omega) \FF_{\alpha}(\omega)
 \end{equation}
 with the fidelity filter function $\FF_{\alpha}(\omega)$ given by \cref{eq:ff:filter_function:fidelity}.
 Notably, only the decay amplitudes \decayamps contribute to the fidelity to leading order since the frequency shifts \freqshifts are antisymmetric and therefore vanish under the trace.
@@ -446,11 +446,11 @@ In the context of quantum information processing we are often interested in the 
 We can extract this projective readout probability from the transfer matrix in \cref{eq:ff:error_propagator} by inspecting the transition probability, or state fidelity, between a pure state $\rho = \op{\psi}$ and an arbitrary state $\sigma$ that evolves according to the quantum operation $\qp: \sigma\rightarrow\qp(\sigma)$.
 Using the double braket notation introduced at the beginning of \cref{ch:ff:theory} we then define the state fidelity as
 \begin{equation}\label{eq:ff:fidelity:state}
-\begin{split}
-    \fid(\kpsi, \liouvU(\sigma)) &= \tr(\rho\qp(\sigma)) \\
-    &= \dip{\rho}{\qp(\sigma)} \\
-    & =  \dmel{\rho}{\qp}{\sigma},
-\end{split}
+    \begin{split}
+        \fid(\kpsi, \liouvU(\sigma)) &= \tr(\rho\qp(\sigma)) \\
+                                     &= \dip{\rho}{\qp(\sigma)} \\
+                                     & =  \dmel{\rho}{\qp}{\sigma},
+    \end{split}
 \end{equation}
 where we have expressed the density matrices by vectors on the Liouville space \Lspace and \qp as a transfer matrix.
 We can thus calculate arbitrary pure state fidelities by simple matrix-vector multiplications of the transfer matrices $\qp = \liouvQ\liouvUe$ and the vectorized density matrices $\dket{\rho}$ and $\dket{\sigma}$.
@@ -469,11 +469,11 @@ With the filter function formalism and the transfer matrix of the error process 
 Using the definitions from~\citer{Wood2018} and the double braket notation we can write the leakage rate generated by a quantum operation \qp as
 \begin{subequations}
     \begin{equation}\label{eq:ff:leakage}
-    \leak_c(\qp)\coloneqq\frac{1}{d_c}\dbra{\Pi_\ell}\qp\dket{\Pi_c}
+        \leak_c(\qp)\coloneqq\frac{1}{d_c}\dbra{\Pi_\ell}\qp\dket{\Pi_c}
     \end{equation}
     and the seepage rate as
     \begin{equation}\label{eq:ff:seepage}
-    \leak_\ell(\qp)\coloneqq\frac{1}{d_\ell}\dbra{\Pi_c}\qp\dket{\Pi_\ell}.
+        \leak_\ell(\qp)\coloneqq\frac{1}{d_\ell}\dbra{\Pi_c}\qp\dket{\Pi_\ell}.
     \end{equation}
 \end{subequations}
 Here, $\Pi_{c,\ell}$ are projectors onto the computational and leakage subspaces, respectively, and $d_{c,\ell}$ the corresponding dimensions.
@@ -493,12 +493,12 @@ We start by making the following observations: First, the frequency domain contr
 Moreover, $\e^{\i\omega\Delta t_g} = \e^{\i\omega T}$ for all $g$ so that $\e^{\i\omega t_{g-1}} = \e^{\i\omega T(g - 1)}$ and by the composition property of transfer matrices $\liouvQ\gth{g-1} = [\liouvQ\gth{1}]^{g-1}$ where the superscript without parentheses denotes matrix power.
 We can then simplify \cref{eq:ff:control_matrix:sequence:freq} to read
 \begin{equation}\label{eq:ff:control_matrix:sequence:periodic:explicit}
-\ctrlmat(\omega) = \ctrlmat\gth{1}(\omega)\sum_{g=0}^{G-1}\left[\e^{\i\omega T}\liouvQ\gth{1}\right]^g.
+    \ctrlmat(\omega) = \ctrlmat\gth{1}(\omega)\sum_{g=0}^{G-1}\left[\e^{\i\omega T}\liouvQ\gth{1}\right]^g.
 \end{equation}
 Furthermore, if the matrix $\eye - \e^{\i\omega T}\liouvQ\gth{1}$ is invertible, which is typically the case for the vast majority of values of $\omega$, the previous expression can be rewritten as
 \begin{equation}\label{eq:ff:control_matrix:sequence:periodic:simplified}
-\ctrlmat(\omega) = \ctrlmat\gth{1}(\omega)\Bigl(\eye - \e^{\i\omega T}\liouvQ\gth{1}\Bigr)^{-1}
-\Bigl(\eye - \bigl[\e^{\i\omega T}\liouvQ\gth{1}\bigr]^G\Bigr)
+    \ctrlmat(\omega) = \ctrlmat\gth{1}(\omega)\Bigl(\eye - \e^{\i\omega T}\liouvQ\gth{1}\Bigr)^{-1}
+        \Bigl(\eye - \bigl[\e^{\i\omega T}\liouvQ\gth{1}\bigr]^G\Bigr)
 \end{equation}
 by evaluating the sum as a finite Neumann series.
 \Cref{eq:ff:control_matrix:sequence:periodic:simplified} offers a significant performance benefit over regular concatenation in the case of many periods $G$ as we will show in \cref{sec:ff:performance:complexity}.
@@ -534,7 +534,7 @@ As we are mostly interested in the computational properties, we represent linear
 The $n$-qubit Pauli basis fulfills the requirements set by \cref{eq:ff:basis} and furthermore allows for the simplifications described before.
 In our normalization convention where $\dotHS{C_i}{C_i} = \eye$ it can be written as
 \begin{equation}\label{eq:ff:basis:pauli}
-\left\lbrace\sigma_i\right\rbrace_{i=0}^{d^2-1} = 2^{-\frac{n}{2}}\left\lbrace \eye, \sx, \sy, \sz \right\rbrace^{\otimes n}
+    \left\lbrace\sigma_i\right\rbrace_{i=0}^{d^2-1} = 2^{-\frac{n}{2}}\left\lbrace \eye, \sx, \sy, \sz \right\rbrace^{\otimes n}
 \end{equation}
 with the Pauli matrices $\sx,\sy$ and $\sz$ .
 While it is obvious that it is separable, meaning it factors into tensor products of the single-qubit Pauli matrices, the dimension of the Pauli basis is restricted to powers of two, \ie $d = 2^n$.
@@ -666,4 +666,3 @@ Since matrix inversion has the same complexity as matrix multiplication and taki
 It hence allows for a vast speedup over \cref{eq:ff:control_matrix:sequence:freq} in that the asymptotic behavior as a function of the number of gates changes from $\sim G$ to $\sim\log G$.
 An example of this is presented in \cref{sec:ff:examples:rabi_driving} for the context of Rabi driving.
 Note that this closed form is a unique feature of the transfer matrix representation and not applicable to conjugation by unitaries.
-
