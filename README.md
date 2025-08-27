@@ -53,13 +53,18 @@
 - [ ] Hilbert space calculations in appendix
 - [ ] Parse text for "second order not implemented"
 - [ ] Figures, tables, listings
-- [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
-- [ ] `\mathcal{}` for FF, regular for fidelity.
-- [ ] split up `prr.tex`
+- [x] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
+- [x] `\mathcal{}` for FF, regular for fidelity.
+- [x] split up `prr.tex`
 - [ ] author contributions
+- [ ] discrete FF sampling?
 
 ## Code
-- [ ] `uv pip freeze` *or* just make installable.
+- [x] `uv pip freeze` *or* just make installable.
+- [ ] Add `README`
+- [ ] Draft new `filter_functions` release
+- [ ] Move and make public `lindblad_mc_tools`
+    - [ ] Add `README`
 
 ## Layout
 - [ ] Tune the bibliography style
