@@ -30,9 +30,6 @@ DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/filter_functions'
 SAVE_PATH.mkdir(exist_ok=True)
 RUN_SIMULATION = os.environ.get('RUN_SIMULATION', 'False') == 'True'
-ANA_COLORS = RWTH_COLORS
-NUM_COLORS = RWTH_COLORS_75
-ERR_COLORS = RWTH_COLORS_50
 
 init(MAINSTYLE, backend := 'pgf')
 
@@ -140,8 +137,8 @@ def to_antisymmetric(X, axes=(0, 1)):
     return 0.5*(X - X.conj().swapaxes(*axes))
 
 
-def plot_all(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
-             figsize=(TOTALWIDTH, 3.5)):
+def plot_separate(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
+                  figsize=(TOTALWIDTH, 3.5)):
     if cix is None:
         cix = list(range(1, 4))
     if rix is None:
@@ -169,18 +166,18 @@ def plot_all(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
             else:
                 ax1.set_yscale('asinh', linear_width=0.075)
 
-            ax1.semilogx(omega, to_symmetric(MC_mean)[i, j], color=NUM_COLORS['blue'],
+            ax1.semilogx(omega, to_symmetric(MC_mean)[i, j], color=RWTH_COLORS_75['blue'],
                          alpha=0.66, linewidth=0.5)
             ax1.fill_between(omega, *to_symmetric(MC_conf, (1, 2))[:, i, j],
-                             alpha=0.33, facecolor=ERR_COLORS['blue'])
-            ax2.semilogx(omega, to_antisymmetric(MC_mean)[i, j], color=NUM_COLORS['magenta'],
+                             alpha=0.33, facecolor=RWTH_COLORS_50['blue'])
+            ax2.semilogx(omega, to_antisymmetric(MC_mean)[i, j], color=RWTH_COLORS_75['magenta'],
                          alpha=0.66, linewidth=0.5, ls='--')
             ax2.fill_between(omega, *to_antisymmetric(MC_conf, (1, 2))[:, i, j],
-                             alpha=0.33, facecolor=ERR_COLORS['magenta'])
+                             alpha=0.33, facecolor=RWTH_COLORS_50['magenta'])
 
-            ax1.semilogx(omega, FF_inc[0, 0, i, j], '-', color=ANA_COLORS['blue'],
+            ax1.semilogx(omega, FF_inc[0, 0, i, j], '-', color=RWTH_COLORS['blue'],
                          linewidth=0.5)
-            ax2.semilogx(omega, FF_coh[0, 0, i, j], '--', color=ANA_COLORS['magenta'],
+            ax2.semilogx(omega, FF_coh[0, 0, i, j], '--', color=RWTH_COLORS['magenta'],
                          linewidth=0.5)
 
             ax1.annotate(P[r] + P[c], (0.965, 0.925), xycoords='axes fraction',
@@ -188,6 +185,53 @@ def plot_all(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
 
     axes[0, 1].set_ylim(-10, 10)
     axes[1, 0].set_ylabel(r'$\mathcal{F}_{\Gamma,\Delta}(\omega;\tau)$')
+    axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
+    for ax in axes.flat:
+        for loc, txt in zip(ax.get_yticks(), ax.get_yticklabels()):
+            if loc == 0.0:
+                txt.set_visible(False)
+
+    return fig, axes
+
+
+def plot_complete(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
+                  figsize=(TOTALWIDTH, 3.5)):
+    if cix is None:
+        cix = list(range(1, 4))
+    if rix is None:
+        rix = list(range(1, 4))
+
+    fig, axes = plt.subplots(len(rix), len(cix), sharex=True, layout='constrained',
+                             figsize=figsize)
+
+    diag_axes = np.diagonal(axes)
+    off_diag_axes = np.concatenate((axes[np.triu_indices_from(axes, +1)],
+                                    axes[np.tril_indices_from(axes, -1)]))
+    for ax in diag_axes[1:]:
+        ax.sharey(diag_axes[0])
+    for ax in off_diag_axes[1:]:
+        ax.sharey(off_diag_axes[0])
+
+    P = 'XYZ'
+    for r, i in enumerate(rix):
+        for c, j in enumerate(cix):
+            ax = axes[r, c]
+
+            if r == c:
+                ax.set_yscale('log')
+            else:
+                ax.set_yscale('asinh', linear_width=0.075)
+
+            ax.semilogx(omega, MC_mean[i, j], color=RWTH_COLORS['blue'], alpha=0.66, linewidth=0.5)
+            ax.fill_between(omega, *MC_conf[:, i, j], facecolor=RWTH_COLORS_50['blue'], alpha=0.33)
+            ax.semilogx(omega, (FF_inc + FF_coh)[0, 0, i, j], color=RWTH_COLORS['magenta'],
+                        linewidth=0.5)
+
+            ax.annotate(P[r] + P[c], (0.965, 0.925), xycoords='axes fraction',
+                        verticalalignment='top', horizontalalignment='right')
+
+    axes[0, 1].set_ylim(-10, 10)
+    axes[1, 0].set_ylabel(r'$\mathcal{F}(\omega;\tau)$')
     axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
     for ax in axes.flat:
         for loc, txt in zip(ax.get_yticks(), ax.get_yticklabels()):
@@ -243,7 +287,7 @@ else:
     with np.load(DATA_PATH / 'monte_carlo_FF_X.npz') as arch:
         results = dict(arch)
 # %%% Plot
-fig, axes = plot_all(pulse, **results)
+fig, axes = plot_complete(pulse, **results)
 axes[0, 1].set_yscale('asinh', linear_width=2e-2)
 axes[0, 1].set_ylim(-3e-1, 3e-1)
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
@@ -257,13 +301,13 @@ else:
     with np.load(DATA_PATH / 'monte_carlo_FF_Z.npz') as arch:
         results = dict(arch)
 # %%% Plot
-fig, axes = plot_all(pulse, **results, cix=[1, 2], rix=[1, 2], figsize=(TEXTWIDTH, 2.5))
+fig, axes = plot_complete(pulse, **results, cix=[1, 2], rix=[1, 2], figsize=(TEXTWIDTH, 2.5))
 axes[0, 1].set_yscale('asinh', linear_width=2e-2)
 axes[0, 1].set_ylim(-5e-1, 5e-1)
 axes[0, 0].set_ylim(1e-7)
 axes[1, 0].set_ylabel(None)
 axes[1, 1].set_xlabel(None)
-fig.supylabel(r'$\mathcal{F}_{\Gamma,\Delta}(\omega;\tau)$', fontsize='medium')
+fig.supylabel(r'$\mathcal{F}(\omega;\tau)$', fontsize='medium')
 fig.supxlabel(r'$\omega$' + pernanosecond, fontsize='medium')
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_Z.pdf')
@@ -276,7 +320,7 @@ else:
     with np.load(DATA_PATH / 'monte_carlo_FF_spin_echo.npz') as arch:
         results = dict(arch)
 # %%% Plot
-fig, axes = plot_all(pulse, **results)
+fig, axes = plot_complete(pulse, **results)
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_spin_echo.pdf')
 # %% Random pulse (unused)
@@ -288,6 +332,6 @@ fig.savefig(SAVE_PATH / 'monte_carlo_FF_spin_echo.pdf')
 #     with np.load(DATA_PATH / 'monte_carlo_FF_rand.npz') as arch:
 #         results = dict(arch)
 # %%% Plot
-# fig, axes = plot_all(pulse, **results)
+# fig, axes = plot_complete(pulse, **results)
 # fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 # fig.savefig(SAVE_PATH / 'monte_carlo_FF_rand.pdf')
