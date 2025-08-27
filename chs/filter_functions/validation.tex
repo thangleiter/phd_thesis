@@ -99,3 +99,23 @@ Instead of taking the random sampling approach of \gls{mc}, we can also compute 
 where we wrote $\liouvU[x, y]$ for the Liouville representation of the \gls{mc} propagator for single $x$ and $y$ drawn from their respective distributions.
 Whether we choose the \gls{mc} method or direct integration, in practice \cref{eq:ff:monte_carlo:propagator:average} will be evaluated numerically, either by drawing random samples from the distributions $\text{Rice}(0, \sigma_i)$ and $U(0,2\pi)$ or by discretizing \cref{eq:ff:monte_carlo:propagator:average}.
 
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/filter_functions/monte_carlo_FF_Z}
+    \caption[\imgsource{img/py/filter_functions/monte_carlo_filter_functions.py}]{}
+    \label{fig:ff:monte_carlo:Z}
+\end{figure}
+
+\begin{figure*}
+    \centering
+    \includegraphics{img/pdf/filter_functions/monte_carlo_FF_X}
+    \caption[\imgsource{img/py/filter_functions/monte_carlo_filter_functions.py}]{}
+    \label{fig:ff:monte_carlo:X}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \includegraphics{img/pdf/filter_functions/monte_carlo_FF_spin_echo}
+    \caption[\imgsource{img/py/filter_functions/monte_carlo_filter_functions.py}]{}
+    \label{fig:ff:monte_carlo:echo}
+\end{figure*}
