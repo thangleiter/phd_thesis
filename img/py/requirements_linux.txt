@@ -98,7 +98,7 @@ loky==3.5.5
 lxml==6.0.0
 markdown-it-py==3.0.0
 markupsafe==3.0.2
-matlabengine @ file:///home/tobias/.local/MATLAB/R2024b/extern/engines/python
+matlabengine==25.1.2
 matplotlib==3.10.5
 matplotlib-inline==0.1.7
 mdit-py-plugins==0.5.0
@@ -144,6 +144,7 @@ pyarrow==21.0.0
 pycparser==2.22
 pydata-sphinx-theme==0.16.1
 pygments==2.19.2
+pymoosh==3.92
 pyparsing==3.2.3
 pyserial==3.5
 pyside6==6.9.1
@@ -168,6 +169,7 @@ qutip==5.2.0
 qutip-qip==0.4.1
 qutip-qtrl==0.1.5
 referencing==0.36.2
+refractiveindex==0.0.7
 requests==2.32.4
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1

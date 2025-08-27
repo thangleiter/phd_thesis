@@ -1,8 +1,11 @@
 import pathlib
+import string
 
 import IPython
 import matplotlib as mpl
 import numpy as np
+import scipy as sp
+import filter_functions as ff
 
 from qutil import const, functools, misc
 
@@ -116,3 +119,53 @@ def effective_mass(lh=False):
 
 def reduced_mass(lh=False):
     return (np.multiply.reduce(effective_mass(lh)) / np.add.reduce(effective_mass(lh))).item()
+
+
+def rand_herm(d: int, n: int = 1, rng=None):
+    """n random Hermitian matrices of dimension d"""
+    A = rng.standard_normal((n, d, d)) + 1j*rng.standard_normal((n, d, d))
+    return (A + A.conj().transpose([0, 2, 1]))/2
+
+
+def rand_herm_traceless(d: int, n: int = 1, rng=None) -> np.ndarray:
+    """n random traceless Hermitian matrices of dimension d"""
+    A = rand_herm(d, n, rng).transpose()
+    A -= A.trace(axis1=0, axis2=1)/d
+    return A.transpose()
+
+
+def rand_unit(d: int, n: int = 1, rng=None) -> np.ndarray:
+    """n random unitary matrices of dimension d"""
+    return sp.linalg.expm(1j*rand_herm_traceless(d, n, rng))
+
+
+def rand_pulse_sequence(d: int, n_dt: int, n_cops: int = 3, n_nops: int = 3,
+                        btype: str = 'GGM', commensurable_timesteps: bool = False, rng=None):
+    """Random pulse sequence instance"""
+    rng = np.random.default_rng() if rng is None else rng
+
+    c_opers = rand_herm_traceless(d, n_cops, rng)
+    n_opers = rand_herm_traceless(d, n_nops, rng)
+
+    c_coeffs = rng.standard_normal((n_cops, n_dt))
+    n_coeffs = rng.random((n_nops, n_dt))
+
+    letters = np.array(list(string.ascii_letters))
+    c_identifiers = rng.choice(letters, n_cops, replace=False)
+    n_identifiers = rng.choice(letters, n_nops, replace=False)
+
+    if commensurable_timesteps:
+        dt = np.full(n_dt, 1 - rng.random())
+    else:
+        dt = 1 - rng.random(n_dt)  # (0, 1] instead of [0, 1)
+    if btype == 'GGM':
+        basis = ff.Basis.ggm(d)
+    else:
+        basis = ff.Basis.pauli(int(np.log2(d)))
+
+    return ff.PulseSequence(
+        list(zip(c_opers, c_coeffs, c_identifiers)),
+        list(zip(n_opers, n_coeffs, n_identifiers)),
+        dt,
+        basis
+    )
