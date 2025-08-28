@@ -1,5 +1,6 @@
-\newcommand{\Rz}[1]{\gate{R\left(\frac{\pi}{2^{#1}}\right)}}
-\newcommand{\optX}{\gate{X}\gategroup[style={dashed,inner sep=0pt}]{}}
+\newcommand{\had}[0]{\gate{\mr{H}}}
+\newcommand{\Rz}[1]{\gate{\mr{R}\!\left(\frac{\pi}{2^{#1}}\right)}}
+\newcommand{\optX}{\gate{\mr{X}}\gategroup[style={dashed,inner sep=0pt}]{}}
 
 \begin{quantikz}[
     %thin lines,
@@ -9,5 +10,5 @@
     \lstick{3} &          & \optX    &          & \optX    &            & \ctrl{1} & \swap{1} &          & \optX    &          & \optX    &          &          &          &          &               & \permute{4,2,3,1} & \rstick{3} \\
     \lstick{2} &          &          &          & \ctrl{1} & \swap{1}   & \Rz{3}   & \targX{} &          &          &          & \ctrl{1} & \swap{1} &          &          &          & \permute{2,1} &                   & \rstick{2} \\
     \lstick{1} &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{}   &          &          &          & \ctrl{1} & \swap{1} & \Rz{2}   & \targX{} &          & \ctrl{1} & \swap{1} &               &                   & \rstick{1} \\
-    \lstick{0} & \gate{H} & \Rz{1}   & \targX{} &          &            &          &          & \gate{H} & \Rz{1}   & \targX{} &          &          & \gate{H} & \Rz{1}   & \targX{} & \gate{H}      &                   & \rstick{0}
+    \lstick{0} & \had     & \Rz{1}   & \targX{} &          &            &          &          & \had     & \Rz{1}   & \targX{} &          &          & \had     & \Rz{1}   & \targX{} & \had          &                   & \rstick{0}
 \end{quantikz}

@@ -2,16 +2,17 @@
 import pathlib
 import sys
 import time
-from copy import deepcopy
 
 import filter_functions as ff
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import qutip as qt
 from filter_functions import plotting
 from filter_functions.util import get_indices_from_identifiers
-from matplotlib import colors, cycler, lines
-from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50
+from cycler import cycler
+from mpl_toolkits.axes_grid1 import ImageGrid
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, make_diverging_colormap
 from qutip.control import pulseoptim
 from qutip.qip import operations
 from qutip.qip.algorithms.qft import qft as qt_qft
@@ -19,7 +20,10 @@ from scipy import integrate
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import MAINSTYLE, TOTALWIDTH, PATH, init
+from common import MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init
+
+with np.errstate(divide='ignore', invalid='ignore'):
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 SHOW_PROGRESSBAR = False
 LINE_COLORS = list(RWTH_COLORS.values())
@@ -475,15 +479,18 @@ pretty_names = {
 
 for i, (name, pulse) in enumerate(pulses.items()):
     cycle = cycler(color=[LINE_COLORS[c_identifiers['CZ_pi8'].index(identifier)]
-                          for identifier in pulse.c_oper_identifiers])
-    *_, leg = ff.plotting.plot_pulse_train(pulse, fig=fig, axes=axes[i, 0], cycler=cycle)
+                          for identifier in c_identifiers[name]])
+    *_, leg = ff.plotting.plot_pulse_train(pulse, fig=fig, axes=axes[i, 0], cycler=cycle,
+                                           c_op_identifiers=c_identifiers[name])
     leg.remove()
 
     axes[i, 0].grid(False)
     axes[i, 0].set_xlabel(None)
     axes[i, 0].set_ylabel(None)
 
-    *_, leg = ff.plotting.plot_filter_function(pulse, fig=fig, axes=axes[i, 1], cycler=cycle)
+    *_, leg = ff.plotting.plot_filter_function(pulse, fig=fig, axes=axes[i, 1], cycler=cycle,
+                                               omega_in_units_of_tau=False,
+                                               n_oper_identifiers=n_identifiers[name])
     leg.remove()
 
     axes[i, 1].grid(False)
@@ -509,8 +516,7 @@ axes[0, 0].legend(handles=axes[2, 0].get_lines(), labels=pulse.c_oper_identifier
 fig.savefig(SAVE_PATH / 'qft_atomic_pulses.pdf')
 # %%% FF with cumulative FF
 identifiers = [r'$\sigma_x^{(0)}$', r'$\sigma_y^{(0)}$', r'$\sigma_z^{(0)}\sigma_z^{(1)}$']
-cycle = cycler(color=[LINE_COLORS[n_identifiers['CZ_pi8'].index(identifier)]
-                      for identifier in identifiers])
+cycle = cycler(color=LINE_COLORS)
 
 fig, ax = plt.subplots(1, 1, figsize=(TOTALWIDTH, 2), layout='constrained')
 *_, leg = plotting.plot_filter_function(qft_pulse, yscale='log', fig=fig, axes=ax,
@@ -545,28 +551,29 @@ fig.savefig(SAVE_PATH / 'qft_filter_function.pdf')
 
 # %% FF with & without echo
 identifiers = ['$\\sigma_y^{(3)}$']
-fig, ax, _ = plotting.plot_filter_function(qft_pulse,
-                                           n_oper_identifiers=identifiers,
-                                           yscale='log',
-                                           omega_in_units_of_tau=False)
-fig, ax, _ = plotting.plot_filter_function(qft_pulse_echo,
-                                           n_oper_identifiers=identifiers,
-                                           yscale='log',
-                                           omega_in_units_of_tau=False,
-                                           axes=ax,
-                                           fig=fig)
-ax.axvline(2*np.pi/qft_pulse.duration, color='black', linestyle='--', zorder=0)
-ax.annotate(r'$2\pi/\tau$', (2*np.pi/qft_pulse.duration, 10), (2*np.pi/qft_pulse.duration*2, 0.05),
-            arrowprops={'arrowstyle': '->', 'connectionstyle': 'arc,angleA=120,armA=15,rad=10'})
+fig, ax, leg = plotting.plot_filter_function(
+    qft_pulse, n_oper_identifiers=identifiers, yscale='log',
+    omega_in_units_of_tau=False,
+    layout='constrained', figsize=(TEXTWIDTH, 1.75)
+)
+leg.remove()
+*_, leg = plotting.plot_filter_function(qft_pulse_echo, n_oper_identifiers=identifiers,
+                                        omega_in_units_of_tau=False,
+                                        yscale='log', axes=ax, fig=fig)
+leg.remove()
+ax.axvline(2*np.pi/qft_pulse.duration, color=RWTH_COLORS_50['black'], zorder=0, linestyle=':')
+ax.annotate(r'$2\pi/\tau$',
+            (2*np.pi/qft_pulse.duration, 1e-1), (2*np.pi/qft_pulse.duration/2.5, 1e-1),
+            horizontalalignment='right', verticalalignment='center', **annotate_kwargs)
 
 ax.grid(False)
 leg = ax.legend(['without echo', 'with echo'], frameon=False, framealpha=1.)
-ax.set_xlabel(r'$\omega$ ($2\pi$GHz)')
-ax.set_ylabel(r'$F(\omega)$ (ns/$2\pi)^2$')
+ax.set_xlabel(r'$\omega$' + pernanosecond)
+ax.set_ylabel(r'$\mathcal{F}(\omega)$')
 ax.set_xscale('symlog', linthresh=1e-4)
 ax.set_xlim(0)
 
-fname = 'qft_filter_function_Y3_echo_vs_no'
+fig.savefig(SAVE_PATH / 'qft_filter_function_Y3.pdf')
 # %% Correlations with & without echo
 
 pls = ['hadamard', 'CZ_pi2', 'swap', 'CZ_pi4', 'swap', 'CZ_pi8', 'swap',
@@ -596,277 +603,47 @@ qft_pulse_echo_correl = ff.concatenate(
     show_progressbar=SHOW_PROGRESSBAR
 )
 
-# %%
+# %%% Infidelities
 S0 = 2.2265e-6
-# S0 = 2e-6
 
-infids = ff.infidelity(qft_pulse_correl, S, omega, which='correlations',
-                       n_oper_identifiers=qft_pulse_correl.n_oper_identifiers).transpose(2, 0, 1)
+infids = {}
+infids['$1/f$ without echo'] = ff.infidelity(qft_pulse_correl, S, omega, which='correlations',
+                                             n_oper_identifiers=['$\\sigma_y^{(3)}$'])
+infids['$1/f$ with echo'] = ff.infidelity(qft_pulse_echo_correl, S, omega, which='correlations',
+                                          n_oper_identifiers=['$\\sigma_y^{(3)}$'])
+infids['White without echo'] = ff.infidelity(qft_pulse_correl, np.full_like(omega, S0), omega,
+                                             which='correlations',
+                                             n_oper_identifiers=['$\\sigma_y^{(3)}$'])
+infids['White with echo'] = ff.infidelity(qft_pulse_echo_correl, np.full_like(omega, S0), omega,
+                                          which='correlations',
+                                          n_oper_identifiers=['$\\sigma_y^{(3)}$'])
+# Normalize the infidelities for white noise so that the total infidelity without
+# echos is the same as for 1/f.
+normalization = infids['$1/f$ without echo'].sum() / infids['White without echo'].sum()
+infids['White without echo'] *= normalization
+infids['White with echo'] *= normalization
 
-infids_echo = ff.infidelity(qft_pulse_echo_correl, S, omega, which='correlations',
-                            n_oper_identifiers=qft_pulse_echo_correl.n_oper_identifiers).transpose(2, 0, 1)
+print('Total infidelities for Y noise on the third qubit:')
+for k, v in infids.items():
+    print(f'{k}\t{v.sum():.2e}')
 
-infids_white = ff.infidelity(qft_pulse_correl, np.ones_like(omega)*S0, omega, which='correlations',
-                             n_oper_identifiers=qft_pulse_correl.n_oper_identifiers).transpose(2, 0, 1)
+# %%% Plot
+fig = plt.figure(figsize=(TEXTWIDTH, TEXTWIDTH))
+grid = ImageGrid(fig, 111, (2, 2), cbar_mode='single', axes_pad=0.1)
+vmax = max(abs(np.max(val)) for val in infids.values())
+vmin = -vmax
+norm = mpl.colors.AsinhNorm(linear_width=1e-6, vmin=vmin, vmax=vmax)
+titles = [key.split(' with') for key in infids]
 
-infids_white_echo = ff.infidelity(qft_pulse_echo_correl, np.ones_like(omega)*S0, omega, which='correlations',
-                                  n_oper_identifiers=qft_pulse_echo_correl.n_oper_identifiers).transpose(2, 0, 1)
+for ax, (key, val) in zip(grid, infids.items()):
+    img = ax.imshow(val, interpolation=None, norm=norm, cmap=DIVERGING_CMAP)
+    ax.set_xticks(np.arange(0, 20, 5))
+    ax.set_yticks(np.arange(0, 20, 5))
+    ax.annotate(key.replace(' ', '\n', 1), (0.95, 0.95), xycoords='axes fraction',
+                fontsize='small', horizontalalignment='right', verticalalignment='top')
 
-print('Total infidelities:')
-print(f'1/f, no echo:\t{infids[7].sum():2.4e}')
-print(f'1/f, echo:\t{infids_echo[7].sum():2.4e}')
-print(f'white, no echo:\t{infids_white[7].sum():2.4e}')
-print(f'white, echo:\t{infids_white_echo[7].sum():2.4e}')
-# %%
-# pls = [r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{CR}_{12}(\pi/4)$', r'$\text{SWAP}_{12}$',
-#        r'$\text{CR}_{23}(\pi/8)$', r'$\text{SWAP}_{23}$',
-#        r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{CR}_{12}(\pi/4)$', r'$\text{SWAP}_{12}$',
-#        r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{H}_0$', ]
+fig.supxlabel('$g$', fontsize='medium', y=0.05)
+fig.supylabel(r'$g^\prime$', fontsize='medium')
+ax.cax.colorbar(img, label=r"Pulse correlation infidelity $I_{\alpha}^{(gg')}$")
 
-comparison = np.stack((infids[7], infids_echo[7], infids_white[7], infids_white_echo[7]))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) $1/f$, no echo', '(b) $1/f$, echo',
-               '(c) white, no echo', '(d) white, echo']
-
-with plt.rc_context(rc={'axes.titlesize': 9}):
-    fig1, grid1 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label=r"Pulse correlation infidelity $\mathcal{I}^{(gg')}$",
-        # basis_labels=pls,
-        # basis_labels=['' for p in pls],
-        basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=7,
-        figsize=(figsize_wide[0], figsize_wide[0]*2/5),
-        grid_kw=dict(cbar_location='top', nrows_ncols=(1, 4), cbar_size="2%", cbar_pad=0.25),
-        cbar_kw=dict(orientation='horizontal', ticklocation='top')
-    )
-
-cbar = grid1[-1].images[0].colorbar
-labels = cbar.ax.get_xticklabels()
-labels[len(labels) // 2] = ''
-cbar.ax.set_xticklabels(labels, fontsize=7)
-
-for g in grid1:
-    ax = g.axes
-    ax.title.set_x(0)
-
-fig1.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_Y3_wide.{ext}').exists()
-            or _force_overwrite):
-        fig1.savefig(save_path / f'correlation_infidelities_Y3_wide.{ext}')
-
-# %%
-comparison = np.stack((infids[7], infids_echo[7], infids_white[7], infids_white_echo[7]))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) $1/f$, no echo', '(b) $1/f$, echo',
-               '(c) white, no echo', '(d) white, echo']
-
-with plt.rc_context(rc={'axes.titlesize': 9}):
-    fig2, grid2 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label=r"Pulse correlation infidelity $\mathcal{I}^{(gg')}$",
-        # basis_labels=pls,
-        # basis_labels=['' for p in pls],
-        basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=7,
-        figsize=(figsize_narrow[0], figsize_narrow[0]*1.2),
-        grid_kw=dict(cbar_location='top', nrows_ncols=(2, 2), cbar_size="5%", cbar_pad=0.25),
-        cbar_kw=dict(orientation='horizontal', ticklocation='top')
-    )
-
-cbar = grid2[-1].images[0].colorbar
-labels = cbar.ax.get_xticklabels()
-labels[len(labels) // 2] = ''
-cbar.ax.set_xticklabels(labels)
-
-for g in grid2:
-    ax = g.axes
-    ax.title.set_x(0)
-
-fig2.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_Y3.{ext}').exists()
-            or _force_overwrite):
-        fig2.savefig(save_path / f'correlation_infidelities_Y3.{ext}')
-
-# %%% Only 1/f
-comparison = np.stack((infids[7], infids_echo[7], ))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) w/o echo', '(b) w/ echo']
-
-with plt.rc_context(rc={'axes.titlesize': 9}):
-    fig1, grid1 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label=r"Pulse correlation infidelity $\mathcal{I}^{(gg')}$",
-        # basis_labels=pls,
-        basis_labels=[p for p in range(len(pls))],
-        # basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=6,
-        figsize=(figsize_narrow[0], figsize_narrow[0]),
-        grid_kw=dict(cbar_location='top', nrows_ncols=(1, 2), cbar_size="4%", cbar_pad=0.25,
-                     axes_pad=0.2),
-        cbar_kw=dict(orientation='horizontal', ticklocation='top')
-    )
-
-cbar = grid1[-1].images[0].colorbar
-labels = cbar.ax.get_xticklabels()
-for txt in labels:
-    if '10^{-6}' in txt.get_text():
-        txt.set_text('')
-
-for g in grid1:
-    ax = g.axes
-    ax.title.set_x(0)
-
-cbar.ax.set_xticklabels(labels, fontsize=6)
-
-fig1.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_Y3_corr_only.{ext}').exists()
-            or _force_overwrite):
-        fig1.savefig(save_path / f'correlation_infidelities_Y3_corr_only.{ext}')
-# %%% Only 1/f cbar side
-comparison = np.stack((infids[7], infids_echo[7],))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) without echo', '(b) with echo']
-
-with plt.rc_context(rc={'axes.titlesize': 8}):
-    fig1, grid1 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label="",
-        # basis_labels=pls,
-        basis_labels=[p for p in range(1, 1+len(pls))],
-        # basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=5,
-        figsize=(figsize_narrow[0], figsize_narrow[0]),
-        grid_kw=dict(cbar_location='right', nrows_ncols=(1, 2), cbar_size="8%", cbar_pad=0.1,
-                     axes_pad=0.15),
-        cbar_kw=dict(orientation='vertical')
-    )
-
-cbar = grid1[-1].images[0].colorbar
-labels = cbar.ax.get_yticklabels()
-for txt in labels:
-    t = txt.get_text()
-    if '{0}' in t:
-        txt.set_text('')
-    elif '{10^' in t:
-        ix = t.index('{10^')
-        txt.set_text(t[:ix+1] + '+' + t[ix+1:])
-
-for g in grid1:
-    ax = g.axes
-    ax.title.set_x(0)
-
-cbar.ax.set_yticklabels(labels, fontsize=6)
-# cbar.ax.tick_params(axis='y', which='major', pad=25)
-cbar.ax.set_title(r"$\mathcal{I}^{(gg')}$", loc='left', fontsize=8)
-
-
-for g in grid1:
-    ax = g.axes
-    ax.set_xlabel("$g$", fontsize=7)
-    ax.set_ylabel("$g'$", fontsize=7)
-
-fig1.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_Y3_corr_only_cbar_on_side.{ext}').exists()
-            or _force_overwrite):
-        fig1.savefig(save_path / f'correlation_infidelities_Y3_corr_only_cbar_on_side.{ext}')
-# %%
-# pls = [r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{CR}_{12}(\pi/4)$', r'$\text{SWAP}_{12}$',
-#        r'$\text{CR}_{23}(\pi/8)$', r'$\text{SWAP}_{23}$',
-#        r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{CR}_{12}(\pi/4)$', r'$\text{SWAP}_{12}$',
-#        r'$\text{H}_0$', r'$\text{CR}_{01}(\pi/2)$', r'$\text{SWAP}_{01}$',
-#        r'$\text{H}_0$', ]
-
-comparison = np.stack((infids[10], infids_echo[10], infids_white[10], infids_white_echo[10]))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) $1/f$, no echo', '(b) $1/f$, echo',
-               '(c) white, no echo', '(d) white, echo']
-
-with plt.rc_context(rc={'axes.titlesize': 9}):
-    fig3, grid3 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label=r"Pulse correlation infidelity $\mathcal{I}^{(gg')}$",
-        # basis_labels=pls,
-        # basis_labels=['' for p in pls],
-        basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=7,
-        figsize=(figsize_wide[0], figsize_wide[0]*2/5),
-        grid_kw=dict(cbar_location='top', nrows_ncols=(1, 4), cbar_size="2%", cbar_pad=0.25),
-        cbar_kw=dict(orientation='horizontal', ticklocation='top')
-    )
-
-cbar = grid3[-1].images[0].colorbar
-labels = cbar.ax.get_xticklabels()
-labels[len(labels) // 2] = ''
-cbar.ax.set_xticklabels(labels)
-
-for g in grid3:
-    ax = g.axes
-    ax.title.set_x(0)
-
-fig3.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_CZ23_wide.{ext}').exists()
-            or _force_overwrite):
-        fig3.savefig(save_path / f'correlation_infidelities_CZ23_wide.{ext}')
-# %%
-
-comparison = np.stack((infids[10], infids_echo[10], infids_white[10], infids_white_echo[10]))
-identifiers = [f'{c:.1e}' for c in comparison.sum((1, 2))]
-identifiers = ['']*4
-identifiers = ['(a) $1/f$, no echo', '(b) $1/f$, echo',
-               '(c) white, no echo', '(d) white, echo']
-
-with plt.rc_context(rc={'axes.titlesize': 9}):
-    fig4, grid4 = plotting.plot_cumulant_function(
-        cumulant_function=comparison,
-        colorscale='log',
-        n_oper_identifiers=identifiers,
-        cbar_label=r"Pulse correlation infidelity $\mathcal{I}^{(gg')}$",
-        # basis_labels=pls,
-        # basis_labels=['' for p in pls],
-        basis_labels=[p.replace('_', r'\_') for p in pls],
-        basis_labelsize=7,
-        figsize=(figsize_narrow[0], figsize_narrow[0]*1.2),
-        grid_kw=dict(cbar_location='top', nrows_ncols=(2, 2), cbar_size="5%", cbar_pad=0.25),
-        cbar_kw=dict(orientation='horizontal', ticklocation='top')
-    )
-
-cbar = grid4[-1].images[0].colorbar
-labels = cbar.ax.get_xticklabels()
-labels[len(labels) // 2] = ''
-cbar.ax.set_xticklabels(labels)
-
-for g in grid4:
-    ax = g.axes
-    ax.title.set_x(0)
-
-fig4.tight_layout()
-for ext in ('pdf', 'eps', 'png'):
-    if (not (save_path / f'correlation_infidelities_CZ23.{ext}').exists()
-            or _force_overwrite):
-        fig4.savefig(save_path / f'correlation_infidelities_CZ23.{ext}')
+fig.savefig(SAVE_PATH / 'qft_correlation_infids.pdf')
