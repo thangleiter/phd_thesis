@@ -1,7 +1,7 @@
 % mainfile: ../../main.tex
-\chapter{Monte Carlo and Lindblad master equation simulations}\label{ch:app:ff:time_domain_methods}
-\section{Validation of QFT fidelities}\label{sec:app:ff:time_domain_methods:qft_validation}
-In this section, we perform Lindblad master equation and \gls{mc} simulations to verify the fidelities predicted for the \gls{qft} circuit in the main text.
+\chapter{Monte Carlo and \texorpdfstring{\acrshort{gksl}}{GKSL} master equation simulations}\label{ch:app:ff:time_domain_methods}
+\section{Validation of \texorpdfstring{\acrshort{qft}}{QFT} fidelities}\label{sec:app:ff:time_domain_methods:qft_validation}
+In this section, we perform \gls{gksl} master equation and \gls{mc} simulations to verify the fidelities predicted for the \gls{qft} circuit in the main text.
 We focus on noise exclusively on the third qubit, entering through the noise operator $B_\alpha\equiv\sigma_y\gth{3}$.
 
 \todo{this}
@@ -18,8 +18,8 @@ H_\mr{n}(t) = \sum_{\langle i,j\rangle} b_{I}(t)\sx^{(i)} + b_{Q}(t)\sy^{(i)} + 
 \end{equation}
 with the noise fields $b_{\alpha}(t)$ for $\alpha\in\{I,Q,J\}$.
 
-To validate the fidelity for white noise, we use a Lindblad master equation~\cite{Lindblad1976,Gorini1976} in superoperator form.
-We represent linear maps $\mc{A}: \rho\rightarrow\mc{A}(\rho)$ by matrices in the Pauli transfer matrix representation as (see \citer{Hangleiter2021} for more details)
+To validate the fidelity for white noise, we use a \gls{gksl} master equation~\cite{Lindblad1976,Gorini1976} in superoperator form.
+We represent linear maps $\mc{A}: \rho\rightarrow\mc{A}(\rho)$ by matrices in the \gls{ptm} representation as (see \citer{Hangleiter2021} for more details)
 \begin{equation}
     \mc{A}_{ij} \coloneqq \tr(\sigma_i\mc{A}(\sigma_j))
 \end{equation}
@@ -41,9 +41,11 @@ The latter is computed as $\avgfid = d^{-2}\tr(\mc{Q}\adjoint\mc{U})$, where $\m
 
 For the Monte Carlo simulation, we explicitly generate time traces of $b_Q(t)$ (\cf \cref{eq:app:ff:noise_hamiltonian:qft}) by drawing pseudo-random numbers from a distribution whose \gls{psd} is $S(f) = \flatfrac{S_0}{f}$.
 To do this, we draw complex, normally distributed samples in frequency space (\ie white noise), scale it with the square root of the \gls{psd}, and finally perform the inverse Fourier transform.
-We choose an oversampling factor of 16 so that the time discretization of the simulation is $\Delta t_\mr{MC} = \flatfrac{\Delta t}{16} = \qty{62.5}{\pico\second}$ ($\Delta t = \qty{1}{\nano\second}$ is the time step of the pulses used in the FF simulation), leading to a highest resolvable frequency of $\fmax = \qty{16}{\giga\hertz}$.
+We choose an oversampling factor of 16 so that the time discretization of the simulation is $\Delta t_\mr{MC} = \flatfrac{\Delta t}{16} = \qty{62.5}{\pico\second}$ ($\Delta t = \qty{1}{\nano\second}$ is the time step of the pulses used in the \gls{ff} simulation), leading to a highest resolvable frequency of $\fmax = \qty{16}{\giga\hertz}$.
 Conversely, we increase the frequency resolution by sampling a time trace longer by a given factor, giving frequencies below \fmin (\qty{16}{\kilo\hertz} for pink, \qty{0}{\hertz} for white noise) weight zero, and truncating it to the number of time steps in the algorithm times the oversampling factor.
 This yields a time trace with frequencies $f\in [\fmin, \fmax]$ and a given resolution (we choose $\df = \qty{160}{\hertz}$).
+% TODO: check parameters
+For reference, we show the fidelity filter functions for the circuit with and without echo pulses in this frequency band in \cref{fig:app:qft_ff}.
 
 We then proceed to diagonalize the Hamiltonian $H(t) = H_c(t) + H_n(t)$ and compute the propagator for one noise realization as
 \begin{equation}\label{eq:app:ff:mc_propagator}
@@ -56,3 +58,35 @@ Finally, we obtain an estimate for the average gate fidelity \avgfid from the en
 \end{equation}
 Here, $Q\equiv\Uc(t=\tau)$ is the noise-free propagator at time $\tau$ of completion of the circuit and $\ev{\placeholder}$ denotes the ensemble average over $N$ Monte Carlo realizations of \cref{eq:app:ff:mc_propagator}, \ie, $\ev{A}=N\inverse\sum_{i=1}^N A_i$.
 The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigma_{\avgfid} / \sqrt{N}$ with $\sigma_{\avgfid}$ the standard deviation over the Monte Carlo traces.
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/filter_functions/qft_filter_function_Y3}
+    \caption[\imgsource{img/py/filter_functions/quantum_fourier_transform.py}]{
+        Filter functions for noise operator $\sigma_y^{(3)}$ for the \gls{qft} circuit without (blue) and with (magenta) additional echo pulses.
+        Introducing the echoes shifts spectral weight towards higher frequencies, reducing the DC level of the filter function by two orders of magnitude and thus leading to an improved fidelity for \oneoverf noise.
+    }
+    \label{fig:app:qft_ff}
+\end{figure}
+
+\Cref{tab:app:fidelities} compares the infidelities $\infid=1-\fid$ from \gls{gksl} and \gls{mc} simulations to the filter function predictions following \cref{eq:ff:infidelity:ent}.
+Note that the precise value of the filter function result depends quite sensitively on the frequency sampling due to the sharp peaks in the gigahertz range (\cref{fig:app:qft_ff}).
+As the table shows, both the \gls{gksl} and the \gls{mc} calculations agree well with the predictions made by our filter-function formalism.
+
+\begin{table*}
+    \centering
+    \renewcommand\arraystretch{1.25}
+    \caption{Infidelities $\avginfid = 1-\avgfid$ of the \gls{qft} circuit due to noise on $\sigma_y^{(3)}$. \Gls{mc} values are given with the standard error of the mean for $N=1008$. We included frequencies in the range of $\omega\in [0, 100]\,\unit{\per\nano\second}$ for white noise, and $\omega\in [\qty{100}{\per\milli\second}, \qty{100}{\per\nano\second}]$ for pink noise. Prefactors in the power law $S(\omega)= A\omega^\alpha$ are \qty{2e-6}{\per\nano\second} and \qty{1e-9}{\per\nano\second\squared}, respectively.}
+    \label{tab:app:fidelities}
+    \begin{tabular}{l *{4}{r}}
+        \toprule
+         & \multicolumn{2}{c}{\textsc{White noise}} & \multicolumn{2}{c}{$\flatfrac{1}{f}$ \textsc{noise}} \\
+        \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+        \textsc{Method} & \textsc{Without echo} & \textsc{With echo} & \textsc{Without echo} & \textsc{With echo} \\
+        \midrule
+        \acrshort{gksl} & \num{8.38e-3}         & \num{8.38e-3}      & ---                   & ---               \\
+        \acrshort{mc}   & \num{8.22(24)e-3}     & \num{8.34(23)e-3}  & \num{8.53(28)e-3}     & \num{2.84(10)e-3} \\ %2021-07-20_17-30-32
+        \acrshort{ff}   & \num{8.34e-3}         & \num{8.40e-3}      & \num{8.34e-3}         & \num{3.02e-3}     \\ %2021-07-20_16-41-17
+        \bottomrule
+    \end{tabular}
+\end{table*}

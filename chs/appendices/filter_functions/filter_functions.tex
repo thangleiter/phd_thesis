@@ -195,7 +195,7 @@ In \cref{fig:app:ff:filter_function:cnot} we show the filter functions once incl
 \end{figure}
 
 For completeness, in this appendix we give details on the \gls{grape}-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\pi/2),\mr{Y}_{i}(\pi/2),\mr{CR}_{ij}(\pi/2^3)\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm.
-As mentioned in the main text, we consider a toy Rabi driving model with IQ single-qubit control and exchange to mediate inter-qubit coupling.
+As mentioned in the main text, we consider a toy Rabi driving model with \gls{iq} single-qubit control and exchange to mediate inter-qubit coupling.
 Cast in the language of quantum optimal control theory this translates to a vanishing drift (static) Hamiltonian, $H_\mr{d} =  0$, and a control Hamiltonian in the rotating frame given by
 \begin{gather}
     \Hc(t) = \Hc\gth{0}(t)\otimes\eye + \eye\otimes\Hc\gth{1}(t) + \Hc\gth{01}(t), \\
@@ -258,7 +258,7 @@ where we have introduced the parameter $\xi$.
 Thus, the expansion converges if $\xi < \flatfrac{\pi}{C_m}$.
 However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will often be infinite, limiting the usefulness of this bound for certain noise spectra.
 \subsection{Infidelity}\label{subsec:app:ff:convergence:infidelity}
-Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
+Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise-constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
 \begin{align}
     \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
                              \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \notag\\

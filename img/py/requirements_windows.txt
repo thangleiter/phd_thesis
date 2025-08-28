@@ -126,6 +126,8 @@ qcodes-loop==0.1.3
 qopt==1.3.5
 qutech-util==2025.8.1
 qutip==5.2.0
+qutip-qip==0.4.1
+qutip-qtrl==0.1.5
 referencing==0.36.2
 refractiveindex==0.0.7
 requests==2.32.4

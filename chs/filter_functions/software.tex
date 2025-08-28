@@ -1,18 +1,18 @@
 % mainfile: ../../main.tex
-\chapter{Software implementation}\label{ch:ff:software}
+\chapter{The \texttt{filter\_functions} software package}\label{ch:ff:software}
 In this section we give a brief overview over the \filterfunctions software package implementing the main features of the formalism derived above.\sidenote{
     For more details we refer the reader to the \href{https://filter-functions.readthedocs.io/en/latest/}{documentation}.
 }
-This includes the calculation of the decay amplitudes \decayamps and fidelities as well as the calculation of the control matrices for single gates and both generic and periodic sequences of gates.
+This includes the calculation of the decay amplitudes \decayamps, frequency shifts \freqshifts, and fidelities as well as the calculation of the control matrices for single gates and both generic and periodic sequences of gates.
 Moreover, control matrices may be efficiently extended to and merged on larger Hilbert spaces.
 Calculations using unitary conjugation instead of transfer matrices are implemented but at this point not available in the high-level \gls{api}.
 
-Our software is written in Python and available under the GPLv3 license~\cite{Hangleiter_ff}.
+Our software is written in Python and published under the GPLv3 license~\cite{Hangleiter_ff}.
 It features a broad coverage through unit tests and extensive \gls{api} documentation as well as didactic examples (see also \cref{ch:ff:examples}).
 The package relies on the \numpy~\cite{Harris2020} and \scipy~\cite{Virtanen2020} libraries for vectorized array operations.
 Data visualization is handled by \matplotlib~\cite{Hunter2007}.
 For tensor multiplications with optimized contraction order we use \opteinsum~\cite{Smith2018} for which \sparse~\cite{Pydata2019}, a library aiming to extend the \scipy sparse module to multi-dimensional arrays, serves as a backend in the calculation of the trace tensor from \cref{eq:ff:trace_tensor}.
-Lastly, the package is written to interface with \qopt~\cite{Teske2022a} and \qutip~\cite{Johansson2012}, frameworks for the simulation and optimization of open quantum systems, and mirrors the latter's data structure for Hamiltonians ensuring easy interoperability between the two.
+Lastly, the package is written to interface with \qopt~\cite{Teske2022} and \qutip~\cite{Johansson2012}, frameworks for the simulation and optimization of open quantum systems, and mirrors the latter's data structure for Hamiltonians ensuring easy interoperability between the two.
 
 \section{Package overview}\label{sec:ff:software:overview}
 In the \filterfunctions package all operations are understood as sequences of pulses that are applied to a quantum system.
@@ -25,9 +25,9 @@ That is, a Hamiltonian is expressed as a sum of Hermitian operators with the tim
     \Hn(t) = \sum_\alpha s\gth{g}_\alpha B_\alpha = \mr{const.} \label{eq:ff:hamiltonian:software:noise}
 \end{gather}
 \end{subequations}
-for $t\in (t_{g-1}, t_g], g\in\lbrace 1,\dotsc,G\rbrace$ and where the $a\gth{g}_i$ are the amplitudes of the $i$ control field.
+for $t\in (t_{g-1}, t_g], g\in\lbrace 1,\dotsc,G\rbrace$ and where the $a\gth{g}_i$ are the amplitudes of the $i$th control field.
 Note that the noise variables $b_\alpha(t)$ are missing from \cref{eq:ff:hamiltonian:software:noise} because they are captured by the spectral density $S(\omega)$.
-In the software, \cref{eq:ff:hamiltonian:software:control,eq:ff:hamiltonian:software:noise} are represented as lists whose $i$ element corresponds to a sublist of two elements: the $i$th operator and the $i$th coefficients $[a_i\gth{0},\dotsc,a_i\gth{G}]$.
+In the software, \cref{eq:ff:hamiltonian:software:control,eq:ff:hamiltonian:software:noise} are represented as lists whose $i$th element corresponds to a sublist of two elements: the $i$th operator and the $i$th coefficients $[a_i\gth{0},\dotsc,a_i\gth{G}]$.
 
 The \pulsesequence class provides methods to calculate and cache the filter function according to \cref{eq:ff:control_matrix:pulse:freq}.
 Alternatively, filter functions may also be cached manually to permit using the package with analytical solutions for the control matrix.
@@ -36,8 +36,8 @@ Concatenation of pulses is implemented by the functions \code{concatenate()} and
 Operator bases fulfilling \cref{eq:ff:basis} are implemented by the \code{Basis} class.
 There are two predefined types of bases:
 \begin{enumerate}
-    \item Pauli bases for $n = 2^d$ qubits from \cref{eq:ff:basis:pauli} and
-    \item \gls{ggm} bases of arbitrary dimension $d$ from \cref{eq:ff:basis:ggm}.
+    \item Pauli bases $\mathsf{P}_n$ for $n = 2^d$ qubits from \cref{eq:ff:basis:pauli} and
+    \item \gls{ggm} bases $\mathsf{Λ}_d$ of arbitrary dimension $d$ from \cref{eq:ff:basis:ggm}.
 \end{enumerate}
 The Pauli basis is both unitary and separable while the \gls{ggm} basis is sparse for large dimensions but neither unitary nor separable.
 As mentioned in \cref{sec:ff:performance:extending_hilbert_spaces} (see also \cref{sec:ff:examples:qft}), using a separable basis can provide significant performance benefits for calculating the filter functions of algorithms.
@@ -96,13 +96,13 @@ Therefore, only the integration in \cref{eq:ff:decay_amplitudes:freq} and the ca
 An alternative approach to calculate the spin echo filter function is to employ the concatenation property.
 For this, we interpret the \gls{se} as a sequence consisting of three separate pulses.
 Each of the pulses has a single time segment during which a constant control is applied and concatenating the separate \pulsesequence instances yields the \pulsesequence representing a spin echo.
-This way analytic control matrices may be used to calculate the control matrix of the composite sequence.
+This way analytical control matrices may be used to calculate the control matrix of the composite sequence.
 Pulses can be concatenated by using either the \code{concatenate()} function or the overloaded \code{@} operator:
 \begin{py}
     # Define PulseSequence objects as shown above
     FID = ff.PulseSequence(...)
     NOT = ff.PulseSequence(...)
-    # Cache the analytic control matrices at frequency omega
+    # Cache the analytical control matrices at frequency omega
     FID.cache_control_matrix(omega, B_FID)
     NOT.cache_control_matrix(omega, B_NOT)
     # Concatenate the pulses
@@ -112,6 +112,6 @@ Since we have cached the control matrices of the \code{FID} and \code{NOT} pulse
 Concatenating \pulsesequence objects is implemented as an arithmetic operator of the class to reflect the intrinsic composition property of the control matrices.
 
 Further development of the software has focused on making it available in a gate optimization and simulation framework~\cite{Teske2022a}.
-Besides using it to compute decoherence effects and fidelities, analytic derivatives of the filter functions have been implemented to allow for optimizing pulse parameters in the presence of non-Markovian noise within the framework of quantum optimal control~\cite{Le2022,Teske2022}.
+Besides using it to compute decoherence effects and fidelities, analytical derivatives of the filter functions have been implemented to allow for optimizing pulse parameters in the presence of non-Markovian noise within the framework of quantum optimal control~\cite{Le2022,Teske2022}.
 
 Additionally, building an interface with \qupulse~\cite{Humpohl2025,Humpohl2021}, a software toolkit for parametrizing and sequencing control pulses and relaying them to control hardware, would implement the capability to compute filter functions of pulses assembled in \qupulse, thereby allowing a user in the lab to easily inspect the noise susceptibility characteristics of the pulse they are currently applying to their device.
