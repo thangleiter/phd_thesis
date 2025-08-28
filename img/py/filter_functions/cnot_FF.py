@@ -335,12 +335,6 @@ for i, a in enumerate(alpha):
         with mock.patch.object(pulse, 'd', 4):
             infidelities_ff[i, j] = ff.infidelity(pulse, S, omega, identifiers[:3])
 
-        # Just for comparison
-        for k in range(3):
-            infidelities_ff_etm[i, j, k] = 1 - ff.error_transfer_matrix(
-                pulse, S, omega, identifiers[k]
-            ).trace()/d_c**2
-
 for i, a in enumerate(alpha):
     for j, (key, pulse) in enumerate(pulses_complete.items()):
         F_e = infid_fast[key][i]

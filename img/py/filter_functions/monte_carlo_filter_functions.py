@@ -39,7 +39,7 @@ pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else r' (ns$^{
 
 
 def monte_carlo_filter_function(pulse, omega, sigma=1.0, traces_shape=400,
-                                confidence_method: Literal['frechet', 'bootstrap'] = 'frechet',
+                                confidence_method: Literal['frechet', 'direct'] = 'frechet',
                                 confidence_level: float = 0.9545,
                                 **solver_kwargs):
     import lindblad_mc_tools as lmt
@@ -58,7 +58,7 @@ def monte_carlo_filter_function(pulse, omega, sigma=1.0, traces_shape=400,
 
     if eng is False and confidence_method == 'frechet':
         warnings.warn('matlab engine / logm_frechet not installed.')
-        confidence_method = 'bootstrap'
+        confidence_method = 'direct'
 
     expr = oe.contract_expression('...ba,ibc,...cd,jda->...ij',
                                   (traces_shape, pulse.d, pulse.d), pulse.basis,
@@ -95,10 +95,7 @@ def monte_carlo_filter_function(pulse, omega, sigma=1.0, traces_shape=400,
             else:
                 with misc.filter_warnings(action='error', category=np.exceptions.ComplexWarning):
                     K_mean[..., i] = sp.linalg.logm(Uerr_mean)
-                    K_conf[..., i] = solver.confidence_interval(
-                        sp.linalg.logm(pulse.total_propagator_liouville.T @ U),
-                        confidence_level=confidence_level
-                    )
+                    K_conf[..., i] = sp.linalg.logm(Uerr_conf)
         except (np.exceptions.ComplexWarning, Exception) as err:
             raise ValueError('U is not positive semidefinite; reduce sigma') from err
 

@@ -12,13 +12,14 @@ from scipy.special import j0, j1
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init
+from common import MAINSTYLE, TOTALWIDTH, PATH, init
 
 LINE_COLORS = list(RWTH_COLORS.values())[1:]
 SAVE_PATH = PATH / 'pdf/filter_functions'
 SAVE_PATH.mkdir(exist_ok=True)
 
 init(MAINSTYLE, backend := 'pgf')
+pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else ' (ns$^{-1}$)'
 # %% Parameters
 
 # We calculate with hbar == 1
@@ -36,10 +37,10 @@ t = np.linspace(0, T, 101)
 dt = np.diff(t)
 X, Y, Z = ff.util.paulis[1:]
 
-H_c = [[Z, [omega_0/2]*len(dt), r'$F_{zz}$'],
-       [X, A*np.cos(omega_d*t[1:] + phi), r'$F_{xx}$']]
-H_n = [[Z, np.ones_like(dt), r'$F_{zz}$'],
-       [X, np.ones_like(dt), r'$F_{xx}$']]
+H_c = [[Z, [omega_0/2]*len(dt), r'$\sigma_{z}$'],
+       [X, A*np.cos(omega_d*t[1:] + phi), r'$\sigma_{x}$']]
+H_n = [[Z, np.ones_like(dt), r'$\sigma_{z}$'],
+       [X, np.ones_like(dt), r'$\sigma_{x}$']]
 
 omega = np.sort(np.geomspace(1e-7, 1e4, 1000).tolist() + [0, Omega_R, omega_d])
 
@@ -98,10 +99,10 @@ A = get_envelope(A_m, t_r, t_f, t)
 # https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.115.133601
 Delta_eps = omega_d*np.sqrt((1 - j0(2*A/omega_0))**2 + j1(2*A/omega_0))
 
-H_c = [[Z/2, [omega_0]*len(dt), r'$F_{zz}$'],
-       [X/2, 2*A[1:]*np.cos(omega_d*t[1:] + phi), r'$F_{xx}$']]
-H_n = [[Z/2, np.ones_like(dt), r'$F_{zz}$'],
-       [X/2, np.ones_like(dt), r'$F_{xx}$']]
+H_c = [[Z/2, [omega_0]*len(dt), r'$\sigma_{z}$'],
+       [X/2, 2*A[1:]*np.cos(omega_d*t[1:] + phi), r'$\sigma_{x}$']]
+H_n = [[Z/2, np.ones_like(dt), r'$\sigma_{z}$'],
+       [X/2, np.ones_like(dt), r'$\sigma_{x}$']]
 
 omega_STRONG = np.sort(np.geomspace(1e-2, 1.2e3, 1000).tolist()
                        + [0, Omega_R_STRONG, omega_d - Omega_R_STRONG, omega_d,
@@ -116,30 +117,6 @@ plotting.plot_bloch_vector_evolution(NOT_STRONG)
 print('Strong driving infidelity: ',
       1 - np.abs(np.trace(NOT_STRONG.total_propagator.conj().T @ X)/2))
 
-# %%% plot rows
-fig, axes = plt.subplots(2, 1, layout='constrained', figsize=(TEXTWIDTH, 2.8))
-
-for ax, pulse, Omega in zip(axes, (ID20, ID20_STRONG), (Omega_R, Omega_R_STRONG)):
-    ax.set_prop_cycle(color=LINE_COLORS)
-    ax.loglog(pulse.omega, np.diagonal(pulse.get_filter_function(pulse.omega)).real)
-
-    ax.axvline(Omega, ls=':', color=RWTH_COLORS_50['black'],
-               label=r'$\Omega_R$', zorder=0)
-    ax.axvline(omega_d, ls='--', color=RWTH_COLORS_50['black'],
-               label=r'$\omega_0$', zorder=0)
-    ax.xaxis.minorticks_off()
-    ax.set_ylabel(r'$F(\omega)$')
-
-ax.axvline(2*omega_d, ls='-.', color=RWTH_COLORS_50['black'],
-           label=r'$2\Omega_R$', zorder=0)
-ax.set_xlabel(r'$\omega$ ($2\pi$Hz)')
-
-axes[0].set_xticks([1e-6, 1e-4, 1e-2, 1, 1e2, 1e4])
-axes[0].set_yticks([1e-6, 1, 1e6])
-axes[1].set_yticks([1e-6, 1])
-
-fig.savefig(SAVE_PATH / 'rabi_driving_weak_vs_strong.pdf')
-
 # %%% plot columns
 fig, axes = plt.subplots(1, 2, layout='constrained', figsize=(TOTALWIDTH, 2))
 
@@ -152,12 +129,12 @@ for ax, pulse, Omega in zip(axes, (ID20, ID20_STRONG), (Omega_R, Omega_R_STRONG)
     ax.axvline(omega_d, ls='--', color=RWTH_COLORS_50['black'],
                label=r'$\omega_0$', zorder=0)
     ax.xaxis.minorticks_off()
-    ax.set_xlabel(r'$\omega$ ($2\pi$Hz)')
+    ax.set_xlabel(r'$\omega$' + pernanosecond)
 
-ax.axvline(2*omega_d, ls='-.', color=RWTH_COLORS_50['black'],
-           label=r'$2\Omega_R$', zorder=0)
+ax.axvline(2*omega_d, ls='-.', color=RWTH_COLORS_50['black'], label=r'$2\Omega_R$', zorder=0)
+ax.legend(pulse.n_oper_identifiers, frameon=False, loc='lower left', ncols=2)
 
-axes[0].set_ylabel(r'$F(\omega)$')
+axes[0].set_ylabel(r'$\mathcal{F}_\alpha(\omega)$')
 axes[0].set_xticks([1e-6, 1e-4, 1e-2, 1, 1e2, 1e4])
 
 fig.savefig(SAVE_PATH / 'rabi_driving_weak_vs_strong.pdf')
