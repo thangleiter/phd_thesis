@@ -123,6 +123,38 @@ Finally, substituting \cref{eq:app:ff:cumulant:trace:2} into \cref{eq:app:ff:inf
 \begin{equation}
     \infid_{\alpha\beta} = \frac{1}{d}\tr\decayamps_{\alpha\beta}.
 \end{equation}
+
+% ==================================================
+%                  SUM RULE SECTION
+% ==================================================
+\subsection{Sum rule}\label{subsec:app:ff:sum_rule}
+For white noise, the infidelity to leading order does not depend on the internal dynamics of the control operation but only on the total duration $\tau$.
+To see this, take \cref{eq:ff:decay_amplitudes:time} and substitute the correlation function of white noise, $\ev{b_\alpha(t_1)b_\alpha(t_2)}=S_0\delta(t_1-t_2)$.
+The integrals then simplify to
+\begin{equation}
+    \decayamps_{\alpha\alpha,kl} = S_0\int_0^{\tau}\dd{t}\ctrlmat_{\alpha k}(t)\ctrlmat_{\alpha l}(t).
+\end{equation}
+In order to compute the infidelity, we require the trace over the matrix of decay amplitudes (\cref{eq:ff:infidelity:ent}), so
+\begin{equation}
+    I_{\alpha} = \frac{S_0}{d}\trace\decayamps_{\alpha\alpha} = \frac{1}{d}\sum_k\int_0^{\tau}\dd{t}\ctrlmat_{\alpha k}^2(t).
+\end{equation}
+Now recall that \ctrlmat is a vector on Liouville space and we can write $\ctrlmat_{\alpha}(t)\doteq\dket*{\Bat(t)}\equiv\dbra*{\Bat(t)}$ because it is Hermitian.
+Thus,
+\begin{equation}
+    I_{\alpha} = \frac{S_0}{d}\int_0^{\tau}\dd{t}\dip*{\Bat(t)}{\Bat(t)} = \frac{1}{d}\int_0^{\tau}\dd{t}\norm{\Bat(t)}^2,
+\end{equation}
+and if $\Ba(t)=\Ba$, \ie, is time-independent, the integral evaluates simply to $\tau$,
+\begin{equation}
+    I_{\alpha} = \frac{S_0\tau}{d}\norm{\Bat}^2,
+\end{equation}
+because the control unitary $\Uc(t)$ conserves the norm.
+Since also $I_{\alpha}=\int\dd{\omega}/2\pi d\,S(\omega)\FF_\alpha(\omega)$ with the fidelity filter function $\FF_\alpha(\omega)$ (\cref{eq:ff:filter_function:fidelity,eq:ff:infidelity:ent:integral}), this result also implies the sum rule
+\begin{equation}\label{eq:app:ff:sum_rule}
+    \int\ddf{\omega}\FF_{\alpha}(\omega) = \tau\norm{\Bat}^2,
+\end{equation}
+a result previously obtained by \citet{Cywinski2008}.
+This means that pulse shaping and similar techniques never yield a leading-order fidelity enhancement if the noise is white in the relevant regime of frequencies as the fidelity only depends on the total duration of the pulse.
+
 % ==================================================
 %           SINGLET-TRIPLET GATES SECTION
 % ==================================================
@@ -223,7 +255,7 @@ By the Cauchy-Schwarz inequality we then have
         \bigl\lVert\Hnt(t)\bigr\rVert^2 &= \norm{\Hn(t)}^2 \\
                           &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
                           &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
-                             \norm{B_\alpha}\norm{B_{\beta}} \\
+                             \norm*{B_\alpha}\norm*{B_{\beta}} \\
                           &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
                              s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
     \end{split}

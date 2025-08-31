@@ -68,11 +68,6 @@ The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigm
     }
     \label{fig:app:qft_ff}
 \end{figure}
-
-\Cref{tab:app:fidelities} compares the infidelities $\infid=1-\fid$ from \gls{gksl} and \gls{mc} simulations to the filter function predictions following \cref{eq:ff:infidelity:ent}.
-Note that the precise value of the filter function result depends quite sensitively on the frequency sampling due to the sharp peaks in the gigahertz range (\cref{fig:app:qft_ff}).
-As the table shows, both the \gls{gksl} and the \gls{mc} calculations agree well with the predictions made by our filter-function formalism.
-
 \begin{table*}
     \centering
     \renewcommand\arraystretch{1.25}
@@ -80,7 +75,7 @@ As the table shows, both the \gls{gksl} and the \gls{mc} calculations agree well
     \label{tab:app:fidelities}
     \begin{tabular}{l *{4}{r}}
         \toprule
-         & \multicolumn{2}{c}{\textsc{White noise}} & \multicolumn{2}{c}{$\flatfrac{1}{f}$ \textsc{noise}} \\
+        & \multicolumn{2}{c}{\textsc{White noise}} & \multicolumn{2}{c}{$\flatfrac{1}{f}$ \textsc{noise}} \\
         \cmidrule(lr){2-3}\cmidrule(lr){4-5}
         \textsc{Method} & \textsc{Without echo} & \textsc{With echo} & \textsc{Without echo} & \textsc{With echo} \\
         \midrule
@@ -90,3 +85,7 @@ As the table shows, both the \gls{gksl} and the \gls{mc} calculations agree well
         \bottomrule
     \end{tabular}
 \end{table*}
+
+\Cref{tab:app:fidelities} compares the infidelities $\infid=1-\fid$ from \gls{gksl} and \gls{mc} simulations to the filter function predictions following \cref{eq:ff:infidelity:ent}.
+Note that the precise value of the filter function result depends quite sensitively on the frequency sampling due to the sharp peaks in the gigahertz range (\cref{fig:app:qft_ff}).
+As the table shows, both the \gls{gksl} and the \gls{mc} calculations agree well with the predictions made by our filter-function formalism.

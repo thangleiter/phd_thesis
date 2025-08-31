@@ -207,18 +207,55 @@
 \newcommand{\liouvUc}[0]{\ensuremath{\mc{U}_\mr{c}}\xspace}
 \newcommand{\liouvUe}[0]{\ensuremath{\mc{\tilde{U}}}\xspace}
 \newcommand{\liouvUec}[0]{\ensuremath{\tilde{\mc{U}}^{(1)}}\xspace}
+\newcommand{\liouvUeavg}[0]{\ensuremath{\ev*{\liouvUe}}\xspace}
+\newcommand{\liouvUetavg}[0]{\ensuremath{\ev*{\liouvUe(\tau)}}\xspace}
 \newcommand{\qp}[0]{\ensuremath{\mc{E}}\xspace}
-\newcommand{\dbra}[1]{\mbox{\ensuremath{\left\langle\!\bra{#1}\right.}}\xspace}
-\newcommand{\dket}[1]{\mbox{\ensuremath{\left.\ket{#1}\!\right\rangle}}\xspace}
-\newcommand{\dbraket}[2]{\mbox{\ensuremath{\left\langle\!\braket{#1}{#2}\!\right\rangle}}\xspace}
-\newcommand{\dip}[2]{\dbraket{#1}{#2}}
-\newcommand{\ddyad}[2]{\mbox{\ensuremath{\dket{#1}\!\dbra{#2}}}\xspace}
-\newcommand{\dketbra}[2]{\ddyad{#1}{#2}}
-\newcommand{\dop}[2]{\ddyad{#1}{#2}}
-\newcommand{\dexpval}[2]{\mbox{\ensuremath{\left\langle\!\!\expval{#1}{#2}\!\right\rangle}}\xspace}
-\newcommand{\dev}[2]{\dexpval{#1}{#2}}
-\newcommand{\dmatrixel}[3]{\mbox{\ensuremath{\left\langle\!\!\matrixel{#1}{#2}{#3}\!\right\rangle}}\xspace}
-\newcommand{\dmel}[3]{\dmatrixel{#1}{#2}{#3}}
+% -----------------------
+% Liouville space algebra
+% -----------------------
+% Double bra
+\NewDocumentCommand{\dbra}{s m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\bra*{#2}}% starred (fixed)
+    {\left\langle\!\bra{#2}\right.}% unstarred (auto)
+}
+% Double ket
+\NewDocumentCommand{\dket}{s m}{%
+  \IfBooleanTF{#1}
+    {\ket*{#2}\!\rangle}% starred (fixed)
+    {\left.\ket{#2}\!\right\rangle}% unstarred (auto)
+}
+% Inner product
+\NewDocumentCommand{\dip}{s m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\braket*{#2}{#3}\!\rangle}%
+    {\left\langle\!\braket{#2}{#3}\!\right\rangle}%
+}
+% Outer product (dyad)
+\NewDocumentCommand{\dop}{s m m}{%
+  \IfBooleanTF{#1}
+    {\dket*{#2}\!\dbra*{#3}}%
+    {\dket{#2}\!\dbra{#3}}%
+}
+% Matrix element
+\NewDocumentCommand{\dmel}{s m m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\mel*{#2}{#3}{#4}\!\rangle}%
+    {\left\langle\!\!\mel{#2}{#3}{#4}\!\right\rangle}%
+}
+% Expectation value
+\NewDocumentCommand{\dev}{s m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\expval*{#2}{#3}\!\rangle}%
+    {\left\langle\!\!\expval{#2}{#3}\!\right\rangle}%
+}
+% Aliases
+\NewDocumentCommand{\dketbra}{s m m}{\dop#1{#2}{#3}} % alias for dyad
+\NewDocumentCommand{\ddyad}{s m m}{\dop#1{#2}{#3}} % alias for dyad
+\NewDocumentCommand{\dbraket}{s m m}{\dip#1{#2}{#3}} % alias for inner product
+\NewDocumentCommand{\dexpval}{s m m}{\dev#1{#2}{#3}} % alias for expectation value
+\NewDocumentCommand{\dmatrixel}{s m m m}{\dmel#1{2}{#3}{4}} % alias for matrix element
+% ------------
 % Spectroscopy
 \newcommand{\dt}{\ensuremath{\Delta t}\xspace}
 \newcommand{\df}{\ensuremath{\Delta f}\xspace}

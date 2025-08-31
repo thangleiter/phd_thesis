@@ -180,7 +180,6 @@ def plot_separate(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=
             ax1.annotate(P[r] + P[c], (0.965, 0.925), xycoords='axes fraction',
                          verticalalignment='top', horizontalalignment='right')
 
-    axes[0, 1].set_ylim(-10, 10)
     axes[1, 0].set_ylabel(r'$\mathcal{F}_{\Gamma,\Delta}(\omega;\tau)$')
     axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
     for ax in axes.flat:
@@ -227,8 +226,7 @@ def plot_complete(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=
             ax.annotate(P[r] + P[c], (0.965, 0.925), xycoords='axes fraction',
                         verticalalignment='top', horizontalalignment='right')
 
-    axes[0, 1].set_ylim(-10, 10)
-    axes[1, 0].set_ylabel(r'$\mathcal{F}(\omega;\tau)$')
+    axes[1, 0].set_ylabel(r'$\mathcal{F}_{kl}(\omega;\tau)$')
     axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
     for ax in axes.flat:
         for loc, txt in zip(ax.get_yticks(), ax.get_yticklabels()):
@@ -240,6 +238,12 @@ def plot_complete(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=
 
 def simulate(pulse):
     omega = ff.util.get_sample_frequencies(pulse, n_samples=300, include_quasistatic=True)
+    omega = np.sort(np.concatenate((
+        omega,
+        # Try to hit zeros of cos and sin
+        2*np.pi*pulse.tau*np.arange(1, omega[-1]//(2*np.pi*pulse.tau)),
+        2*np.pi*pulse.tau*np.arange(1.5, omega[-1]//(2*np.pi*pulse.tau)),
+    )))
     FF_inc = incoherent_filter_function(pulse, omega)
     FF_coh = coherent_filter_function(pulse, omega)
     # Too large a sigma results in crass overrotations and bad convergence.
@@ -275,20 +279,7 @@ Idle = ff.PulseSequence(
     [[ff.util.paulis[3]/2, [1]*n_dt, 'Z']],
     [t_idle / n_dt]*n_dt
 )
-# %% X
-pulse = X_pi
-if RUN_SIMULATION:
-    results = simulate(pulse)
-    np.savez_compressed(DATA_PATH / 'monte_carlo_FF_X.npz', **results)
-else:
-    with np.load(DATA_PATH / 'monte_carlo_FF_X.npz') as arch:
-        results = dict(arch)
-# %%% Plot
-fig, axes = plot_complete(pulse, **results)
-axes[0, 1].set_yscale('asinh', linear_width=2e-2)
-axes[0, 1].set_ylim(-3e-1, 3e-1)
-fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
-fig.savefig(SAVE_PATH / 'monte_carlo_FF_X.pdf')
+
 # %% Z
 pulse = Z_pi
 if RUN_SIMULATION:
@@ -301,13 +292,28 @@ else:
 fig, axes = plot_complete(pulse, **results, cix=[1, 2], rix=[1, 2], figsize=(TEXTWIDTH, 2.5))
 axes[0, 1].set_yscale('asinh', linear_width=2e-2)
 axes[0, 1].set_ylim(-5e-1, 5e-1)
-axes[0, 0].set_ylim(1e-7)
+axes[0, 0].set_ylim(1e-7, 1e-0)
 axes[1, 0].set_ylabel(None)
 axes[1, 1].set_xlabel(None)
-fig.supylabel(r'$\mathcal{F}(\omega;\tau)$', fontsize='medium')
+fig.supylabel(r'$\mathcal{F}_{kl}(\omega;\tau)$', fontsize='medium')
 fig.supxlabel(r'$\omega$' + pernanosecond, fontsize='medium')
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_Z.pdf')
+# %% X
+pulse = X_pi
+if RUN_SIMULATION:
+    results = simulate(pulse)
+    np.savez_compressed(DATA_PATH / 'monte_carlo_FF_X.npz', **results)
+else:
+    with np.load(DATA_PATH / 'monte_carlo_FF_X.npz') as arch:
+        results = dict(arch)
+# %%% Plot
+fig, axes = plot_complete(pulse, **results)
+axes[0, 1].set_yscale('asinh', linear_width=2e-2)
+axes[0, 1].set_ylim(-5e-1, 5e-1)
+axes[0, 0].set_ylim(1e-7, 1e-0)
+fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
+fig.savefig(SAVE_PATH / 'monte_carlo_FF_X.pdf')
 # %% Spin echo
 pulse = Idle @ X_pi @ Idle
 if RUN_SIMULATION:
@@ -318,6 +324,7 @@ else:
         results = dict(arch)
 # %%% Plot
 fig, axes = plot_complete(pulse, **results)
+axes[0, 1].set_ylim(-10, 10)
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_spin_echo.pdf')
 # %% Random pulse (unused)
