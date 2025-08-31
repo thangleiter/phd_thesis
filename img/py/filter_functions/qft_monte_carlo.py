@@ -1,88 +1,87 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  1 08:35:32 2021
-
-@author: Hangleiter
-"""
+# %% Imports
 import copy
-import logging
+import os
 import pathlib
-import json
-import shutil
 import sys
 import time
-from datetime import datetime
-
-import git
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy import stats
 
 import filter_functions as ff
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import numpy as np
+import qutip as qt
+import filter_functions as ff
 import lindblad_mc_tools as lmt
+from filter_functions import plotting
+from filter_functions.util import get_indices_from_identifiers
+from cycler import cycler
+from mpl_toolkits.axes_grid1 import ImageGrid
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, make_diverging_colormap
+from qutip.control import pulseoptim
+from qutip.qip import operations
+from qutip.qip.algorithms.qft import qft as qt_qft
+from scipy import integrate
 
-from load_save_ff_pulse import load_pulse, save_pulse
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
+from common import (MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init, save_pulse_sequence,
+                    load_pulse_sequence, prune_nopers)
+
+with np.errstate(divide='ignore', invalid='ignore'):
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
+
+RUN_SIMULATION = os.environ.get('RUN_SIMULATION', "False") == "True"
+SHOW_PROGRESSBAR = False
+LINE_COLORS = list(RWTH_COLORS.values())
+FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
+DATA_PATH = PATH.parent / 'data/filter_functions'
+DATA_PATH.mkdir(exist_ok=True)
+SAVE_PATH = PATH / 'pdf/filter_functions'
+SAVE_PATH.mkdir(exist_ok=True)
+
+init(MAINSTYLE, backend := 'pgf')
+pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else r' (ns$^{-1}$)'
 # %% Flags
-_show_progressbar = True
 _threads = None
 _chunk_noise = 8
 
 _compute_mc = True
 _compute_ff = False
 _compute_lb = False
-_compute_ff_process = False
-# %% Paths
-base_path = pathlib.Path.home()
-base_path /= 'Documents/Uni/Physik/Publication/efficient_calculation_of_generalized_filter_functions'
-
-# git_path = pathlib.Path.home() / 'git'
-git_path = pathlib.Path.home() / 'Code'
-
-data_path = base_path / 'data' / 'qft_monte_carlo'
-save_path = data_path / str(datetime.now()).partition('.')[0].replace(' ', '_').replace(':', '-')
-save_path.mkdir(exist_ok=True, parents=True)
-
-# thisfile = base_path / 'code' / 'python' / 'qft_monte_carlo.py'
-thisfile = base_path / 'code' / 'qft_monte_carlo.py'
-
 # %% Load pulses, define parameters
-qft_pulse = load_pulse(data_path / 'qft_pulse')
-qft_pulse_echo = load_pulse(data_path / 'qft_pulse_echo')
-logging.info('Loaded pulses.')
+identifiers = [r'$\sigma_y^{(3)}$']
+qft_pulse = prune_nopers(load_pulse_sequence(DATA_PATH / 'pulse_sequence_qft_pulse.npz'),
+                         identifiers)
 
-seed = 210302385
-rng = np.random.default_rng(seed)
+qft_pulse_echo = prune_nopers(load_pulse_sequence(DATA_PATH / 'pulse_sequence_qft_pulse_echo.npz'),
+                              identifiers)
 
-S_0 = {'pink': 1e-9, 'white': 2e-6}
+rng = np.random.default_rng(42)
+
 n_MC = 1000
 n_omega = 1000
 omega = np.geomspace(1e-4, 1e2, n_omega)
-# omega = np.geomspace(1e-6, 3e1, n_omega)
 omega_dc = np.linspace(0, omega[0], 11)[:-1]
 omega_all = np.concatenate([omega_dc, omega])
 f = omega/2/np.pi
 f_all = omega_all/2/np.pi
 max_frequency_sample_spacing = f[0]/10
 
-identifiers = [r'$\sigma_y^{(3)}$']
-idx = ff.util.get_indices_from_identifiers(qft_pulse.n_oper_identifiers, identifiers)
-
-# Strip noise operators we're not interested in
-qft_pulse.n_opers = qft_pulse.n_opers[idx]
-qft_pulse.n_coeffs = qft_pulse.n_coeffs[idx]
-qft_pulse.n_oper_identifiers = qft_pulse.n_oper_identifiers[idx]
-qft_pulse._control_matrix = qft_pulse._control_matrix[idx]
-qft_pulse._filter_function = qft_pulse._filter_function[idx][:, idx]
-qft_pulse_echo.n_opers = qft_pulse_echo.n_opers[idx]
-qft_pulse_echo.n_coeffs = qft_pulse_echo.n_coeffs[idx]
-qft_pulse_echo.n_oper_identifiers = qft_pulse_echo.n_oper_identifiers[idx]
-qft_pulse_echo._control_matrix  = qft_pulse_echo._control_matrix[idx]
-qft_pulse_echo._filter_function  = qft_pulse_echo._filter_function[idx][:, idx]
-
 pulses = {'echo': qft_pulse_echo, 'noecho': qft_pulse}
 pulses_dc = {key: copy.deepcopy(pulse) for key, pulse in pulses.items()}
 pulses_all = {key: copy.deepcopy(pulse) for key, pulse in pulses.items()}
+S_0 = {'pink': 1e-9, 'white': 2e-6}
+spectra = {'white': lmt.noise.WhiteSpectralFunction(S_0['white']),
+           'pink': lmt.noise.PowerLawSpectralFunction(S_0['pink'], -1)}
+# %% GKSL
+lbs_echo = lmt.LindbladSolver(qft_pulse_echo, spectra['white'], show_progressbar=SHOW_PROGRESSBAR)
+lbs_noecho = lmt.LindbladSolver(qft_pulse, spectra['white'], show_progressbar=SHOW_PROGRESSBAR)
+lbm_echo = lmt.EntanglementFidelity(lbs_echo)
+lbm_noecho = lmt.EntanglementFidelity(lbs_noecho)
+# %%%
+lbm_echo.value
+# %%%
+lbm_noecho.value
 # %% Function definitions
 
 

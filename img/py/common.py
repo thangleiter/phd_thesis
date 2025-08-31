@@ -1,3 +1,4 @@
+import copy
 import pathlib
 import string
 
@@ -169,3 +170,79 @@ def rand_pulse_sequence(d: int, n_dt: int, n_cops: int = 3, n_nops: int = 3,
         dt,
         basis
     )
+
+
+def prune_nopers(
+        pulse,
+        identifiers=[
+            '$\\sigma_x^{(0)}$', '$\\sigma_y^{(0)}$', '$\\sigma_y^{(3)}$',
+            '$\\sigma_z^{(0)}\\sigma_z^{(1)}$'
+        ]
+):
+    idx = ff.util.get_indices_from_identifiers(pulse.n_oper_identifiers, identifiers)
+    copied = copy.copy(pulse)
+    copied.n_opers = pulse.n_opers[idx]
+    copied.n_coeffs = pulse.n_coeffs[idx]
+    copied.n_oper_identifiers = pulse.n_oper_identifiers[idx]
+    copied._frequency_data.clear()
+    copied._intermediates.clear()
+    if pulse.is_cached('filter_function'):
+        copied._frequency_data['omega'] = pulse.frequency_data['omega']
+        copied._frequency_data['filter_function'] = \
+            pulse.frequency_data['filter_function'][idx, :][:, idx]
+    if pulse.is_cached('filter_function_pc'):
+        copied._frequency_data['omega'] = pulse.frequency_data['omega']
+        copied._frequency_data['filter_function_pc'] = \
+            pulse.frequency_data['filter_function_pc'][:, :, idx, :][:, :, :, idx]
+    return copied
+
+
+def save_pulse_sequence(path: pathlib.Path, pulse, data: bool = False,
+                        frequency_data: bool = False, intermediates: bool = False):
+    np.savez_compressed(
+        path,
+        c_opers=pulse.c_opers,
+        c_oper_identifiers=pulse.c_oper_identifiers,
+        c_coeffs=pulse.c_coeffs,
+        n_opers=pulse.n_opers,
+        n_oper_identifiers=pulse.n_oper_identifiers,
+        n_coeffs=pulse.n_coeffs,
+        dt=pulse.dt,
+        basis=pulse.basis,
+        **(pulse.data if data else {}),
+        **(pulse.frequency_data if frequency_data else {}),
+        **(pulse.intermediates if intermediates else {}),
+    )
+
+
+def load_pulse_sequence(path):
+    with np.load(path) as arch:
+        pulse = ff.PulseSequence.from_arrays(
+            c_opers=arch['c_opers'],
+            c_oper_identifiers=arch['c_oper_identifiers'],
+            c_coeffs=arch['c_coeffs'],
+            n_opers=arch['n_opers'],
+            n_oper_identifiers=arch['n_oper_identifiers'],
+            n_coeffs=arch['n_coeffs'],
+            dt=arch['dt'],
+            basis=arch['basis'],
+        )
+        keys = ['eigvals', 'eigvecs', 'propagators', 'total_propagator',
+                'total_propagator_liouville']
+        for key in keys:
+            if key in arch:
+                pulse._data[key] = arch[key]
+        keys = ['omega', 'total_phases', 'filter_function', 'filter_function',
+                'filter_function_gen', 'filter_function_pc', 'filter_function_pc',
+                'filter_function_pc_gen', 'filter_function_2', 'control_matrix',
+                'control_matrix_pc']
+        for key in keys:
+            if key in arch:
+                pulse._frequency_data[key] = arch[key]
+        keys = ['n_opers_transformed', 'eigvecs_propagated', 'basis_transformed', 'phase_factors',
+                'first_order_integral', 'control_matrix_step', 'control_matrix_step_cumulative']
+        for key in keys:
+            if key in arch:
+                pulse._intermediates[key] = arch[key]
+
+        return pulse
