@@ -1,0 +1,38 @@
+% mainfile: ../../main.tex
+We begin by setting some notation.
+% TODO
+Furthermore, we drop the specifier $\FF\gth{2}$ distinguishing the second- from the first-order filter function for brevity.
+
+We start from \cref{eq:ff:frequency_shifts:freq}, which defines the second-order filter function by
+\begin{equation}
+    \FF_{\alpha\beta,kl}(\omega) \coloneqq \sum_{g=1}^{G}\mc{G}_{\alpha k}^{(g)\ast}(\omega)\left[
+        \sum_{g^{\prime}=1}^{g-1}\mc{G}_{\beta l}\gth{g^{\prime}}(\omega) + \mc{J}_{\alpha\beta,kl}\gth{g}(\omega)
+    \right]
+\end{equation}
+with
+\begin{equation}
+    \mc{J}_{\alpha\beta,kl}\gth{g}(\omega) \coloneqq s_\alpha\gth{g}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g} I_{ijmn}\gth{g}(\omega)\bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g}.
+\end{equation}
+Now imagine the sequence of piecewise-constant time steps, $g\in\{1,\dotsc,G\}$, being split apart at some index $1<\gamma<G$ and thereby being divided into two subsequences $g\in\{1,\dotsc,\gamma\}$ and $h\in\{\gamma + 1,\dotsc, G\}$.
+Our goal is to obtain an expression for the second-order filter function $\FF_{\alpha\beta,kl}\gth{2}(\omega)$ as function of the control matrices of these subsequences $g$ and $h$ and some term that cannot be expressed in terms of only $g$ or $h$ individually.
+
+To this end, we first write down the total control matrix $\ctrlmat_{(12)}(\omega)$ as the concatenation of the control matrices $\ctrlmat_{(1)}(\omega)$ of subsequence $g$ and $\ctrlmat_{(2)}(\omega)$ of subsequence $h$.
+From \cref{eq:ff:control_matrix:sequence:freq} we have with the definitions from \cref{sec:ff:theory:frequency_shifts}
+\begin{align}
+    \ctrlmat_{(12)}(\omega) &= \sum_{g=1}^{G}\mc{G}_{(12)}\gth{g}(\omega) \\
+                            &= \sum_{g=1}^{\gamma}\mc{G}_{(12)}\gth{g}(\omega) + \sum_{g=\gamma+1}^{G}\mc{G}_{(12)}\gth{g}(\omega) \\
+                            &= \ctrlmat_{(1)}(\omega) + \sum_{g=\gamma+1}^{G}\e^{\i\omega t_{g-1}}\ctrlmat_{(12)}\gth{g}(\omega)\liouvQ\gth{g-1},
+\end{align}
+where we omitted indices and thus imply matrix multiplication between objects.
+To isolate the control matrix of the second sequence, we use the concatenation property \enquote{in reverse}, \ie, back-propagate the control superpropagator \liouvQ and phase factors, and find
+\begin{align}
+    \ctrlmat_{(12)}(\omega) - \ctrlmat_{(1)}(\omega) &= \sum_{g=\gamma+1}^{G}\e^{\i\omega t_{g-1}}\ctrlmat_{(12)}\gth{g}(\omega)\liouvQ\gth{g-1} \\
+                                                     &= \sum_{h=1}^{G-\gamma}\e^{\i\omega(t_\gamma + t_{h-1})}\ctrlmat_{(2)}\gth{h}\liouvQ_{(2)}\gth{h-1}\liouvQ_{(1)} \\
+                                                     &= \e^{\i\omega\tau_{(1)}}\ctrlmat_{(2)}(\omega)\liouvQ_{(1)},
+\end{align}
+where $\tau_{(1)} = t_{\gamma}$, $\ctrlmat_{(2)} = \sum_{h=1}^{G-\gamma}\mc{G}_{(2)}\gth{h}(\omega)$, and $\liouvQ_{(1)}$ is the control superpropagator of sequence $g$.
+We now move on to the filter function, where again we consider the total sequence split up into two subsequences at position $\gamma$.
+Up to $\gamma$, the filter function is simply that of the first sequence, $\FF_{(1)}(\omega)$, and we thus have
+\begin{align}
+    \FF_{(12)}(\omega) - \FF_{(1)}(\omega) &= \sum_{h=\gamma+1}^{G}\mc{G}_{(12)}^{(h)\ast}(\omega)\left[\sum_{h^{\prime}=1}^{h-1}\mc{G}_{(12)}\gth{h^{\prime}}(\omega) + \mc{J}_{(12)}\gth{h}\right]
+\end{align}
