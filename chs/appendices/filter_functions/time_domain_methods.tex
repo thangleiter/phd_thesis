@@ -71,19 +71,26 @@ The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigm
 \begin{table*}
     \centering
     \renewcommand\arraystretch{1.25}
-    \caption{Infidelities $\avginfid = 1-\avgfid$ of the \gls{qft} circuit due to noise on $\sigma_y^{(3)}$. \Gls{mc} values are given with the standard error of the mean for $N=1008$. We included frequencies in the range of $\omega\in [0, 100]\,\unit{\per\nano\second}$ for white noise, and $\omega\in [\qty{100}{\per\milli\second}, \qty{100}{\per\nano\second}]$ for pink noise. Prefactors in the power law $S(\omega)= A\omega^\alpha$ are \qty{2e-6}{\per\nano\second} and \qty{1e-9}{\per\nano\second\squared}, respectively.}
+    \caption{
+        Infidelities $\avginfid = 1-\avgfid$ of the \gls{qft} circuit due to noise on $\sigma_y^{(3)}$.
+        \Gls{mc} values are averages over $N=1000$ random traces and have a relative error of \qty{3}{\percent}.
+        We included frequencies in the range of $\omega\in [0, 100]\,\unit{\per\nano\second}$ for white noise, and $\omega\in [\qty{100}{\per\milli\second}, \qty{100}{\per\nano\second}]$ for pink noise.
+        \Gls{ff} values are computed with $n_\omega=1000$ samples logarithmically distributed over the same interval.
+        Prefactors in the power law $S(\omega)= A\omega^\alpha$ are \qty{2e-6}{\per\nano\second} and \qty{1e-9}{\per\nano\second\squared}, respectively.
+    }
     \label{tab:app:fidelities}
-    \begin{tabular}{l *{4}{r}}
-        \toprule
-        & \multicolumn{2}{c}{\textsc{White noise}} & \multicolumn{2}{c}{$\flatfrac{1}{f}$ \textsc{noise}} \\
-        \cmidrule(lr){2-3}\cmidrule(lr){4-5}
-        \textsc{Method} & \textsc{Without echo} & \textsc{With echo} & \textsc{Without echo} & \textsc{With echo} \\
-        \midrule
-        \acrshort{gksl} & \num{8.38e-3}         & \num{8.38e-3}      & ---                   & ---               \\
-        \acrshort{mc}   & \num{8.22(24)e-3}     & \num{8.34(23)e-3}  & \num{8.53(28)e-3}     & \num{2.84(10)e-3} \\ %2021-07-20_17-30-32
-        \acrshort{ff}   & \num{8.34e-3}         & \num{8.40e-3}      & \num{8.34e-3}         & \num{3.02e-3}     \\ %2021-07-20_16-41-17
-        \bottomrule
-    \end{tabular}
+    \input{data/filter_functions/qft_fidelities}
+%    \begin{tabular}{l *{4}{r}}
+%        \toprule
+%        & \multicolumn{2}{c}{\textsc{White noise}} & \multicolumn{2}{c}{$\flatfrac{1}{f}$ \textsc{noise}} \\
+%        \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+%        \textsc{Method} & \textsc{Without echo} & \textsc{With echo} & \textsc{Without echo} & \textsc{With echo} \\
+%        \midrule
+%        \acrshort{gksl} & \num{8.38e-3}         & \num{8.38e-3}      & ---                   & ---               \\
+%        \acrshort{mc}   & \num{8.22(24)e-3}     & \num{8.34(23)e-3}  & \num{8.53(28)e-3}     & \num{2.84(10)e-3} \\ %2021-07-20_17-30-32
+%        \acrshort{ff}   & \num{8.34e-3}         & \num{8.40e-3}      & \num{8.34e-3}         & \num{3.02e-3}     \\ %2021-07-20_16-41-17
+%        \bottomrule
+%    \end{tabular}
 \end{table*}
 
 \Cref{tab:app:fidelities} compares the infidelities $\infid=1-\fid$ from \gls{gksl} and \gls{mc} simulations to the filter function predictions following \cref{eq:ff:infidelity:ent}.

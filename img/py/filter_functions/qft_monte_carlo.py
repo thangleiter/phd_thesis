@@ -3,47 +3,26 @@ import copy
 import os
 import pathlib
 import sys
-import time
 
-import filter_functions as ff
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import numpy as np
-import qutip as qt
-import filter_functions as ff
 import lindblad_mc_tools as lmt
-from filter_functions import plotting
-from filter_functions.util import get_indices_from_identifiers
-from cycler import cycler
-from mpl_toolkits.axes_grid1 import ImageGrid
-from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, make_diverging_colormap
-from qutip.control import pulseoptim
-from qutip.qip import operations
-from qutip.qip.algorithms.qft import qft as qt_qft
-from scipy import integrate
+import numpy as np
+import pandas as pd
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-from common import (MAINSTYLE, TEXTWIDTH, TOTALWIDTH, PATH, init, save_pulse_sequence,
-                    load_pulse_sequence, prune_nopers)
-
-with np.errstate(divide='ignore', invalid='ignore'):
-    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
+from common import PATH, load_pulse_sequence, prune_nopers
 
 RUN_SIMULATION = os.environ.get('RUN_SIMULATION', "False") == "True"
 SEED = 42
 THREADS = None
 CHUNK_NOISE = 8
 SHOW_PROGRESSBAR = False
-LINE_COLORS = list(RWTH_COLORS.values())
+
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/filter_functions'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/filter_functions'
 SAVE_PATH.mkdir(exist_ok=True)
-
-init(MAINSTYLE, backend := 'pgf')
-pernanosecond = r' (\unit{\per\nano\second})' if backend == 'pgf' else r' (ns$^{-1}$)'
 # %% Load pulses, define parameters
 identifiers = [r'$\sigma_y^{(3)}$']
 qft_pulse = prune_nopers(load_pulse_sequence(DATA_PATH / 'pulse_sequence_qft_pulse.npz'),
@@ -56,7 +35,7 @@ rng = np.random.default_rng(SEED)
 n_MC = 1000
 omega = qft_pulse.omega
 f = omega/2/np.pi
-max_frequency_sample_spacing = f[0]/10
+max_frequency_sample_spacing = f[1]/10
 
 pulses = {'echo': qft_pulse_echo, 'noecho': qft_pulse}
 pulses_dc = {key: copy.deepcopy(pulse) for key, pulse in pulses.items()}
@@ -96,6 +75,7 @@ mcs_echo = {
         show_progressbar=SHOW_PROGRESSBAR,
         traces_shape=n_MC,
         f_max=f[-1],
+        f_min=0 if key == 'white' else None,
         max_frequency_sample_spacing=max_frequency_sample_spacing,
         chunk_noise=CHUNK_NOISE,
         threads=THREADS,
@@ -108,6 +88,7 @@ mcs_noecho = {
         show_progressbar=SHOW_PROGRESSBAR,
         traces_shape=n_MC,
         f_max=f[-1],
+        f_min=0 if key == 'white' else None,
         max_frequency_sample_spacing=max_frequency_sample_spacing,
         chunk_noise=CHUNK_NOISE,
         threads=THREADS,
@@ -120,7 +101,7 @@ if RUN_SIMULATION:
         mcs_echo[key].solve()
         np.savez_compressed(
             DATA_PATH / f'mc_propagator_qft_pulse_echo_{key}.npz',
-            complete_propagator_mean=[mcs_echo[key].mean(mcs_echo[key].complete_propagator)],
+            complete_propagator=[mcs_echo[key].mean(mcs_echo[key].complete_propagator)],
         )
         mcs_noecho[key].solve()
         np.savez_compressed(
@@ -128,14 +109,16 @@ if RUN_SIMULATION:
             complete_propagator=[mcs_noecho[key].mean(mcs_noecho[key].complete_propagator)],
         )
 else:
-    with np.load(DATA_PATH / 'mc_propagator_qft_pulse_echo.npz') as arch:
-        mcs_echo._complete_propagator = arch['complete_propagator_mean']
-    with np.load(DATA_PATH / 'mc_propagator_qft_pulse.npz') as arch:
-        mcs_noecho._complete_propagator = arch['complete_propagator_mean']
+    for key in mcs_echo:
+        with np.load(DATA_PATH / f'mc_propagator_qft_pulse_echo_{key}.npz') as arch:
+            mcs_echo[key]._complete_propagator = arch['complete_propagator']
+        with np.load(DATA_PATH / f'mc_propagator_qft_pulse_{key}.npz') as arch:
+            mcs_noecho[key]._complete_propagator = arch['complete_propagator']
 # %%% Fidelity
 mcm_echo = {key: lmt.EntanglementFidelity(mcs_echo[key]) for key in mcs_echo}
 mcm_noecho = {key: lmt.EntanglementFidelity(mcs_noecho[key]) for key in mcs_noecho}
 
+# Run the simulation to get statistics
 print('MC infidelities (x 1e3)')
 for key in mcm_echo:
     print(f' W/ Echo:\t{key}\t{(1-mcm_echo[key].value.mean(0))*1e3:.3g}')
@@ -172,3 +155,30 @@ for key in ffm_echo:
     print(f'W/O echo:\t{key}\t{(1-ffm_noecho[key].value)*1e3:.3g}')
 
 # %% Save fidelities
+data = {
+    (r"\textsc{White noise}", r"\textsc{Without echo}"):
+        1 - np.array([lbm_noecho.value, mcm_noecho['white'].value.mean(0),
+                      ffm_noecho['white'].value]),
+    (r"\textsc{White noise}", r"\textsc{With echo}"):
+        1 - np.array([lbm_echo.value, mcm_echo['white'].value.mean(0), ffm_echo['white'].value]),
+    (r"\oneoverf \textsc{noise}", r"\textsc{Without echo}"):
+        1 - np.array([np.nan, mcm_noecho['pink'].value.mean(0), ffm_noecho['pink'].value]),
+    (r"\oneoverf \textsc{noise}", r"\textsc{With echo}"):
+        1 - np.array([np.nan, mcm_echo['pink'].value.mean(0), ffm_echo['pink'].value]),
+}
+
+index = [r"\acrshort{gksl}", r"\acrshort{mc}", r"\acrshort{ff}"]
+rows = [[label] + [col[i] for col in data.values()] for i, label in enumerate(index)]
+cols = pd.MultiIndex.from_tuples([("", r"\textsc{Method}")] + list(data.keys()))
+df = pd.DataFrame(rows, columns=cols)
+with (DATA_PATH / 'qft_fidelities.tex').open('w') as file:
+    latex = df.to_latex(
+        column_format='l *{4}{S[table-format=1.2e+1,round-mode=figures,round-precision=3]}',
+        escape=False, index=False, multicolumn=True, multicolumn_format="c", float_format="%.6e",
+        na_rep='{---}'
+    ).replace(
+        r"\textsc{Method}", r'\cmidrule(lr){2-3}\cmidrule(lr){4-5}' + '\n' + r"\textsc{Method}"
+    )
+
+    file.write(f'% This table is automatically generated by {FILE_PATH} \n '.replace('\\', '/'))
+    file.write(latex)
