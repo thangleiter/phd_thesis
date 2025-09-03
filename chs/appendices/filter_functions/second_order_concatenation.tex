@@ -11,7 +11,7 @@ To make clear that the control \enquote{matrices} are in fact vectors in Liouvil
 \begin{equation}
     \ctrlmat(\omega) \doteq \dbra*{\ctrlmat(\omega)}
 \end{equation}
-and define as shorthands
+and define as shorthands for \cref{eq:ff:control_matrix:sequence:freq}
 \begin{align}
     \mc{G}\gth{g}(\omega) & \doteq \dbra*{\mc{G}\gth{g}(\omega)}
                             \coloneqq \e^{\i\omega t_{g-1}}\dbra*{\ctrlmat\gth{g}(\omega)}\liouvQ\gth{g-1} \label{eq:app:ff:ctrlmat_step} \\
@@ -25,26 +25,28 @@ such that
 \Ie, $\mc{M}\gth{g}(\omega)$ is the \emph{cumulative} control matrix of a sequence of $G$ total steps up to step $g$ and can thus be viewed as a function defined at discrete points in time, $\mc{M}\gth{g}(\omega)\simeq \mc{M}(\omega;t_0,t_g)$.
 Finally, we drop the specifier $\FF\gth{2}$ distinguishing the second- from the first-order filter function for brevity; in this section, we always mean the former.
 
-% TODO: sub- and superscripts
 In the following, we will consider a sequence of piecewise-constant time steps split up into subsequences and will deal on the one hand with quantities that depend exclusively on the internal structure of a subsequence and those that do not depend on the internal structure on the other.
-We will refer to the former as \emph{local} quantities, and denote their time step by a parenthesised superscript, \eg, $A\gth{i}$, which means the $i$th time step of $A$.
-The subsequences themselves will be enumerated by a parenthesised subscript, so that if $A$ were a quantity of subsequence $g$, we would denote its $i$th time step as $A_{(g)}\gth{i}$.
-Lastly, \emph{non-local} quantities that depend on preceding sequences will then be denoted in a \enquote{posterior} fashion, \eg, $A_{(g|g-1\to 1)}$ if $A$ depends on all sequences $g-1, \dotsc, 1$.
+For the former, we will denote their internal time step by a parenthesised superscript, \eg $A\gth{i}$, which means the $i$th time step of $A$.
+The latter will have no superscript as they do not depend on the internal structure.
+We will furthermore distinguish between \emph{local} quantities, which do not depend on the preceding dynamics (that is, are functions of the subsequence alone), and denote the subsequence index they belong to by a parenthesised subscript, \eg $A_{(i)}$ for some quantity $A$ of sequence $i$.
+By contrast, quantities which are \emph{non-local} and thus depend on the preceding dynamics will then be denoted in a \enquote{posterior} fashion, \eg, $A_{(i|i-1\to 1)}$ if $A$ is a function of subsequence $i$ and depends on all previous subsequences $i-1, \dotsc, 1$.
+A special case is the control propagator up to sequence $i$, $\liouvQ_{(i-1\to 1)}$, where we drop the index $i$ because the action of $\liouvQ_{(i-1\to 1)}$ during $i$ is the identity operation.
 
-We start from \cref{eq:ff:frequency_shifts:freq}, which defines the second-order filter function by
-\begin{equation}\label{eq:app:ff:filter_function:complete}
-    \FF_{\alpha\beta,kl}(\omega) \coloneqq \sum_{g=1}^{G}\left[
-        \mc{G}_{\alpha k}^{(g)\ast}(\omega) \mc{M}_{\beta l}\gth{g-1}(\omega) + \mc{J}_{\alpha\beta,kl}\gth{g}(\omega)
-    \right]
+We start from \cref{eq:ff:frequency_shifts:freq}, from which for reasons that will become clear shortly we define the second-order filter function by
+\begin{subequations}\label{eq:app:ff:filter_function:complete}
+\begin{equation}\tag{\ref{eq:app:ff:filter_function:complete}}
+    \FF_{\alpha\beta,kl}(\omega) \coloneqq \mc{N}_{\alpha\beta,kl}(\omega) + \sum_{g=1}^{G}\mc{J}_{\alpha\beta,kl}\gth{g}(\omega)
 \end{equation}
 with
-\begin{equation}\label{eq:app:ff:nested_time_step}
-    \mc{J}_{\alpha\beta,kl}\gth{g}(\omega) \coloneqq s_\alpha\gth{g}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g} I_{ijmn}\gth{g}(\omega)\bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g}
-\end{equation}
-where repeated indices are contracted.
+\begin{align}
+    \mc{N}_{\alpha\beta,kl}(\omega) &\coloneqq \sum_{g=1}^{G}\mc{G}_{\alpha k}^{(g)\ast}(\omega) \mc{M}_{\beta l}\gth{g-1}(\omega) \label{eq:app:ff:complete_time_step} \\
+    \mc{J}_{\alpha\beta,kl}\gth{g}(\omega) &\coloneqq s_\alpha\gth{g}\bar{B}_{\alpha,ij}\gth{g}\bar{C}_{k,ji}\gth{g} I_{ijmn}\gth{g}(\omega)\bar{C}_{l,nm}\gth{g}\bar{B}_{\beta,mn}\gth{g} s_\beta\gth{g} \label{eq:app:ff:nested_time_step}
+\end{align}
+\end{subequations}
+and where repeated indices are contracted.
 Comparing to the nested time integral, the first summand in the brackets contains all contributions from complete time segments up to the one containing the inner integration variable $t$, whereas the second captures the final, incomplete segment with $t_{g-1} < t \leq t_{g}$.
 Now imagine the sequence of piecewise-constant time steps, $g\in\{1,\dotsc,G\}$, being split apart at some index $1<\gamma<G$ and thereby being divided into two subsequences $g\in\{1,\dotsc,\gamma\}$ and $h\in\{1,\dotsc,\eta\} \equiv g\in\{\gamma+1,\dotsc,G\}$ with $G = \gamma + \eta$.
-Our goal is to obtain an expression for the second-order filter function $\FF(\omega)$ that is -- as much as possible -- a sum of local terms of these subsequences $g$ and $h$ and some term that cannot be expressed in terms of either $g$ or $h$ alone.
+Our goal is to obtain an expression for the second-order filter function $\FF(\omega)$ that is -- as much as possible -- a sum of local terms of these subsequences $g$ and $h$.
 
 Up to $\gamma$, the filter function is simply that of the first sequence, $\FF_{(1)}(\omega)$, and we thus have for $g>\gamma$\sidenote{
     We drop indices for legibility as stated above; $\mc{J}\gth{g}(\omega)$ is a matrix on Liouville space, whereas $\mc{G}\gth{g}(\omega)$ and $\mc{M}\gth{g}(\omega)$ are Liouville-space row vectors and their product here is an outer product, $\dop*{\mc{G}\gth{g}(\omega)}{\mc{M}\gth{g-1}(\omega)}$, resulting in a matrix on Liouville space.
@@ -53,8 +55,9 @@ Up to $\gamma$, the filter function is simply that of the first sequence, $\FF_{
     \FF_{(2|1)}(\omega) &= \FF(\omega) - \FF_{(1)}(\omega) \notag \\
                         &= \sum_{g=\gamma+1}^{G}\left[
                             \dop*{\mc{G}\gth{g}(\omega)}{\mc{M}\gth{g-1}(\omega)} + \mc{J}\gth{g}(\omega)
-                        \right].\label{eq:app:ff:filter_function:12:2}
+                        \right],\label{eq:app:ff:filter_function:12:2}
 \end{align}
+where we already plugged in \cref{eq:app:ff:complete_time_step}.
 We must now express the quantities $\mc{G}\gth{g}(\omega)$, $\mc{M}\gth{g-1}(\omega)$, and $\mc{J}\gth{g}(\omega)$ locally in terms of the index $h$.
 To this end, we first write down the step-wise control matrix $\mc{G}\gth{g}(\omega)$ in the second sequence and split off phases and propagators from the first sequence,
 \begin{align}\label{eq:app:ff:ctrlmat_step:12}
@@ -78,7 +81,7 @@ We start from \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}, consider a 
         \mc{J}_{kl}\gth{g}(\omega) =& s\gth{g} \bar{B}_{ij}\gth{g} \bar{C}_{kji}\gth{g} I_{ijmn}\gth{g}(\omega)
                                        \bar{C}_{(2|1),lnm}\gth{g} \bar{B}_{mn}\gth{g} s\gth{g} \notag \\
                                    =& s_{(2)}\gth{h} \bar{B}_{(2),ij}\gth{h} \bar{C}_{(2|1),kji}\gth{h} I_{(2),ijmn}\gth{h}(\omega)
-                                       \bar{C}_{lnm}\gth{h} \bar{B}_{(2),mn}\gth{h} s_{(2)}\gth{h} \notag \\
+                                       \bar{C}_{(2|1),lnm}\gth{h} \bar{B}_{(2),mn}\gth{h} s_{(2)}\gth{h} \notag \\
                                    =& \mc{J}_{(2|1),kl}\gth{h}(\omega) \label{eq:app:ff:filter_function:incomplete_timestep}
 \end{align}
 because all quantities except for $\bar{C}_{(2|1)}\gth{g}$ depend on their timestep $g$ alone, and where $i,j,m,n$ index the Hilbert space dimensions of the operators, while $k,l$ are the usual indices for the basis elements and therefore Liouville space dimensions.
@@ -89,7 +92,9 @@ On that term, we can factor out the propagators of the first complete sequence,\
     \bar{C}_{(2|1),kij}\gth{h} = \left[V_{(2)}^{(h)\dagger}Q_{(2)}\gth{h-1}Q_{(1)} C_k Q_{(1)}\adjoint Q_{(2)}^{(h-1)\dagger}V_{(2)}\gth{h}\right]_{ij}.
 \end{align}
 
-We can now finally put all pieces together and, starting from \cref{eq:app:ff:filter_function:12:2}, plug in \cref{eq:app:ff:ctrlmat_step:12,eq:app:ff:ctrlmat_cumulative:12:2,eq:app:ff:filter_function:incomplete_timestep}, so that we obtain
+We can now finally put all pieces together and, starting from \cref{eq:app:ff:filter_function:12:2}, plug in \cref{eq:app:ff:ctrlmat_step:12,eq:app:ff:ctrlmat_cumulative:12:2,eq:app:ff:filter_function:incomplete_timestep}, so that we obtain\sidenote{
+    Recall that \liouvQ is the Liouville representation of the unitary operator $Q$ and as such -- and because our chosen basis \basis is Hermitian -- is an orthogonal matrix for which $\liouvQ\transpose\liouvQ = \eye$.
+}
 \begin{align}
     \FF_{(2|1)}(\omega) = \sum_{h=1}^{\eta}\Bigl[ & \dop*{\mc{G}_{(2|1)}\gth{h}(\omega)}{\mc{M}_{(2|1)}\gth{h-1}(\omega)}
                                                     + \mc{J}_{(2|1)}\gth{h}(\omega)\Bigr] \notag \\
@@ -100,43 +105,50 @@ We can now finally put all pieces together and, starting from \cref{eq:app:ff:fi
                                  \Bigr] +\mc{J}_{(2|1)}\gth{h}(\omega)
                         \Bigr\rbrace. \notag
 \end{align}
-To simplify the unwieldy first summand in the curly braces further, we factor out the constant superpropagator $\liouvQ_{(1)}$,\sidenote{
-    Recall that \liouvQ is the Liouville representation of the unitary operator $Q$ and as such -- and because our chosen basis \basis is Hermitian -- is an orthogonal matrix for which $\liouvQ\transpose\liouvQ = \eye$.
-}
+To simplify the unwieldy first summand in the curly braces further, we expand the product,
 \begin{align}
     \MoveEqLeft \e^{-\i\omega\tau_{(1)}}\liouvQ_{(1)}\transpose\dket*{\mc{G}_{(2)}\gth{h}(\omega)}\left[\dbra*{\ctrlmat_{(1)}(\omega)}
-            + \e^{\i\omega\tau_{(1)}}\dbra*{\mc{M}_{(2)}\gth{h-1}(\omega)}\liouvQ_{(1)}\right] \notag \\
-        &= \liouvQ_{(1)}\transpose\dket*{\mc{G}_{(2)}\gth{h}(\omega)}\left[
-               \e^{-\i\omega\tau_{(1)}}\dbra*{\ctrlmat_{(1)}(\omega)}\liouvQ_{(1)}\transpose + \dbra*{\mc{M}_{(2)}\gth{h-1}}
-           \right]\liouvQ_{(1)} \\
-        &\eqqcolon \liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\mc{N}_{(2)}\gth{h-1}(\omega)}\liouvQ_{(1)},
+            + \e^{\i\omega\tau_{(1)}}\dbra*{\mc{M}_{(2)}\gth{h-1}(\omega)}\liouvQ_{(1)}\right] \\
+        &= \e^{-\i\omega\tau_{(1)}}\liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\ctrlmat_{(1)}(\omega)}
+            + \liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\mc{M}_{(2)}\gth{h-1}}\liouvQ_{(1)}. \notag
 \end{align}
-where we defined the quantity
-\begin{equation}
-    \dbra*{\mc{N}_{(2)}\gth{h-1}(\omega)} = \e^{-\i\omega\tau_{(1)}}\dbra*{\ctrlmat_{(1)}(\omega)}\liouvQ_{(1)}\transpose + \dbra*{\mc{M}_{(2)}\gth{h-1}}
-\end{equation}
-that contains contributions from local terms of both sequences.
-We have thus reduced the term to an outer product of two vectors on Liouville space whose only contributions are from terms from either sequence which can be reused in a calculation, and obtain at last
-\begin{equation}\label{eq:app:ff:filter_function:12}
-    \FF_{(2|1)}(\omega) = \sum_{h=1}^{\eta}\left[
-        \liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\mc{N}_{(2)}\gth{h-1}(\omega)}\liouvQ_{(1)} + \mc{J}_{(2|1)}\gth{h}(\omega)
-    \right].
-\end{equation}
-In \cref{eq:app:ff:filter_function:12}, all terms except the last are properties of the individual sequences alone and can thus be computed ahead of time.
-Indeed, we can now simply iterate this result to the general case of a sequence of $G$ subsequences with lengths $\lbrace\eta_g\rbrace_{g=1}^G$ by recursively splitting apart the later sequence $(2)$ and applying \cref{eq:app:ff:filter_function:12}.
-
-Let us first briefly discuss the special case where $G=1$.
-Then, $\liouvQ_{(0)}=\eye$, $\dbra*{\ctrlmat_{(0)}} = 0$, and $\dbra*{\mc{N}_{(1)}\gth{h-1}(\omega)} = \dbra*{\mc{M}_{(1)}\gth{h-1}(\omega)}$ so that \cref{eq:app:ff:filter_function:12} reduces to \cref{eq:app:ff:filter_function:complete} as it should.
-We can therefore write the concatenation rule for second-order filter functions simply as
+If we now pull in the sum over the time steps $h$, we can identify the control matrix in the first term and the contribution from complete segments to the second-order filter function ($\mc{N}_{(2)}(\omega)$, \cref{eq:app:ff:complete_time_step}) in the second,
 \begin{align}
-    \FF(\omega) =& \sum_{g=1}^{G} \FF_{(g|g-1\to 1)}(\omega) \\
-                =& \sum_{g=1}^{G}\sum_{h_{g}=1}^{\eta_g}\left[
-                        \liouvQ_{(g-1)}\transpose\dop*{\mc{G}_{(g)}\gth{h_g}(\omega)}{\mc{N}_{(g)}\gth{h_g-1}(\omega)}\liouvQ_{(g-1)}
-                        + \mc{J}_{(g|g-1\to 1)}\gth{h_g}(\omega)
-                    \right] \label{eq:app:ff:filter_function:concatenated}
+    \MoveEqLeft \sum_{h=1}^{\eta}\e^{-\i\omega\tau_{(1)}}\liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\ctrlmat_{(1)}(\omega)}
+            + \liouvQ_{(1)}\transpose\dop*{\mc{G}_{(2)}\gth{h}(\omega)}{\mc{M}_{(2)}\gth{h-1}}\liouvQ_{(1)} \notag \\
+        &= \e^{-\i\omega\tau_{(1)}}\liouvQ_{(1)}\transpose\dop*{\ctrlmat_{(2)}(\omega)}{\ctrlmat_{(1)}(\omega)}
+            + \liouvQ_{(1)}\transpose\mc{N}_{(2)}(\omega)\liouvQ_{(1)}.
 \end{align}
+As a last step, we recognize that the bra in the first term is nothing else but \cref{eq:app:ff:ctrlmat_step} so that we can write the filter function succinctly as
+\begin{align}
+    \FF_{(2|1)}(\omega) &= \dop*{\mc{G}_{(2)}(\omega)}{\ctrlmat_{(1)}(\omega)}
+                            + \liouvQ_{(1)}\transpose\mc{N}_{(2)}(\omega)\liouvQ_{(1)}
+                            + \sum_{h=1}^{\eta}\mc{J}_{(2|1)}\gth{h}(\omega) \notag \\
+                        &= \mc{N}_{(2|1)}(\omega) + \sum_{h=1}^{\eta}\mc{J}_{(2|1)}\gth{h}(\omega). \label{eq:app:ff:filter_function:12}
+\end{align}
+% TODO: here
+In \cref{eq:app:ff:filter_function:12}, all terms except the last are known ahead of time if the first- and second-order filter functions of the subsequences as well as the control matrix of the concatenated sequence have been computed.
+We can extend this result to sequences consisting of an arbitrary number of $G$ subsequences with lengths $\lbrace\eta_g\rbrace_{g=1}^G$ by recursively shifting indices in \cref{eq:app:ff:filter_function:12}, $(2)\to (3), (1)\to (2)$, and adding $\FF_{(2|1)}(\omega)$, allowing us to write the concatenation rule for second-order filter functions as
+\begin{subequations}\label{eq:app:ff:filter_function:concatenated}
+\begin{align}
+    \FF(\omega) =& \sum_{g=1}^{G} \FF_{(g|g-1\to 1)}(\omega) \notag \\
+                =& \sum_{g=1}^{G}\left[
+                        \mc{N}_{(g|g-1\to 1)}(\omega)
+                        + \sum_{h_{g}=1}^{\eta_{g}}\mc{J}_{(g|g-1\to 1)}\gth{h_{g}}(\omega).
+                    \right] \tag{\ref{eq:app:ff:filter_function:concatenated}}
+\end{align}
+with
+\begin{multline}
+    \mc{N}_{(g|g-1\to 1)}(\omega) \\
+        = \dop*{\mc{G}_{(g)}(\omega)}{\ctrlmat_{(g-1)}(\omega)} + \liouvQ_{(g-1\to 1)}\transpose\mc{N}_{(g)}(\omega)\liouvQ_{(g-1\to 1)}
+\end{multline}
+and
+\begin{multline}
+    \mc{J}_{(g|g-1\to 1),kl}\gth{h}(\omega) \\
+        = s_{(g)}\gth{h} \bar{B}_{(g),ij}\gth{h} \bar{C}_{(g|g-1\to 1),kji}\gth{h} I_{(g),ijmn}\gth{h}(\omega)
+           \bar{C}_{(g|g-1\to 1),lnm}\gth{h} \bar{B}_{(g),mn}\gth{h} s_{(g)}\gth{h}
+\end{multline}
+\end{subequations}
 \Cref{eq:app:ff:filter_function:concatenated} is our final result.
-It contains two terms; the first, the sum over $G$ transfer matrices, is the concatenated 
-The terms in the first line of \cref{eq:app:ff:filter_function:concatenated} are all local functions of sequence $(g)$ and the sum in the second line needs to be computed for every single time step $h\in\{1,\dotsc,\sum_g\eta_g\}$.\sidenote{
-    We note that only contractions are required (see \cref{eq:app:ff:filter_function:incomplete_timestep}); the individual terms, including the second-order integral (\cref{eq:ff:frequency_shifts:integral}), can all be retained from the computation of the individual sequence's second-order filter function.
-}
+Before we analyze it in more detail, let us first briefly discuss the special case where $G=1$.
+Then, $\liouvQ_{(0)}=\eye$, $\dbra*{\ctrlmat_{(0)}} = 0$, and hence $\dop*{\mc{G}_{(1)}(\omega)}{\ctrlmat_{(0)}(\omega)} = 0$ so that \cref{eq:app:ff:filter_function:12} reduces to \cref{eq:app:ff:filter_function:complete} as it should.
