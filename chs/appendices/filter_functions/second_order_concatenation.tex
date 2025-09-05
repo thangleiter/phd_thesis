@@ -172,7 +172,7 @@ To compute the second-order filter function of a sequence of quantum gates most 
     \item Compute the control matrix for all gates individually.
         This requires the quantities $V_{(g)}\gth{h}$, $\bar{B}_{(g)}\gth{h}$, and $Q_{(g)}\gth{h}$ to be computed, allowing them to be reused in \cref{eq:app:ff:basis_transformed}.
     \item Compute the second-order filter function for all gates individually.
-        This requires the quantities $I_{(g)}\gth{h}(\omega)$ (\cref{eq:ff:frequency_shifts:integral}) and $\mc{N}_\gth{g}(\omega)$ to be computed, allowing them to be reused in \cref{eq:app:ff:incomplete_timestep:concatenated,eq:app:ff:complete_timestep:concatenated}, respectively.
+        This requires the quantities $I_{(g)}\gth{h}(\omega)$ (\cref{eq:ff:frequency_shifts:integral}) and $\mc{N}_{(g)}(\omega)$ to be computed, allowing them to be reused in \cref{eq:app:ff:incomplete_timestep:concatenated,eq:app:ff:complete_timestep:concatenated}, respectively.
     \item Compute the control matrix of the entire sequence.
         This requires the quantities $\ctrlmat_{(g|g-1\to 1)}(\omega)$ and $\ctrlmat_{(g\to 1)}(\omega)$ to be computed, allowing them to be reused in \cref{eq:app:ff:complete_timestep:concatenated}.
 \end{enumerate}
