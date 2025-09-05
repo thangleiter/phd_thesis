@@ -63,11 +63,14 @@
 
 ## Code
 - [x] `uv pip freeze` *or* just make installable.
+    - [ ] Finalize envs
+- [ ] Test running all.
 - [ ] Add `README`
 - [ ] Draft new `filter_functions` release
 - [ ] Draft new `lindblad_mc_tools` release
 - [ ] Move and make public `lindblad_mc_tools`
     - [ ] Add `README`
+- [ ] Check `qutil`, `python_spectrometer` releases
 
 ## Layout
 - [x] Tune the bibliography style
@@ -78,6 +81,7 @@
 - [x] Else numbered parts
 - [ ] Part title page design
 - [ ] ~~`\margintoc`?~~
+- [ ] Move LOF to end of document.
 
 ## `latexmk`
 
