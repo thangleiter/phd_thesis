@@ -1,17 +1,19 @@
 % mainfile: ../../../main.tex
 \chapter{Vibration spectroscopy}\label{ch:app:setup:vibrations}
 \section{Knife-edge measurement}\label{sec:app:setup:vibrations:knife_edge}
+In \cref{sec:setup:vibrations:optic}, I used a knife-edge measurement to calibrate the readout of the sample position using the count rate of laser radiation reflected off a lateral reflectance gradient.
+The gradient was determined by the convolution of the finite spatial extent of the laser spot and a step in reflectance from a \ch{Au} gate with approximately perfect reflectance and the bare \ch{GaAs} surface.
+The same measurement can also be used to extract the reflectance $\reflectance_{0}$ of the bare \ch{GaAs} surface as well as the spot size radius $w_0$ of a Gaussian beam by fitting the theoretical dependence of the reflected count rate on the lateral position, \cref{eq:setup:knife_edge}.
+
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/knife_edge_erf}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
+        Reflectance gradient of the edge of a \ch{Au} gate electrode on the bare \ch{GaAs} surface.
+        The dashed line is a fit to \cref{eq:setup:knife_edge} with $\reflectance_0$ fixed while the solid includes this parameter in the fit.
     }
     \label{fig:app:setup:vibrations:knife_edge}
 \end{marginfigure}
-
-In \cref{sec:setup:vibrations:optic}, I used a knife-edge measurement to calibrate the readout of the sample position using the count rate of laser radiation reflected off a lateral reflectance gradient.
-The gradient was determined by the convolution of the finite spatial extent of the laser spot and a step in reflectance from a \ch{Au} gate with approximately perfect reflectance and the bare \ch{GaAs} surface.
-The same measurement can also be used to extract the reflectance $\reflectance_{0}$ of the bare \ch{GaAs} surface as well as the spot size radius $w_0$ of a Gaussian beam by fitting the theoretical dependence of the reflected count rate on the lateral position, \cref{eq:setup:knife_edge}.
 
 From the refractive index of \ch{GaAs}, we would expect
 \begin{equation}
