@@ -36,7 +36,7 @@ We will now derive an expression for the quantum process of a quantum gate in th
 As a single realization of a classical noise generates strictly unitary dynamics, we will be interested in the expectation value of the dynamics over many such realizations, which will lead to a quantum process including decoherence.
 If the noise is additionally Gaussian and commutes with the control, these results are exact and therefore apply without restrictions to arbitrarily large noise strength as well as to gates that partially decouple from noise.
 For such \glspl{dcg} or \gls{dd} sequences~\cite{Khodjasteh2009,Cywinski2008} higher order terms can become dominant.
-Non-commuting noise leads to corrections at higher orders that we investigate in \cref{ch:ff:validation}.
+Non-commuting noise leads to corrections at higher orders that we investigate in \cref{ch:ff:validation}~\sidecite{Hangleiter2024}.
 In the case that the environment is not strictly Gaussian, our approach becomes perturbative and we recover the results presented in~\citer{Cerfontaine2021}.
 As most of our discussion later on in this part will focus on the approximation neglecting coherent errors, readers not interested in the full generality may refer to that publication for a less general but perhaps more accessible derivation and skip ahead to \cref{sec:ff:theory:decay_amplitudes}.
 
@@ -591,24 +591,27 @@ with
 \end{subequations}
 for $1\leq j < k\leq d$, $1\leq l\leq d - 1$, and an orthonormal vector basis $\lbrace\ket{j}\rbrace_{j=1}^d$ of the Hilbert space.
 Expanding an arbitrary matrix $A\in\mathbb{C}^{d\times d}$ in the basis of \cref{eq:ff:basis:ggm} is then simply a matter of adding up the corresponding matrix elements of $A$ according to \cref{eq:ff:basis:ggm:u,eq:ff:basis:ggm:v,eq:ff:basis:ggm:w}.
-For instance, the expansion coefficient for the first symmetric basis element is given by $\dotHS{u_{12}}{A} = 2^{-1/2} (A_{12}\dyad{1}{2} + A_{21}\dyad{2}{1})$.
+For instance, the expansion coefficient for the first symmetric basis element can simply be read off to be $\dotHS{u_{12}}{A} = 2^{-1/2} (\mel{1}{A}{2} + \mel{2}{A}{1})$.
 The explicit construction prescription of the \gls{ggm} basis thus allows calculating inner products of the form $\ip*{\Lambda_j}{A}$ at constant cost instead of the quadratic cost of the trace of a matrix product, speeding up the computation of the transfer matrix from \cref{eq:ff:liouville_representation} (in which case $A = \qp(\Lambda_k)$).
 In numerical experiments, calculating the transfer matrix of a unitary $U$ with dimension $d$ and precomputed matrix products $A_k  =  U \Lambda_k U\adjoint$ scaled as $\sim d^{4.16}$.
 This agrees with the expected scaling of $\sim d^4$ (a transfer matrix has $d^2\times d^2$ elements) and presents a significant improvement over the explicit calculation with trace overlaps $\tr(\Lambda_j A_k)$ that we observed to scale as $\sim d^{5.93}$ (we expected $\sim d^6$).
 
-Further inspection of the \gls{ggm} basis additionally reveals an increasing sparsity for large $d$ (the filling factor scales roughly with $d^{-2}$), so that it is well suited for computing the trace tensor \cref{eq:ff:trace_tensor}.
+Further inspection of the \gls{ggm} basis additionally reveals an increasing sparsity for large $d$ (the density scales asymptotically as $d^{-2}$), so that it is well suited for computing the trace tensor \cref{eq:ff:trace_tensor}.
 Since this tensor has $d^8$ elements, the amount of memory required for a dense representation becomes unreasonably large quite quickly.
-To overcome this constraint, we can use a \gls{ggm} basis instead of a comparably dense basis like the Pauli basis (which has a filling factor of $\flatfrac{1}{d}$, compared to the \gls{ggm}'s of $\approx\flatfrac{1}{d^2}$).
-In this case, the resulting tensor is also sparse because the overlap between different basis elements is small.
+To overcome this constraint, we can use a \gls{ggm} basis instead of a comparably dense basis like the Pauli basis.
+In this case, the resulting tensor is also sparse because the overlap between different basis elements is small.\sidenote{
+    The Pauli basis has a density of $1/d$, compared to the \gls{ggm}'s of $\sim 1/d^2$.
+    This results in trace tensors with density $1/d^2$ and $\sim 1/d^4$, respectively.
+}
 This not only enables storing the tensor in memory but also makes the calculation much faster since one can employ algorithms optimized for operations on sparse arrays (see \cref{ch:ff:software}).
 
 As an illustration, consider a system of four qubits so that the Hilbert space has dimension $d = 2^4$.
 An operator basis for this space has $d^2 = 2^8$ elements and consequently the tensor $T_{ijkl}$ has $(2^8)^4 = 2^{32}$ entries.
 Using \qty{128}{\bit} complex floats to represent the entries the tensor would take up $\approx\qty{68}{\giga\byte}$ of memory in a dense format.
 Conversely, for a \gls{ggm} basis stored in a sparse data structure, the resulting trace tensor only takes up $\approx\qty{100}{\mega\byte}$ of memory.
-Furthermore, calculating $T$ takes $\approx\qty{2.89}{\second}$ on an \fastprocessor since a \gls{ggm} has a low filling factor.
+Furthermore, calculating $T$ takes $\approx\qty{2.89}{\second}$ on an \fastprocessor since a \gls{ggm} basis has a low density.
 By contrast, the same calculation with a Pauli basis takes $\approx\qty{217}{\second}$.
-This is due to the larger filling factor on the one hand and because sparse matrix multiplication algorithms perform poorly with dense matrices on the other.
+This is due to the larger density on the one hand and because sparse matrix multiplication algorithms perform poorly with dense matrices on the other.
 
 \section{Computational complexity}\label{sec:ff:performance:complexity}
 In order to assess the performance of \glspl{ff} for computing fidelities compared to \gls{mc} methods, we determine each method's asymptotic scaling behavior as a function of the system dimension $d$.

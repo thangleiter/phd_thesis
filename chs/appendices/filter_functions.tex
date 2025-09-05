@@ -426,6 +426,7 @@ In total, this requires $\order{G + H}$ computations, where $H=\sum_{g=1}^{G}\et
 \section{Monte Carlo and \texorpdfstring{\acrshort{gksl}}{GKSL} master equation simulations}\label{sec:app:ff:time_domain_methods}
 In this section, we lay out two common time-domain simulation methods of noisy quantum dynamics for completeness; direct simulation of the \gls{gksl} master equation and stochastic \gls{mc} simulation of the Schrödinger equation.
 These can serve as alternative and complementary approaches to the filter-function formalism presented in \cref{part:ff}.
+All simulations were performed using the \package{lindblad_mc_tools} software package written during the course of \thethesis~\cite{Hangleiter_lmt}.
 
 \subsection{Simulation methods}\label{subsec:app:ff:time_domain_methods:methods}
 To simulate a quantum system under the influence of Markovian (white) noise, a common approach is the \gls{gksl} master equation~\cite{Lindblad1976,Gorini1976}.
