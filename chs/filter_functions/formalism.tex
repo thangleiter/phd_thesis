@@ -34,9 +34,9 @@ Lastly, we note that for $C_0\propto\eye$, trace-preservation and unitality are 
 \subsection{Liouville representation of the error channel}\label{subsec:ff:theory:transfer_matrix:derivation}
 We will now derive an expression for the quantum process of a quantum gate in the presence of arbitrary classical noise.
 As a single realization of a classical noise generates strictly unitary dynamics, we will be interested in the expectation value of the dynamics over many such realizations, which will lead to a quantum process including decoherence.
-% TODO: exact
-If the noise is additionally Gaussian, these results are exact and therefore apply without restrictions to arbitrarily large noise strength as well as to gates that partially decouple from noise.
+If the noise is additionally Gaussian and commutes with the control, these results are exact and therefore apply without restrictions to arbitrarily large noise strength as well as to gates that partially decouple from noise.
 For such \glspl{dcg} or \gls{dd} sequences~\cite{Khodjasteh2009,Cywinski2008} higher order terms can become dominant.
+Non-commuting noise leads to corrections at higher orders that we investigate in \cref{ch:ff:validation}.
 In the case that the environment is not strictly Gaussian, our approach becomes perturbative and we recover the results presented in~\citer{Cerfontaine2021}.
 As most of our discussion later on in this part will focus on the approximation neglecting coherent errors, readers not interested in the full generality may refer to that publication for a less general but perhaps more accessible derivation and skip ahead to \cref{sec:ff:theory:decay_amplitudes}.
 
@@ -125,21 +125,27 @@ and the cumulant function~\cite{Kubo1962}
 \end{align}
 The notation $\ev{\placeholder}_\mr{c}$ denotes the cumulant average which prescribes a certain averaging operation.
 The first cumulant of a set of random variables $\{X_i(t)\}_i$ is simply the expectation value, $\ev*{X_i(t)}_\mr{c} = \ev*{X_i(t)}$, whereas the second cumulant corresponds to the covariance, $\ev*{X_i(t)X_j(t)}_\mr{c} = \ev*{X_i(t)X_j(t)} - \ev*{X_i(t)}\ev*{X_j(t)}$.
-% TODO: exact
-Remarkably, third and higher-order cumulants vanish for Gaussian processes~\cite{Kubo1963,Szankowski2017}, making \cref{eq:ff:cumulant} exact by truncating the sums already at $k = 2$ and $n = 2$.
+Remarkably, third and higher-order cumulants vanish for commuting Gaussian processes~\cite{Kubo1963,Szankowski2017},\sidenote{
+    By \emph{commuting} noise we mean that $\comm{\Hc(t)}{\Hn(t)} = 0\forall t$.
+    The prototypical example of this is the pure-dephasing Hamiltonian $H(t) = \left[\Omega(t) + \delta\omega(t)\right]\flatfrac{\sz}{2}$.
+}
+making \cref{eq:ff:cumulant} exact by truncating the sums already at $k = 2$ and $n = 2$.
 In this case, the convergence radius of the \gls{me} becomes infinite.
-The terms with $k = n = 2$ do not contribute as they involve fourth-order cumulants.
+In the following, we assume this truncation to be a good approximation of the exact dynamics.
+We investigate this assumption in more detail in \cref{ch:ff:validation} for non-commuting Gaussian noise.
+For non-Gaussian noise, we note that the approximation error depends on the degree of non-Gaussianity.
+Due to the central-limit theorem, we may expect corrections to become smaller the more \glspl{tlf}, whose individual statistics are highly non-Gaussian, couple to a qubit, for example.
+In general, all we can say is that the error is of $\order{\xi^2}$ and higher order terms include both higher orders of the \gls{me} and the cumulant expansion.
+
+We continue by pointing out that the terms with $k = n = 2$ involve fourth-order cumulants and are thus of $\order{\xi^4}$.
 Since furthermore we assume that the noise fields $b_\alpha(t)$ have zero mean, also the terms with $k = n = 1$ vanish and $\ev*{X_i(t)X_j(t)}_\mr{c}  =  \ev*{X_i(t)X_j(t)}$.
-% TODO: exact
 We can hence write the cumulant function succinctly as
 \begin{equation}
     \cumulantfun(\tau) = - \i\tau\ev{\Li_{\mr{eff},2}(\tau)} - \frac{\tau^2}{2}\ev{\Li_{\mr{eff},1}(\tau)^2}  \label{eq:ff:cumulant:truncated}.
 \end{equation}
-% TODO: exact
-\Cref{eq:ff:cumulant_expansion,eq:ff:cumulant:truncated} allow us to exactly compute the full quantum process $\liouvUeavg\!: \rho\rightarrow\ev*{\liouvUe(\rho)}$ for Gaussian noise with arbitrary spectral density and power.
-For non-Gaussian noise these expressions are approximate up to $\order{\xi^2}$ and higher order terms include both higher orders of the \gls{me} and the cumulant expansion.
+\Cref{eq:ff:cumulant_expansion,eq:ff:cumulant:truncated} allow us to compute the full quantum process $\liouvUeavg\!: \rho\rightarrow\ev*{\liouvUe(\rho)}$ for noise with arbitrary spectral density.
 Inspecting \cref{eq:ff:cumulant:truncated}, we observe that the first term is anti-Hermitian as it is a pure Magnus term\sidenote{
-Remember that the \gls{me} preserves algebraic structure to every order.
+    Remember that the \gls{me} preserves algebraic structure to every order.
 }
 and thus generates unitary, coherent time evolution.
 Conversely, the second term is Hermitian and thus generates decoherence.\sidenote{
@@ -212,9 +218,7 @@ The frequency shifts \freqshifts correspond to the first term in \cref{eq:ff:cum
 They reflect a perturbative correction to the quantum evolution due to a change of the Hamiltonian at two points in time, and thus time ordering matters.
 Conversely, the decay amplitudes \decayamps correspond to the second term and capture the decoherence.
 These terms are due to an incoherent average that only takes classical correlations into account, so that time ordering does not play a role.
-% TODO: exact
-Note that \cref{eq:ff:cumulant:truncated:liouville} together with \cref{eq:ff:cumulant_expansion} constitutes an exact version (in the Liouville representation) of Eq.~(4) from~\citer{Cerfontaine2021} for Gaussian noise.
-The approximation of~\citer{Cerfontaine2021} is obtained by expanding the exponential to linear order and neglecting the second order terms \freqshifts.
+Note that Equation~4 from \citer{Cerfontaine2021} is obtained from \cref{eq:ff:cumulant:truncated:liouville,eq:ff:cumulant_expansion} by expanding the exponential to linear order and neglecting the second order terms \freqshifts.
 
 For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{sec:app:ff:derivations:cumulant:pauli})
 \begin{equation}\label{eq:ff:cumulant:truncated:liouville:pauli}
@@ -377,9 +381,10 @@ A similar expression is obtained for representations other than the Liouville re
 
 \section{Calculating the frequency shifts}\label{sec:ff:theory:frequency_shifts}
 The frequency shifts $\freqshifts_{\alpha\beta,kl}$ in \cref{eq:ff:cumulant:truncated:liouville} correspond to the second order of the \gls{me} and thus involve a double integral with a nested time dependence.
-% TODO: second-order concatenation
-This makes their evaluation more involved than that of the decay amplitudes $\decayamps_{\alpha\beta,kl}$ and, in contrast to the previous section, we cannot identify a concatenation rule or single out correlation terms as in \cref{eq:ff:decay_amplitudes:pulse_correlation}.
+This makes their evaluation more involved than that of the decay amplitudes $\decayamps_{\alpha\beta,kl}$ and, in contrast to the previous section, we cannot single out correlation terms as in \cref{eq:ff:decay_amplitudes:pulse_correlation}.
+Moreover, since the integrals do not factorize we also cannot derive a concatenation rule that is entirely independent of the internal structure of the constituent gates as before.
 However, we can still apply the approximation of piecewise-constant control and follow a similar approach as in \cref{subsec:ff:theory:control_matrix:pulse} to compute \freqshifts in Fourier space.
+In \cref{ch:app:ff:concatenation}, we also lay out a concatenation rule for the second-order terms that contains only a minimal contribution from the internal dynamics of the constituent gates for completeness.
 Since these terms correspond to a coherent gate error that can in principle be calibrated out to leading order in experiments we will not go into much detail here.
 
 We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t^\prime)}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
@@ -432,15 +437,14 @@ Importantly, \cref{eq:ff:frequency_shifts:freq} has the same structure as the co
 By means of \cref{eq:ff:control_matrix:sequence:freq,eq:ff:control_matrix:pulse:freq:ff:calculation,eq:ff:frequency_shifts:freq}, one can obtain the cumulant function $\cumulantfun(\tau)$ from \cref{eq:ff:cumulant:truncated:liouville} and hence the error process $\expval*{\liouvUe(\tau)}$ from \cref{eq:ff:cumulant_expansion} for an arbitrary sequence of gates.
 From this, several quantities of interest for the characterization of a given control operation can be extracted.
 We explicitly review the average gate and state fidelities as well as expressions to quantify leakage here, but emphasize that this is not exhaustive.
-Because for many applications the noise is weak and hence the parameter $\xi\ll 1$, we will in the following expand the exponential in \cref{eq:ff:error_propagator} to leading order in $\xi$ in the following.
+Because for many applications the noise is weak and hence the parameter $\xi\ll 1$, we will in the following expand the exponential in \cref{eq:ff:cumulant_expansion} to leading order in $\xi$.
 That is, we approximate\sidenote{
     Remember that $\cumulantfun(\tau)\in\order{\xi^2}$.
 }
 \begin{equation}\label{eq:ff:error_transfer_matrix:approx}
     \liouvUetavg\approx\eye + \cumulantfun(\tau).
 \end{equation}
-% TODO: exact
-For Gaussian noise, higher order corrections can be obtained either by explicitly calculating higher powers of \cumulantfun or by numerically evaluating the exponential of the cumulant function.
+Higher order corrections can be obtained either by explicitly calculating higher powers of \cumulantfun or by numerically evaluating the exponential of the cumulant function (potentially including higher-order terms from \gls{me} and cumulant expansions).
 The former method often leads to simpler expressions than \cref{eq:ff:cumulant:truncated:liouville} for which the trace tensor $T_{ijkl}$ need not be computed directly.
 In the weak-noise regime, one can also define specific filter functions for each derived quantity that are given in terms of linear combinations of the generalized filter functions $\FF_{\alpha\beta,kl}(\omega)$.
 The ensemble expectation value of the quantity can then be obtained directly from the overlap with the spectral density, $\int\dd{\omega}/2\pi\,\FF(\omega) S(\omega)$.
@@ -492,7 +496,7 @@ General measurements can be incorporated in the superoperator formalism we have 
 Consequently, the measurement probability for outcome $E_i$ is given by $\dip{E_i}{\qp(\sigma)} = \dmel{E_i}{\qp}{\sigma}$ if the system was prepared in the state $\sigma$ and evolved according to \qp.
 
 \subsection{Leakage}\label{subsec:ff:theory:derived_quantities:leakage}
-In many physical implementations qubits are not encoded in real two-level systems but in two levels of a larger Hilbert space (superconduction transmon~\cite{Koch2007} or singlet-triplet~\cite{Petta2005} spin qubits for example) such that population can leak between this computational subspace and other energy levels.
+In many physical implementations qubits are not encoded in real two-level systems but in two levels of a larger Hilbert space (superconducting transmon~\cite{Koch2007} or singlet-triplet~\cite{Petta2005} spin qubits for example) such that population can leak between this computational subspace and other energy levels.
 Thus, it is often of interest to quantify leakage when assessing gate performance.
 Recently,~\citet{Wood2018} have suggested two separate measures for quantifying leakage out of the computational subspace on the one hand and seepage into the subspace on the other.
 With the filter-function formalism and the transfer matrix of the error process given by \cref{eq:ff:error_propagator,eq:ff:cumulant:truncated:liouville}, we can easily extract these quantities.
@@ -587,14 +591,14 @@ with
 \end{subequations}
 for $1\leq j < k\leq d$, $1\leq l\leq d - 1$, and an orthonormal vector basis $\lbrace\ket{j}\rbrace_{j=1}^d$ of the Hilbert space.
 Expanding an arbitrary matrix $A\in\mathbb{C}^{d\times d}$ in the basis of \cref{eq:ff:basis:ggm} is then simply a matter of adding up the corresponding matrix elements of $A$ according to \cref{eq:ff:basis:ggm:u,eq:ff:basis:ggm:v,eq:ff:basis:ggm:w}.
-For instance, the expansion coefficient for the first symmetric basis element is given by $u_{12} = 2^{-1/2} (A_{12}\dyad{1}{2} + A_{21}\dyad{2}{1})$.
+For instance, the expansion coefficient for the first symmetric basis element is given by $\dotHS{u_{12}}{A} = 2^{-1/2} (A_{12}\dyad{1}{2} + A_{21}\dyad{2}{1})$.
 The explicit construction prescription of the \gls{ggm} basis thus allows calculating inner products of the form $\ip*{\Lambda_j}{A}$ at constant cost instead of the quadratic cost of the trace of a matrix product, speeding up the computation of the transfer matrix from \cref{eq:ff:liouville_representation} (in which case $A = \qp(\Lambda_k)$).
 In numerical experiments, calculating the transfer matrix of a unitary $U$ with dimension $d$ and precomputed matrix products $A_k  =  U \Lambda_k U\adjoint$ scaled as $\sim d^{4.16}$.
 This agrees with the expected scaling of $\sim d^4$ (a transfer matrix has $d^2\times d^2$ elements) and presents a significant improvement over the explicit calculation with trace overlaps $\tr(\Lambda_j A_k)$ that we observed to scale as $\sim d^{5.93}$ (we expected $\sim d^6$).
 
 Further inspection of the \gls{ggm} basis additionally reveals an increasing sparsity for large $d$ (the filling factor scales roughly with $d^{-2}$), so that it is well suited for computing the trace tensor \cref{eq:ff:trace_tensor}.
 Since this tensor has $d^8$ elements, the amount of memory required for a dense representation becomes unreasonably large quite quickly.
-To overcome this constraint, we can use a \gls{ggm} basis instead of a dense basis like the Pauli basis (which has a filling factor of $\flatfrac{1}{2}$).
+To overcome this constraint, we can use a \gls{ggm} basis instead of a comparably dense basis like the Pauli basis (which has a filling factor of $\flatfrac{1}{d}$, compared to the \gls{ggm}'s of $\approx\flatfrac{1}{d^2}$).
 In this case, the resulting tensor is also sparse because the overlap between different basis elements is small.
 This not only enables storing the tensor in memory but also makes the calculation much faster since one can employ algorithms optimized for operations on sparse arrays (see \cref{ch:ff:software}).
 
@@ -640,7 +644,7 @@ Typical time-domain methods include the simulation of the underlying physical pr
         \toprule
         \textsc{Method}                    & \textsc{Reference}                                         & \textsc{Dominating scaling}                                       & \multicolumn{1}{c}{\textsc{Example values}}  \\
         \midrule
-        \acrshort{mc} (\Hspace)            & \cref{eq:app:ff:mc_propagator}                             & $n_{\Delta t} n_\mr{MC} n_\mr{seg} (d^b + d^3)$                   & 1.3e8 \\
+        \acrshort{mc} (\Hspace)            & \cref{eq:app:ff:mc:propagator}                             & $n_{\Delta t} n_\mr{MC} n_\mr{seg} (d^b + d^3)$                   & 1.3e8 \\
         \acrshort{ff} (\Lspace, explicit)  & \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}      & $n_{\Delta t} n_\omega n_\alpha d^{4} + n_{\Delta t} d^{b+2}$     & 2.4e7 \\
         \acrshort{ff} (\Hspace, explicit)  & \cref{eq:ff:control_matrix:pulse:freq:ff:calculation}      & $n_{\Delta t} n_\omega n_\alpha (d^{2} + d^{b})$                  & 1.4e7 \\
         \acrshort{ff} (\Lspace, concat.)   & \cref{eq:ff:control_matrix:sequence:freq}                  & $G n_\omega n_\alpha d^{4} + G d^{2b}$                            & 2.4e6 \\

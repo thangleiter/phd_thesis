@@ -1,11 +1,11 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:ff:introduction}
 \begin{partcontribs}
-    \Thispart is based to large extent on \sideciter{Hangleiter2021}, an early draft of which in turn was my Master's thesis~\sidecite{Hangleiter2019a}, and as such contains text written by all three authors.
+    \Thispart is based to large extent on \sideciter{Hangleiter2021}, an early draft of which in turn was my Master's thesis~\sidecite{Hangleiter2019}, and as such contains text written by all three authors.
     \Cref{ch:ff:examples,ch:app:ff:time_domain_methods} additionally contains results published in \sideciter{Cerfontaine2021}.
     Parts of this work have also been included in \sideciter{Cerfontaine2019}.
     % TODO: can we make this nicer?
-    Refer to References~\cite[Section 1.3]{Hangleiter2019a} and~\cite[Section 3.7]{Cerfontaine2019} for detailed author contributions up to that point.
+    Refer to References~\cite[Section 1.3]{Hangleiter2019} and~\cite[Section 3.7]{Cerfontaine2019} for detailed author contributions up to that point.
     \Cref{ch:ff:validation,ch:app:ff:concatenation} contain new results.
 \end{partcontribs}
 \begin{authornote}
@@ -54,10 +54,8 @@ Moreover, one does not always have a closed-form expression of the control at ha
 This calls for a numerical approach which, while giving up some of the insights an analytical form offers, is universally applicable and eliminates the need for laborious analytical calculations.
 
 Here, we build and extend upon our work of~\citer{Cerfontaine2021} and that of~\citer{Green2013} to show that the formalism can be recast within the framework of stochastic Liouville equations by means of the cumulant expansion~\cite{Kubo1962,Kubo1963,Fox1976,Bianucci2020}.
-% TODO: exact
-
-We investigate the accuracy of the expansion in \cref{ch:ff:validation}.
 For Gaussian noise commuting with the control, this entails exact results for the quantum process of an arbitrary control operation using only first and second order terms of the \gls{me}~\cite{Magnus1954}.
+If the noise is Gaussian but in general non-commuting, the cumulant expansion does not terminate~\cite{Fox1976}, but we show that the truncation still yields highly accurate results except in the ultralow-frequency regime by computing the exact filter function from random sampling.
 Moreover, due to the fact that the \gls{me} retains the algebraic structure of the expanded quantity~\cite{Blanes2009} we are able to separate incoherent and coherent contributions to the quantum process.
 We give explicit methods to evaluate these terms for piecewise-constant control pulses.
 Moreover, we show that the formalism naturally lends itself as a tool for numerical calculations and present the \filterfunctions \python software package that enables calculating the filter function of arbitrary, piecewise constant defined pulses~\cite{Hangleiter_ff}.
@@ -76,7 +74,8 @@ It is structured as follows: In \cref{ch:ff:theory} we derive a closed-form expr
 We review the concatenation of quantum operations shown in~\citer{Cerfontaine2021} and furthermore adapt the method by~\citet{Green2013} to calculate the filter function of an arbitrary control sequence numerically.
 We will specifically focus on computational aspects of the formalism and lay out how to compute various quantities of interest.
 Moreover, we classify its computational complexity for calculating average gate fidelities and remark on simplifications that allow for drastic improvements in performance in certain applications.
-In \cref{ch:ff:software}, we introduce the software package by outlining the programmatic structure and giving a brief overview over the \gls{api}.
+In \cref{ch:ff:validation}, we validate the truncation of the cumulant expansion after the second order using a random sampling approach to compute the exact filter functions of the noisy quantum process for Gaussian noise.
+In \cref{ch:ff:software}, we then introduce the \filterfunctions software package by outlining the programmatic structure and giving a brief overview over the \gls{api}.
 Lastly, in \cref{ch:ff:examples}, we show the application of the software by means of four examples that highlight various features of the formalism and its implementation.
 Therein, we first demonstrate that the formalism can predict average gate fidelities for complex two-qubit quantum gates in agreement with computationally much more costly \gls{mc} calculations.
 Next, we show how it can be applied to periodically driven systems to efficiently analyze Rabi oscillations.

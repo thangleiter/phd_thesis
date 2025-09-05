@@ -9,13 +9,12 @@
     - Fonts not available from CTAN are at `lib/fonts`.
 - To automatically set up the repository to compile with `latexmk`, run `shell/init.{sh,ps1}`.
   This creates symlinks (copies on Windows) to `$HOME/texmf/tex/latex/kaobook` and `$HOME/texmf/fonts/truetype/LiberationMono/`.
-- Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
+- ~~Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`~~
 - `minted` needs to be installed and Python on `PATH`. If Python is installed as part of the miniforge3 distribution at either `$HOME/miniforge3` or `$LOCALAPPDATA/miniforge3`, this is automatically taken care of when compiling with `latexmk -r windows.latexmkrc`.
 
 # To Dos
 
-- [ ] Is "behavior" proper use of English in the context of "optical behavior" etc?
-- [ ] `\ch{}` line breaks
+- [x] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [ ] Use `\subequations{}` where appropriate
 - [ ] Instrument citations
 - [ ] migrate repo to github
@@ -41,40 +40,43 @@
 - [x] Knife edge fit
 - [x] Spot image fits
 - [x] Go over derivation in appendix.
-- [ ] Vibration spectra on lab floors?
+- [ ] ~~Vibration spectra on lab floors?~~
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
 - [ ] IRF-convoluted $g^{(2)}$ fit
 
 ### Experiment
-- [ ] author contributions
+- [x] author contributions
 
 ### FF
-- [ ] I/we
-- [ ] Hilbert space calculations in appendix
+- [x] I/we
+- [ ] ~~Hilbert space calculations in appendix~~
 - [ ] Parse text for "second order not implemented"
-- [ ] Figures, tables, listings
+- [x] Figures, tables, listings
 - [x] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [x] `\mathcal{}` for FF, regular for fidelity.
 - [x] split up `prr.tex`
-- [ ] author contributions
-- [ ] discrete FF sampling?
+- [x] author contributions
+- [x] discrete FF sampling?
+- [ ] Second order concatenation
+- [ ] Master equation
 
 ## Code
 - [x] `uv pip freeze` *or* just make installable.
 - [ ] Add `README`
 - [ ] Draft new `filter_functions` release
+- [ ] Draft new `lindblad_mc_tools` release
 - [ ] Move and make public `lindblad_mc_tools`
     - [ ] Add `README`
 
 ## Layout
-- [ ] Tune the bibliography style
-    - [ ] arXiv IDs
+- [x] Tune the bibliography style
+    - [x] arXiv IDs
     - [x] remove "visited on"
-    - [ ] urls in mjolnir/lmt
+    - [x] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
 - [ ] Part title page design
-- [ ] `\margintoc`?
+- [ ] ~~`\margintoc`?~~
 
 ## `latexmk`
 
