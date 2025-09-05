@@ -220,7 +220,7 @@ Conversely, the decay amplitudes \decayamps correspond to the second term and ca
 These terms are due to an incoherent average that only takes classical correlations into account, so that time ordering does not play a role.
 Note that Equation~4 from \citer{Cerfontaine2021} is obtained from \cref{eq:ff:cumulant:truncated:liouville,eq:ff:cumulant_expansion} by expanding the exponential to linear order and neglecting the second order terms \freqshifts.
 
-For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{sec:app:ff:derivations:cumulant:pauli})
+For a single qubit and \basis the Pauli basis one can make use of the simple commutation relations so that the cumulant function takes the form (see \cref{subsec:app:ff:derivations:cumulant:pauli})
 \begin{equation}\label{eq:ff:cumulant:truncated:liouville:pauli}
 \cumulantfun_{ij}(\tau) = \begin{dcases}
     - \sum_{k\neq i}\decayamps_{kk}                         &\qif* i = j,   \\
@@ -384,7 +384,7 @@ The frequency shifts $\freqshifts_{\alpha\beta,kl}$ in \cref{eq:ff:cumulant:trun
 This makes their evaluation more involved than that of the decay amplitudes $\decayamps_{\alpha\beta,kl}$ and, in contrast to the previous section, we cannot single out correlation terms as in \cref{eq:ff:decay_amplitudes:pulse_correlation}.
 Moreover, since the integrals do not factorize we also cannot derive a concatenation rule that is entirely independent of the internal structure of the constituent gates as before.
 However, we can still apply the approximation of piecewise-constant control and follow a similar approach as in \cref{subsec:ff:theory:control_matrix:pulse} to compute \freqshifts in Fourier space.
-In \cref{ch:app:ff:concatenation}, we also lay out a concatenation rule for the second-order terms that contains only a minimal contribution from the internal dynamics of the constituent gates for completeness.
+In \cref{sec:app:ff:concatenation}, we also lay out a concatenation rule for the second-order terms that contains only a minimal contribution from the internal dynamics of the constituent gates for completeness.
 Since these terms correspond to a coherent gate error that can in principle be calibrated out to leading order in experiments we will not go into much detail here.
 
 We follow the arguments made above for the decay amplitudes and express the cross-correlation functions $\ev{b_\alpha(t) b_\beta(t^\prime)}$ by their Fourier transform, the spectral density $S_{\alpha\beta}(\omega)$, using \cref{eq:ff:spectral_density}.
@@ -623,7 +623,7 @@ Note that for a fair performance comparison the different nature of errors needs
 \Gls{mc} becomes less costly if larger statistical errors can be tolerated, whereas the filter-function formalism is typically limited by higher order errors.
 For reference, the following considerations are summarized in \cref{tab:ff:complexity} for each approach and a representative set of parameters.
 
-The \gls{mc} algorithm is laid out in detail in \cref{ch:app:ff:time_domain_methods}.
+The \gls{mc} algorithm is laid out in detail in \cref{sec:app:ff:time_domain_methods}.
 To calculate the fidelity using \gls{mc}, we generate $n_\mr{MC}$ different noise traces that slice every time step $\Delta t$ of the pulse into $n_\mr{seg} = f_\mr{UV}\Delta t$ segments to appropriately sample the spectral density with $f_{\mr{UV}}$ being the ultraviolet cutoff frequency.
 In total, there are $n_{\Delta t} n_\mr{MC} n_\mr{seg}$ noise samples for each of which the Hamiltonian is diagonalized, exponentiated, and the resulting propagators multiplied to get the final, noisy unitary.
 The entanglement fidelity is then obtained by averaging the trace overlap $d\inverse\tr(Q\adjoint U)$ of ideal and noisy unitary over all noise realizations.

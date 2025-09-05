@@ -11,6 +11,7 @@
   This creates symlinks (copies on Windows) to `$HOME/texmf/tex/latex/kaobook` and `$HOME/texmf/fonts/truetype/LiberationMono/`.
 - ~~Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`~~
 - `minted` needs to be installed and Python on `PATH`. If Python is installed as part of the miniforge3 distribution at either `$HOME/miniforge3` or `$LOCALAPPDATA/miniforge3`, this is automatically taken care of when compiling with `latexmk -r windows.latexmkrc`.
+- Once you started the compilation, lay back and relax. Make some tea. Chat with a colleague. It will take a while, and might also not succeed on the first run. If it did not, clean auxiliary files using `latexmk -r [windows,linux].latexmkrc -C` and try again.
 
 # To Dos
 

@@ -46,7 +46,7 @@ We take the non-linear dependence of the Hamiltonian on the detunings $\epsilon_
 \end{figure*}
 
 \Cref{fig:ff:CNOT} shows the filtered (convoluted) exchange interaction $J_{ij}$ between each pair of dots during the pulse sequence in panel (a) and filter functions plotted as function of frequency in panel (b) for the three different detunings.
-For a detailed description on how the filter functions were computed in the presence of additional leakage levels refer to \cref{sec:app:ff:singlet-triplet}.
+For a detailed description on how the filter functions were computed in the presence of additional leakage levels refer to \cref{subsec:app:ff:fidelity:singlet-triplet}.
 As one would expect from the fact that the intermediate (inter-qubit) exchange interaction $J_{23}$ (orange dash-dotted lines) is only turned on for short times to entangle the qubits, the filter function for $\eps_{23}$ is smaller by roughly an order of magnitude than the intra-qubit exchange filter functions.
 Notably, the filter functions for $\eps_{12}$ and $\eps_{34}$ show clear characteristics of \glspl{dcg}, that is they drop to zero as $\omega\rightarrow 0$, and decouple from quasistatic noise with an error suppression $\propto\omega^2$.
 This is not unexpected as the optimization minimizes quasistatic noise contributions to the infidelity.
@@ -71,7 +71,7 @@ $\cumulantfun_{\eps_{12}}$ displays clear characteristics of a Pauli channel wit
     \input{data/filter_functions/gate_fidelities}
 \end{table}
 
-We now compute the infidelity contribution originating from fast charge noise using \cref{eq:ff:fidelity:avg} but tracing only over the computational subspace to compare to the Monte Carlo calculations of~\citer{Cerfontaine2020b} (see \cref{sec:app:ff:singlet-triplet} for further details).
+We now compute the infidelity contribution originating from fast charge noise using \cref{eq:ff:fidelity:avg} but tracing only over the computational subspace to compare to the Monte Carlo calculations of~\citer{Cerfontaine2020b} (see \cref{subsec:app:ff:fidelity:singlet-triplet} for further details).
 Like the reference, we use a noise spectrum $S_{\epsilon,a}(f)\propto \flatfrac{1}{f^a}$ with $S_{\epsilon,a}(\qty{1}{\MHz}) = \qty{4e-20}{\volt\squared\per\Hz}$ and consider white noise ($a = 0$) and correlated noise with $a = 0.7$~\cite{Dial2013} with infrared and ultraviolet cutoffs $\flatfrac{1}{\tau}$ and $\qty{100}{\per\nano\second}$, respectively.
 \Cref{tab:ff:infidelities} compares the results in this work with the reference.
 The values computed here are consistent with the more elaborate Monte Carlo calculations within a few percent.
@@ -274,7 +274,7 @@ Controlled-$z$ rotations by angles $\pi/2^m$ as required for the \gls{qft} can t
 
 Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the \gls{grape} algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
 For the optimization we choose a time step of $\Delta t = \qty{1}{\nano\second}$ and a total gate duration of $\tau = \qty{30}{\nano\second}$.
-For completeness, see \cref{sec:app:ff:qft} for details on the optimized gates.
+For completeness, see \cref{subsec:app:ff:fidelity:qft} for details on the optimized gates.
 We then construct the remaining required gates by sequencing these elementary gates, \ie the Hadamard gate $\mr{H}_i = \mr{X}_{i}(\pi/2)\circ\mr{X}_{i}(\pi/2)\circ\mr{Y}_{i}(\pi/2)$, where $\mr{B}\circ\mr{A}$ denotes the composition of gates A and B such that gate A is executed before gate B\@.
 To map the canonical circuit~\cite{Nielsen2011} onto our specific qubit layout with only nearest-neighbor coupling, we furthermore introduce SWAP operations to couple distant qubits.
 These gates can be implemented by three \mr{CNOT}s, $\mr{SWAP}_{ij} = \CNOT_{ij}\circ\CNOT_{ji}\circ\CNOT_{ij}$.
@@ -357,7 +357,7 @@ Adding decoupling pulses does not change the fidelity significantly as the addit
 In the case of \oneoverf noise, however, the picture is quite different.
 Here, the overall fidelity is reduced in the circuit without echos as there are significant contributions from correlations at $g\neq g^{\prime}$.
 Adding the echo pulses causes some of these contributions to change sign and lead to a reduction in total infidelity of this noise channel by a factor of five.
-In \cref{sec:app:ff:time_domain_methods:qft_validation}, we perform \gls{mc} and \gls{gksl} master equation simulations of the \gls{qft} circuit to validate the fidelity predictions made by the filter-function formalism.
+In \cref{subsec:app:ff:fidelity:qft}, we perform \gls{mc} and \gls{gksl} master equation simulations of the \gls{qft} circuit to validate the fidelity predictions made by the filter-function formalism.
 
 These insights demonstrate that our method represents a useful tool to analyze how and to which degree small algorithms are affected by correlated errors, and how this effect depends on the gate implementation.
 It could thus also be used to choose or optimize gates in an algorithm-specific way.

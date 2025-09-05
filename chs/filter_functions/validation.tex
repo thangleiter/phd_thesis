@@ -114,7 +114,7 @@ frequency $\omega_i$, and phase $\phi \sim \uniform(0, 2\pi)$,\sidenote{
 \end{equation}
 To obtain the \gls{mc} estimate of \liouvUetavg, we therefore draw $N$ noise traces according to \cref{eq:ff:monte_carlo:noise_trace}, solve the Schrödinger equation, and finally perform the ensemble average from which we can deduce the filter function using \cref{eq:ff:filter_function:monte_carlo}.
 From the spread of the individual \gls{mc} samples we obtain confidence intervals on the mean of the error transfer matrix by bootstrapping, which we propagate to the filter function by taking the Fréchet derivative of the matrix logarithm in \cref{eq:ff:filter_function:monte_carlo}~\cite{Al-Mohy2013}.
-For details on the \gls{mc} procedure, refer to \cref{ch:app:ff:time_domain_methods}.
+For details on the \gls{mc} procedure, refer to \cref{sec:app:ff:time_domain_methods}.
 
 \section{Case studies}\label{sec:ff:validation:examples}
 \begin{figure}
