@@ -39,6 +39,10 @@ filter-functions = ">=1.1.3, <2"
 qopt = ">=1.3.5, <2"
 python-spectrometer = { version = ">=2025.7.1, <2026", extras = ["simulator"] }
 lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "bed48b7ce07bef3caea90dadb435c3069fc8c784" }
+poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
+
+[feature.logm_frechet.dependencies]
+python = "<=3.12,>=3.9"
 
 [feature.logm_frechet.pypi-dependencies]
 matlabengine = "*"
