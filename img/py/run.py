@@ -37,6 +37,9 @@ def gather_files(root, args):
             if parent.name.startswith('.'):
                 return False
         return True
+        
+    if args.files:
+        return [pathlib.Path(f).resolve() for f in args.files]
 
     # If neither option is provided, default to running all subdirectories.
     if not args.all and not args.dirs:
@@ -138,6 +141,11 @@ def main():
         "--dirs",
         nargs="+",
         help="List of subdirectories (relative to the project root) to run."
+    )
+    group.add_argument(
+        "--files",
+        nargs="+",
+        help="Explicit list of script files to run."
     )
     parser.add_argument(
         "--parallel",
