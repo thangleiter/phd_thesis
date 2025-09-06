@@ -23,7 +23,7 @@ pixi run python run.py --help
 ``` 
 for an overview of options.
 
-To include the `logm_frechet` derivative in `filter_functions/monte_carlo_filter_functions.py`, specify the `logm-frechet` feature when calling `pixi`:
+To run the `filter_functions/monte_carlo_filter_functions.py` without MATLAB installed, specify the `no-matlab` environment when calling `pixi`:
 ```sh
-pixi run --environment logm-frechet python run.py 
+pixi run --environment no-matlab python run.py --files filter_functions/monte_carlo_filter_functions.py
 ```
