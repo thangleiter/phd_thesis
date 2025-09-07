@@ -156,7 +156,7 @@ Since the sensor's (conditioned) output is a voltage directly proportional to th
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
 
 \begin{marginlisting}
-    \begin{py}[
+    \begin{pyblock}[
         fontsize=\footnotesize,
         breaklines,%
         breakafter=.,%
@@ -170,7 +170,7 @@ Leveraging the \code{fourier_procfn} argument, we can transform the voltage data
             sensitivity,
             fourier_space.derivative
         )
-    \end{py}
+    \end{pyblock}
     \caption{Functionality to transform the conditioned voltage to displacement in Fourier space.}
     \label{lst:setup:vibrations:accel}
 \end{marginlisting}

@@ -195,7 +195,7 @@ This uses the \code{Parameter.set_to()} context manager to set the parameters to
 Custom setup and teardown tasks can furthermore be specified through the \code{add_before_run} and \code{add_after_run} arguments, respectively.
 
 \begin{listing}[htpb]
-    \begin{py}
+    \begin{pyblock}
         from mjolnir.measurement.handler import LaserCcdMeasurementHandler
         from mjolnir.measurement.sweeps import GridSweep
         from mjolnir.measurement.measures import Measure
@@ -224,7 +224,7 @@ Custom setup and teardown tasks can furthermore be specified through the \code{a
             },
             exposure_time=2
         )
-    \end{py}
+    \end{pyblock}
     \caption[\mjolnir measurement workflow]{
     Setup and measurement workflow using the \mjolnir package.
         \code{station} is a \qcodes \code{Station} object managing the instruments.
@@ -264,7 +264,7 @@ This facilitates interactively exploring large datasets and recognizing trends p
 \Cref{fig:exp:mjolnir:plot_nd} shows an exemplary plot window for a four-dimensional data set obtained from a \gls{ccd} measurement sweeping laser wavelength, power, and a gate voltage, with \cref{lst:exp:mjolnir:plot_nd} showing the code necessary to produce the plot.
 
 \begin{listing}
-    \begin{py}
+    \begin{pyblock}
         import matplotlib as mpl
         from mjolnir.plotting import plot_nd
 
@@ -273,7 +273,7 @@ This facilitates interactively exploring large datasets and recognizing trends p
             yscale='log^\prime, norm=mpl.colors.AsinhNorm(vmin=0),
             fig_kw=dict(figsize=(6.33585, 4.6))
         )
-    \end{py}
+    \end{pyblock}
     \caption[\texttt{plot_nd()} example]{
         Code to produce the plot shown in \cref{fig:exp:mjolnir:plot_nd}.
         If \code{dataset_or_run_id} is an integer, the currently connected \qcodes database is queried for this run identifier.

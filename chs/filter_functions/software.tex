@@ -67,7 +67,7 @@ As was already mentioned, the control and noise Hamiltonians are given as a list
 These sublists consist of the respective operator as a \numpy array or \qutip \qobj and the amplitudes ($a_i\gth{g}$ or $s_\alpha\gth{g}$) in an iterable data structure such as a list.
 We can hence instantiate the \pulsesequence with the following code:
 
-\begin{py}
+\begin{pyblock}
     import filter_functions as ff
     import qutip as qt
     from math import pi
@@ -79,22 +79,22 @@ We can hence instantiate the \pulsesequence with the following code:
     # Durations of piecewise constant segments
     dt = [tau, t_pi, tau]
     ECHO = ff.PulseSequence(H_c, H_n, dt)
-\end{py}
+\end{pyblock}
 
 where a basis is automatically chosen since we did not specify it in the constructor in the last line.
 Calculating the filter function of the pulse for a given frequency vector \code{omega} can then be achieved by calling
 
-\begin{py}
+\begin{pyblock}
     F = ECHO.get_filter_function(omega)
-\end{py}
+\end{pyblock}
 
 where \code{F} is the dephasing filter function $\FF_{zz}(\omega)$ as we only defined a single noise operator.
 Finally, we calculate the error transfer matrix \liouvUe for the noise spectral density $S_{zz}(\omega) = \omega^{-2}$,
 
-\begin{py}
+\begin{pyblock}
     S = 1/omega**2
     U = ff.error_transfer_matrix(ECHO, S, omega)
-\end{py}
+\end{pyblock}
 
 This code uses the control matrix previously cached when the filter function was first computed.
 Therefore, only the integration in \cref{eq:ff:decay_amplitudes:freq} and the calculation of the trace tensor in \cref{eq:ff:trace_tensor} are carried out in the last line.
@@ -105,7 +105,7 @@ Each of the pulses has a single time segment during which a constant control is 
 This way analytical control matrices may be used to calculate the control matrix of the composite sequence.
 Pulses can be concatenated by using either the \code{concatenate()} function or the overloaded \code{@} operator:
 
-\begin{py}
+\begin{pyblock}
     # Define PulseSequence objects as shown above
     FID = ff.PulseSequence(...)
     NOT = ff.PulseSequence(...)
@@ -114,7 +114,7 @@ Pulses can be concatenated by using either the \code{concatenate()} function or 
     NOT.cache_control_matrix(omega, B_NOT)
     # Concatenate the pulses
     ECHO = FID @ NOT @ FID
-\end{py}
+\end{pyblock}
 
 Since we have cached the control matrices of the \code{FID} and \code{NOT} pulses, that of the \code{ECHO} object is also automatically calculated and stored.
 Concatenating \pulsesequence objects is implemented as an arithmetic operator of the class to reflect the intrinsic composition property of the control matrices.

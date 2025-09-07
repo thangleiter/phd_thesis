@@ -369,3 +369,22 @@
     \end{displayquote}
     \medskip
 }
+
+\newminted[py]{python}{
+    autogobble=true,%
+    frame=leftline,% none | leftline | topline | bottomline | lines | single
+    fontsize=\small,% normalsize, small, footnotesize
+    linenos=false,
+    firstnumber=last,% line number counts incrementally
+}
+\newmintinline[pyinline]{python}{
+    breaklines,%
+    breakafter=._,%
+}
+
+% Wrap py to always start in vertical mode
+\newenvironment{pyblock}{%
+    \par\vspace{0.25ex}\VerbatimEnvironment\begin{py}  % \par ensures vertical mode; optional spacing
+        }{%
+    \end{py}\par\vspace{0.25ex} % end with vertical mode + optional spacing
+}
