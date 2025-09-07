@@ -22,7 +22,7 @@ There are several possible avenues for future development of the \pyspeck packag
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
-Another valuable addition would be to add support for generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
+Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2025}.
 \qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
@@ -72,7 +72,9 @@ One way to implement such functionality would be to introduce a proxy \code{DAQ}
 This proxy class would serve as an interface to external measurement software and expose two attributes; first, a data queue, into which the external code could place arbitrary time series data that was obtained during some measurement, and second, a shared dictionary to hold acquisition parameters as these might change between measurements.
 Because the live view mode runs in the background, the external measurement framework could push data to the queue whenever new data was taken without obstructing the measurement workflow.
 
-\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.
+\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.\sidenote{
+    The UNIX shell command \texttt{data = \$(measure(**settings) | tee daq)} should give an indication as to the naming.
+}
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
 Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:

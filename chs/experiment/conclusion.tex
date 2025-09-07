@@ -1,0 +1,81 @@
+% mainfile: ../../main.tex
+\chapter{Conclusion and outlook}\label{ch:exp:conclusion}
+\AutoLettrine{In} \thispart, I presented and discussed optical measurements of doped semiconductor membranes under perpendicular electric fields.
+I first gave an introduction to the physics of \acrfull{pl} in semiconductor \glspl{qw} in \cref{ch:exp:theory}.
+Starting with the \gls{pl} of an unbiased \gls{2deg} in a \gls{qw}, which is defined by the band gap and the Fermi edge at low and high energies, respectively, I then performed calculations of the electron and hole energies in an undoped \gls{qw} under the influence of an external electric field.
+This gives rise to the \gls{qcse} and quadratically lowers the energy difference between electron and hole ground states.
+The \gls{qw} confinement prevents the field ionization of excitons and instead leads to a continuously decreased wave function overlap resulting in enhanced lifetime and reduced oscillator strength.
+I showed that, when taking into account lateral confinement by application of a local electric field as envisaged by \citet{Descamps2021}, the oscillator strength vanishes for finite orbital angular momentum quantum numbers under the assumption of rotational symmetry, resulting in an optically resolvable level splitting of $2\hbar\omega$.
+Furthermore, the model predicts that the oscillator strength of excited states vanishes at certain electric fields because their wave functions have nodes in the \gls{qw}.
+Using simple approximations, I finally estimated the Fowler-Nordheim tunneling rate of charge carriers escaping the \gls{qw} confinement as function of the electric field, finding that below \qty{5}{\volt\per\nano\meter} rates are below \qty{1}{\mega\hertz}.
+In the analytical calculations, I neglected excitonic effects, which for quantitative results need to be considered.
+Furthermore, the samples investigated later on in \thispart all contained a doped \gls{qw} hosting a \gls{2deg} whose presence certainly alters the picture.
+Many-body theory is required to fully capture the arising effects such as the \gls{fes} and Mahan excitons~\cite{Mahan1967a}.
+
+In \cref{ch:exp:mjolnir}, I introduced the \mjolnir measurement framework that facilitates optical experiments in the Millikelvin confocal microscope presented in \cref{part:setup}.
+I made the case for its existence and outlined the design goals before sketching the package's implementation and features.
+Central to these is the abstraction of physical instruments into logical ones, combining the parameters of different devices into logical functionality.
+Because of the relatively large range of different devices used to control the optical setup, this significantly reduces the level of complexity exposed to the user during the measurement workflow and enables the concise definition of measurements without large amounts of repetitive setup and teardown code.
+A very simple example is the \mintinline[breaklines,breakbefore=P]{python}{ExcitationPath} instrument's \code{wavelength} parameter, which not only sets the wavelength of the \gls{cw} laser but also adjusts the \code{wavelength} parameter of the power meter, thus ensuring the sensor reading is correctly converted.
+Furthermore, the package implements multiple calibration routines, for instance to automatically update the energy axis of the \gls{ccd} mounted after the spectrometer.
+Measurements are implemented as multi-dimensional loops defined by composable \code{Sweep} objects and run through a central \mintinline[breaklines,breakbefore=H]{python}{MeasurementHandler} object that can be customized to execute default setup and teardown tasks as well as perform standard modifications of measurement definitions.
+Finally, \mjolnir provides live plotting of power meter readings, \gls{ccd} data, or \gls{apd} count rate, as well as an interactive data plotter based on 2D-slices through multidimensional data.
+Since the rest of the package is independent of the measurement functionality, other \qcodes-based measurement frameworks such as \code{quantify} can readily replace or augment the latter, for instance to benefit from more sophisticated measurement control workflows that include timing control flows and broader support for buffered sweeps, or leverage the data analysis capabilities.
+
+Employing the \mjolnir software framework, I conducted optical measurements of doped \gls{qw} membranes that I presented in \cref{ch:exp:observations}.
+With the aim of demonstrating the spatial 0D-confinement of excitons by electrostatic means, I characterized the \gls{pl} as function of position and electric field applied by means of local gate electrodes on the top and bottom sides of the membrane.
+The \gls{2deg} \gls{pl} of the unbiased \gls{qw} was found to be in good agreement with the intuition obtained in \cref{ch:exp:theory}, although it also revealed a significant mismatch between nominal and actual charge carrier densities for multiple samples.
+Defining the difference-mode (\VDM) and common-mode (\VCM) voltages as the difference and sum of top and bottom gate voltages, respectively, the electric field across the membrane is expected to be proportional to \VDM.
+In most samples investigated, the \gls{qcse} was not symmetric in \VDM, however, but showed an offset of around \qty{700}{\milli\volt}, corresponding to an admixture of \VCM, that can be explained by built-in screening on one side of the membrane, the origin of which is unknown.
+Updating the virtual gate matrix to compensate for this effect (\cref{eq:exp:virtual_gates}) in future measurements would simplify their interpretation.
+
+For small \VDM, the field inside the \gls{qw} is entirely screened by the \gls{2deg}.
+Surprisingly, though, at about $\pm\qty{1}{\volt}$ from the symmetry point, the charge carrier density starts to reduce until the \gls{2deg} is fully depleted at about the same amount higher voltages again.
+I proposed that this is due to carrier sweep-out by Fowler-Nordheim tunneling that establishes an equilibrium between ionized dopants in the \ch{AlGaAs} barrier and the charge carriers in the well.
+As the electric field is increased, the tunnel coupling increases and more ionized donors neutralize with electrons from the \gls{qw}.
+This reduces the band bending, in turn broadens the tunnel barrier, and hence counteracts the increased transparency due to the tilting of the bands by the electric field.
+Overall, the emission energy could be tuned by \qty{20}{\milli\electronvolt} in the fully depleted regime.
+
+Measuring the power dependence of the Stark-shifted emission line revealed no biexciton peaks.
+Instead, a substructure of a considerable number of individual lines appeared.
+At very small excitation powers, the main emission line displayed a logarithmic blue shift whose strength drastically changes above \qty{10}{\nano\watt}.
+Several exciton traps showed an intricate substructure of the main emission line, whose constituents coupled differently to the electric field.
+As one-dimensional position sweeps across a trap also showed, the most likely explanation are a number of different emitters at different spatial locations within the area covered by the microscope focus.
+Possible candidates are impurities, defects, or interface steps or islands.
+While the literature has shown these to also be capable of binding excitons, no signatures of confinement were observed in \g2 measurements.
+
+Such could also be revealed by \acrfull{ple}, a measurement of which I presented in \cref{sec:exp:observations:ple}.
+While the trap diameter was large and the expected orbital splitting of an excitonic quantum dot quite small and not observed, several interesting features appeared nonetheless.
+I put forth several hypotheses for the origin of the duplicated absorption edge as well as a second duplicated feature with positive Stark shift.
+Among them were light-hole excitons, excited \gls{qw} states, and optical phonons, although none yield a quantitative agreement with the literature.
+For the largest electric field, where the \gls{2deg} is fully depleted, both the \gls{pl} and \gls{ple} displayed a peak splitting of the same magnitude, $\sim\qty{3}{\milli\electronvolt}$ but \qty{40}{\milli\electronvolt} apart.
+The \gls{pl} line was well fitted by a trion and exciton line shape.
+In the regime of finite electron densities it might be interesting to investigate if trion-polaritons occur in this system~\cite{Baeten2015,Glazov2020,Huang2023b}.
+
+Finally, I addressed the observed quenching of \gls{pl} intensity when the microscope focus is moved on top of gates on the backside of the membrane.
+I appealed to multilayer interference effects that lead to a reduction in both absorption of irradiant photons in the \gls{qw} as well as in outcoupling efficiency.
+Using the \acrfull{tmm}, I simulated the membrane heterostructure for different configurations of gates on either sides and found good qualitative agreement with the behavior observed in experiments.
+I then optimized the \ch{AlGaAs} barrier thickness for higher absorptance and, based on this, proposed increasing the current thickness of \qty{90}{\nano\meter} by a modest \qty{30}{\nano\meter} to achieve a \num{16}-fold improved absorptance and better outcoupling efficiency.
+
+Ultimately, though, I did not observe signatures of exciton confinement by local electrostatic potentials, which would be a significant step towards the realization of a spin-photon interface to semiconductor spin qubits by top-down fabrication.
+Where does this leave the concept introduced by \citet{Descamps2021}?
+Firstly, none of the samples that I investigated were fully functional, and as such we cannot make any definitive statements about the feasibility of the concept.
+Indeed, we can take the opposite point of view: none of the measurements presented in \thethesis provide any negative evidence that would \emph{prohibit} electrostatic exciton trapping as envisioned in \citer{Descamps2021}.
+All observed deviations from the expected behavior should be possible to resolve by improved sample growth in close feedback with experimental characterization.
+Access to the full parameter space of virtual difference-mode and common-mode voltages of a sufficiently small central gate pair surrounded by a larger guard gate can reasonably be expected to provide enough tunability to confine single excitons.
+Given the above, the guard common mode should be used to overcome the screening and deplete the \gls{2deg}.
+Then, the central difference mode should have a large enough window of operation before the Schottky barrier breaks down ($\VDM\approx\pm\qty{1.4}{\volt}$) to provide a localized electric field that, going by the calculations in \cref{ch:exp:theory}, lowers the exciton energy by up to \qty{25}{\milli\electronvolt}, and results in a quantum dot orbital level splitting on the order of \qty{0.5}{\milli\electronvolt}, large enough to be resolved by \gls{ple}.
+The optimization of the heterostructure design I proposed should furthermore provide higher radiative efficiency and thus allow measurements over a wider range of excitation powers while only modestly lowering the achievable electric field for a given voltage.
+To enable \gls{rf} measurements, the coherence of excitation and subsequent emission under the current polarization configuration of the confocal microscope should be investigated (see \cref{ch:setup:conclusion}).
+
+Moving beyond \ch{GaAs}, \citet{Reznikov2024} proposed an implementation of the device concept in another material system, \ch{Ge/Si_{1-$x$}Ge_{$x$}}.
+Hole spin qubits in this system have quickly matured in recent years.
+What is more, by carefully engineering the alloy composition and strain of the \gls{qw}, a semi-direct\sidenote{
+    \Ie, the band structure has conduction and valence band minima and maxima at the $\Gamma$-point, but the $\Gamma$-valley is not the lowest conduction band valley.
+}
+bandgap as well as type-I confinement\sidenote{
+    \Ie, the band alignment of the valence band is inverted compared to the conduction band and both electrons and holes are confined in the \gls{qw}.
+}
+is projected to be achievable.
+Favorably, the optical gap can be tuned to the telecom O-band and thus alleviate the need for quantum frequency conversion to match quantum network operation wavelengths.
+However, the optical characterization of this system will be challenging as the quasi-direct band gap leads to reduced \gls{pl} efficiency due to valley coupling.

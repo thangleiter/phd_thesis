@@ -1,5 +1,17 @@
-# Add python to path
-$ENV{'PATH'} = join(';', $ENV{'LOCALAPPDATA'} . "/miniforge3", $ENV{'PATH'});
+# Add miniforge python to path
+# We just assume it's either in AppData/Local, or the home dir
+if ( defined $ENV{'LOCALAPPDATA'} ) {
+    my $dir = $ENV{'LOCALAPPDATA'} . "/miniforge3";
+    if ( -d $dir ) {
+        $ENV{'PATH'} = join(';', $dir, $ENV{'PATH'});
+    }
+}
+if ( defined $ENV{'USERPROFILE'} ) {
+    my $dir = $ENV{'USERPROFILE'} . "/miniforge3";
+    if ( -d $dir ) {
+        $ENV{'PATH'} = join(';', $dir, $ENV{'PATH'});
+    }
+}
 # print "Updated PATH: $ENV{'PATH'}\n";
 
 $out_dir = "./build";

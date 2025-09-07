@@ -1,0 +1,63 @@
+% mainfile: ../../main.tex
+\chapter{Introduction}\label{ch:setup:introduction}
+\begin{partcontribs}
+    Parts of the results presented in \thispart have been published in Reference~\sidecite{Descamps2024}.
+    Thomas Descamps and Feng Liu originally designed the setup together with Hendrik Bluhm and constructed it.
+    Julian Ritzmann\sidenote[a]{Ruhr-Universität Bochum.} and Arne Ludwig\sidenotemark[a] grew the wafer on which Matthias Künne fabricated the sample used to measure the electron temperature in \cref{sec:setup:cooling:etemp}.
+    The chip used to measure photon antibunching in \cref{sec:setup:optics:g2} was grown by Xuelin Jin.
+    Marcus Eßer kindly lent the accelerometer used in \cref{sec:setup:vibrations:accel}.
+\end{partcontribs}
+
+\lettrine[lines=3,lhang=0.33,loversize=0.25,depth=1]{Q}{uantum} technology is maturing and entering the realm of commercial application~\cite{Schleich2016,Mohseni2017,QTBMBF,QTCEN,QTEU}.
+Despite this progress, its potential is arguably far from fully tapped.
+From the perspective of the physicist, quantum technology can not only serve the industrial sector, though, but also become a new tool in the researcher's belt to explore new physics on the nanoscale, where quantum mechanics governs the behavior of individual particles as well as many-body interactions and collective effects.
+Given the multidisciplinarity of the field, this presents a unique opportunity to explore in particular the intersection of different areas of physics such as optomechanics~\cite{Aspelmeyer2014,Barzanjeh2022}, quantum thermodynamics~\cite{Goold2016,Deffner2019,Cangemi2024} and batteries~\cite{Campaioli2024}, quantum gravity~\cite{Degen2017,Bass2024}, and more.
+In the solid state, electrical and optical properties dominate.
+Here, their intersection brings together two of the perhaps technologically most advanced and permeating branches of physics.
+
+The small energy scales involved in electronic \emph{intra}-band effects or many-body correlations often necessitate extremely low temperatures in the Millikelvin range for observation.
+While optical effects on the other hand are typically robust due to their large energy scales in the visible range,\sidenote{
+    Tyipcally quoted as \qtyrange{380}{750}{\nano\meter} corresponding to \qtyrange{1.65}{3.26}{\electronvolt}.
+}
+semiconductors or semimetals such as graphene allow optical \emph{inter}-band transitions and as such coupling between the -- in themselves low-energy physics of the -- valence and conduction band.
+Thus, observing many-body effects of quasiparticle excitations such as a \gls{bec} of excitons~\cite{Kohn1970,High2012,Combescot2017,Morita2022,Zhang2024}, for example, places high demands on the experimental setup, requiring not only very low temperatures but also some form of optical access.
+For quantum technologies, the development of a quantum network based on optically interfaced solid-state spins is among the foremost goals~\cite{Awschalom2018,Azuma2023,Heindel2023,Zajac2025}.
+There, single optical photons are generally used to transmit quantum information across long distances and qubits encoded in single spins -- electronic or nuclear -- are used to store and process information locally.
+Owing to their small magnetic moment and strong Coulomb interaction, electron spin qubits usually require temperatures well below \qty{1}{\kelvin} for high-fidelity operation, and a coherent interface between these and a \enquote{flying qubit} -- a photon encoding information, for example, in its helicity or time-of-arrival degree of freedom -- would thus also need to be placed in an optically accessible cryostat capable of reaching such low temperatures.
+
+\Citeauthor{Descamps2024}~\cite{Descamps2021,Descamps2024} presented a free-space confocal microscope integrated into a fully wired cryogen-free \gls{dr} (\odin) that facilitates such experiments.
+In the following, I give a brief outline of the setup described in more detail in \citer{Descamps2021}.
+The microscope is constructed with the optics fixed in place on top of the cryostat, alleviating the need to remove and re-align them when opening and closing the cryostat.
+Optical fibers deliver light to the cryostat from the optical table and back, simplifying the connection between the two components.
+On the optical table, a tunable \gls{cw} \ch{Ti}:sapphire laser\sidenote{
+    A spectrally filtered, pulsed \unit{\femto\second}-laser (\pulsedlaser) is also available but unused in \thethesis.
+}
+(\tisalaser) generates coherent radiation that is attenuated by a variable \gls{nd} filter mounted on an electrically controlled rotation stage (\thorlabsrotator) and can be blocked by an electrically controlled filter flipper (\thorlabsflipper).
+The attenuated light is coupled into a \gls{smf} patch cable (\thefiber) and delivered to the optical head on top of the cryostat, which I describe and analyze in more detail in \cref{ch:setup:optics}.
+Waveplates mounted on piezoelectric rotation stages (\rotator) with controller \rotatorcontroller allow electromechanical control of the polarization state while an \positionercontroller controller connected to three piezoelectric linear steppers (\positioner) on which the sample is mounted allow precise control of the sample position.
+Light collected from the sample is coupled into another \gls{smf} patch cable on the optical head and, on the optical table, launched into a diffraction grating spectrometer (\thespectrometer) with a focal length of \qty{1}{\meter} \acrshort{na}-matched to the fiber by a pair of singlet lenses.
+The spectrometer houses two gratings (\qty{600}{gr\per\milli\meter} and \qty{1800}{gr\per\milli\meter}) mounted on a rotating turret.
+Two exit ports selectable by an electrically controlled mirror let the dispersed light exit the spectrometer onto either a thermoelectrically cooled \gls{ccd} (\theccd) or, through an adjustable slit allowing spectral filtering, into a \gls{hbt} interferometer.
+The interferometer consists of a 50:50 \gls{bs} on whose exit ports the light is focused into two \glspl{mmf} connected to an \gls{apd}-based \gls{spcm} (\thespcm) each.
+A streaming time-to-digital converter (\tagger) then assigns time tags to the output pulses of the \glspl{spcm} heralding the arrival of a single photon.
+
+The entire setup thus consists of various different components of different nature -- mechanical, optical, electrical, or a combination thereof -- made by various different manufacturers, making the unified control of all instruments challenging.
+During the work on \thethesis, I extended the \python driver coverage within the \qcodes framework to include all components that provide an \gls{api} for external control.
+This enables fully remote operation and allows for complete automation of the setup.\sidenote{
+    Remote turn-on of the laser still requires explicit user input for safety reasons.
+}
+I furthermore implemented the bottom-loading technique for fast sample exchange, whereby the \gls{mxc} is held at \qty{10}{\kelvin} while the sample puck is removed or replaced using a special adapter from below.
+Turnaround cycles of approximately one day from base temperature to base temperature can be achieved in this way, in contrast to a full warm-up and cooldown cycle time including removal and replacement of all cryostat shields of one week.
+The optical alignment turns out to be remarkably stable during this procedure and it is usually not required to manually adjust it after a bottom loading cycle.
+
+In \thispart, I analyze, characterize, and improve upon three different parts of this measurement setup.
+First, I investigate the refrigeration capabilities of the \gls{dr} to address the question of how the modifications for optical access impact the cooling performance (\cref{ch:setup:cooling}).
+There, I present measurements of various sources of heating and compare them to the available cooling power before turning attention to the achievable electron temperature in a \GaAsAlGaAs quantum dot.
+In \cref{ch:setup:optics}, I then discuss the confocal microscope itself, that is, the optics mounted to the cryostat, including the objective and ocular lenses as well as the coupling to the \glspl{smf}.
+I review the fundamentals of the relevant physics in order to guide the reader through the lens selection process and subsequently compare the estimated setup efficiency to measurements, focusing on the mode profile of dipole radiation emitted from a point source inside a dielectric slab.
+Moreover, I characterize the laser spot on the sample using the imaging capabilities of the optical head as well as the cross-polarization extinction performance.
+To validate the optical performance of the microscope, I demonstrate that signatures of non-classical light, specifically photon anti-bunching from a \gls{saqd} single-photon source, can be readily observed.
+Lastly, in \cref{ch:setup:vibrations}, I address the impact of vibrations introduced by the cryostat's operation on the microscope performance.
+Given that we would like to resolve features on the micrometer scale, and need to couple light emitted from the sample into a \gls{smf} with \gls{mfd} of \qty{5}{\micro\meter}, random displacements induced by the acoustic waves generated by the cryostat's \gls{ptr} during operation can potentially limit the microscope's capabilities severely.
+I take a passive air spring suspension approach to decouple the cryostat from a static rigid reference frame and allow it to be displaced freely and in-phase with the external perturbation.
+Employing two different techniques, I characterize the vibration noise using the tools developed in \cref{part:speck} and show that the vibrations can indeed be attenuated to a degree sufficient for operation of the microscope.

@@ -1,0 +1,4 @@
+spectrometer_data_2023-09-06_18-49-15_Optical_gate_x_PTR_on_suspension_off.npz
+spectrometer_data_2023-09-06_19-12-16_Optical_gate_x_PTR_on_suspension_on.npz
+spectrometer_data_2023-09-06_18-45-06_Optical_gate_x_PTR_off_suspension_off.npz
+spectrometer_data_2023-09-06_19-10-56_Optical_gate_x_PTR_off_suspension_on.npz

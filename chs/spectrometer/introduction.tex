@@ -24,7 +24,6 @@ Noise, in the sense that we are concerned with in \thethesis,\sidenote{
 is a stochastic process, meaning that we cannot predict with certainty a dynamical system's time evolution; it \emph{fluctuates} randomly around its noise-free value.\sidenote{
     Quantum measurements are also noisy in this sense as we cannot predict the outcome of a single-shot measurement, but here the stochasticity is in the outcomes of an ensemble rather than the sequence of values in time.
     The two are, however, closely related through ergodicity, which we will require in \cref{sec:speck:theory:time_series_estimation}.
-    % TODO: basically the same statement as the previous footnote?
 }
 Only by obtaining statistics, \ie, repeated observations, either by preparing the system in the same initial state or measuring for a certain amount of time, can we make any statements about the underlying stochastic process.
 Two questions are key to assessing these statistics: first, what is the amplitude of the fluctuations?
@@ -47,7 +46,7 @@ Second, while probably everyone finding themselves in the situation is capable o
 Lastly, noise spectroscopy is most effective when proper visualization tools are employed.
 Again, this is not a difficult task per se, but such things always incur overhead costs that can deter users from employing these essential techniques.
 
-Here, I address these points by introducing a \python software package, \pyspeck, that tackles the entire processing chain of practical noise spectroscopy in a physics laboratory.
+Here, I address these points by introducing a \python software package, \pyspeck~\cite{Hangleiter_pyspeck}, that tackles the entire processing chain of practical noise spectroscopy in a physics laboratory.
 By abstracting \gls{daq} hardware into a unified interface, it is portable between different setups.
 With the goal to make noise spectroscopy as accessible as possible and lower the entry barrier, it automatically handles parameter inference and hardware constraints.
 Finally, it provides a comprehensive plotting solution that allows for interactively analyzing the data using various different data visualization methods.

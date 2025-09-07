@@ -1,12 +1,13 @@
 {
   "config": {
+    "options": {},
     "preferences": {
       "ascii": "",
       "asciiBibLaTeX": false,
       "asciiBibTeX": true,
       "autoAbbrev": true,
       "autoExport": "immediate",
-      "autoExportDelay": 5,
+      "autoExportDelay": 9,
       "autoExportIdleWait": 10,
       "autoExportPathReplaceDiacritics": false,
       "autoExportPathReplaceDirSep": "-",
@@ -31,7 +32,7 @@
       "citekeyCaseInsensitive": true,
       "citekeyFold": true,
       "citekeyFormat": "auth.capitalize + year",
-      "citekeyFormatEditing": "auth.capitalize+year",
+      "citekeyFormatEditing": "auth.capitalize + year",
       "citekeySearch": true,
       "citekeyUnsafeChars": "\\\"#%'(),={}~",
       "csquotes": "",
@@ -68,7 +69,7 @@
       "packages": "",
       "parseParticles": true,
       "patchDates": "dateadded=dateAdded, date-added=dateAdded, datemodified=dateModified, date-modified=dateModified",
-      "platform": "win",
+      "platform": "lin",
       "postscript": "// https://genai.rwth-aachen.de/app/conversations/6800f383ef384a984672ee4a\n\n/**\n * Process text to protect math mode and backslashed LaTeX commands.\n * - Math mode fragments ($...$) are wrapped in <script>{…}</script>\n * - All backslashed LaTeX commands (with an optional argument) are also wrapped,\n *   while avoiding nesting over already-protected parts.\n * - For \\texttt commands, underscores in their argument are escaped.\n *\n * @param {string} text - The input text.\n * @returns {string} - The processed (protected) text.\n */\nfunction protectLatex(text) {\n  // 1. Protect math mode fragments\n  text = text.replace(/(\\$.*?\\$)/g, '<script>{$1}</script>');\n\n  // 2. Protect LaTeX commands, but skip any parts that are already protected.\n  text = protectLatexCommandsAvoidNesting(text);\n\n  return text;\n}\n\n/**\n * Processes the text so that any region that is not already wrapped in\n * a <script>{…}</script> block gets its LaTeX commands protected.\n *\n * @param {string} input - The input text.\n * @returns {string} - The text with unprotected regions processed.\n */\nfunction protectLatexCommandsAvoidNesting(input) {\n  let output = \"\";\n  let pos = 0;\n  const openTag = \"<script>{\";\n  const closeTag = \"</script>\";\n\n  while (pos < input.length) {\n    // Find the next already protected block\n    let nextIdx = input.indexOf(openTag, pos);\n    if (nextIdx === -1) {\n      // Process remainder\n      output += protectLatexCommandsInSegment(input.substring(pos));\n      break;\n    }\n    // Process the text segment that is not yet protected.\n    output += protectLatexCommandsInSegment(input.substring(pos, nextIdx));\n    // Then, copy the already protected block unmodified.\n    let closeIdx = input.indexOf(closeTag, nextIdx);\n    if (closeIdx === -1) {\n      // If there's no closing tag (should not happen), append the rest.\n      output += input.substring(nextIdx);\n      break;\n    }\n    output += input.substring(nextIdx, closeIdx + closeTag.length);\n    pos = closeIdx + closeTag.length;\n  }\n  return output;\n}\n\n/**\n * Processes a text segment to wrap LaTeX commands in <script>{…}</script>.\n * This function uses a regex that looks for a backslash command (one or more word characters)\n * optionally followed by a braced argument. For \\texttt commands, underscores in the argument are escaped.\n *\n * Note: This simplified regex does not handle nested braces.\n *\n * @param {string} segment - The input text segment.\n * @returns {string} - The processed segment.\n */\nfunction protectLatexCommandsInSegment(segment) {\n  return segment.replace(/(\\\\\\w+)(\\{[^{}]*\\})?/g, function(match, command, arg) {\n    let fullCommand = command;\n    if(arg) {\n      // For \\texttt commands, escape underscores in the argument.\n      if (command === '\\\\texttt') {\n        arg = arg.replace(/_/g, '\\\\_');\n      }\n      fullCommand += arg;\n    }\n    return '<script>{' + fullCommand + '}</script>';\n  });\n}\n\n// Example usage in your hook:\nif (Translator.BetterTeX && tex.has.title) {\n  let title = zotero.title;\n  title = protectLatex(title);\n  tex.add({ name: 'title', value: title });\n}",
       "postscriptOverride": "",
       "preferencesOverride": "",

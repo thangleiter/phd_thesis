@@ -25,11 +25,4 @@ fi
 
 echo "Successfully copied '$SRC_FILE' to '$DEST_FILE'."
 
-# Check if review/main.pdf is in a conflicted state.
-if git ls-files -u "$DEST_FILE" > /dev/null 2>&1; then
-    echo "Conflict detected in '$DEST_FILE'. Auto-restoring it to their version."
-    git checkout --theirs "$DEST_FILE"
-    git add "$DEST_FILE"
-fi
-
 exit 0
