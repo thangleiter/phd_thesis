@@ -1,16 +1,18 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:ff:introduction}
 \begin{partcontribs}
-    \Thispart is based to large extent on \sideciter{Hangleiter2021}, an early draft of which in turn was my Master's thesis~\sidecite{Hangleiter2019}, and as such contains text written by all three authors.
-    \Cref{ch:ff:examples,sec:app:ff:time_domain_methods} additionally contains results published in \sideciter{Cerfontaine2021}.
-    Parts of this work have also been included in \sideciter{Cerfontaine2019}.
-    % TODO: can we make this nicer?
-    Refer to References~\cite[Section 1.3]{Hangleiter2019} and~\cite[Section 3.7]{Cerfontaine2019} for detailed author contributions up to that point.
-    \Cref{ch:ff:validation,sec:app:ff:concatenation} contain new results.
+    \Thispart is based to large extent on \sideciter{Hangleiter2021}, an early draft of which in turn was my Master's thesis~\sidecite{Hangleiter2019}, and as such contains text contributions from all three authors.
+    \Cref{ch:ff:examples,sec:app:ff:time_domain_methods} additionally contain results published in \sideciter{Cerfontaine2021}, an early draft of which appears in \sideciter{Cerfontaine2019}.
+    The first-order concatenation rule was originally derived by Pascal Cerfontaine.
+    He also conceived and performed initial calculations of the linearized quantum process expressed in terms of filter functions.
+    Hendrik Bluhm initiated the project and wrote the initial draft of the introduction.
+    I recast the approach in the quantum operations formalism based on stochastic Liouville equations and the cumulant expansion, and derived expressions for the second-order terms, as well as developed an optimized expression for periodic Hamiltonians, derived quantities, discussed operator bases, and analyzed the computational efficiency.
+    I also wrote the software package, performed all simulations, and developed all examples.
+    \Cref{ch:ff:validation,sec:app:ff:concatenation} contain new results that I derived.
 \end{partcontribs}
 \begin{authornote}
-    In Reference~\cite{Hangleiter2021}, extensive use was made of \citeauthor{Kubo1962}'s \emph{cumulant expansion}~\cite{Kubo1962}.
-    Due to an error in \citeauthor{Kubo1962}'s paper which was only pointed out several years later~\cite{Fox1976} and we were not aware of, those results turned out to be not exact as claimed but approximate~\sidecite{Hangleiter2024}.\sidenote{
+    In Reference~\cite{Hangleiter2021}, extensive use was made of \citeauthor{Kubo1962}'s cumulant expansion~\cite{Kubo1962}.
+    Due to an error in \citeauthor{Kubo1962}'s paper which was only pointed out several years later by \citet{Fox1976} and we were not aware of, those results turned out to be not exact as claimed but approximate~\sidecite{Hangleiter2024}.\sidenote{
         Unfortunately, the error has proliferated through the literature and proves quite pervasive despite the significant amount of time that has passed since it was first discovered.
         Recent examples include~\citer{Norris2016}.
         One may only speculate if this is because of the 14 years that passed between the original publication and the correction, the lack of an erratum once the mistake had been discovered, or simply because of \citeauthor{Kubo1962}'s fame.
