@@ -51,7 +51,7 @@ This method will be the topic of the present chapter.
 It is laid out as follows.
 I will first derive the Wiener-Khinchin theorem for continuous stochastic processes and introduce the central quantity of interest in noise spectroscopy; the \gls{psd}.
 Then, I will discretize the method and discuss resulting side-effects before describing an efficient way of obtaining the spectrum from a finite amount of data.
-Finally, I elaborate on relevant parameters and properties.
+I will conclude by elaborating on relevant parameters and properties.
 
 \section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
 To see how spectral noise properties may be estimated from time series data, consider a continuous wide-sense stationary\sidenote{
@@ -219,7 +219,7 @@ Now recall that multiplication and convolution are duals under the Fourier trans
 \begin{align}\label{eq:speck:window:ft_pairs}
     \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m},
 \end{align}
-where the Fourier representation of the rectangular window\sidenote{
+where the Fourier representation of the rectangular window is given by\sidenote{
     $\sinc(x) = \flatfrac{\sin(x)}{x}$.
 }
 \begin{align}
