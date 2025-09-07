@@ -148,7 +148,7 @@ The downside of this approach is that synchronization of different instruments o
     \label{lst:speck:conclusion:cross_workflow}
 \end{listing}
 
-Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\sidecite{CSDScipy} for \gls{csd} estimation\sidenote{
+Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\cite{CSDScipy} for \gls{csd} estimation\sidenote{
     In practice, working with the normalized \gls{csd}, or correlation coefficient~\cite{Rojas-Arias2023,Yoneda2023}
     \begin{align}
         r_{ij}(\omega) = \frac{S_{ij}(\omega)}{\sqrt{S_{ii}(\omega)S_{jj}(\omega)}}
