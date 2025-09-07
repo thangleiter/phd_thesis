@@ -157,7 +157,7 @@ axs[0].grid()
 axs[1].grid()
 axs[1].set_yticks([0, 1, 2])
 axs[0].set_xlim(-11, 11)
-axs[0].set_ylim(top=1.3)
+axs[0].set_ylim(0, 1.3)
 axs[1].set_ylim(top=2)
 axs[1].set_xlabel(r'$\tau$ (ns)')
 
