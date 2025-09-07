@@ -12,21 +12,19 @@ import xarray as xr
 from cycler import cycler
 from python_spectrometer import Spectrometer
 from qcodes.utils.json_utils import NumpyJSONEncoder
-from qutil import const, functools, io, itertools
+from qutil import const, functools, io
 from qutil.misc import filter_warnings
 from qutil.plotting import changed_plotting_backend
-from qutil.plotting.colors import (
-    get_rwth_color_cycle, RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75
-)
+from qutil.plotting.colors import RWTH_COLORS, RWTH_COLORS_50, RWTH_COLORS_75, get_rwth_color_cycle
 from qutil.signal_processing import fourier_space, real_space
 from scipy import interpolate, odr, special
 from uncertainties import ufloat
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
 
-from common import (
-    PATH, TEXTWIDTH, MARGINWIDTH, MAINSTYLE, MARGINSTYLE, markerprops, init
-)  # noqa
+from common import (  # noqa
+    MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops, n_GaAs
+)
 
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
@@ -110,8 +108,8 @@ def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
-def erf_theory(x, I0, w0, r):
-    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf(x*np.sqrt(2)/w0))
+def erf_theory(x, I0, w0, x0, R):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - R)*special.erf((x - x0)*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -167,7 +165,7 @@ popt_posvdc, pcov_posvdc = np.polyfit(vdc_calib, unp.nominal_values(position), 1
                                       w=1/unp.std_devs(position))
 
 # %%%% Count rate calibration
-ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
+ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5', engine='h5netcdf')
 count_rate = ds.counter_countrate
 # 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
 x = count_rate['positioners_y_axis_voltage']
@@ -183,13 +181,13 @@ poserr = pos_vs_vdc(vdc, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - pos
 cps = y1[mask].mean('counter_time_axis')
 cpserr = y1[mask].std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
-data = odr.Data(pos, cps, wd=poserr, we=cpserr)
-model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
-fit = odr.ODR(data, model, beta0=[2.5, 0])
-output = fit.run()
+linear_data = odr.RealData(pos, cps, sx=poserr, sy=cpserr)
+linear_model = odr.Model(lambda beta, x: beta[0]*x + beta[1])
+linear_fit = odr.ODR(linear_data, linear_model, beta0=[2.5, 0])
+linear_output = linear_fit.run()
 
 # s has units of Mcps/μm
-s, b = unp.uarray(output.beta, output.sd_beta)
+s, b = unp.uarray(linear_output.beta, linear_output.sd_beta)
 
 # %%%%% Plot camera image
 erroralpha = 0.5
@@ -231,13 +229,15 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     fig.subplots_adjust(hspace=0)
     fig.savefig(SAVE_PATH / 'knife_edge.pdf')
 
-# %%%% Plot fits
+# %%%% Plot linear fit
 erroralpha = 0.5
 errorcolor = RWTH_COLORS['blue']
 ix = (np.where(~np.isnan(seqnan[0, row, col]))[0][[0, -1]] + (col[0] - 400))
 xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
 xxerr = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
          pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+yyerr = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
 
 with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
     fig, axs = plt.subplots(nrows=2, figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2),
@@ -262,12 +262,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     # cps vs pos
     ax = axs[1]
-    ax.errorbar(xx, y1.mean('counter_time_axis'),
-                y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis']),
-                xerr=xxerr, label='Data',
+    ax.errorbar(xx, yy, yerr=yyerr, xerr=xxerr, label='Data',
                 ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
                 **markerprops(errorcolor, marker='.'))
-    ax.plot(pos, model.fcn(output.beta, pos), zorder=5, label='Fit')
+    ax.plot(pos, linear_model.fcn(linear_output.beta, pos), zorder=5, label='Fit')
 
     ax2 = ax.secondary_xaxis(
         'top',
@@ -275,9 +273,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
                    functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
     ax2.sharex(axs[0])
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
+    ax.set_yticks([2, 3, 4])
     ax.set_xlim(pos_vs_vdc(np.array(xlim), *popt_posvdc))
     ax.set_ylim(2, 4)
 
@@ -287,23 +286,25 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 x = np.linspace(-1.5, 1.5, 1001)
 I0 = 2
 w0 = .3
-r = 0.2
+x0 = 0
+R = 0.2
 N = I0*w0*np.sqrt(0.5*np.pi)
 
 with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
 
-    ax.plot(x, erf_theory(x*w0, I0, w0, r) / N)
+    ax.plot(x, erf_theory(x*w0, I0, w0, x0, R) / N)
 
     ylim = ax.get_ylim()
-    ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
+    ax.plot(x, (-I0*(1-R)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
     ax.set_ylim(ylim)
 
     ax.grid()
     ax.margins(x=0)
-    ax.set_yticks([r/2, 0.5, 1-r/2], [r'$\frac{r}{2}$', r'$\frac{1}{2}$', r'$1-\frac{r}{2}$'],
+    ax.set_yticks([R/2, 0.5, 1-R/2],
+                  [r'$\frac{\mathrm{r}_0}{2}$', r'$\frac{1}{2}$', r'$1-\frac{\mathrm{r}_0}{2}$'],
                   va='center')
-    ax.set_ylabel(r'$P_R(y) / (I_0 w_0 \sqrt{\pi/2})$')
+    ax.set_ylabel(r'$P_{\mathrm{r}}(y) / (I_0 w_0 \sqrt{\pi/2})$')
 
     match mpl.get_backend():
         case 'pgf':
@@ -312,6 +313,66 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
             ax.set_xlabel(r'$y/w_0$')
 
     fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
+
+# %%% Full knife-edge fit
+x = count_rate['positioners_y_axis_voltage']
+xx = pos_vs_vdc(x, *popt_posvdc)
+yy = y1.mean('counter_time_axis')
+sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
+       pos_vs_vdc(x, *(popt_posvdc + np.sqrt(np.diag(pcov_posvdc)))) - xx]
+syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'])
+
+# GaAs @ 800 nm
+n = n_GaAs(30e-3)
+R = abs((n - 1) / (n + 1))**2  # at 30 mK
+
+knife_edge_data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
+knife_edge_model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
+
+knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R], ifixb=[1, 1, 1, 1])
+knife_edge_output = knife_edge_fit.run()
+if 'Sum of squares convergence' not in knife_edge_output.stopreason:
+    knife_edge_output = knife_edge_fit.restart(100)
+
+fitpar = unp.uarray(knife_edge_output.beta, knife_edge_output.sd_beta)
+
+print('Knife edge fit results:')
+print(f'w_0 = {fitpar[1]:.3g} μm')
+print(f'R = {fitpar[3]:.3g}')
+
+knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R],
+                              ifixb=[1, 1, 1, 0])
+knife_edge_output_rfix = knife_edge_fit_rfix.run()
+if 'Sum of squares convergence' not in knife_edge_output_rfix.stopreason:
+    knife_edge_output_rfix = knife_edge_fit_rfix.restart(100)
+
+fitpar_rfix = unp.uarray(knife_edge_output_rfix.beta, knife_edge_output_rfix.sd_beta)
+
+# %%%% Plot
+erroralpha = 0.5
+errorcolor = RWTH_COLORS['blue']
+
+with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend('pgf'):
+    fig, ax = plt.subplots(layout='constrained')
+
+    ax.errorbar(xx, yy, yerr=syy, xerr=sxx, alpha=0.75,
+                ecolor=mpl.colors.to_rgb(errorcolor) + (erroralpha,),
+                **markerprops(errorcolor, marker='.', markersize=2.5))
+
+    ax.plot(xtmp := np.linspace(-1, 1, 1001), erf_theory(-xtmp, *unp.nominal_values(fitpar)),
+            zorder=5)
+
+    ylim = ax.get_ylim()
+    ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
+            color=RWTH_COLORS_50['magenta'], zorder=5)
+
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
+    ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
+    ax.grid()
+    ax.set_yticks([2, 3, 4])
+    ax.set_ylim(1.6)
+
+    fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
 
 # %% Load spects
 with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
@@ -330,7 +391,7 @@ spect_accel.processed_unit = 'μm'
 spect_accel.reprocess_data(*spect_accel.keys(), detrend='constant')
 
 spect_optic.procfn = cps_calib
-spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=output.beta,
+spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=linear_output.beta,
                            detrend='constant')
 
 figure_kw = dict(figsize=(TEXTWIDTH, TEXTWIDTH / const.golden * 1.25))
@@ -455,6 +516,14 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
             ln, = ax.loglog(vc_f, vc, zorder=5, **(markerprops(sty['color']) | sty))
             lines.append(ln)
 
+        vc_sn, vc_sn_f = fourier_space.octave_band_rms(
+            *fourier_space.derivative(np.full_like(f, np.sqrt(shot_noise_floor.nominal_value)),
+                                      f, order=1),
+            fraction=3
+        )
+
+        ax.loglog(vc_sn_f, vc_sn, ls=(0, (5, 10)), color=RWTH_COLORS_75['black'])
+
         xlim = spect[key]['settings']['f_min'], spect[key]['settings']['f_max']
         ax.plot([8, xlim[1]], [25, 25], marker='', ls='-', color=RWTH_COLORS_50['black'])
         ax.plot([xlim[0], 8], [200/xlim[0], 25], color=RWTH_COLORS_50['black'], marker='',
@@ -469,7 +538,6 @@ with mpl.style.context([MAINSTYLE]), changed_plotting_backend('pgf'):
         ax.plot([xlim[0], 8], [1600/xlim[0], 200], color=RWTH_COLORS_50['black'], marker='',
                 zorder=0, ls=':')
 
-    ax.grid()
     ax.set_yticks([1e-3, 1e-1, 1e1, 1e3])
     ax.set_xlim(xlim)
     ax.set_ylim(1e-3, 1e3)
@@ -494,8 +562,6 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
                            figsize=(MARGINWIDTH, MARGINWIDTH / const.golden * 2))
     ax[0].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
     ax[1].set_prop_cycle(color=mpl.color_sequences['rwth'][1:])
-    ax[0].axhline(color='black')
-    ax[1].axhline(color='black')
 
     for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
         spect.hide('PTR off, susp. off', 'PTR off, susp. on')
@@ -508,9 +574,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ln = spect._plot_manager.lines[1, 'PTR on, susp. on']['cumulative']['processed']['line']
         ax[1].semilogx(*ln.get_data())
 
-        # with changed_plotting_backend('pgf'):
-        #     spect.fig.savefig(SAVE_PATH / f'{typ}_dB.pdf')
-
+    ax[0].axhline(color=RWTH_COLORS_75['black'])
+    ax[1].axhline(color=RWTH_COLORS_75['black'])
     ax[0].set_yticks([20, 0, -20, -40, -60])
     ax[1].set_yticks([0, -20])
     ax[0].set_xlim(spect.ax[-1].get_xlim())

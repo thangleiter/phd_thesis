@@ -45,7 +45,9 @@
 \titlehead{The \texttt{kaobook} class}
 \subject{Use this document as a template}
 
-\title[My PhD Thesis]{My PhD Thesis}
+\title[Millikelvin confocal microscopy and filter-function formalism]{
+	Millikelvin Confocal Microscopy of Semiconductor Membranes and Filter Functions for Unital Quantum Operations
+}
 \subtitle{Customise this page according to your needs}
 
 \author[Tobias Hangleiter]{Tobias Hangleiter\thanks{A \LaTeX\ lover/hater}}
@@ -124,11 +126,32 @@
 \maketitle
 
 %----------------------------------------------------------------------------------------
+%	SUMMARY
+%----------------------------------------------------------------------------------------
+
+\include{chs/summary}
+\index{summary}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\include{chs/acknowledgements}
+\index{acknowledgements}
+
+%----------------------------------------------------------------------------------------
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
-% \include{chapters/preface.tex}
-% \index{preface}
+\include{chs/preface}
+\index{preface}
+
+%----------------------------------------------------------------------------------------
+%	HOW TO READ THIS THESIS
+%----------------------------------------------------------------------------------------
+
+\include{chs/howto}
+\index{howtoread}
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
@@ -147,31 +170,13 @@
 
 \tableofcontents % Output the table of contents
 
-%\renewcommand{\listfigurename}{
-%	\vspace*{-1.4cm}
-%	\begin{flushleft}
-%		List of Figures\par
-%		\normalfont\normalsize This list contains hyperlinks to the source files in the Git repository generating each figure shown in this thesis.
-%	\end{flushleft}
-%}
-\listoffigures % Output the list of figures
-
-% Comment both of the following lines to have the LOF and the LOT on
-% different pages
-% \cleardoublepage\bigskip
-% \clearpage\bigskip
-
-%\listoftables % Output the list of tables
-
-%\listoflstlistings % Output the list of listings
+\cleardoublepage\bigskip
+\clearpage\bigskip
+\include{chs/publications}
 
 \cleardoublepage\bigskip
 \clearpage\bigskip
-\include{tex/publications}
-
-\cleardoublepage\bigskip
-\clearpage\bigskip
-\include{tex/software}
+\include{chs/software}
 
 \endgroup
 
@@ -189,6 +194,7 @@
 \part{A Flexible \python Tool For Fourier-Transform Noise Spectroscopy}
 \label{part:speck}
 \pagelayout{margin} % Restore margins
+\glsresetall % Reset all gls counters to have acronyms printed in full the first time they occur in each part
 
 \include{chs/spectrometer/introduction}
 \include{chs/spectrometer/theory}
@@ -199,10 +205,11 @@
 \part{Characterization and Improvements of a Millikelvin Confocal Microscope}
 \label{part:setup}
 \pagelayout{margin} % Restore margins
+\glsresetall
 
 \include{chs/setup/introduction}
-\include{chs/setup/electrical}
-\include{chs/setup/optical}
+\include{chs/setup/cooling}
+\include{chs/setup/optics}
 \include{chs/setup/vibrations}
 \include{chs/setup/conclusion}
 
@@ -210,16 +217,26 @@
 \part{Optical Measurements of Electrostatic Exciton Traps in Semiconductor Membranes}
 \label{part:exp}
 \pagelayout{margin} % Restore margins
+\glsresetall
+
+\include{chs/experiment/introduction}
+\include{chs/experiment/theory}
+\include{chs/experiment/mjolnir}
+\include{chs/experiment/observations}
+\include{chs/experiment/conclusion}
 
 \pagelayout{wide} % No margins
 \part{A Filter-Function Formalism For Unital Quantum Operations}
 \label{part:ff}
 \pagelayout{margin} % Restore margins
+\glsresetall
 
 \include{chs/filter_functions/introduction}
-\include{chs/filter_functions/prr}
-\include{chs/filter_functions/time_domain_methods}
+\include{chs/filter_functions/formalism}
 \include{chs/filter_functions/validation}
+\include{chs/filter_functions/software}
+\include{chs/filter_functions/applications}
+\include{chs/filter_functions/conclusion}
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
@@ -227,9 +244,11 @@
 \addpart{Appendix}
 \label{part:appendix}
 \pagelayout{margin} % Restore margins
+\glsresetall
 
+\include{chs/appendices/setup}
+\include{chs/appendices/experiment}
 \include{chs/appendices/filter_functions}
-\include{chs/appendices/setup/vibrations}
 
 %----------------------------------------------------------------------------------------
 
@@ -256,7 +275,7 @@
 % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
 \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+\printglossary[title=Glossary, toctitle=Glossary] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
 %----------------------------------------------------------------------------------------
 %	INDEX
@@ -265,6 +284,27 @@
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
 
 % \printindex % Output the index
+
+%----------------------------------------------------------------------------------------
+%   LIST OF FIGURES
+%----------------------------------------------------------------------------------------
+\renewcommand{\listfigurename}{Figure source files and parameters}
+\addcontentsline{toc}{chapter}{\listfigurename} % Add the preface to the table of contents as a chapter
+\hypertarget{lof}{\listoffigures} % Output the list of figures
+
+% Comment both of the following lines to have the LOF and the LOT on
+% different pages
+% \cleardoublepage\bigskip
+% \clearpage\bigskip
+
+%\listoftables % Output the list of tables
+
+%\listoflstlistings % Output the list of listings
+
+%----------------------------------------------------------------------------------------
+%   DECLARATION OF AUTHORSHIP
+%----------------------------------------------------------------------------------------
+\input{chs/declaration}
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER

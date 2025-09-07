@@ -7,9 +7,9 @@
 }~\cite{Hangleiter_pyspeck}
 and lay out its design and functionality.
 This software package was developed to make it easier for experimentalists to transfer the mathematical machinery introduced in \cref{ch:speck:theory} to the lab.
-While in principle the entire process of spectrum estimation from a given array of time series data is already covered by the \code{welch()} routine in \scipy~\sidecite{WelchScipy}, obtaining the data array is not standardized.
+While in principle the entire process of spectrum estimation from a given array of time series data is already covered by the \code{welch()} routine in \scipy~\cite{WelchScipy}, obtaining the data array is not standardized.
 Different \gls{daq} instruments have different capabilities, both on the hardware and the software level, and different driver interfaces to communicate with them.
-This implies custom \acrlong{daq} code is required for every instrument, introducing a significant entry barrier to spectral analysis.
+This implies that custom \acrlong{daq} code is required for every instrument, introducing a significant entry barrier to spectral analysis.
 The \pyspeck package implements a simple interface to different hardware instruments that allows for changing the hardware backend without having to adapt the user-facing code and also incorporates different hardware constraints.
 
 What is more, noise spectroscopy tends to be a visual endeavor in practice; it is hard to compare different noise spectra based on quantitative reasoning alone.
@@ -57,7 +57,7 @@ This class is used in the background to validate data acquisition settings both 
     \label{tab:speck:software:parameters}
     \begin{tabular}{ c C }
         \toprule
-        \textsc{Variable} & \textsc{Parameter} \\
+        \textsc{Variable} & \multicolumn{1}{c}{\textsc{Parameter}} \\ % multicolumn to override column type
         \midrule
         $L$ & n_pts \\
         $N$ & nperseg \\
@@ -78,10 +78,7 @@ in the lab.
 Alice has wired up her experiment, performed a first measurement, and to her dismay discovered that the data is too noisy to see the sought-after effect.
 She sets up the \pyspeck code to investigate the noise spectrum of her measurement setup.
 From her noisy data she could already estimate the frequency of the most harrowing noise, so she knows the frequency band $[\fmin, \fmax]$ she is most interested in.
-But because she is lazy,\sidenote{
-    Physicists generally are.
-}
-she does not want to do the mental gymnastics to convert \fmin to the parameter that her \gls{daq} device understands, $L$ (see \cref{tab:speck:software:parameters}), especially considering that $L$ depends on the number of Welch averages and the overlap.
+But because she is lazy, she does not want to do the mental gymnastics to convert \fmin to the parameter that her \gls{daq} device understands, $L$ (see \cref{tab:speck:software:parameters}), especially considering that $L$ depends on the number of Welch averages and the overlap.
 Furthermore, while she could just about do the conversion from \fmax to the other relevant \gls{daq} parameter, \fs, in her head, her device imposes hardware constraints on the allowed sample rates she can select!
 The \code{DAQSettings} class addresses these issues.
 It is instantiated with any subset of the parameters listed in \cref{tab:speck:software:parameters}\sidenote{
@@ -148,7 +145,7 @@ the same requested settings would have resolved to those shown in \cref{lst:spec
 }
 This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
 
-As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware agnostic.
+As already mentioned, the \code{DAQ} base class implements a common interface for different hardware backends, allowing the \code{Spectrometer} class to be hardware-agnostic.
 That is, changing the instrument that is used to acquire the data does not necessitate adapting the code used to interact with the \code{Spectrometer}.
 To enable this, different instruments require small wrapper drivers that map the functionality of their actual driver onto the interface dictated by the \code{DAQ} class.
 This is achieved by subclassing \code{DAQ} and implementing the \code{DAQ.setup()} and \code{DAQ.acquire()} methods.
@@ -163,6 +160,9 @@ Their functionality is best illustrated by the internal workflow as representati
 
         for data_buffer in acquisition_generator:
             estimate_psd(data_buffer)
+
+        # Finalize, clean up, return to user code
+        ...
     \end{py}
     \caption[\gls{daq} workflow pseudocode]{
         \gls{daq} workflow pseudocode.
@@ -184,7 +184,7 @@ Here, the instrument is armed (if necessary), and subsequently data is fetched f
 }
 An exemplary implementation of a \code{DAQ} subclass for a fictitious instrument is shown in \cref{lst:speck:daq:pseudocode}.
 In addition to the methods to configure the instrument and perform data acquisition, it is possible to override the \code{DAQSettings} property to implement instrument-specific hardware constraints such as, in this example, the number of samples per buffer being constrained to the discrete interval $[1, 2048]$.
-Leveraging the \code{qutil.domains} module, more complex constraints such as sample rates restricted to an internal clock rate divided by a power of two\sidenote{
+Leveraging the \code{qutil.domains} module~\cite{Hangleiter_qutil}, more complex constraints such as sample rates restricted to an internal clock rate divided by a power of two\sidenote{
     See for example the implementation of the \href{https://git.rwth-aachen.de/qutech/python-spectrometer/-/blob/main/src/python_spectrometer/daq/atsaverage.py}{AlazarTech ATS9440} digitizer card.
 }
 can be specified.
@@ -244,11 +244,11 @@ In particular, since the process of computing the \gls{psd} already involves Fou
 
 In \pyspeck, this can be done using a \code{procfn} (in the time domain) or \code{fourier_procfn} (in the Fourier domain).
 The former is specified as an argument directly to the \code{Spectrometer} constructor.
-It is a callable with signature \code{(x, **kwargs) -> xp}, that is, takes the time series data as its first (positional) argument and arbitrary settings that are passed through from the \code{take()} method as keyword arguments, and returns the processed data.
+It is a callable with signature \code{(x, **kwargs) -> xp}, taking as arguments the time series data and arbitrary settings passed through from the \code{take()} method, and returns the processed data.
 \Cref{lst:speck:procfn} shows a simple function that accounts for the gain of an amplifier.
 The latter is specified in the \code{psd_estimator} argument of the \code{Spectrometer} constructor.
 This argument allows the user to specify a custom estimator for the \gls{psd}, in which case a callable is expected.
-Otherwise, it should be a mapping containing parameters for the default \gls{psd} estimator, \code{scipy.signal.welch()}~\sidecite{WelchScipy}.
+Otherwise, it should be a mapping containing parameters for the default \gls{psd} estimator, \code{scipy.signal.welch()}~\cite{WelchScipy}.
 Here, the keyword \code{fourier_procfn} should be a callable with signature \code{(xf, f, **kwargs) -> (xfp, fp)}.\sidenote{
     \Ie, the \code{psd_estimator} argument would be \code{{"fourier_procfn": fn}}.
 }
@@ -272,8 +272,7 @@ A simple example for a processing function in Fourier space is shown in \cref{ls
     \pdv[n]{t} \xrightarrow{\mathrm{F.T.}} \left(\i\omega\right)^n
 \end{align}
 under the Fourier transform.
-In \cref{part:setup}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
-% TODO: ref
+In \cref{sec:setup:vibrations:optic}, I discuss more complex use-cases of the processing functionality included in \pyspeck in the context of vibration spectroscopy.
 
 \begin{marginlisting}[*4]
     \begin{py}[fontsize=\footnotesize]
@@ -299,7 +298,7 @@ Consider as an example the procedure of \enquote{noise hunting}, \ie, debugging 
 The experimentalist,\sidenote{
     Let's call him Bob.
 }
-having discovered that his data is noisier than expected, sets up the \code{Spectrometer} class with an instance of the \code{DAQ} subclass for the \gls{daq} instrument connected to his sample, a Zurich Instruments MFLI.\sidenote{
+having discovered that his data are noisier than expected, sets up the \code{Spectrometer} class with an instance of the \code{DAQ} subclass for the \gls{daq} instrument connected to his sample, a Zurich Instruments MFLI.\sidenote{
     For the MFLI, \code{DAQ} subclasses for both the \href{https://docs.zhinst.com/labone_api_user_manual/modules/scope/index.html}{Scope} and the \href{https://docs.zhinst.com/labone_api_user_manual/modules/daq/index.html}{DAQ} module are implemented.
     The former gives access to the signal before and the latter to the signal after demodulation.
 }
@@ -322,7 +321,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
                              plot_negative_frequencies=False,
                              processed_unit='μV')
 
-        settings = {'f_min': 1e1, 'f_max': 1e5', 'freq': 0}
+        settings = {'f_min': 1e1, 'f_max': 1e5, 'freq': 0}
         spect.take('baseline', daq='grounded', **settings)
     \end{py}
     \caption[\pyspeck serial workflow]{
@@ -339,7 +338,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
     \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after acquiring the (here: synthetic) baseline spectrum.
         By default, the \gls{asd} = √\gls{psd} is displayed in the main plot.
-        Each spectrum is assigned a unique identifier key consisting of an incrementing integer and the user comment, and can be refered to by either (or both) when interacting with the object.
+        Each spectrum is assigned a unique identifier key consisting of an incrementing integer and the user comment, and can be referred to by either (or both) when interacting with the object.
     }
     \label{fig:speck:software:workflow:baseline}
 \end{figure}
@@ -421,11 +420,13 @@ Therefore, he rescales the spectra in terms of their relative powers expressed i
     \end{align*}
 }
 by applying the following settings, which changes the plot to the layout shown in \cref{fig:speck:software:workflow:db}:
+
 \begin{py}
     spect.plot_dB_scale = True
     spect.plot_amplitude = False
     spect.plot_density = False
 \end{py}
+
 \begin{figure}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_db}
@@ -453,9 +454,11 @@ Additionally displaying the data in \unit{\decibel} then gives insight into rela
 Bob carries on with his enterprise and continues to acquire spectra until, finally, he finds the source of his noise!
 Alas, his spectrometer plot is now overflowing with plotted data when really he just wants to compare the baseline, the original, noisy state, and the final, clean spectrum.
 He simply calls
+
 \begin{py}
     spect.hide(*range(2, 10))
 \end{py}
+
 to hide the eight spectra of unsuccessful debugging, leaving him with a plot as shown in \cref{fig:speck:software:workflow:success}.
 
 \begin{figure}
@@ -471,20 +474,20 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
 \end{figure}
 
 Finally, happy with the results, Bob serializes the state of the spectrometer to disk, allowing him to pick up where he left off at a later point in time:
+
 \begin{py}
     spect.serialize_to_disk('2032-12-24_noise_hunting')
 \end{py}
+
 The next week, Bob is asked by his team about his progress on debugging the noise in their setup.
 Even though he is working from home that day and does not have access to the lab computer, Bob simply uses his laptop computer and pulls up the \code{Spectrometer} session stored on the server, allowing them to interactively discuss the spectra:
-% Important: Spectrometer(
-%    bla
-%)
-% breaks something!
+
 \begin{py}
     file = '2032-12-24_noise_hunting'
     # Read-only instance because no DAQ attached
     spect = Spectrometer.recall_from_disk(savepath / file)
 \end{py}
+
 This opens up the plot shown in \cref{fig:speck:software:workflow:success} again.
 While they cannot acquire new spectra in this state,\sidenote{
     They could of course always attach a \code{DAQ} instance to the spectrometer and continue as they were.
@@ -501,28 +504,28 @@ This mode is facilitated by the \code{qutil.plotting.live_view} module that prov
 The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote{
     Note that technically, data is also recorded in a background thread in serial mode by default.
 }
-In the former case, the window hosting the figure runs in the main thread and is kept responsive using \matplotlib's GUI event loop mechanisms.
+In the former case, the window hosting the figure runs in the main thread and is kept responsive using \matplotlib's \gls{gui} event loop mechanisms.
 In the latter, the plotting takes place in a separate process, resulting in true parallelism.
 
 The live mode is started with the \code{Spectrometer.live_view()} method.
-Data is continuously acquired\sidenote{
-    Technically, a very large \code{n_avg} is used.
-}
-in a background thread using the same \code{DAQ} interface as the serial mode.
+Data is continuously acquired in a background thread using the same \code{DAQ} interface as the serial mode.
 Instead of saving the data on disk and managing plotting from \pyspeck, however, the data is fed into a queue.\sidenote{
     A queue is a concurrency mechanism for exchanging data between multiple threads or processes.
 }
 A \code{live_view.IncrementalLiveView2D} object then retrieves the data from the queue and handles plotting in the \gls{gui} event loop.
 To start a spectroscopy session with the same parameters as in \cref{subsec:speck:software:features:serial} with a given \code{Spectrometer} object (see \cref{lst:speck:workflow:serial}), we would call
+
 \begin{py}
     view = spect.live_view(f_min=1e1, f_max=1e5, in_process=True)
 \end{py}
+
 which would open a figure window such as that shown in \cref{fig:speck:software:live_view}.
 Similar to \code{take()}, the data acquisition parameters are passed to \code{live_view()} as keyword arguments.\sidenote{
     The difference is, of course, that we do not need to specify a comment since no data is retained.
 }
 The \code{in_process} argument specifies if multiprocessing (\code{True}) or multithreading (\code{False}) is used.
 Dictionaries with customization parameters for the \code{live_view} object can further be passed to the method.
+Functionality to take snapshots to retain live data is currently not implemented but would be a valuable addition to the noise-hunting workflow.
 
 \begin{figure}
     \centering

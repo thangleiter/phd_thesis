@@ -1,0 +1,73 @@
+[project]
+authors = ["Tobias Hangleiter <tobias.hangleiter@rwth-aachen.de>"]
+channels = ["conda-forge"]
+description = "Code to generate figures and simulation results in Tobias Hangleiter's PhD thesis"
+name = "hangleiter_phd_thesis"
+platforms = ["win-64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[feature.core.dependencies]
+python = ">=3.9"
+scipy = ">=1.16.1,<2"
+pandas = ">=2.3.2,<3"
+ipython = ">=8.37.0,<9"
+spyder-kernels = ">=3.0.5,<4"
+qutip = ">=5.2.1,<6"
+xarray = ">=2025.9.0,<2026"
+sympy = ">=1.14.0,<2"
+numpy = ">=2.2.6,<3"
+numba = ">=0.61.2,<0.62"
+matplotlib = ">=3.10.6,<4"
+opt_einsum = ">=3.4.0,<4"
+sparse = ">=0.17.0,<0.18"
+tqdm = ">=4.67.1,<5"
+adaptive = ">=1.4.1,<2"
+ezdxf = ">=1.4.2,<2"
+colorspacious = ">=1.1.2,<2"
+pyvisa-py = ">=0.7.2,<0.8"
+versioningit = ">=3.3.0,<4"
+gitpython = ">=3.1.45,<4"
+tifffile = ">=2025.8.28,<2026"
+lxml = ">=6.0.1,<7"
+broadbean = ">=0.14.0,<0.15"
+h5netcdf = ">=1.6.4,<2"
+h5py = ">=3.14.0,<4"
+ipywidgets = ">=8.1.7,<9"
+jsonschema = ">=4.25.1,<5"
+networkx = ">=3.5,<4"
+packaging = ">=25.0,<26"
+pyarrow = ">=21.0.0,<22"
+pyvisa = ">=1.14.1,<2"
+tabulate = ">=0.9.0,<0.10"
+typing_extensions = ">=4.15.0,<5"
+uncertainties = ">=3.2.3,<4"
+websockets = ">=15.0.1,<16"
+cf_xarray = ">=0.10.8,<0.11"
+opentelemetry-api = ">=1.36.0,<2"
+pillow = ">=11.3.0,<12"
+dask = ">=2025.7.0,<2026"
+cffi = ">=1.17.1,<2"
+python-dotenv = ">=1.1.1,<2"
+autobahn = ">=24.4.2,<25"
+"ruamel.yaml" = ">=0.18.15,<0.19"
+
+[feature.core.pypi-dependencies]
+filter-functions = ">=1.2.0, <2"
+qutech-util = { version = ">=2025.8.1, <2026", extras = ["gl", "colormaps"] }
+python-spectrometer = { version = ">=2025.7.1, <2026", extras = ["simulator"] }
+lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "bed48b7ce07bef3caea90dadb435c3069fc8c784" }
+poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
+mjolnir = { git = "https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir", rev = "b8dc7fe777e8b90c24575283b0a94fefab8c3726" }
+
+[feature.logm_frechet.dependencies]
+python = ">=3.9,<=3.12"
+
+[feature.logm_frechet.pypi-dependencies]
+matlabengine = ">=25.1.2, <26"
+
+[environments]
+default = ["core", "logm_frechet"]
+no-matlab = ["core"]
+
