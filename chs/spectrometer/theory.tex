@@ -51,12 +51,12 @@ This method will be the topic of the present chapter.
 It is laid out as follows.
 I will first derive the Wiener-Khinchin theorem for continuous stochastic processes and introduce the central quantity of interest in noise spectroscopy; the \gls{psd}.
 Then, I will discretize the method and discuss resulting side-effects before describing an efficient way of obtaining the spectrum from a finite amount of data.
-Finally, I elaborate on relevant parameters and properties.
+I will conclude by elaborating on relevant parameters and properties.
 
 \section{Spectrum estimation from time series}\label{sec:speck:theory:time_series_estimation}
 To see how spectral noise properties may be estimated from time series data, consider a continuous wide-sense stationary\sidenote{
     \label{sidenote:speck:autocorrelation}
-    For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the autocorrelation function $C(t, t') = \ev{x(t)\conjugate x(t^\prime)}$ simplifies to $\ev{x(t)\conjugate x(t + \tau)} = \ev{x(0)\conjugate x(\tau)}$ with $\tau = t^\prime - t$.
+    For a wide-sense stationary (also called weakly stationary) process $x(t)$, the mean is constant and the autocorrelation function $C(t, t^\prime) = \ev{x\conjugate(t) x(t^\prime)}$ simplifies to $\ev{x\conjugate(t) x(t + \tau)} = \ev{x\conjugate(0) x(\tau)}$ with $\tau = t^\prime - t$ and where $\ev{\placeholder}$ is the ensemble average.
     That is, it is a function of only the time lag $\tau$ and not the absolute point in time.
     For Gaussian processes as discussed here, this also implies stationarity~\cite{Koopmans1995}.
     The property further implies that $C(\tau)$ is an even function.
@@ -67,33 +67,30 @@ We define the windowed Fourier transform of $x(t)$ and its inverse by\sidenote{
 }
 \begin{align}
     \hat{x}_T(\omega) &= \int_{0}^{T}\dd{t} x(t)\e^{-\i\omega t} \label{eq:speck:windowed_ft}\\
-       \qq*{and} x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{\i\omega t}, \label{eq:speck:windowed_ft:inverse}
+                 x(t) &= \intinf\ddf{\omega}\hat{x}_T(\omega)\e^{\i\omega t}, \label{eq:speck:windowed_ft:inverse}
 \end{align}
 \ie, we assume that outside of the window of observation $x(t)$ is zero.
 The autocorrelation function of $x(t)$ is given by
 \begin{align}
-    C(\tau) &= \expval{x(t)\conjugate x(t + \tau)} \label{eq:speck:autocorrelation}\\
-            &= \lim_{T\to\infty} \frac{1}{T}\int_0^T\dd{t} x(t)\conjugate x(t + \tau),
+    C(\tau) &= \expval{x\conjugate(t) x(t + \tau)} \label{eq:speck:autocorrelation}\\
+            &= \lim_{T\to\infty} \frac{1}{T}\int_0^T\dd{t} x\conjugate(t) x(t + \tau),
 \end{align}
 where $\expval{\placeholder}$ is the ensemble average over multiple realizations of the process and the last equality holds true for ergodic processes.
-Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:speck:windowed_ft}) and reordering the integrals, we get\sidenote{
-    Mathematicians might at this point argue the integrability of $x(t)$, but as we deal with physical processes with finite bandwidth -- and have no shame --, we do not.
-}
+Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:speck:windowed_ft}) and reordering the integrals, we get
 \begin{align}
     C(\tau) &= \lim_{T\to\infty}\frac{1}{T}\int_0^T\dd{t}
-                \intinf\ddf{\omega}\hat{x}_T(\omega)\conjugate\e^{-\i\omega t}
+                \intinf\ddf{\omega}\hat{x}_T\conjugate(\omega)\e^{-\i\omega t}
                 \intinf\ddf{\omega^\prime}\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime (t + \tau)}  \\
             &= \lim_{T\to\infty}\frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
-                \hat{x}_T(\omega)\conjugate\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime\tau}
+                \hat{x}_T\conjugate(\omega)\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime\tau}
                 \int_0^T\dd{t}\e^{\i t (\omega^\prime - \omega)} \label{eq:speck:autocorrelation:fourier}
 \end{align}
-The innermost integral approaches a $\delta$-function for large $T$,\sidenote{
-    Note that, because $x(t)$ is wide-sense stationary, we may shift the limits of integration $\int_{0}^{T}\to\int_{-\flatfrac{T}{2}}^{+\flatfrac{T}{2}}$.
+The innermost integral approaches a $\delta$-function for large $T$, allowing us to further simplify this under the limit as\sidenote{
+    We normalize the $\delta$-function such that $1 = \int\ddf{\omega}\delta(\omega)$.
 }
-allowing us to further simplify this under the limit as
 \begin{align}
     C(\tau) &= \lim_{T\to\infty} \frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
-                \hat{x}_T(\omega)\conjugate\hat{x}_T(\omega^\prime)
+                \hat{x}_T\conjugate(\omega)\hat{x}_T(\omega^\prime)
                 \e^{\i\omega^\prime\tau}\delta(\omega^\prime - \omega)\\
             &= \lim_{T\to\infty}\frac{1}{T}
                 \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{\i\omega\tau} \\
@@ -101,7 +98,7 @@ allowing us to further simplify this under the limit as
 \end{align}
 with the \acrfull{psd}\sidenote{
     \label{sidenote:speck:theory_vocabulary}
-    The term \emph{power spectrum} is often used interchangably.
+    The term \emph{power spectrum} is often used interchangeably.
     I will do so as well, but emphasize at this point that in digital signal processing in particular, the \emph{spectrum} is a different quantity from the \emph{spectral density}.
     See also \cref{sidenote:speck:software_vocabulary} in \cref{ch:speck:software}.
 }
@@ -128,10 +125,10 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
     \includegraphics{img/pdf/spectrometer/lorentzian_psdcorr}
     \caption[\imgsource{img/py/spectrometer/lorentz.py}]{
         Ornstein-Uhlenbeck process.
-        Simulated time traces (top), autocorrelation function (middle), \gls{psd} (bottom) of the Ornstein-Uhlenbeck process.
-        Top: Simluated time traces using the algorithm presented in \cref{ch:ff:time_domain_methods}.
+        Simulated time traces, autocorrelation function, and \gls{psd} of the Ornstein-Uhlenbeck process.
+        Top: Simulated time traces using the algorithm presented in \cref{sec:app:ff:time_domain_methods}.
         The data are normalized to the computed \gls{rms} (equal to $\sigma$ in the continuous case).
-        Middle: Theoretical autocorrelation function (\cref{eq:speck:ou:autocorrelation}, solid lines) and computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
+        Middle: Theoretical autocorrelation function (\cref{eq:speck:ou:autocorrelation}, solid lines) computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
         Error bars indicate the standard error of the mean, axes are scaled with respect to the parameters of the magenta data, and data are plotted on an $\asinh$-scale.
         Bottom: Theoretical \gls{psd} (\cref{eq:speck:ou:psd}, solid lines) and periodograms computed from the simulated data using \code{scipy.signal.periodogram()}, \cf \cref{eq:speck:periodogram}, averaged over \num{e3} traces (circles, subset of points).
         Axes are again scaled with respect to the parameters of the magenta data and plotted on an $\asinh$-scale.
@@ -143,21 +140,21 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
 To become familiar with the quantities $C(\tau)$ and $S(\omega)$, consider the Ornstein-Uhlenbeck process~\cite{Uhlenbeck1930}, the only stationary Gaussian Markovian stochastic process~\cite{VanKampen1976}.
 The autocorrelation function of the Ornstein-Uhlenbeck process is given by
 \begin{align}\label{eq:speck:ou:autocorrelation}
-    C(\tau) = \sigma^2\e^{-\flatfrac{\tau}{\tau_c}},
+    C(\tau) = \sigma^2\e^{-\tau/\tau_c},
 \end{align}
 with $\sigma$ the \gls{rms} and $\tau_c$ the correlation time of the process.
 The \gls{psd} in turn is the Lorentzian function
 \begin{align}\label{eq:speck:ou:psd}
     S(\omega) = \frac{2\sigma^2\tau_c}{1 + (\omega\tau_c)^2}.
 \end{align}
-For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\flatfrac{\dt}{\tau_c}\to\infty, S(\omega) = 2\tau_c\sigma^2$), correlated, pink noise ($\flatfrac{\dt}{\tau_c}\gg 1, S(\omega) = \flatfrac{2\sigma^2}{\tau_c\omega^2}$), and perfectly correlated, quasistatic noise ($\flatfrac{\dt}{\tau_c}\to 0, S(\omega) = \sigma^2\delta(\omega)$).
+For a given discretization time step \dt and hence bandwidth $\omega\in [0, \pi\fs]$, the Ornstein-Uhlenbeck process interpolates between perfectly uncorrelated, white noise ($\dt/\tau_c\to\infty, S(\omega) = 2\tau_c\sigma^2$), correlated, Brownian noise ($\dt/\tau_c\gg 1, S(\omega) = 2\sigma^2/\tau_c\omega^2$), and perfectly correlated, quasistatic noise ($\dt/\tau_c\to 0, S(\omega) = \sigma^2\delta(\omega)$), although I note that it is still Markovian in all cases.
 \Cref{fig:speck:psdcorr} depicts simulated data and its autocorrelation function and \gls{psd} for exemplary parameters: in the white noise limit ($\tau_c = \num{e-2}\dt$, blue), in the intermediate regime ($\tau_c = \dt$, magenta), and in the correlated regime ($\tau_c = \num{e+2}\dt$, green).
 From the time series plot at the top it becomes clear that the \gls{rms} alone is insufficient to describe the properties of noisy signals as the curves differ significantly despite being normalized to their \gls{rms}.
-The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{\dt}{4}$.
+The autocorrelation functions averaged over \num{e3} realizations of the noisy signals as well as their theoretical (continuous) value, \cref{eq:speck:ou:autocorrelation}, are plotted in the middle panel, normalized to $\tau_c=\dt$ and $\sigma^2=\dt/4$.
 For the white noise limit (blue), correlations are too short to be resolved with the given time discretization.
-The correlations decay to $\e\inverse$ at $\flatfrac{\tau}{\tau_c}=\num{e-2},\num{e0},\num{e+2}$, respectively.
-Finally, the bottom panel shows the \gls{psd}, \cref{eq:speck:ou:psd}, and its periodogram estimate, again averaged over \num{e3} realizations of the signal and normalized to $\tau_c=\dt$ and $\sigma^2=\flatfrac{\dt}{4}$.
-The cross-over from white to pink \gls{psd} occurs at $\omega = \tau_c$.
+The correlations decay to $\e\inverse$ at $\tau/\tau_c=\num{e-2},\num{e0},\num{e+2}$, respectively.
+Finally, the bottom panel shows the \gls{psd}, \cref{eq:speck:ou:psd}, and its periodogram estimate, again averaged over \num{e3} realizations of the signal and normalized to $\tau_c=\dt$ and $\sigma^2=\dt/4$.
+The cross-over from white to Brownian \gls{psd} occurs at $\omega = \tau_c$.
 While the simulated data for $\tau_c = \num{e-2}\dt$ appears perfectly white, that for $\tau_c = \num{e2}\dt$ appears perfectly \oneoverf-like because the spectrum is only white below the smallest resolvable frequency $\df = T\inverse$.
 
 Having gotten an intuition for the quantities $C(\tau)$ and $S(\omega)$, let us move on to see how the latter may be obtained from time series data.
@@ -183,9 +180,7 @@ where $\hat{x}_n\gth{m}$ is the discrete Fourier transform of $x_n\gth{m}$, we d
 \begin{align}\label{eq:speck:periodogram}
     S_n\gth{m} = \abs{\hat{x}_n\gth{m}}^2,
 \end{align}
-and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.\sidenote{
-    We blithely disregard integer algebra issues occuring here for conciseness and leave it as an exercise for the reader to figure out what the exact bounds of the set of $\omega_n$ are.
-}
+and $S_n$ is an \emph{estimate} of the true \gls{psd} sampled at the discrete frequencies $\omega_n = \flatfrac{2\pi n}{T} \in 2\pi\times\lbrace\flatfrac{-\fs}{2}, \dotsc, \flatfrac{\fs}{2}\rbrace$.
 \Cref{eq:speck:psd:bartlett} is known as Bartlett's method~\cite{Bartlett1948} for spectrum estimation.\sidenote{
     \label{sidenote:continuum_limit}
     By taking the limit $M\to\infty$ one recovers the true \gls{psd}, \[\lim_{M\to\infty}S_n = S(\omega_n).\]
@@ -205,7 +200,6 @@ Lastly, $M$ determines the variance of the set of periodograms $\bigl\lbrace S_n
 
 In practice, the ensemble realizations $i$ are of course obtained sequentially, implying that one acquires a time series of data $x_n, n\in\lbrace0, 1, \dotsc, NM - 1\rbrace$ and partitions these data into $M$ sequences of length $N$.
 It becomes clear, then, that the Bartlett average (\cref{eq:speck:psd:bartlett}) trades spectral resolution (larger $N$) for estimation accuracy (larger $M$) given the finite acquisition time $T = NM\dt$.
-
 An improvement in data efficiency can be achieved using Welch's method~\cite{Welch1967}.
 To see how, we first need to discuss spectral windowing.
 
@@ -225,19 +219,13 @@ Now recall that multiplication and convolution are duals under the Fourier trans
 \begin{align}\label{eq:speck:window:ft_pairs}
     \hat{x}_n\gth{m} = \hat{x}_n \ast \hat{w}_n\gth{m},
 \end{align}
-where the Fourier representation of the rectangular window\sidenote{
+where the Fourier representation of the rectangular window is given by\sidenote{
     $\sinc(x) = \flatfrac{\sin(x)}{x}$.
 }
 \begin{align}
     \hat{w}_n\gth{m} &= \hat{w}_n \e^{-\i(m - \flatfrac{1}{2})\omega_n T}, \label{eq:speck:window:boxcar:fourier}\\
              \hat{w}_n &= T\sinc\left(\frac{\omega_n T}{2}\right). \label{eq:speck:window:boxcar:fourier:unshifted}
 \end{align}
-\Cref{fig:speck:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
-We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
-However, whereas in the continuum limit (see \cref{sidenote:continuum_limit}) \cref{eq:speck:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite sample rate $\fs$ of discrete signals and observation length $T$ induce finite frequency sampling and bandwidth of the probe as well as \emph{sidelobes}.\sidenote{
-    For the optically inclined: this is akin to Fraunhofer diffraction at an aperture.
-}
-These effects incur what is known as \emph{spectral leakage} and \emph{scalloping loss}, respectively, and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$~\cite{Harris1978,Koopmans1995}.
 
 \begin{marginfigure}
     \centering
@@ -249,6 +237,13 @@ These effects incur what is known as \emph{spectral leakage} and \emph{scallopin
     }
     \label{fig:speck:boxcar_fourier}
 \end{marginfigure}
+
+\Cref{fig:speck:boxcar_fourier} shows the unshifted rectangular window $\hat{w}_n$ in Fourier space.
+We can hence understand the Fourier spectrum of $x_n\gth{m}$ as sampling $\hat{x}_n$ with the probe $\hat{w}_n\gth{m}$.
+However, whereas in the continuum limit (see \cref{sidenote:continuum_limit}) \cref{eq:speck:window:boxcar:fourier:unshifted} tends towards $\delta(\omega_n)$ and thus will produce a faithful reconstruction of the true spectrum, the finite sample rate $\fs$ of discrete signals and observation length $T$ induce finite frequency sampling and bandwidth of the probe as well as \emph{sidelobes}.\sidenote{
+    For the optically inclined: this is akin to Fraunhofer diffraction at an aperture.
+}
+These effects incur what is known as \emph{spectral leakage} and \emph{scalloping loss}, respectively, and lead to artifacts and deviations of the spectrum estimator $S_n$ from the true spectrum $S(\omega_n)$~\cite{Harris1978,Koopmans1995}.
 
 For this reason, a plethora of \emph{window functions} have been introduced to mitigate the effects of spectral leakage.
 Key properties of a window are the spectral bandwidth (center lobe width) and sidelobe amplitude between which there typically is a tradeoff.\sidenote{
@@ -289,7 +284,7 @@ This suppresses detrimental effects arising from a possible discontinuity ($x_0\
 \section{Welch's method}\label{sec:speck:theory:welch}
 Contemplating \cref{eq:speck:window:hann}, one might come to the conclusion that using a window such as this is not very data efficient in the sense that a large fraction of samples located at the edge of the window is strongly suppressed and hence does not contribute significantly to the spectrum estimate.
 To alleviate this lack of efficiency, one can introduce an overlap between adjacent data windows.
-That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window forward by $-mK$ with $K>0$ the overlap.
+That is, instead of partitioning the data $x_n$ into $M$ non-overlapping sections of length $N$, one shifts the $m$th window backward by $mK$ with $K>0$ the overlap.
 Finally, the periodogram (\cref{eq:speck:periodogram}) is computed for each window and subsequently averaged to obtain the spectrum estimator (\cref{eq:speck:psd:bartlett}).
 
 This method of spectrum estimation is known as Welch's method~\cite{Welch1967}.
@@ -355,6 +350,7 @@ The data in the second window is highlighted.
 \end{margintable}
 We are now in a position to discuss how the various parameters of a time series relate to both the physical parameters of the resulting spectrum estimate and to each other.
 To this end, we will go through the typical procedure of acquiring a spectrum estimate using Welch's method chronologically.
+\Cref{tab:speck:theory:parameters} gives an overview of all relevant parameters.
 
 To acquire data using some form of (digital) \gls{daq}, one usually needs to specify two parameters first: the total number of samples to be acquired, $L$, and the sample rate \fs.
 This results in a measurement of duration $T = L\dt$ where $\dt = \fs\inverse$ as previously mentioned.
@@ -374,9 +370,9 @@ In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependenci
     \input{img/tikz/spectrometer/daq_settings}
     \caption[\imgsource{img/tikz/spectrometer/daq_settings.tex}]{
         Relationships of data acquisition parameters (\cf \cref{tab:speck:theory:parameters,tab:speck:software:parameters}, with arrows indicating dependencies.
-        $N$, \fs, and \df are the central quantities defining the estimated spectrum's properties.
-        From \fs and \df follow (bounds for) \fmax and \fmin.
-        From $N$, together with $K$ and $M$, follows $L$, the total number of samples per data batch.
+        $N$, \fs, and \df are the central quantities defining the estimated spectrum's properties (darker shades).
+        From \fs and \df follow (bounds for) \fmax and \fmin (shaded red, rational numbers).
+        From $N$, together with $K$ and $M$, follows $L$, the total number of samples per data batch (shaded green, integers).
     }
     \label{fig:speck:theory:parameters}
 \end{figure}
@@ -391,7 +387,7 @@ For the purpose of noise estimation, the assumption of Gaussianity is a rather w
 }
 Even if $x(t)$ is not perfectly Gaussian, non-Gaussian contributions can be seen as higher-order contributions if viewed from the perspective of perturbation theory, and therefore the \gls{psd} still captures a significant part of the statistical properties.
 For this reason, the \gls{psd} is the central quantity of interest in noise spectroscopy.
-Let us just note at this point that techniques to estimate higher-order spectra (or \emph{polyspectra}) exist~\cite{Chandran1994,Norris2016,Szankowski2017}.
+Let us just note at this point that techniques to estimate higher-order spectra (or \emph{polyspectra}) exist~\cite{Nikias1993,Chandran1994,Norris2016,Szankowski2017}.
 
 For real signals $x(t)\in\mathbb{R}$, the autocorrelation function $C(\tau)$ is an even function, while for $x(t)\in\mathbb{C}$ its real part is even and its complex part odd.
 From this it immediately follows that for real $x(t)$ $S(\omega)$ is also an even function and one therefore distinguishes the \emph{two-sided} \gls{psd} $S^{(2)}(\omega)$ defined over $\mathbb{R}$ from the \emph{one-sided} \gls{psd} $S^{(1)}(\omega) = 2 S^{(2)}(\omega)$ defined only over $\mathbb{R}^+$.

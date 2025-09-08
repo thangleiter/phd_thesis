@@ -1,8 +1,12 @@
+import copy
 import pathlib
+import string
 
 import IPython
 import matplotlib as mpl
 import numpy as np
+import scipy as sp
+import filter_functions as ff
 
 from qutil import const, functools, misc
 
@@ -116,3 +120,129 @@ def effective_mass(lh=False):
 
 def reduced_mass(lh=False):
     return (np.multiply.reduce(effective_mass(lh)) / np.add.reduce(effective_mass(lh))).item()
+
+
+def rand_herm(d: int, n: int = 1, rng=None):
+    """n random Hermitian matrices of dimension d"""
+    A = rng.standard_normal((n, d, d)) + 1j*rng.standard_normal((n, d, d))
+    return (A + A.conj().transpose([0, 2, 1]))/2
+
+
+def rand_herm_traceless(d: int, n: int = 1, rng=None) -> np.ndarray:
+    """n random traceless Hermitian matrices of dimension d"""
+    A = rand_herm(d, n, rng).transpose()
+    A -= A.trace(axis1=0, axis2=1)/d
+    return A.transpose()
+
+
+def rand_unit(d: int, n: int = 1, rng=None) -> np.ndarray:
+    """n random unitary matrices of dimension d"""
+    return sp.linalg.expm(1j*rand_herm_traceless(d, n, rng))
+
+
+def rand_pulse_sequence(d: int, n_dt: int, n_cops: int = 3, n_nops: int = 3,
+                        btype: str = 'GGM', commensurable_timesteps: bool = False, rng=None):
+    """Random pulse sequence instance"""
+    rng = np.random.default_rng() if rng is None else rng
+
+    c_opers = rand_herm_traceless(d, n_cops, rng)
+    n_opers = rand_herm_traceless(d, n_nops, rng)
+
+    c_coeffs = rng.standard_normal((n_cops, n_dt))
+    n_coeffs = rng.random((n_nops, n_dt))
+
+    letters = np.array(list(string.ascii_letters))
+    c_identifiers = rng.choice(letters, n_cops, replace=False)
+    n_identifiers = rng.choice(letters, n_nops, replace=False)
+
+    if commensurable_timesteps:
+        dt = np.full(n_dt, 1 - rng.random())
+    else:
+        dt = 1 - rng.random(n_dt)  # (0, 1] instead of [0, 1)
+    if btype == 'GGM':
+        basis = ff.Basis.ggm(d)
+    else:
+        basis = ff.Basis.pauli(int(np.log2(d)))
+
+    return ff.PulseSequence(
+        list(zip(c_opers, c_coeffs, c_identifiers)),
+        list(zip(n_opers, n_coeffs, n_identifiers)),
+        dt,
+        basis
+    )
+
+
+def prune_nopers(
+        pulse,
+        identifiers=[
+            '$\\sigma_x^{(0)}$', '$\\sigma_y^{(0)}$', '$\\sigma_y^{(3)}$',
+            '$\\sigma_z^{(0)}\\sigma_z^{(1)}$'
+        ]
+):
+    idx = ff.util.get_indices_from_identifiers(pulse.n_oper_identifiers, identifiers)
+    copied = copy.copy(pulse)
+    copied.n_opers = pulse.n_opers[idx]
+    copied.n_coeffs = pulse.n_coeffs[idx]
+    copied.n_oper_identifiers = pulse.n_oper_identifiers[idx]
+    copied._frequency_data.clear()
+    copied._intermediates.clear()
+    if pulse.is_cached('filter_function'):
+        copied._frequency_data['omega'] = pulse.frequency_data['omega']
+        copied._frequency_data['filter_function'] = \
+            pulse.frequency_data['filter_function'][idx, :][:, idx]
+    if pulse.is_cached('filter_function_pc'):
+        copied._frequency_data['omega'] = pulse.frequency_data['omega']
+        copied._frequency_data['filter_function_pc'] = \
+            pulse.frequency_data['filter_function_pc'][:, :, idx, :][:, :, :, idx]
+    return copied
+
+
+def save_pulse_sequence(path: pathlib.Path, pulse, data: bool = False,
+                        frequency_data: bool = False, intermediates: bool = False):
+    np.savez_compressed(
+        path,
+        c_opers=pulse.c_opers,
+        c_oper_identifiers=pulse.c_oper_identifiers,
+        c_coeffs=pulse.c_coeffs,
+        n_opers=pulse.n_opers,
+        n_oper_identifiers=pulse.n_oper_identifiers,
+        n_coeffs=pulse.n_coeffs,
+        dt=pulse.dt,
+        basis=pulse.basis,
+        **(pulse.data if data else {}),
+        **(pulse.frequency_data if frequency_data else {}),
+        **(pulse.intermediates if intermediates else {}),
+    )
+
+
+def load_pulse_sequence(path):
+    with np.load(path) as arch:
+        pulse = ff.PulseSequence.from_arrays(
+            c_opers=arch['c_opers'],
+            c_oper_identifiers=arch['c_oper_identifiers'],
+            c_coeffs=arch['c_coeffs'],
+            n_opers=arch['n_opers'],
+            n_oper_identifiers=arch['n_oper_identifiers'],
+            n_coeffs=arch['n_coeffs'],
+            dt=arch['dt'],
+            basis=arch['basis'],
+        )
+        keys = ['eigvals', 'eigvecs', 'propagators', 'total_propagator',
+                'total_propagator_liouville']
+        for key in keys:
+            if key in arch:
+                pulse._data[key] = arch[key]
+        keys = ['omega', 'total_phases', 'filter_function', 'filter_function',
+                'filter_function_gen', 'filter_function_pc', 'filter_function_pc',
+                'filter_function_pc_gen', 'filter_function_2', 'control_matrix',
+                'control_matrix_pc']
+        for key in keys:
+            if key in arch:
+                pulse._frequency_data[key] = arch[key]
+        keys = ['n_opers_transformed', 'eigvecs_propagated', 'basis_transformed', 'phase_factors',
+                'first_order_integral', 'control_matrix_step', 'control_matrix_step_cumulative']
+        for key in keys:
+            if key in arch:
+                pulse._intermediates[key] = arch[key]
+
+        return pulse

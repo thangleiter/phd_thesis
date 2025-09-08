@@ -31,6 +31,7 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
+    GREEN_CMAP = make_sequential_colormap('green', endpoint='blackwhite').reversed()
 
 LINE_COLORS = [color for name, color in RWTH_COLORS.items() if name not in ('magenta',)]
 
@@ -232,20 +233,21 @@ for i in tqdm(range(da_pl_full.shape[0]), desc='Fitting trion'):
     try:
         old = np.seterr(over='ignore', invalid='ignore')
         fit.append(fit_xr(da_pl_full[i], p0[i], bounds))
-        res_de = fit_de(da_pl_full, fit[-1].curvefit_coefficients,
-                        [np.array([0.8, 1.2])*v.item() for v in fit[-1].curvefit_coefficients],
-                        workers=-1)
-        res_nm = fit_nm(da_pl_full, list(p0.values()), list(bounds.values()),
-                        options=dict(disp=True, maxiter=10**6))
+        # Other fit methods
+        # res_de = fit_de(da_pl_full[i], fit[-1].curvefit_coefficients,
+        #                 [np.array([0.8, 1.2])*v.item() for v in fit[-1].curvefit_coefficients],
+        #                 workers=-1, updating='deferred')
+        # res_nm = fit_nm(da_pl_full[i], list(p0[-1].values()), list(bounds.values()),
+        #                 options=dict(disp=True, maxiter=10**6))
     except Exception:
         break
     else:
+        continue
         plot_fit(da_pl_full[i], fit[i], p0[i])
-        # continue
     finally:
         np.seterr(**old)
-fit = xr.concat(fit, 'doped_M1_05_49_2_trap_2_central_difference_mode')
 
+fit = xr.concat(fit, 'doped_M1_05_49_2_trap_2_central_difference_mode')
 # %% Plot
 arrowprops = dict(arrowstyle='<->', mutation_scale=7.5, color=RWTH_COLORS_50['black'],
                   linewidth=0.75, shrinkA=0, shrinkB=0)
@@ -452,17 +454,16 @@ E_exc = const.lambda2eV(da_ple_full.excitation_path_wavelength_constant_power*1e
 E_det = da_pl_full.ccd_horizontal_axis
 
 fig, ax = plt.subplots(layout='constrained')
-green_cmap = make_sequential_colormap('green', endpoint='blackwhite').reversed()
 
 img = ax.pcolormesh(E_det[E_det < E_exc.min()],
                     da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode,
                     da_pl_full[:, E_det < E_exc.min()] * 1e-3,
-                    cmap=green_cmap, vmin=0, rasterized=True)
+                    cmap=GREEN_CMAP, vmin=0, rasterized=True)
 cb = fig.colorbar(img, label='PL count rate (cps)')
 ax.pcolormesh(E_det[E_det >= E_exc.min()],
               da_pl_full.doped_M1_05_49_2_trap_2_central_difference_mode,
               da_pl_full[:, E_det >= E_exc.min()] * 1e-3,
-              alpha=0.5, cmap=green_cmap, vmin=0, rasterized=True)
+              alpha=0.5, cmap=GREEN_CMAP, vmin=0, rasterized=True)
 img = ax.pcolormesh(E_exc[E_exc > E_det.max().item()],
                     da_ple_full.doped_M1_05_49_2_trap_2_central_difference_mode,
                     da_ple_full.T[:, E_exc > E_det.max().item()],

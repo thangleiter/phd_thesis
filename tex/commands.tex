@@ -100,7 +100,7 @@
 \renewcommand{\i}[0]{\ensuremath{i\xspace}}
 \newcommand{\eps}[0]{\ensuremath{\epsilon}\xspace}
 \newcommand{\del}[0]{\ensuremath{\partial}}
-\newcommand{\placeholder}[0]{\:\cdot\:}
+\newcommand{\placeholder}[0]{\:\bullet\:}
 \newcommand{\st}[0]{\ensuremath{\mathrm{S\mbox{-}T_0}}\xspace}
 \newcommand{\diam}[0]{\ensuremath{\eta}\xspace}
 \newcommand{\plvec}[0]{\ensuremath{\vec{\sigma}}\xspace}
@@ -116,11 +116,11 @@
 % QI
 \newcommand{\fid}[0]{\ensuremath{F}\xspace}
 \newcommand{\avgfid}[0]{\ensuremath{\fid_\mr{avg}}\xspace}
-\newcommand{\entfid}[0]{\ensuremath{\fid_\mr{e}}\xspace}
+\newcommand{\entfid}[0]{\ensuremath{\fid_\mr{ent}}\xspace}
 \newcommand{\infid}[0]{\ensuremath{I}\xspace}
 \newcommand{\leak}[0]{\ensuremath{L}\xspace}
 \newcommand{\avginfid}[0]{\ensuremath{\infid_\mr{avg}}\xspace}
-\newcommand{\entinfid}[0]{\ensuremath{\infid_\mr{e}}\xspace}
+\newcommand{\entinfid}[0]{\ensuremath{\infid_\mr{ent}}\xspace}
 \newcommand{\oneoverf}{\ensuremath{\flatfrac{1}{f}}\xspace}
 \newcommand{\vecsig}[0]{\ensuremath{\bvec{\sigma}}\xspace}
 \newcommand{\sx}[0]{\ensuremath{\sigma_x}\xspace}
@@ -155,10 +155,10 @@
 \newcommand{\bphi}[0]{\mbox{\ensuremath{\bra{\phi}}}\xspace}
 \newcommand{\dotHS}[2]{\ensuremath{\expval{#1,#2}}\xspace}
 \newcommand{\basis}[0]{\ensuremath{\mathsf{C}}\xspace}
-\newcommand{\Hspace}{\ensuremath{\mathsf{H}}\xspace}
-\newcommand{\Lspace}{\ensuremath{\mathsf{L}}\xspace}
+\newcommand{\Hspace}{\ensuremath{\mathscr{H}}\xspace}
+\newcommand{\Lspace}{\ensuremath{\mathscr{L}}\xspace}
 \newcommand{\adjoint}{\ensuremath{^\dagger}\xspace}
-\newcommand{\transpose}{\ensuremath{^\mathsf{T}}\xspace}
+\newcommand{\transpose}{\ensuremath{^\top}\xspace}
 \newcommand{\inverse}{\ensuremath{^{-1}}\xspace}
 \newcommand{\conjugate}{\ensuremath{^\ast}\xspace}
 \newcommand{\gth}[1]{\ensuremath{^{(#1)}}\xspace}
@@ -166,6 +166,12 @@
 \newcommand{\ddf}[1]{\ensuremath{\frac{\dd{#1}}{2\pi}}\xspace}
 \newcommand{\intinf}{\ensuremath{\int_{-\infty}^{\infty}}\xspace}
 \newcommand{\set}[2]{\ensuremath{\left\lbrace {#1}_{#2}\right\rbrace_{#2}}\xspace}
+% Gates
+\newcommand{\CNOT}[0]{\ensuremath{\mr{CNOT}}\xspace}
+\newcommand{\X}[1]{\ensuremath{\mr{X}_{\flatfrac{\pi}{#1}}}\xspace}
+\newcommand{\Y}[1]{\ensuremath{\mr{Y}_{\flatfrac{\pi}{#1}}}\xspace}
+\newcommand{\XID}[1]{\ensuremath{\mr{X}_{\flatfrac{\pi}{#1}}\otimes\mr{I}}\xspace}
+\newcommand{\YID}[1]{\ensuremath{\mr{Y}_{\flatfrac{\pi}{#1}}\otimes\mr{I}}\xspace}
 % Filter function math
 \newcommand{\Li}{\ensuremath{\mathcal{L}}\xspace}
 \newcommand{\Lc}{\ensuremath{\mathcal{L}_\mr{c}}\xspace}
@@ -181,33 +187,75 @@
 \newcommand{\Pe}{\ensuremath{\tilde{\mathcal{U}}}\xspace}
 \newcommand{\Rc}{\ensuremath{\tilde{\mathcal{B}}}\xspace}
 \newcommand{\Ba}{\ensuremath{B_\alpha}\xspace} % noise operators
-\newcommand{\Bat}{\ensuremath{\tilde{B}_\alpha}\xspace} % interaction picture noise operators
+\newcommand{\Bt}{\ensuremath{\tilde{B}}\xspace}
+\newcommand{\Bat}{\ensuremath{\Bt_\alpha}\xspace} % interaction picture noise operators
 \newcommand{\Bab}{\ensuremath{\bar{B}_\alpha}\xspace} % interaction picture noise operators
-\newcommand{\Qc}{\ensuremath{\mathcal{Q}}\xspace}
 % Superoperator formalism
-\newcommand{\FF}[0]{\ensuremath{\mc{F}(\omega;\tau)}\xspace}
 \newcommand{\decayamps}[0]{\ensuremath{\Gamma}\xspace}
 \newcommand{\freqshifts}[0]{\ensuremath{\Delta}\xspace}
 \newcommand{\cumulantfun}[0]{\ensuremath{\mc{K}}\xspace}
 \newcommand{\ctrlmat}[0]{\ensuremath{\tilde{\mc{B}}}\xspace}
+\newcommand{\FF}[0]{\ensuremath{\mc{F}}\xspace}
+\newcommand{\FFot}[0]{\ensuremath{\FF(\omega;\tau)}\xspace}
+\newcommand{\FFi}[0]{\ensuremath{\FF_{\decayamps}}\xspace}
+\newcommand{\FFc}[0]{\ensuremath{\FF_{\freqshifts}}\xspace}
+\newcommand{\FFim}[1]{\ensuremath{\FF_{\decayamps,#1}}\xspace}
+\newcommand{\FFcm}[1]{\ensuremath{\FF_{\freqshifts,#1}}\xspace}
 \newcommand{\liouvP}[0]{\ensuremath{\mc{P}}\xspace}
 \newcommand{\liouvQ}[0]{\ensuremath{\mc{Q}}\xspace}
 \newcommand{\liouvU}[0]{\ensuremath{\mc{U}}\xspace}
 \newcommand{\liouvUc}[0]{\ensuremath{\mc{U}_\mr{c}}\xspace}
 \newcommand{\liouvUe}[0]{\ensuremath{\mc{\tilde{U}}}\xspace}
 \newcommand{\liouvUec}[0]{\ensuremath{\tilde{\mc{U}}^{(1)}}\xspace}
+\newcommand{\liouvUeavg}[0]{\ensuremath{\ev*{\liouvUe}}\xspace}
+\newcommand{\liouvUetavg}[0]{\ensuremath{\ev*{\liouvUe(\tau)}}\xspace}
 \newcommand{\qp}[0]{\ensuremath{\mc{E}}\xspace}
-\newcommand{\dbra}[1]{\mbox{\ensuremath{\left\langle\!\bra{#1}\right.}}\xspace}
-\newcommand{\dket}[1]{\mbox{\ensuremath{\left.\ket{#1}\!\right\rangle}}\xspace}
-\newcommand{\dbraket}[2]{\mbox{\ensuremath{\left\langle\!\braket{#1}{#2}\!\right\rangle}}\xspace}
-\newcommand{\dip}[2]{\dbraket{#1}{#2}}
-\newcommand{\ddyad}[2]{\mbox{\ensuremath{\dket{#1}\!\dbra{#2}}}\xspace}
-\newcommand{\dketbra}[2]{\ddyad{#1}{#2}}
-\newcommand{\dop}[2]{\ddyad{#1}{#2}}
-\newcommand{\dexpval}[2]{\mbox{\ensuremath{\left\langle\!\!\expval{#1}{#2}\!\right\rangle}}\xspace}
-\newcommand{\dev}[2]{\dexpval{#1}{#2}}
-\newcommand{\dmatrixel}[3]{\mbox{\ensuremath{\left\langle\!\!\matrixel{#1}{#2}{#3}\!\right\rangle}}\xspace}
-\newcommand{\dmel}[3]{\dmatrixel{#1}{#2}{#3}}
+% -----------------------
+% Liouville space algebra
+% -----------------------
+% Double bra
+\NewDocumentCommand{\dbra}{s m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\bra*{#2}}% starred (fixed)
+    {\left\langle\!\bra{#2}\right.}% unstarred (auto)
+}
+% Double ket
+\NewDocumentCommand{\dket}{s m}{%
+  \IfBooleanTF{#1}
+    {\ket*{#2}\!\rangle}% starred (fixed)
+    {\left.\ket{#2}\!\right\rangle}% unstarred (auto)
+}
+% Inner product
+\NewDocumentCommand{\dip}{s m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\braket*{#2}{#3}\!\rangle}%
+    {\left\langle\!\braket{#2}{#3}\!\right\rangle}%
+}
+% Outer product (dyad)
+\NewDocumentCommand{\dop}{s m m}{%
+  \IfBooleanTF{#1}
+    {\dket*{#2}\!\dbra*{#3}}%
+    {\dket{#2}\!\dbra{#3}}%
+}
+% Matrix element
+\NewDocumentCommand{\dmel}{s m m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\mel*{#2}{#3}{#4}\!\rangle}%
+    {\left\langle\!\!\mel{#2}{#3}{#4}\!\right\rangle}%
+}
+% Expectation value
+\NewDocumentCommand{\dev}{s m m}{%
+  \IfBooleanTF{#1}
+    {\langle\!\!\expval*{#2}{#3}\!\rangle}%
+    {\left\langle\!\!\expval{#2}{#3}\!\right\rangle}%
+}
+% Aliases
+\NewDocumentCommand{\dketbra}{s m m}{\dop#1{#2}{#3}} % alias for dyad
+\NewDocumentCommand{\ddyad}{s m m}{\dop#1{#2}{#3}} % alias for dyad
+\NewDocumentCommand{\dbraket}{s m m}{\dip#1{#2}{#3}} % alias for inner product
+\NewDocumentCommand{\dexpval}{s m m}{\dev#1{#2}{#3}} % alias for expectation value
+\NewDocumentCommand{\dmatrixel}{s m m m}{\dmel#1{2}{#3}{4}} % alias for matrix element
+% ------------
 % Spectroscopy
 \newcommand{\dt}{\ensuremath{\Delta t}\xspace}
 \newcommand{\df}{\ensuremath{\Delta f}\xspace}
@@ -257,6 +305,12 @@
 \DeclareMathOperator{\Ai}{Ai}
 \DeclareMathOperator{\Bi}{Bi}
 
+% Affiliations
+\newcommand{\RUB}{Ruhr-Universität Bochum\@.}
+\newcommand{\RWTH}{RWTH Aachen University\@.}
+\newcommand{\FZJ}{Forschungszentrum Jülich GmbH\@.}
+\newcommand{\RWTHFZJ}{RWTH Aachen University and Forschungszentrum Jülich GmbH\@.}
+
 % Citation macros
 \DeclareCiteCommand{\citenum}
   {}
@@ -266,6 +320,7 @@
 \newcommand{\citer}[1]{Reference~\citenum{#1}\xspace}
 \newcommand{\citerr}[2]{Refences~\citenum{#1} and~\citenum{#2}\xspace}
 \newcommand{\citerrr}[3]{References~\citenum{#1},~\citenum{#2}, and~\citenum{#3}\xspace}
+\newcommand{\sideciter}[1]{Reference~\sidecite{#1}\xspace}
 \newcommand{\sidehref}[2]{#2\sidenote{\url{#1}}}
 \newcommand{\sideurl}[1]{\sidenote{\url{#1}}}
 \newcommand{\imgsource}[1]{Generated by \repolink{#1}.}
@@ -302,3 +357,43 @@
     \mylettrine{\tl_head:N \l_tmpa_tl}{\tl_tail:N \l_tmpa_tl}
 }
 \ExplSyntaxOff
+
+% Author contributions environment
+\newenvironment{partcontribs}{%
+  \begin{displayquote}
+  \textbf{Author contributions}\enspace---\itshape
+}{%
+  \end{displayquote}
+  \medskip
+}
+
+% Note environment
+\newenvironment{authornote}{%
+  \begin{displayquote}
+  \textbf{Note}\enspace---\itshape
+}{%
+  \end{displayquote}
+  \medskip
+}
+
+\newminted[py]{python}{
+    autogobble=true,%
+    frame=leftline,% none | leftline | topline | bottomline | lines | single
+    fontsize=\small,% normalsize, small, footnotesize
+    linenos=false,
+    firstnumber=last,% line number counts incrementally
+}
+\newmintinline[pyinline]{python}{
+    breaklines,%
+    breakafter=._,%
+}
+
+% Minted and (presumably) sidenotes do NOT like each other at all.
+% This tries to wrap py to always start in vertical mode, but it does  not always appear
+% to work. Try tuning the \vspace if it does not, that usually does the trick. If not,
+% may Don Knuth be with you.
+\newenvironment{pycode}{%
+  \par\vspace{\baselineskip}\VerbatimEnvironment\begin{py}  % \par ensures vertical mode; optional spacing
+}{%
+  \end{py}\par\vspace{\baselineskip} % end with vertical mode + optional spacing
+}

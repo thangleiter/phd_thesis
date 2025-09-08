@@ -45,7 +45,7 @@
 \titlehead{The \texttt{kaobook} class}
 \subject{Use this document as a template}
 
-\title[My PhD Thesis]{
+\title[Millikelvin confocal microscopy and filter-function formalism]{
 	Millikelvin Confocal Microscopy of Semiconductor Membranes and Filter Functions for Unital Quantum Operations
 }
 \subtitle{Customise this page according to your needs}
@@ -126,11 +126,32 @@
 \maketitle
 
 %----------------------------------------------------------------------------------------
+%	SUMMARY
+%----------------------------------------------------------------------------------------
+
+\include{chs/summary}
+\index{summary}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\include{chs/acknowledgements}
+\index{acknowledgements}
+
+%----------------------------------------------------------------------------------------
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
-% \include{chapters/preface.tex}
-% \index{preface}
+\include{chs/preface}
+\index{preface}
+
+%----------------------------------------------------------------------------------------
+%	HOW TO READ THIS THESIS
+%----------------------------------------------------------------------------------------
+
+\include{chs/howto}
+\index{howtoread}
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
@@ -149,31 +170,13 @@
 
 \tableofcontents % Output the table of contents
 
-%\renewcommand{\listfigurename}{
-%	\vspace*{-1.4cm}
-%	\begin{flushleft}
-%		List of Figures\par
-%		\normalfont\normalsize This list contains hyperlinks to the source files in the Git repository generating each figure shown in this thesis.
-%	\end{flushleft}
-%}
-\hypertarget{lof}{\listoffigures} % Output the list of figures
-
-% Comment both of the following lines to have the LOF and the LOT on
-% different pages
-% \cleardoublepage\bigskip
-% \clearpage\bigskip
-
-%\listoftables % Output the list of tables
-
-%\listoflstlistings % Output the list of listings
+\cleardoublepage\bigskip
+\clearpage\bigskip
+\include{chs/publications}
 
 \cleardoublepage\bigskip
 \clearpage\bigskip
-\include{tex/publications}
-
-\cleardoublepage\bigskip
-\clearpage\bigskip
-\include{tex/software}
+\include{chs/software}
 
 \endgroup
 
@@ -228,10 +231,8 @@
 \pagelayout{margin} % Restore margins
 \glsresetall
 
-\include{chs/filter_functions/comment}
 \include{chs/filter_functions/introduction}
 \include{chs/filter_functions/formalism}
-\include{chs/filter_functions/time_domain_methods}
 \include{chs/filter_functions/validation}
 \include{chs/filter_functions/software}
 \include{chs/filter_functions/applications}
@@ -245,11 +246,9 @@
 \pagelayout{margin} % Restore margins
 \glsresetall
 
-\include{chs/appendices/setup/optics}
-\include{chs/appendices/setup/vibrations}
-\include{chs/appendices/experiment/tmm}
-\include{chs/appendices/experiment/observations}
-\include{chs/appendices/filter_functions/filter_functions}
+\include{chs/appendices/setup}
+\include{chs/appendices/experiment}
+\include{chs/appendices/filter_functions}
 
 %----------------------------------------------------------------------------------------
 
@@ -276,7 +275,7 @@
 % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
 \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+\printglossary[title=Glossary, toctitle=Glossary] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
 %----------------------------------------------------------------------------------------
 %	INDEX
@@ -287,9 +286,31 @@
 % \printindex % Output the index
 
 %----------------------------------------------------------------------------------------
+%   LIST OF FIGURES
+%----------------------------------------------------------------------------------------
+% Rename the LoF title
+\renewcommand{\listfigurename}{Figure source files and parameters}
+
+% Print LoF with proper heading, ToC entry, bookmark
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\label{lof}
+
+% Comment both of the following lines to have the LOF and the LOT on
+% different pages
+% \cleardoublepage\bigskip
+% \clearpage\bigskip
+
+%\listoftables % Output the list of tables
+
+%\listoflstlistings % Output the list of listings
+
+%----------------------------------------------------------------------------------------
 %   DECLARATION OF AUTHORSHIP
 %----------------------------------------------------------------------------------------
-\input{tex/declaration}
+\input{chs/declaration}
 
 %----------------------------------------------------------------------------------------
 %	BACK COVER
