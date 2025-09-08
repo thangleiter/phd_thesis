@@ -499,13 +499,40 @@ The clicks from the detectors are time-correlated using a counting card (\tagger
     \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
 \end{equation}
 where $\hat{n}_i(t) = \hat{b}^\dagger_i(t) \hat{b}_i(t), i\in\lbrace 1,2\rbrace$ is the photon-number operator for a single mode at detector $i$ and averaging takes place over time.
-For a weakly excited artificial atom, one expects this function to take on the form~\cite{Walls1979}
-\begin{equation}\label{eq:setup:optics:g2:fit}
+For a weakly excited artificial atom and in the absence of dephasing, one expects this function to take on the form~\cite{Walls1979,Loudon2000,Grandi2016}
+\begin{equation}\label{eq:setup:optics:g2:explicit}
     \g{2}(\tau) = \left[1 - \exp(-\flatfrac{\tau\gamma}{2})\right]^2,
 \end{equation}
-where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $1/T_1$ of the excited state.
+where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $T_1\inverse$ of the excited state.
+Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and it is common practice to fit a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data.
+Ideally, the \gls{irf} would be measured using a pulsed laser source.
+In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote{
+    Realistically, the true \gls{irf} of the \glspl{spcm} will be some asymmetric rather than a symmetric normal distribution.
+    This was also observed in the pulsed Stark-shift experiment in \citer{Descamps2023}.
+}
+The convolution then becomes
+\begin{align}
+    \tilde{g}\gth{2}(\tau) &= \frac{1}{\sigma\sqrt{2\pi}}\int\dd{\tau^\prime} g\gth{2}(\tau^\prime)\e^{-\left(\tau - \tau^\prime\right)^2/2\sigma^2} \notag \\
+                           &= \begin{aligned}[t]
+                                1
+                                & - \frac{1}{2}\left[
+                                    \e^{\gamma\alpha_{-}}\erfc\left(\frac{\beta_{-}}{\sigma\sqrt{2}}\right)
+                                    + \e^{\gamma\alpha_{+}}\erfc\left(\frac{\beta_{+}}{\sigma\sqrt{2}}\right)
+                                \right] \\
+                                & + \left[
+                                    \e^{\gamma\alpha^{\prime}_{-}}\erfc\left(\frac{\beta^{\prime}_{-}}{\sigma\sqrt{2}}\right)
+                                    + \e^{\gamma\alpha^{\prime}_{+}}\erfc\left(\frac{\beta^{\prime}_{+}}{\sigma\sqrt{2}}\right)
+                                \right]
+                           \end{aligned}\label{eq:setup:optics:g2:fit}
+\end{align}
+with
+\begin{align}
+    \alpha_{\pm} &= \frac{\gamma\sigma^2}{2} \pm \abs{\tau}, & \beta_{\pm} &= \gamma\sigma^2 \pm \abs{\tau}, \\
+    \alpha^{\prime}_{\pm} &= \frac{\gamma\sigma^2 \pm 4\abs{\tau}}{8}, & \beta^{\prime}_{\pm} &= \frac{\gamma\sigma^2 \pm 2\abs{\tau}}{2}.
+\end{align}
+and the complementary error function $\erfc(x)$.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-7]
     \centering
     \includegraphics{img/pdf/setup/ingaas_g2}
     \caption[\imgsource{img/py/setup/g2.py}]{
@@ -515,13 +542,8 @@ where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission ra
     \label{fig:setup:optics:ingaas:g2}
 \end{marginfigure}
 
-The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
-$\g2(0)$ does not quite reach the theoretically expected value of zero.
-Likely causes include the remnant dark counts of the detectors\sidenote{
-    On the order of \qty{50}{cps} each.
-    The average count rate during the experiment was $\sim\qty{5.5}{\kilo cps}$ and \qty{5.9}{\kilo cps}.
-}
-and additional decay channels.
+The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} (magenta line) from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
+The dashed green line is the deconvoluted function (\cref{eq:setup:optics:g2:explicit}).
 The lower panel shows the same measurement for logarithmically spaced time lags $\tau$ covering a wider range.
 A peculiar feature shows at $\tau = \qty{13.4}{\nano\second}$, where the measurement suggests a bunching of photons with $\g2(\tau) \approx 2$.
 The origin of this bump is not understood.

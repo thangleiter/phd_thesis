@@ -148,10 +148,12 @@ axs[0].plot(x_down * 1e-3, y_down,
             **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=0.75,
                           markerfacealpha=0.25))
 axs[0].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
+axs[0].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--')
 axs[1].semilogx(g2_data_log.tagger_histogram_log_bins_1_time_bins * 1e-3, g2_data_log.T,
                 **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=.75,
                               markerfacealpha=0.25))
 axs[1].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
+axs[1].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--')
 
 axs[0].grid()
 axs[1].grid()
@@ -161,6 +163,6 @@ axs[0].set_ylim(0, 1.3)
 axs[1].set_ylim(top=2)
 axs[1].set_xlabel(r'$\tau$ (ns)')
 
-fig.supylabel(r'$g^{(2)}(\tau)$', fontsize=mpl.rcParams['font.size'])
+fig.supylabel(r'$\tilde{g}^{(2)}(\tau)$', fontsize=mpl.rcParams['font.size'])
 fig.get_layout_engine().set(hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'ingaas_g2.pdf')
