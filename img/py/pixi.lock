@@ -424,7 +424,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d@34dad33bac59e9ae2a2096c6720ee784dbfa6c0e
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir@b8dc7fe777e8b90c24575283b0a94fefab8c3726
-      - pypi: https://files.pythonhosted.org/packages/ff/0a/a881a81d31ccf34d7c17fdf7f02a24a308dcdc6a3255310846a193ba9dc7/python_spectrometer-2025.7.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
       - pypi: git+https://github.com/qutech/qcodes.git@7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
       - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@192871bb5cb353cc563fbd4513c2d3358ce5bbda
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
@@ -782,7 +782,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d@34dad33bac59e9ae2a2096c6720ee784dbfa6c0e
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir@b8dc7fe777e8b90c24575283b0a94fefab8c3726
-      - pypi: https://files.pythonhosted.org/packages/ff/0a/a881a81d31ccf34d7c17fdf7f02a24a308dcdc6a3255310846a193ba9dc7/python_spectrometer-2025.7.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
       - pypi: git+https://github.com/qutech/qcodes.git@7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
       - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@192871bb5cb353cc563fbd4513c2d3358ce5bbda
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
@@ -1206,7 +1206,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d@34dad33bac59e9ae2a2096c6720ee784dbfa6c0e
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir@b8dc7fe777e8b90c24575283b0a94fefab8c3726
-      - pypi: https://files.pythonhosted.org/packages/ff/0a/a881a81d31ccf34d7c17fdf7f02a24a308dcdc6a3255310846a193ba9dc7/python_spectrometer-2025.7.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
       - pypi: git+https://github.com/qutech/qcodes.git@7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
       - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@192871bb5cb353cc563fbd4513c2d3358ce5bbda
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
@@ -1560,7 +1560,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d@34dad33bac59e9ae2a2096c6720ee784dbfa6c0e
       - pypi: git+https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir@b8dc7fe777e8b90c24575283b0a94fefab8c3726
-      - pypi: https://files.pythonhosted.org/packages/ff/0a/a881a81d31ccf34d7c17fdf7f02a24a308dcdc6a3255310846a193ba9dc7/python_spectrometer-2025.7.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
       - pypi: git+https://github.com/qutech/qcodes.git@7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
       - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@192871bb5cb353cc563fbd4513c2d3358ce5bbda
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
@@ -12184,9 +12184,9 @@ packages:
   timestamp: 1677079727691
 - kind: pypi
   name: python-spectrometer
-  version: 2025.7.1
-  url: https://files.pythonhosted.org/packages/ff/0a/a881a81d31ccf34d7c17fdf7f02a24a308dcdc6a3255310846a193ba9dc7/python_spectrometer-2025.7.1-py3-none-any.whl
-  sha256: 4c8df260cd0feb3ee6fbf9fbaf34816fc800aca3b53b60772c5abd320e1ecd96
+  version: 2025.9.1
+  url: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
+  sha256: f1b97a7f556fe14edc7003058b185d246bdd0f284a5d861ba20167b633869c24
   requires_dist:
   - dill
   - lazy-loader
