@@ -85,13 +85,11 @@ Expressing $x(t)$ in terms of its Fourier representation (\cref{eq:speck:windowe
                 \hat{x}_T\conjugate(\omega)\hat{x}_T(\omega^\prime)\e^{\i\omega^\prime\tau}
                 \int_0^T\dd{t}\e^{\i t (\omega^\prime - \omega)} \label{eq:speck:autocorrelation:fourier}
 \end{align}
-The innermost integral approaches a $\delta$-function for large $T$, allowing us to further simplify this under the limit as\sidenote{
-    We normalize the $\delta$-function such that $1 = \int\ddf{\omega}\delta(\omega)$.
-}
+The innermost integral approaches a $\delta$-function for large $T$, allowing us to further simplify this under the limit as
 \begin{align}
     C(\tau) &= \lim_{T\to\infty} \frac{1}{T}\intinf\ddf{\omega}\intinf\ddf{\omega^\prime}
                 \hat{x}_T\conjugate(\omega)\hat{x}_T(\omega^\prime)
-                \e^{\i\omega^\prime\tau}\delta(\omega^\prime - \omega)\\
+                \e^{\i\omega^\prime\tau} 2\pi\delta(\omega^\prime - \omega)\\
             &= \lim_{T\to\infty}\frac{1}{T}
                 \intinf\ddf{\omega}\abs{\hat{x}_T(\omega)}^2 \e^{\i\omega\tau} \\
             &= \intinf\ddf{\omega} S(\omega) \e^{\i\omega\tau} \label{eq:speck:wiener_khinchin}
