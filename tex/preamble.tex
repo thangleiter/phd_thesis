@@ -15,6 +15,7 @@
     natbib=true,
     url=false,
     datamodel=software,
+    maxbibnames=15,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
 
@@ -137,7 +138,7 @@
 \ExplSyntaxOff
 
 % Make "Figure X.Y" link back to the list of figures
-\DeclareCaptionLabelFormat{linked}{\hyperlink{lof}{#1~#2}}
+\DeclareCaptionLabelFormat{linked}{\hyperref[lof]{#1~#2}}
 \captionsetup[figure]{labelformat=linked}
 
 % Hyphenation rules

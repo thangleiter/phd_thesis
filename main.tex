@@ -288,9 +288,15 @@
 %----------------------------------------------------------------------------------------
 %   LIST OF FIGURES
 %----------------------------------------------------------------------------------------
+% Rename the LoF title
 \renewcommand{\listfigurename}{Figure source files and parameters}
-\addcontentsline{toc}{chapter}{\listfigurename} % Add the preface to the table of contents as a chapter
-\hypertarget{lof}{\listoffigures} % Output the list of figures
+
+% Print LoF with proper heading, ToC entry, bookmark
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\label{lof}
 
 % Comment both of the following lines to have the LOF and the LOT on
 % different pages
