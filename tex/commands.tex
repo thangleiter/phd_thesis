@@ -388,9 +388,12 @@
     breakafter=._,%
 }
 
-% Wrap py to always start in vertical mode
+% Minted and (presumably) sidenotes do NOT like each other at all.
+% This tries to wrap py to always start in vertical mode, but it does  not always appear
+% to work. Try tuning the \vspace if it does not, that usually does the trick. If not,
+% may Don Knuth be with you.
 \newenvironment{pycode}{%
-  \par\addvspace{\topsep}\VerbatimEnvironment\begin{py}  % \par ensures vertical mode; optional spacing
+  \par\vspace{\baselineskip}\VerbatimEnvironment\begin{py}  % \par ensures vertical mode; optional spacing
 }{%
-  \end{py}\par\addvspace{\topsep} % end with vertical mode + optional spacing
+  \end{py}\par\vspace{\baselineskip} % end with vertical mode + optional spacing
 }
