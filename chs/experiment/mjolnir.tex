@@ -175,7 +175,7 @@ A caching mechanism stores the optimal angles together with the current waveleng
 The calibration is quite tedious and time-consuming for several reasons.
 Chiefly, moving the waveplate angles is slow simply because it is a mechanical movement, and optimizers typically do not take into account the distance between subsequent sample points, potentially resulting in unnecessarily inefficient exploration of the parameter space.
 Incorporating a penalty on the sample distance into the optimization algorithm would hence improve the convergence speed.
-Additionally, due to vibrations in the cryostat (\cref{ch:setup:vibrations}), the \gls{rms} intensity of the back-scattered laser is large -- and larger the closer the excitation rejection is to its optimal value\sidenote{
+Additionally, due to vibrations in the cryostat (\cref{ch:setup:vibrations}), the \gls{rms} intensity of the back-scattered laser is large -- and the larger the closer the excitation rejection is to its optimal value\sidenote{
     The count rate can vary by up to a factor of two with the frequency of the \gls{ptr} pulses.
 } -- and thus requires long averaging times for a robust measurement.
 Finally, the algorithm outlined above fails when the starting guess is too far away from the optimum, such as when the new wavelength is on the order of tens of \unit{nm} away from the previously optimized one.

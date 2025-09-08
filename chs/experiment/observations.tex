@@ -16,7 +16,7 @@ The emitted \gls{pl} radiation is picked up by the same lens and coupled into a 
 In total, I show measurements from three different samples.
 Unfortunately, none of the samples tested had a fully functional exciton trap with four working gates.
 Several old samples fabricated during the work of \citet{Descamps2021} appeared to have aged, resulting in broken gates or otherwise unconventional behavior.
-Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different \gls{ebl} resolution steps, or Ohmics, while other gates had leakage to ground or the \gls{qw}.
+Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different \gls{ebl} resolution steps, or Ohmic contacts, while other gates had leakage to ground or the \gls{qw}.
 
 I pursued two different approaches to positioning the laser on the samples.
 The first was using the white-light imaging arm of the confocal microscope (see \cref{part:setup}).
@@ -229,7 +229,7 @@ well within reasonable bounds.
 In the literature, this is known as carrier sweep-out and has been studied in the context of solar cells and other electroabsorptive devices~\cite{Larsson1988,Schneider1988,Fox1991}.
 
 The dashed gray line in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} shows a parabola, $\Delta E\propto \alpha\VDM^2$, with curvature $\alpha = \qty{-3.5}{\milli\electronvolt\per\volt\squared}$ as a guide to the eye.
-For difference-mode voltages below \qty{-1.8}{\volt}, the exciton Stark shift follows this quite closely.
+For difference-mode voltages below \qty{-1.8}{\volt}, the exciton Stark shift follows this quite closely, establishing that the exciton energy can be tuned by over \qty{20}{\milli\electronvolt} in the depleted regime, which simulations suggest is sufficient for confinement of single excitons in a smaller trap geometry~\cite{Descamps2021}.
 The upper panel depicts three line cuts at the positions indicated by the dash-dotted lines in the main panel.
 As can be seen from the cut at \qty{-2.3}{\volt} (orange), the line shape appears to consist of three individual emission lines assigned by \citet{Descamps2021} as the neutral, singly, and doubly negatively charged excitons. % TODO: exciton/trion mixing ref
 I return to the question of line assignment below.
@@ -297,7 +297,7 @@ All but the two outermost lines in the best fit are dominated by the inhomogeneo
 
 According to \citer{Descamps2021}, the lifetime of a Stark-shifted exciton is on the order of \qty{1}{\nano\second} due to the reduced wave function overlap.
 This corresponds to a homogeneous linewidth of $2\gamma = \flatfrac{\hbar}{\tau} \sim \qty{660}{\nano\electronvolt}$, several orders of magnitude below the observed linewidth, and it is thus consistent with the fact that most peaks are best fit by inhomogeneously broadened line shapes.
-The large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
+This large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
 Where it is possible to track individual peaks as function of excitation power, their power dependence is linear, $\int\dd{E} V(E)\propto P$, suggesting neutral excitons or band-to-band recombination as origins of the emission.
 
 \begin{figure*}
@@ -405,7 +405,7 @@ The former effect could potentially be caused by band-deformation due to strain 
 \end{figure}
 
 \Cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets}.
-While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally local fashion. % TODO: me, pleeaase
+While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is laterally lowered.
 The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
 Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
 Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
@@ -559,8 +559,8 @@ where $\gamma_i = \sqrt{\epsilon_{r,i}k_0^2 - k_x^2}$ with $k_0=\flatfrac{\omega
 In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces~\cite{Langevin2024},
 \begin{equation}\label{eq:exp:tmm:fields}
     \begin{dcases}
-        E_{y,i}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
-        E_{y,i}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
+        E_{y,i}^{+}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
+        E_{y,i}^{-}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
     \end{dcases}
 \end{equation}
 where the coefficients with superscript $+$ ($-$) are referenced to the phase at the upper (lower) interface, respectively.

@@ -305,8 +305,8 @@ def plot_dipole(fig, structures, Ens, window, xlim, mat, **grid_kw):
 
         plot_interfaces([ax], yaccs[i], yoffs[i], structures[i])
 
-    fig.supxlabel('$x$ (nm)', fontsize='medium')
-    fig.supylabel('$z$ (nm)', fontsize='medium')
+    fig.supxlabel('$x$ (nm)', fontsize='medium', y=0.005)
+    fig.supylabel('$z$ (nm)', fontsize='medium', x=0.035)
 
     cb = grid.cbar_axes[0].colorbar(img)
     cb.set_label(r'$\mathrm{Re}\,E_y$ (a.u.)')

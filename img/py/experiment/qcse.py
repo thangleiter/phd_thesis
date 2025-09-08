@@ -343,6 +343,10 @@ axs[1, 0].axhline(ΔE_v, color='k')
 T = tunneling_probability(F, ΔV, eps, m[:, None])
 Γ_T = tunneling_rate(F, ΔV, eps, L, m[:, None])
 Γ_E = thermionic_emission_rate(F, 10, ΔV, eps, L, m[:, None])
+print('Tunnel rate @ 1μm diameter, 5e15/cm², 1V:',
+      f'{Γ_T[0, 0, F == 1/200e-9].item()*np.pi*.5e-6**2*5e15*const.e:.3g} A')
+print('Tunnel rate @ 1μm diameter, 5e15/cm², 1.5V:',
+      f'{Γ_T[0, 0, F == 1.5/200e-9].item()*np.pi*.5e-6**2*5e15*const.e:.3g} A')
 # %% 3d wavefunctions in a trap
 omega = 7.38e11 * F / 5e6
 rho = np.linspace(0, 75e-9, 151)
