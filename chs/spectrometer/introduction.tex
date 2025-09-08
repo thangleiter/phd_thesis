@@ -1,7 +1,7 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:speck:introduction}
 \begin{partcontribs}
-    \Thispart has benefited from discussions with several people as part of a course taught during the winter semester of 2022/23.
+    \Thispart has benefited from discussions with several people as part of a course taught during the winter semester of 2022/23~\sidecite{Bluhm2022}.
     The software package presented here was developed by me and has received contributions from Simon Humpohl,\sidenote[a]{RWTH Aachen University and Forschungszentrum Jülich GmbH.}
     Max Beer,\sidenotemark[a] Paul Surrey,\sidenotemark[a] and René Otten.\sidenote[b]{Then at RWTH Aachen University and Forschungszentrum Jülich.}
 \end{partcontribs}
@@ -37,7 +37,9 @@ If the amplitude is small enough, we might not need to care, and if the frequenc
 Although numerous other techniques for measuring and estimating a noise's properties exist, analyzing noise in frequency space by means of the Fourier transform imposes itself when considering these two notions.
 
 This approach is the central topic of \thispart.
-However, we will not be too much concerned with the theoretical side of the subject matter.
+However, we will neither be too much concerned with the theoretical side of the subject matter nor with the details of its practical application in identifying and mitigating noise.\sidenote{
+    I refer the interested reader to the lecture material of \citerr{Bluhm2021}{Bluhm2022} and references therein.
+}
 Rather, I will focus on making these techniques readily and easily accessible to experimentalists in the lab.
 Given the arguments laid out above, noise spectroscopy should be an essential item in an experimentalists toolbelt.
 In practice, though, we are faced with several challenges.
@@ -56,7 +58,7 @@ By abstracting \gls{daq} hardware into a unified interface, it is portable betwe
 With the goal to make noise spectroscopy as accessible as possible and lower the entry barrier, it automatically handles parameter inference and hardware constraints.
 Finally, it provides a comprehensive plotting solution that allows for interactively analyzing the data using various different data visualization methods.
 
-The rest of this part is structured as follows.
+The remainder of this part is structured as follows.
 In \cref{ch:speck:theory}, I review the mathematical groundwork underpinning noise spectroscopy by means of Fourier transforms of time series and discuss parameters and properties of the central quantity of interest, the \gls{psd}.
 In \cref{ch:speck:software}, I then present the software package by going over its design choices and giving a walkthrough of its features using a typical workflow as an example.
 I conclude by giving an outlook on future directions in \cref{ch:speck:conclusion}.
