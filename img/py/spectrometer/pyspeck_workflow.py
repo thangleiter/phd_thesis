@@ -80,7 +80,7 @@ settings = dict(f_min=1e1, f_max=1e5, n_avg=10, baseline=1e-16, delay=False,
                 freq=0, filter_order=3)
 
 # %% Take baseline
-speck.take('baseline', add_50hz=False, add_colored=False, **(settings | dict(filter_order=0)))
+speck.take('baseline', add_50hz=False, add_colored=False, **settings)
 speck.fig.set_size_inches(TEXTWIDTH, 2)
 speck.fig.savefig(PATH / 'pdf/spectrometer/workflow_baseline.pdf')
 

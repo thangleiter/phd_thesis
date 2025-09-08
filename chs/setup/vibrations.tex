@@ -156,7 +156,7 @@ Since the sensor's (conditioned) output is a voltage directly proportional to th
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
 
 \begin{marginlisting}
-    \begin{pyblock}[
+    \begin{pycode}[
         fontsize=\footnotesize,
         breaklines,%
         breakafter=.,%
@@ -170,7 +170,7 @@ Leveraging the \code{fourier_procfn} argument, we can transform the voltage data
             sensitivity,
             fourier_space.derivative
         )
-    \end{pyblock}
+    \end{pycode}
     \caption{Functionality to transform the conditioned voltage to displacement in Fourier space.}
     \label{lst:setup:vibrations:accel}
 \end{marginlisting}
@@ -372,7 +372,7 @@ Although the harmonics of the \gls{ptr} frequency of \qty{1.4}{\hertz} are again
 \subsection{Noise floor}\label{subsec:setup:vibrations:optic:noise_floor}
 The noise floor in the optical vibration measurements shown in \cref{fig:setup:vibrations:optic} is qualitatively very different from that observed with the accelerometer.
 There, the \emph{acceleration} noise floor was white,\sidenote{
-    Remember that as acceleration is the second time derviative of displacement, in frequency space it is proportional to $f^2$ times the latter.
+    Remember that as acceleration is the second time derviative of displacement, in frequency space it is proportional to $f^2$ times the latter (\cref{eq:speck:fourier_derivative}).
 }
 whereas with the optical method the \emph{displacement} noise floor is white, hinting at a different underlying mechanism.
 

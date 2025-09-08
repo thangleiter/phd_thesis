@@ -1,10 +1,12 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:speck:introduction}
+
 \begin{partcontribs}
     \Thispart has benefited from discussions with several people as part of a course taught during the winter semester of 2022/23~\sidecite{Bluhm2022}.
-    The software package presented here was developed by me and has received contributions from Simon Humpohl,\sidenote[a]{RWTH Aachen University and Forschungszentrum Jülich GmbH.}
-    Max Beer,\sidenotemark[a] Paul Surrey,\sidenotemark[a] and René Otten.\sidenote[b]{Then at RWTH Aachen University and Forschungszentrum Jülich.}
+    The software package presented here was developed by me and has received contributions from Simon Humpohl,\sidenote[a]{\RWTHFZJ}
+    Max Beer,\sidenotemark[a] Paul Surrey,\sidenotemark[a] and René Otten.\sidenote[b]{Then at \RWTHFZJ}
 \end{partcontribs}
+
 \AutoLettrine{Noise} is ubiquitous in condensed matter physics experiments, and in mesoscopic systems in particular it can easily drown out the sought-after signal.
 In solid-state quantum technology research, devices on the length scale of the Fermi wavelength -- say tens of nanometers -- are embedded in a crystalline matrix of \num{e23} atoms.
 These devices host single quantum objects such as electrons or quasiparticles---collective many-body excitations.
@@ -57,6 +59,7 @@ Here, I address these points by introducing a \python software package, \pyspeck
 By abstracting \gls{daq} hardware into a unified interface, it is portable between different setups.
 With the goal to make noise spectroscopy as accessible as possible and lower the entry barrier, it automatically handles parameter inference and hardware constraints.
 Finally, it provides a comprehensive plotting solution that allows for interactively analyzing the data using various different data visualization methods.
+I will employ the tool to perform displacement noise spectroscopy in a cryogenic confocal microscope in \cref{part:setup} using two different methods that highlight its versatility.
 
 The remainder of this part is structured as follows.
 In \cref{ch:speck:theory}, I review the mathematical groundwork underpinning noise spectroscopy by means of Fourier transforms of time series and discuss parameters and properties of the central quantity of interest, the \gls{psd}.
