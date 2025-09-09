@@ -16,7 +16,7 @@ RUN_SIMULATION = os.environ.get('RUN_SIMULATION', "False") == "True"
 SEED = 42
 THREADS = None
 CHUNK_NOISE = 8
-SHOW_PROGRESSBAR = False
+SHOW_PROGRESSBAR = True
 
 FILE_PATH = pathlib.Path(__file__).relative_to(pathlib.Path(__file__).parents[3])
 DATA_PATH = PATH.parent / 'data/filter_functions'
@@ -31,11 +31,10 @@ qft_pulse = prune_nopers(load_pulse_sequence(DATA_PATH / 'pulse_sequence_qft_pul
 qft_pulse_echo = prune_nopers(load_pulse_sequence(DATA_PATH / 'pulse_sequence_qft_pulse_echo.npz'),
                               identifiers)
 
-rng = np.random.default_rng(SEED)
 n_MC = 1000
 omega = qft_pulse.omega
 f = omega/2/np.pi
-max_frequency_sample_spacing = f[1]/10
+max_frequency_sample_spacing = f[1]
 
 pulses = {'echo': qft_pulse_echo, 'noecho': qft_pulse}
 pulses_dc = {key: copy.deepcopy(pulse) for key, pulse in pulses.items()}
@@ -75,7 +74,6 @@ mcs_echo = {
         show_progressbar=SHOW_PROGRESSBAR,
         traces_shape=n_MC,
         f_max=f[-1],
-        f_min=0 if key == 'white' else None,
         max_frequency_sample_spacing=max_frequency_sample_spacing,
         chunk_noise=CHUNK_NOISE,
         threads=THREADS,
@@ -88,7 +86,6 @@ mcs_noecho = {
         show_progressbar=SHOW_PROGRESSBAR,
         traces_shape=n_MC,
         f_max=f[-1],
-        f_min=0 if key == 'white' else None,
         max_frequency_sample_spacing=max_frequency_sample_spacing,
         chunk_noise=CHUNK_NOISE,
         threads=THREADS,
