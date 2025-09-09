@@ -504,7 +504,7 @@ For a weakly excited artificial atom and in the absence of dephasing, one expect
     \g{2}(\tau) = \left[1 - \exp(-\flatfrac{\tau\gamma}{2})\right]^2,
 \end{equation}
 where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $T_1\inverse$ of the excited state.
-Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and it is common practice to fit a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data.
+Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and one fits a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data instead.
 Ideally, the \gls{irf} would be measured using a pulsed laser source.
 In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote{
     Realistically, the true \gls{irf} of the \glspl{spcm} will be some asymmetric rather than a symmetric normal distribution.
@@ -513,24 +513,16 @@ In the absence of this data, we instead make due with the assumption that the \g
 The convolution then becomes
 \begin{align}
     \tilde{g}\gth{2}(\tau) &= \frac{1}{\sigma\sqrt{2\pi}}\int\dd{\tau^\prime} g\gth{2}(\tau^\prime)\e^{-\left(\tau - \tau^\prime\right)^2/2\sigma^2} \notag \\
-                           &= \begin{aligned}[t]
-                                1
-                                & - \frac{1}{2}\left[
-                                    \e^{\gamma\alpha_{-}}\erfc\left(\frac{\beta_{-}}{\sigma\sqrt{2}}\right)
-                                    + \e^{\gamma\alpha_{+}}\erfc\left(\frac{\beta_{+}}{\sigma\sqrt{2}}\right)
-                                \right] \\
-                                & + \left[
-                                    \e^{\gamma\alpha^{\prime}_{-}}\erfc\left(\frac{\beta^{\prime}_{-}}{\sigma\sqrt{2}}\right)
-                                    + \e^{\gamma\alpha^{\prime}_{+}}\erfc\left(\frac{\beta^{\prime}_{+}}{\sigma\sqrt{2}}\right)
-                                \right]
-                           \end{aligned}\label{eq:setup:optics:g2:fit}
+                           &= 1 - 2 K_{\flatfrac{\gamma}{2}}(\tau) + K_{\gamma}(\tau) \label{eq:setup:optics:g2:fit}
 \end{align}
 with
 \begin{align}
-    \alpha_{\pm} &= \frac{\gamma\sigma^2}{2} \pm \abs{\tau}, & \beta_{\pm} &= \gamma\sigma^2 \pm \abs{\tau}, \\
-    \alpha^{\prime}_{\pm} &= \frac{\gamma\sigma^2 \pm 4\abs{\tau}}{8}, & \beta^{\prime}_{\pm} &= \frac{\gamma\sigma^2 \pm 2\abs{\tau}}{2}.
+    K_\alpha(\tau) &= \e^{\frac{\alpha^2\sigma^2}{2}}\left\{
+        \e^{-\alpha\tau}\Phi\left(\frac{\tau - \alpha\sigma^2}{\sigma}\right)\right]
+        + \e^{\alpha\tau}\left[1 - \Phi\left(\frac{\tau + \alpha\sigma^2}{\sigma}\right)\right]
+    \right\}
 \end{align}
-and the complementary error function $\erfc(x)$.
+and the Gaussian cumulative distribution function $\Phi(z) = (\flatfrac{1}{2})[1 + \erf(z/\sqrt{2})]$.
 
 \begin{marginfigure}[*-7]
     \centering
@@ -543,7 +535,7 @@ and the complementary error function $\erfc(x)$.
 \end{marginfigure}
 
 The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} (magenta line) from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
-The dashed green line is the deconvoluted function (\cref{eq:setup:optics:g2:explicit}).
+The dashed orange line is the deconvoluted function (\cref{eq:setup:optics:g2:explicit}).
 The lower panel shows the same measurement for logarithmically spaced time lags $\tau$ covering a wider range.
 A peculiar feature shows at $\tau = \qty{13.4}{\nano\second}$, where the measurement suggests a bunching of photons with $\g2(\tau) \approx 2$.
 The origin of this bump is not understood.

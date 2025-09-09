@@ -375,10 +375,13 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
     fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
 
 # %% Load spects
-with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
-    spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
-    spect_optic = Spectrometer.recall_from_disk('spectrometer_photon_counting_23-09-06',
-                                                savepath='.')
+with changed_plotting_backend('qtagg'):
+    spect_accel = Spectrometer.recall_from_disk(
+        DATA_PATH / 'spectrometer_odin_puck', savepath=DATA_PATH
+    )
+    spect_optic = Spectrometer.recall_from_disk(
+        DATA_PATH / 'spectrometer_photon_counting_23-09-06', savepath=DATA_PATH
+    )
 
 spects = [spect_accel, spect_optic]
 

@@ -32,19 +32,17 @@ init(MARGINSTYLE, backend := 'pgf')
 # %% Functions
 
 
-def J(tau, alpha, sigma):
+def K(tau, alpha, sigma):
     # analytical convolution of exp(-α|τ|) and a Gaussian
-    return (
-        0.5*np.exp(alpha**2*sigma**2/2 - alpha*tau)
-        * sp.special.erfc((alpha*sigma**2 - tau)/(np.sqrt(2)*sigma))
-        + 0.5*np.exp(alpha**2*sigma**2/2 + alpha*tau)
-        * sp.special.erfc((alpha*sigma**2 + tau)/(np.sqrt(2)*sigma))
+    return 0.5*np.exp(0.5*(alpha*sigma)**2) * (
+        np.exp(-alpha*tau) * (1 + sp.special.erf((tau - alpha*sigma**2)/(np.sqrt(2)*sigma)))
+        + np.exp(alpha*tau) * (1 - sp.special.erf((tau + alpha*sigma**2)/(np.sqrt(2)*sigma)))
     )
 
 
 def g2_model_convolved(tau, gamma, sigma=350*np.sqrt(2)):
     # analytical convolution of g2_model() and a Gaussian
-    return 1 - 2*J(np.abs(tau), gamma/2, sigma) + J(np.abs(tau), gamma, sigma)
+    return 1 - 2*K(tau, gamma/2, sigma) + K(tau, gamma, sigma)
 
 
 def g2_model(tau, gamma):
@@ -148,12 +146,12 @@ axs[0].plot(x_down * 1e-3, y_down,
             **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=0.75,
                           markerfacealpha=0.25))
 axs[0].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
-axs[0].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--')
+axs[0].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--', color=RWTH_COLORS['orange'])
 axs[1].semilogx(g2_data_log.tagger_histogram_log_bins_1_time_bins * 1e-3, g2_data_log.T,
                 **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=.75,
                               markerfacealpha=0.25))
 axs[1].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
-axs[1].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--')
+axs[1].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--', color=RWTH_COLORS['orange'])
 
 axs[0].grid()
 axs[1].grid()
