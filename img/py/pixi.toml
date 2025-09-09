@@ -9,7 +9,7 @@ version = "0.1.0"
 [tasks]
 
 [feature.core.dependencies]
-python = ">=3.9"
+python = ">=3.12,<3.13"
 scipy = ">=1.16.1,<2"
 pandas = ">=2.3.2,<3"
 ipython = ">=8.37.0,<9"
@@ -52,6 +52,7 @@ cffi = ">=1.17.1,<2"
 python-dotenv = ">=1.1.1,<2"
 autobahn = ">=24.4.2,<25"
 "ruamel.yaml" = ">=0.18.15,<0.19"
+openpyxl = ">=3.1.5, <4"
 
 [feature.core.pypi-dependencies]
 filter-functions = ">=1.2.0, <2"
@@ -60,6 +61,10 @@ python-spectrometer = { version = ">=2025.9.1, <2026", extras = ["simulator"] }
 lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "bed48b7ce07bef3caea90dadb435c3069fc8c784" }
 poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
 mjolnir = { git = "https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir", rev = "b8dc7fe777e8b90c24575283b0a94fefab8c3726" }
+pymoosh = ">=3.92, <4"
+numpy-quaternion = ">=2024.0.12, <2025"
+qutip-qtrl = ">=0.1.4"
+qutip-qip = ">=0.4.1, <0.5"
 
 [feature.logm_frechet.dependencies]
 python = ">=3.9,<=3.12"
