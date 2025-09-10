@@ -1,7 +1,9 @@
 # %% Imports
 import json
+import os
 import pathlib
 import sys
+from unittest.mock import patch
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -26,6 +28,7 @@ from common import (  # noqa
     MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops, n_GaAs
 )
 
+EXTRACT_DATA = os.environ.get("EXTRACT_DATA", "False") == "True"
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
 )
@@ -38,11 +41,13 @@ init(MAINSTYLE, backend := 'qt')
 # %% Functions
 
 
-def to_relative_paths(spect, file, *keys):
-    with io.changed_directory(DATA_PATH):
+def to_relative_paths(spect, file):
+    with io.changed_directory(DATA_PATH), patch('builtins.input', lambda: 'y'):
         spect.savepath = '.'
         spect.relative_paths = True
-        for key in keys:
+
+        data = {}
+        for key in spect.keys():
             # 'x' in the metadata corresponds to 'y' in the thesis.
             spect[key]['comment'] = spect[key]['comment'].replace('x Valhalla puck ', '')
             spect[key]['comment'] = spect[key]['comment'].replace('Optical gate x ', '')
@@ -55,9 +60,14 @@ def to_relative_paths(spect, file, *keys):
                     cls=NumpyJSONEncoder
                 )
             spect.reprocess_data(key, save='overwrite')
-        for key in set(spect.keys()).difference(spect._parse_keys(*keys)):
-            spect.drop(key)
-        spect.serialize_to_disk(file, verbose=True)
+            data[(key[0], spect[key]['comment'])] = spect[key]
+
+        # Update plot with overridden settings
+        spect.drop('all')
+        spect._data.update(data)
+        for key in spect.keys():
+            spect._plot_manager.add_new_line_entry(key)
+        spect.show('all')
 
 
 # %%% Accelerometer
@@ -374,14 +384,39 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
 
-# %% Load spects
-with changed_plotting_backend('qtagg'):
-    spect_accel = Spectrometer.recall_from_disk(
-        DATA_PATH / 'spectrometer_odin_puck', savepath=DATA_PATH
-    )
-    spect_optic = Spectrometer.recall_from_disk(
-        DATA_PATH / 'spectrometer_photon_counting_23-09-06', savepath=DATA_PATH
-    )
+# %% Get data
+files_accel = [
+    'spectrometer_data_2023-05-30_18-36-51_x_Valhalla_puck_PTR_on_cold_head_resting_suspension_off.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-55-08_x_Valhalla_puck_PTR_on_cold_head_resting_suspension_on.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-57-31_x_Valhalla_puck_PTR_off_cold_head_resting_suspension_off.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-53-49_x_Valhalla_puck_PTR_off_cold_head_resting_suspension_on.npz'  # noqa
+]
+files_optic = [
+    'spectrometer_data_2023-09-06_18-49-15_Optical_gate_x_PTR_on_suspension_off.npz',
+    'spectrometer_data_2023-09-06_19-12-16_Optical_gate_x_PTR_on_suspension_on.npz',
+    'spectrometer_data_2023-09-06_18-45-06_Optical_gate_x_PTR_off_suspension_off.npz',
+    'spectrometer_data_2023-09-06_19-10-56_Optical_gate_x_PTR_off_suspension_on.npz'
+]
+if EXTRACT_DATA:
+    files_accel = [ORIG_DATA_PATH / file for file in files_accel]
+    files_optic = [ORIG_DATA_PATH / file for file in files_optic]
+else:
+    files_accel = [DATA_PATH / file for file in files_accel]
+    files_optic = [DATA_PATH / file for file in files_optic]
+
+spect_accel = Spectrometer(savepath=DATA_PATH)
+spect_optic = Spectrometer(savepath=DATA_PATH)
+for file in files_accel:
+    spect_accel.add_spectrum_from_file(file, show=False)
+for file in files_optic:
+    spect_optic.add_spectrum_from_file(file, show=False)
+
+if EXTRACT_DATA:
+    to_relative_paths(spect_accel, 'spectrometer_odin_puck')
+    to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06')
+else:
+    spect_accel.show('all')
+    spect_optic.show('all')
 
 spects = [spect_accel, spect_optic]
 
@@ -433,10 +468,6 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
 # spect_optic.ax[1].set_ylim(0)
 spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
 spect_accel.ax[1].set_yticks([0, 5, 10])
-
-# %%% Resave
-# to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
-# to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06', *spect_optic.keys())
 
 # %% Plot
 data = spect_optic[0]

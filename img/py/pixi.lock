@@ -419,7 +419,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/59/a6/949d3b28a9cfbedb9f2e4a992d9a8d796c3125a01d7211e0961497a6c83e/filter_functions-1.2.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/83/60/d497a310bde3f01cb805196ac61b7ad6dc5dcf8dce66634dc34364b20b4f/lazy_loader-0.4-py3-none-any.whl
-      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=bed48b7ce07bef3caea90dadb435c3069fc8c784#bed48b7ce07bef3caea90dadb435c3069fc8c784
+      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=d6f0d97a4607888a2ed6863d559e2d5a914b5215#d6f0d97a4607888a2ed6863d559e2d5a914b5215
       - pypi: https://files.pythonhosted.org/packages/1e/47/da72601064fe29b9b9d40f138fee1bda7d7ca436166bbf2437a31874fb99/matlabengine-25.1.2.tar.gz
       - pypi: https://files.pythonhosted.org/packages/a4/8e/469e5a4a2f5855992e425f3cb33804cc07bf18d48f2db061aec61ce50270/more_itertools-10.8.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7d/e8/531ab979238eef67fee37ffc17937ce28c60680ec490a42c936c5f8926dc/msl_loadlib-1.0.0-py3-none-manylinux1_x86_64.whl
@@ -784,7 +784,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/59/a6/949d3b28a9cfbedb9f2e4a992d9a8d796c3125a01d7211e0961497a6c83e/filter_functions-1.2.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/83/60/d497a310bde3f01cb805196ac61b7ad6dc5dcf8dce66634dc34364b20b4f/lazy_loader-0.4-py3-none-any.whl
-      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=bed48b7ce07bef3caea90dadb435c3069fc8c784#bed48b7ce07bef3caea90dadb435c3069fc8c784
+      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=d6f0d97a4607888a2ed6863d559e2d5a914b5215#d6f0d97a4607888a2ed6863d559e2d5a914b5215
       - pypi: https://files.pythonhosted.org/packages/1e/47/da72601064fe29b9b9d40f138fee1bda7d7ca436166bbf2437a31874fb99/matlabengine-25.1.2.tar.gz
       - pypi: https://files.pythonhosted.org/packages/a4/8e/469e5a4a2f5855992e425f3cb33804cc07bf18d48f2db061aec61ce50270/more_itertools-10.8.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/be/cc/8059768f00ae67344e1190517ae48a369e8b163764c20fbb93801b704e25/msl_loadlib-1.0.0-py3-none-win_amd64.whl
@@ -1217,7 +1217,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/59/a6/949d3b28a9cfbedb9f2e4a992d9a8d796c3125a01d7211e0961497a6c83e/filter_functions-1.2.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/83/60/d497a310bde3f01cb805196ac61b7ad6dc5dcf8dce66634dc34364b20b4f/lazy_loader-0.4-py3-none-any.whl
-      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=bed48b7ce07bef3caea90dadb435c3069fc8c784#bed48b7ce07bef3caea90dadb435c3069fc8c784
+      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=d6f0d97a4607888a2ed6863d559e2d5a914b5215#d6f0d97a4607888a2ed6863d559e2d5a914b5215
       - pypi: https://files.pythonhosted.org/packages/a4/8e/469e5a4a2f5855992e425f3cb33804cc07bf18d48f2db061aec61ce50270/more_itertools-10.8.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7d/e8/531ab979238eef67fee37ffc17937ce28c60680ec490a42c936c5f8926dc/msl_loadlib-1.0.0-py3-none-manylinux1_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
@@ -1578,7 +1578,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/59/a6/949d3b28a9cfbedb9f2e4a992d9a8d796c3125a01d7211e0961497a6c83e/filter_functions-1.2.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/83/60/d497a310bde3f01cb805196ac61b7ad6dc5dcf8dce66634dc34364b20b4f/lazy_loader-0.4-py3-none-any.whl
-      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=bed48b7ce07bef3caea90dadb435c3069fc8c784#bed48b7ce07bef3caea90dadb435c3069fc8c784
+      - pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=d6f0d97a4607888a2ed6863d559e2d5a914b5215#d6f0d97a4607888a2ed6863d559e2d5a914b5215
       - pypi: https://files.pythonhosted.org/packages/a4/8e/469e5a4a2f5855992e425f3cb33804cc07bf18d48f2db061aec61ce50270/more_itertools-10.8.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/be/cc/8059768f00ae67344e1190517ae48a369e8b163764c20fbb93801b704e25/msl_loadlib-1.0.0-py3-none-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/ed/e1/9fef3bf87c80ddb5e88df2654c8351bef9d027f3f4d485ad3c31b4f7ed50/noisyopt-0.2.2-py2.py3-none-any.whl
@@ -6556,16 +6556,16 @@ packages:
   purls: []
   size: 207974
   timestamp: 1607309596528
-- pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=bed48b7ce07bef3caea90dadb435c3069fc8c784#bed48b7ce07bef3caea90dadb435c3069fc8c784
+- pypi: git+https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools?rev=d6f0d97a4607888a2ed6863d559e2d5a914b5215#d6f0d97a4607888a2ed6863d559e2d5a914b5215
   name: lindblad-mc-tools
-  version: 0.1.0
+  version: 0.2.0
   requires_dist:
   - filter-functions>=1.1.2
   - numba>=0.55.0
   - numpy>=1.20.0
   - opt-einsum>=3.3.0
+  - qutech-util
   - scipy>=1.7.3
-  - setuptools>=61.2.0
   - cvxpy ; extra == 'diamond-norm'
   - jax ; extra == 'jax'
   requires_python: '>=3.11'
@@ -8126,8 +8126,6 @@ packages:
   - tzdata
   constrains:
   - python_abi 3.12.* *_cp312
-  arch: x86_64
-  platform: linux
   license: Python-2.0
   purls: []
   size: 31445023
@@ -8172,8 +8170,6 @@ packages:
   - vc14_runtime >=14.29.30139
   constrains:
   - python_abi 3.12.* *_cp312
-  arch: x86_64
-  platform: win
   license: Python-2.0
   purls: []
   size: 15829289

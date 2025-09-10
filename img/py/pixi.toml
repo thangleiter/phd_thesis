@@ -58,7 +58,7 @@ openpyxl = ">=3.1.5, <4"
 filter-functions = ">=1.2.0, <2"
 qutech-util = { version = ">=2025.8.1, <2026", extras = ["gl", "colormaps"] }
 python-spectrometer = { version = ">=2025.9.1, <2026", extras = ["simulator"] }
-lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "bed48b7ce07bef3caea90dadb435c3069fc8c784" }
+lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "d6f0d97a4607888a2ed6863d559e2d5a914b5215" }
 poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
 mjolnir = { git = "https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir", rev = "b8dc7fe777e8b90c24575283b0a94fefab8c3726" }
 pymoosh = ">=3.92, <4"
