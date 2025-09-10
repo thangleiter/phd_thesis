@@ -517,12 +517,12 @@ The convolution then becomes
 \end{align}
 with
 \begin{align}
-    K_\alpha(\tau) &= \e^{\frac{\alpha^2\sigma^2}{2}}\left\{
-        \e^{-\alpha\tau}\Phi\left(\frac{\tau - \alpha\sigma^2}{\sigma}\right)\right]
+    K_\alpha(\tau) &= \e^{\frac{\alpha^2\sigma^2}{2}}\left\lbrace
+        \e^{-\alpha\tau}\Phi\left(\frac{\tau - \alpha\sigma^2}{\sigma}\right)
         + \e^{\alpha\tau}\left[1 - \Phi\left(\frac{\tau + \alpha\sigma^2}{\sigma}\right)\right]
-    \right\}
+    \right\rbrace
 \end{align}
-and the Gaussian cumulative distribution function $\Phi(z) = (\flatfrac{1}{2})[1 + \erf(z/\sqrt{2})]$.
+where $\Phi(z) = (\flatfrac{1}{2})\left[1 + \erf\left(z/\sqrt{2}\right)\right]$ is the the Gaussian cumulative distribution function.
 
 \begin{marginfigure}[*-7]
     \centering
