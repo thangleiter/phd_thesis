@@ -16,13 +16,23 @@
 # To Dos
 
 - [x] Is "behavior" proper use of English in the context of "optical behavior" etc?
-- [ ] Use `\subequations{}` where appropriate
+- [x] Use `\subequations{}` where appropriate
 - [ ] Instrument citations
 - [ ] migrate repo to github
 - [ ] migrate `lindblad_mc_tools` repo
 
 ## Content
 - [ ] Acknowledgements
+
+## Feedback
+- [ ] HB
+  - [ ] Part III
+- [ ] DH
+  - [ ] Part I
+  - [ ] Part III
+- [ ] EK
+  - [ ] Part II
+  - [ ] Part III
 
 ### How to read this thesis
 - [ ] PDF viewer
@@ -34,8 +44,8 @@
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
 - [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
 - [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
-- [ ] More representative cumulative spectra
-- [ ] Discuss cumulative with dB scale?
+- [x] More representative cumulative spectra
+- [ ] ~~Discuss cumulative with dB scale?~~
 
 ### Setup
 - [x] Knife edge fit
@@ -43,7 +53,7 @@
 - [x] Go over derivation in appendix.
 - [ ] ~~Vibration spectra on lab floors?~~
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
-- [ ] IRF-convoluted $g^{(2)}$ fit
+- [x] IRF-convoluted $g^{(2)}$ fit
 
 ### Experiment
 - [x] author contributions
@@ -51,22 +61,22 @@
 ### FF
 - [x] I/we
 - [ ] ~~Hilbert space calculations in appendix~~
-- [ ] Parse text for "second order not implemented"
+- [x] Parse text for "second order not implemented"
 - [x] Figures, tables, listings
 - [x] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
 - [x] `\mathcal{}` for FF, regular for fidelity.
 - [x] split up `prr.tex`
 - [x] author contributions
 - [x] discrete FF sampling?
-- [ ] Second order concatenation
-- [ ] Master equation
+- [x] Second order concatenation
+- [ ] ~~Master equation~~
 
 ## Code
 - [x] `uv pip freeze` *or* just make installable.
     - [ ] Finalize envs
-- [ ] Test running all.
+- [x] Test running all.
 - [ ] Add `README`
-- [ ] Draft new `filter_functions` release
+- [x] Draft new `filter_functions` release
 - [ ] Draft new `lindblad_mc_tools` release
 - [ ] Move and make public `lindblad_mc_tools`
     - [ ] Add `README`
@@ -81,7 +91,7 @@
 - [x] Else numbered parts
 - [ ] Part title page design
 - [ ] ~~`\margintoc`?~~
-- [ ] Move LOF to end of document.
+- [x] Move LOF to end of document.
 
 ## `latexmk`
 
