@@ -240,7 +240,7 @@ A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketc
 The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
 Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
 Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
-More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.git-ce.rwth-aachen.de/lab_software/python-mjolnir/}{documentation.}
+More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
 Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
 I leave this option for future work.
 

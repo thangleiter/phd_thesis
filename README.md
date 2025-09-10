@@ -19,9 +19,16 @@
 - [x] Use `\subequations{}` where appropriate
 - [ ] Instrument citations
 - [ ] migrate repo to github
-- [ ] migrate `lindblad_mc_tools` repo
+- [x] migrate `lindblad_mc_tools` repo
 
 ## Content
+- [ ] Zusammenfassung
+- [ ] Preface
+- [ ] How to read this thesis
+    - [ ] PDF viewer
+    - [ ] Image sources & parameters
+    - [ ] Disjunct parts
+    - [ ] $\mathrm{asinh}$ scale
 - [ ] Acknowledgements
 
 ## Feedback
@@ -33,12 +40,6 @@
 - [ ] EK
   - [ ] Part II
   - [ ] Part III
-
-### How to read this thesis
-- [ ] PDF viewer
-- [ ] Image sources & parameters
-- [ ] Disjunct parts
-- [ ] $\mathrm{asinh}$ scale
 
 ### pyspeck
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
@@ -73,14 +74,14 @@
 
 ## Code
 - [x] `uv pip freeze` *or* just make installable.
-    - [ ] Finalize envs
+    - [x] Finalize envs
 - [x] Test running all.
-- [ ] Add `README`
+- [x] Add `README`
 - [x] Draft new `filter_functions` release
 - [ ] Draft new `lindblad_mc_tools` release
-- [ ] Move and make public `lindblad_mc_tools`
+- [x] Move and make public `lindblad_mc_tools`
     - [ ] Add `README`
-- [ ] Check `qutil`, `python_spectrometer` releases
+- [x] Check `qutil`, `python_spectrometer` releases
 
 ## Layout
 - [x] Tune the bibliography style
