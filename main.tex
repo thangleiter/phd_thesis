@@ -24,7 +24,7 @@
 \documentclass[
 	a4paper, % Page size
 	fontsize=10pt, % Base font size
-	twoside=false, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
 	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
@@ -39,119 +39,36 @@
 \begin{document}
 
 %----------------------------------------------------------------------------------------
-%	BOOK INFORMATION
+%	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\titlehead{The \texttt{kaobook} class}
-\subject{Use this document as a template}
-
-\title[Millikelvin confocal microscopy and filter-function formalism]{
-	Millikelvin Confocal Microscopy of Semiconductor Membranes and Filter Functions for Unital Quantum Operations
-}
-\subtitle{Customise this page according to your needs}
-
-\author[Tobias Hangleiter]{Tobias Hangleiter\thanks{A \LaTeX\ lover/hater}}
-
-\date{\today}
-
-%----------------------------------------------------------------------------------------
-
-\frontmatter % Denotes the start of the pre-document content, uses roman numerals
-
-%----------------------------------------------------------------------------------------
-%	OPENING PAGE
-%----------------------------------------------------------------------------------------
-
-%\makeatletter
-%\extratitle{
-%	% In the title page, the title is vspaced by 9.5\baselineskip
-%	\vspace*{9\baselineskip}
-%	\vspace*{\parskip}
-%	\begin{center}
-%		% In the title page, \huge is set after the komafont for title
-%		\usekomafont{title}\huge\@title
-%	\end{center}
-%}
-%\makeatother
-
-%----------------------------------------------------------------------------------------
-%	COPYRIGHT PAGE
-%----------------------------------------------------------------------------------------
-
-\makeatletter
-\uppertitleback{\@titlehead} % Header
-
-\lowertitleback{
-	\textbf{Disclaimer}\\
-	You can edit this page to suit your needs. For instance, here we have a no copyright statement, a colophon and some other information. This page is based on the corresponding page of Ken Arroyo Ohori's thesis, with minimal changes.
-	
-	\medskip
-	
-	\textbf{No copyright}\\
-	\cczero\ This book is released into the public domain using the CC0 code. To the extent possible under law, I waive all copyright and related or neighbouring rights to this work.
-	
-	To view a copy of the CC0 code, visit: \\\url{http://creativecommons.org/publicdomain/zero/1.0/}
-	
-	\medskip
-	
-	\textbf{Colophon} \\
-	This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.latex-project.org/}{\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class.
-	
-	The source code of this book is available at:\\\url{https://github.com/fmarotta/kaobook}
-	
-	(You are welcome to contribute!)
-	
-	\medskip
-	
-	\textbf{Publisher} \\
-	First printed in May 2019 by \@publishers
-}
-\makeatother
-
-%----------------------------------------------------------------------------------------
-%	DEDICATION
-%----------------------------------------------------------------------------------------
-
-\dedication{
-	The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
-	\flushright -- D'Arcy Wentworth Thompson
-}
-
-%----------------------------------------------------------------------------------------
-%	OUTPUT TITLE PAGE AND PREVIOUS
-%----------------------------------------------------------------------------------------
-
-% Note that \maketitle outputs the pages before here
-
-\maketitle
+\KOMAoptions{twoside=semi}
+\input{chs/titlepage}
+\KOMAoptions{twoside=true}
 
 %----------------------------------------------------------------------------------------
 %	SUMMARY
 %----------------------------------------------------------------------------------------
 
 \include{chs/summary}
-\index{summary}
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
 \include{chs/acknowledgements}
-\index{acknowledgements}
 
 %----------------------------------------------------------------------------------------
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
 \include{chs/preface}
-\index{preface}
 
 %----------------------------------------------------------------------------------------
 %	HOW TO READ THIS THESIS
 %----------------------------------------------------------------------------------------
 
 \include{chs/howto}
-\index{howtoread}
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES

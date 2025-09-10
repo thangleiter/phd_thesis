@@ -1,0 +1,148 @@
+% mainfile: ../main.tex
+
+\newcommand{\thesisTitleLong}{Millikelvin Confocal Microscopy of Semiconductor Membranes and Filter Functions for Unital Quantum Operations}
+\newcommand{\thesisTitleShort}{Millikelvin confocal microscopy and filter-function formalism}
+\newcommand{\thesisDate}{\today}
+\newcommand{\authorName}{Tobias Hangleiter}
+\newcommand{\firstExaminer}{Prof\@. Dr\@. Hendrik Bluhm}
+\newcommand{\secondExaminer}{Prof\@. Dr\@. Christoph Stampfer}
+
+\author{\authorName}
+\title[\thesisTitleShort]{\thesisTitleLong}
+\date{\thesisDate}
+
+%\uppertitleback{} % Header
+\lowertitleback{
+    {\small
+    \begin{center}
+        \noindent\includegraphics[width=0.2\textwidth]{img/pdf/logos/IQI_logo}
+        \vspace{1\bigskipamount}\\
+        \textbf{JARA-Institute for Quantum Information}\\
+        \medskip
+        %        \vspace{.5cm}
+        an initiative of\\
+        \medskip
+        %        \vspace{.5cm}
+        \begin{tabular}{ m{.45\textwidth} m{.45\textwidth}}
+            \textbf{RWTH Aachen University}                                                            & \textbf{Forschungszentrum Jülich GmbH} \\
+            \textit{Quantum Technology Group}                                                          & \textit{JARA-Institute for Quantum Information} \\
+            Department of Physics                                                                      & Peter-Grünberg-Institute (PGI-11) \\
+            Otto-Blumenthal-Straße                                                                     & Wilhelm-Johnen-Straße \\
+            52070~Aachen                                                                               & 52428~Jülich \\
+            \vspace{1\bigskipamount}\noindent\includegraphics[height=1cm]{img/pdf/logos/rwth_qutech_en_rgb} & \vspace{1\bigskipamount}\noindent\includegraphics[height=1cm]{img/pdf/logos/Logo_FZ_Juelich_cmyk}
+        \end{tabular}
+    \end{center}
+    }
+    \vspace{5em}
+
+    \textbf{\authorName} \\
+    \textit{\thesisTitleLong} \\
+    \thesisDate \\
+    [1.5em]
+}
+
+\makeatletter
+\KOMAoptions{twoside=semi}
+\renewcommand*{\maketitle}{%
+    \begin{titlepage}
+        \pdfbookmark[0]{Cover}{Cover}
+        \sffamily
+        \flushright
+        \hfill
+        \vfill
+        \centering
+        {\huge\thesisTitleLong\par}
+        %\rule[5pt]{\textwidth}{.4pt} \par
+        %{\Large\thesisName}
+        \vfill
+        % Von der Fakultät für Mathematik, Informatik und Naturwissenschaften der RWTH Aachen University zur Erlangung des akademischen Grades eines Doktors der Naturwissenschaften genehmigte Dissertation \\ not yet
+        Der Fakultät für Mathematik, Informatik und Naturwissenschaften der RWTH Aachen University vorgelegte Dissertation zur Erlangung des akademischen Grades eines Doktors der Naturwissenschaften \\
+        % [2em] vorgelegt von \\
+        [2em] von \\
+        [2em] \authorName, M\@.Sc\@. \\
+        [.5em] aus \\
+        [.5em] Filderstadt
+
+        % \begin{flushleft}
+        %     \vspace{4em}
+        %     {
+        %         \small
+        %         Berichter:~\firstExaminer \\
+        %         \hphantom{Berichter:}~\secondExaminer    \\
+        %         [.5em] Tag der mündlichen Prüfung: TBD \\
+        %         [.5em] Diese Dissertation ist auf den Internetseiten der Universitätsbibliothek
+        %         verfügbar.
+        %     }
+        % \end{flushleft}
+
+    \end{titlepage}
+    \ifx
+        \@lowertitleback\@empty\else
+        \clearpage
+        \thispagestyle{empty}%
+        \begingroup
+        \setlength{\parindent}{0pt}%
+        % If you also define \uppertitleback, you can place it above and put \vfill between them:
+        % \ifx\@uppertitleback\@empty\else \@uppertitleback \par\vspace{\bigskipamount}\fi
+        \vspace*{\fill}%
+        \@lowertitleback
+        \vspace*{\fill}%
+        \endgroup
+        \clearpage
+    \fi
+}
+\KOMAoptions{twoside=true}
+\makeatother
+
+\frontmatter % Denotes the start of the pre-document content, uses roman numerals
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+%\makeatletter
+%\uppertitleback{\@titlehead} % Header
+%
+%\lowertitleback{
+%	\textbf{Disclaimer}\\
+%	You can edit this page to suit your needs. For instance, here we have a no copyright statement, a colophon and some other information. This page is based on the corresponding page of Ken Arroyo Ohori's thesis, with minimal changes.
+%
+%	\medskip
+%
+%	\textbf{No copyright}\\
+%	\cczero\ This book is released into the public domain using the CC0 code. To the extent possible under law, I waive all copyright and related or neighbouring rights to this work.
+%
+%	To view a copy of the CC0 code, visit: \\\url{http://creativecommons.org/publicdomain/zero/1.0/}
+%
+%	\medskip
+%
+%	\textbf{Colophon} \\
+%	This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.latex-project.org/}{\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class.
+%
+%	The source code of this book is available at:\\\url{https://github.com/fmarotta/kaobook}
+%
+%	(You are welcome to contribute!)
+%
+%	\medskip
+%
+%	\textbf{Publisher} \\
+%	First printed in May 2019 by \@publishers
+%}
+%\makeatother
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+
+%\dedication{
+%    The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
+%    \flushright -- D'Arcy Wentworth Thompson
+%}
+
+%----------------------------------------------------------------------------------------
+%	OUTPUT TITLE PAGE AND PREVIOUS
+%----------------------------------------------------------------------------------------
+
+% Note that \maketitle outputs the pages before here
+
+\maketitle
