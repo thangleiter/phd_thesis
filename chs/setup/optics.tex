@@ -162,7 +162,7 @@ Having picked the lenses defining the characteristics of the microscope, let us 
 In a confocal microscope geometry, light is collected using the same lens that is also used for illumination of the sample.
 For excitation with a Gaussian laser beam but non-Gaussian radiation being emitted, this means that two different beam behaviors need to be matched, a task that is likely not possible to achieve completely.
 In the case of photoluminescence in a pristine semiconductor \gls{qw}, the optical interband transitions are well described by in-plane dipole matrix elements~\cite{Gu2013}.
-If, on the other, the light emerges from a \gls{pcc}, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024}.
+If, on the other, the light emerges from a \gls{pcc}, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024a}.
 Here, I discuss dipole emission from the \gls{qw}, which needs to be coupled into a \gls{smf} with near-Gaussian mode profile, invariably resulting in losses.
 A detailed analysis of the electric field profile to compute the expected coupling efficiency from the sample into the \gls{smf} is beyond our scope here as it would require taking into account the full sample and lens geometries as well as diffraction, a task only possible by employing a full-fledged numerical optics simulation suite.
 However, we can make some crude simplifications of the problem to estimate the order of magnitude of these effects.
@@ -179,7 +179,7 @@ To this end, I model the light source as a point dipole beneath the surface of a
 
 Consider the situation sketched in \cref{fig:setup:optics:coupling:emission}.
 A dipole $\bvec{p}$ oriented along $x$ in the plane of a \ch{GaAs} \gls{qw} with refractive index $n$ buried at a depth $d$ beneath the surface of the sample emits light into the halfspace above it.
-In spherical coordinates $(r, \vartheta, \varphi)$ oriented along $x$, that is, embedded in the cartesian coordinate system $(y, z, x)$, the emitted radiation has the field components~\cite{Griffiths2017}
+In spherical coordinates $(r, \vartheta, \varphi)$ oriented along $x$, that is, embedded in the cartesian coordinate system $(y, z, x)$, the emitted radiation has the field components~\cite{Griffiths2013}
 \begin{align}
     \bvec{E}(r, \vartheta) &= A(r)\left[E_r(r, \vartheta)\ubvec{r} + E_{\vartheta}(r, \vartheta)\ubvec{\vartheta}\right] \label{eq:setup:optics:coupling:dipole:efield}\\
     \bvec{H}(r, \vartheta) &= \frac{\epsilon}{\mu} A(r) H_{\phi}(r, \vartheta)\ubvec{\phi} \label{eq:setup:optics:coupling:dipole:hfield}
@@ -209,7 +209,7 @@ with the time-averaged Poynting vector
 \begin{equation}\label{eq:setup:optics:coupling:poynting}
     \expval{\bvec{S}(r, \vartheta)} = \frac{1}{2}\re(\bvec{E}(r, \vartheta)\times\bvec{H}^{\ast}(r, \vartheta)).
 \end{equation}
-As I show in \cref{sec:app:setup:optics:collection}, the fraction of the power radiated into the cone $\theta\in[0, \theta_{\mr{m}}]$ able to be collected by the objective lens, the \emph{collection efficiency}, is thus
+As I show in \cref{subsec:app:setup:optics:collection}, the fraction of the power radiated into the cone $\theta\in[0, \theta_{\mr{m}}]$ able to be collected by the objective lens, the \emph{collection efficiency}, is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:collection}
     \eta_{\mr{c}} = \frac{1}{2} - \frac{1}{8 n^3}\left(4n^2 - \NA^2\right)\sqrt{n^2 - \NA^2} \approx \qty{1.4}{\percent}
 \end{equation}
@@ -233,16 +233,16 @@ A detailed accounting of these effects is beyond the scope of this thesis.
 However, let us at least gain an intuition for the degree of these effects.
 Since we observe the dipole, oriented in-plane inside the \gls{qw}, from the side, it is useful to rotate the spherical coordinate system so that it is embedded in the coordinate system $(x, y, z)$ as defined in \cref{fig:setup:optics:coupling:emission} with coordinates $(r, \theta, \phi)$.
 
-The magnitude of the electric field vector in the surface plane, which I derive in more detail in \cref{sec:app:setup:optics:modes}, is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_2d}.
+The magnitude of the electric field vector in the surface plane, which I derive in more detail in \cref{subsec:app:setup:optics:modes}, is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_2d}.
 The circle delimits the cone of emission bounded by $\theta_\mr{m}$ (radius $w_i$) while the arrows indicate the projection of the electric field $\bvec{E}(x, y, z)$ onto the interface, indicating that the polarization in the plane points mostly along $y$ at this distance from the source.
 Accounting for refraction and modifying the perpendicular and parallel ($s$ and $p$) components of the electric field according to Fresnel's equations~\cite{Hecht2017} results in the electric field in the plane of the objective lens at a distance of $\fob$ shown in the lower panel.
 Here, the circle indicates the \gls{ca} of the lens with radius $w_f$.
 The picture is quite different from before.
 First, the field is almost exclusively polarized along $x$, the dipole axis, as we might have expected.
 Moreover, the intensity $\propto\abs{\bvec{E}}^2$ does not depend strongly on the azimuthal angle $\phi$ at this distance, allowing us to approximate the field as rotationally invariant to estimate the coupling efficiency into the \gls{smf}.\sidenote[][*-4]{
-    Note that, while a fairly good approximation for the amplitude, this is likely not a good approximation for the phase because $k w_i \sim 1$, meaning that when the light exits the sample the phase is not constant across the surface, and the approximation as a point source just below the surface emitting a spherical wave warrants further investigation, \cf \cref{sec:app:setup:optics:modes}.
+    Note that, while a fairly good approximation for the amplitude, this is likely not a good approximation for the phase because $k w_i \sim 1$, meaning that when the light exits the sample the phase is not constant across the surface, and the approximation as a point source just below the surface emitting a spherical wave warrants further investigation, \cf \cref{subsec:app:setup:optics:modes}.
 }
-As shown in \cref{sec:app:setup:optics:modes}, the field after collimation is thus to good approximation given by
+As shown in \cref{subsec:app:setup:optics:modes}, the field after collimation is thus to good approximation given by
 \begin{equation}\label{eq:setup:optics:coupling:efield:lens}
     \bvec{E}(r, \theta) = \tilde{A}(r)E_x(\theta)
 \end{equation}
@@ -273,7 +273,7 @@ The intensity drops to about half its maximum at the edge of the lens aperture, 
 We may thus expect the mode matching to be qualitatively different from the flattop behavior discussed previously when coupling this beam into a \gls{smf} with a guiding mode very closely approximating the Gaussian \TEM{00} mode.
 
 The light collected and collimated by the objective lens next passes through the ocular lens in the detection arm which focuses it into the \gls{smf}.
-The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the wave (\cref{eq:setup:optics:coupling:efield:lens}) incident on the ocular lens aperture, which I give in \cref{sec:app:setup:optics:diffraction}.
+The image of the beam on the fiber end face is given by the Fraunhofer diffraction pattern generated by the wave (\cref{eq:setup:optics:coupling:efield:lens}) incident on the ocular lens aperture, which I give in \cref{subsec:app:setup:optics:diffraction}.
 The resulting diffraction pattern, \cref{eq:app:setup:optics:diffraction}, scaled with the radius $\rho$ is plotted in the middle panel of \cref{fig:setup:optics:coupling:modes_1d} together with the corresponding Airy disk result for a flattop beam (\cref{eq:setup:optics:coupling:flattop:diffraction_pattern}) and the \gls{smf}'s guiding Gaussian mode.
 The pattern of the flattop and the more accurate mode profile from \cref{eq:setup:optics:coupling:efield:lens} are quite similar, but noticeably differ from the Gaussian mode at higher radii $\rho$.
 The lower panel shows the fraction of power included in a circle of radius $\rho$, $P(\rho)\propto \int_0^{\rho}\dd{\rho^{\prime}} \rho^{\prime} I(\rho^{\prime})$, demonstrating that we can expect the mode matching to be fairly good.
@@ -282,13 +282,13 @@ Indeed, evaluating \cref{eq:setup:optics:coupling:efficiency:mode_matching} for 
     \eta_{\mr{m}}(E_{\mr{l}}, E_{\mr{g}})\approx\qty{83}{\percent}
 \end{equation}
 for our parameters, slightly better than the naive result using the flattop beam.
-Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $T\approx\qty{87}{\percent}$,\sidenote[][*-2]{
+Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $\transmittance\approx\qty{87}{\percent}$,\sidenote[][*-2]{
     \label{sidenote:setup:optics:bs}
-    While the specifications of the beamsplitter are $T\div R = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $T\div R\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
+    While the specifications of the beamsplitter are $\transmittance\div\reflectance = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $\transmittance\div \reflectance\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
-    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} T \approx\qty{1.0}{\percent}.
+    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} \transmittance \approx\qty{1.0}{\percent}.
 \end{equation}
 
 \begin{margintable}[*-3]
@@ -302,7 +302,7 @@ the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
         \label{tab:setup:optics:efficiency:measured}
         \begin{tabularx}{\marginparwidth}{lS}
             \toprule
-            \textsc{Opt. element}                   & {Efficiency (\unit{\percent})} \\
+            \textsc{Opt. element}                   & \multicolumn{1}{c}{\textsc{Efficiency} (\unit{\percent})} \\
             \midrule
             Collection + \acrshort{bs}1\tnote{a}    & 37.8 \\
             Analyzer\tnote{b}                       & 67.6 \\
@@ -409,8 +409,8 @@ Here, excitation rejection is achieved by cross-polarization of the polarizer (P
 As demonstrated by \citet{Benelajla2021}, this technique enables extinction ratios\sidenote{
     Defined as incident power over transmitted power.
 }
-up to \num[print-unity-mantissa=false]{1e10} in a confocal geometry, far beyond the bare polarizer extinction ratio of up to $\sim\num[print-unity-mantissa=false]{1e8}$~\cite{ThorlabsLPVIS050-MP2}.
-In our case, vibrations and rough sample surfaces off which the light is reflected limit the extinction ratio to $\sim\num[print-unity-mantissa=false]{1e6}$.
+up to \num{1e10} in a confocal geometry, far beyond the bare polarizer extinction ratio of up to $\sim\num{1e8}$~\cite{ThorlabsLPVIS050-MP2}.
+In our case, vibrations and rough sample surfaces off which the light is reflected limit the extinction ratio to $\sim\num{1e6}$.
 
 As the laser beam launched from the excitation fiber is already polarized, rather than rotate the polarizer, the plane of polarization is rotated using a \halfwave plate.
 To compensate for ellipticities introduced by the \gls{bs}, windows, and sample reflection, a \quarterwave plate is inserted after the \halfwave plate~\cite{Kuhlmann2013}.
@@ -426,13 +426,13 @@ It is hence advisable to insert another \halfwave plate on a rotation stage befo
 To analyze the properties of the excitation rejection, I measured the \gls{od} as a function of the relative waveplate angles $\Delta\phi_{\lbrace\halfwave,\quarterwave\rbrace}$.
 The \gls{od} is defined as
 \begin{equation}\label{eq:setup:optics:od}
-    \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right),
+    \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right) = \log_{10}\left(\frac{1}{\transmittance}\right),
 \end{equation}
-where $P_{\mr{t}}$ is the transmitted power after and $P_{\mr{i}}$ the incident power before the analyzer.
+where $P_{\mr{t}}$ is the transmitted power after, $P_{\mr{i}}$ the incident power before the analyzer, and \transmittance the transmittance of the analyzer.
 To evaluate this expression, I measured the photon flux $\dot{\Phi}_{\mr{t}}$ after the spectrometer using the \glspl{spcm} when irradiating a sample with the laser and compared it to the power $P$ measured at the optical head.
-Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $T\div R$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
+Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $\transmittance\div\reflectance$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
 \begin{equation}\label{eq:setup:optics:od:eval}
-    \OD = \log_{10}\left(\frac{P\times\flatfrac{R}{T}}{\flatfrac{hc}{\lambda}\times\dot{\Phi}_{\mr{t}}/\eta_{\mr{o,tot}}\eta_{\QE}}\right).
+    \OD = \log_{10}\left(\frac{P\times\flatfrac{\reflectance}{\transmittance}}{\flatfrac{hc}{\lambda}\times\dot{\Phi}_{\mr{t}}/\eta_{\mr{o,tot}}\eta_{\QE}}\right).
 \end{equation}
 
 \begin{figure}
@@ -448,7 +448,7 @@ Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subse
 \Cref{fig:setup:optics:rejection} shows the measurement when the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
 The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate changes the plane of polarization, so the \quarterwave plate should need to be rotated by the same amount to retain a constant angle between plane of polarization and fast axis of the waveplate).
 The \gls{od} reaches maximum values around \num{6.4} -- corresponding to an extinction ratio of \num{2.5e6} -- but quickly falls off by more than an order of magnitude even for small angular displacements.\sidenote{
-    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016a}.
+    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016}.
 }
 Qualitatively, one finds that close to the extinction maximum, the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
 \begin{equation}
@@ -457,14 +457,14 @@ Qualitatively, one finds that close to the extinction maximum, the count rate $\
 with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$, and $R(\theta)$ a rotation matrix.
 Inserting into \cref{eq:setup:optics:od:eval} yields
 \begin{equation}\label{eq:setup:optics:od:fit}
-    \OD = \log_{10}\left(\frac{P R\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
+    \OD = \log_{10}\left(\frac{P \reflectance\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
 \end{equation}
 a fit to which is shown in the right panel of \cref{fig:setup:optics:rejection}, displaying good agreement with the data.
-From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\textdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\textdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
+From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\txtdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\txtdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
 
 The optics between polarizer and analyzer furthermore display chromatic dispersion.
 When changing the excitation wavelength, the angles of \halfwave and \quarterwave plate therefore need to be re-optimized.
-I describe the automatic calibration procedure implemented in the measurement framework to this end in \cref{part:exp}.
+I describe the automatic calibration procedure implemented in the measurement framework to this end in \cref{subsec:sec:exp:mjolnir:calibration:rejection}.
 
 \section{Exemplary measurement of non-classical light}\label{sec:setup:optics:g2}
 As a demonstration of the optical capabilities of the setup, I performed second-order coherence measurements of an \ch{InAs} \gls{saqd} in \ch{GaAs}.
@@ -489,7 +489,7 @@ can be measured with a \gls{hbt} interferometer and serves as a fingerprint of s
 
 I loaded and cooled down an \ch{InAs/GaAs} chip with \glspl{saqd} and selected a bright and isolated emission line.
 A typical \gls{pl} spectrum under \gls{cw} above-gap excitation is shown in \cref{fig:setup:optics:ingaas:pl}.
-The brightest line at $\qty{1.4212}{\eV} = \qty{872.39}{\nano\meter}$ has a width of around $\qty{15}{\micro\eV} = \qty{12}{\pico\meter}$ close to the grating\sidenote{
+The brightest line at $\qty{1.4212}{\eV} = \qty{872.39}{\nano\meter}$ has a width of around $\qty{15}{\micro\eV} = \qty{12}{\pico\meter}$, close to the grating\sidenote{
     \qty{1800}{gr\per\milli\meter}, resulting in a spectral dispersion of $\dv*{\lambda}{x} = \qty{325}{\pico\meter\per\milli\meter}$ in the focal plane.
 }
 resolution limit of around \qty{5}{pm}.
@@ -499,13 +499,32 @@ The clicks from the detectors are time-correlated using a counting card (\tagger
     \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
 \end{equation}
 where $\hat{n}_i(t) = \hat{b}^\dagger_i(t) \hat{b}_i(t), i\in\lbrace 1,2\rbrace$ is the photon-number operator for a single mode at detector $i$ and averaging takes place over time.
-For a weakly excited artificial atom, one expects this function to take on the form~\cite{Walls1979}
-\begin{equation}\label{eq:setup:optics:g2:fit}
+For a weakly excited artificial atom and in the absence of dephasing, one expects this function to take on the form~\cite{Walls1979,Loudon2000,Grandi2016}
+\begin{equation}\label{eq:setup:optics:g2:explicit}
     \g{2}(\tau) = \left[1 - \exp(-\flatfrac{\tau\gamma}{2})\right]^2,
 \end{equation}
-where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $1/T_1$ of the excited state.
+where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $T_1\inverse$ of the excited state.
+Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and one fits a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data instead.
+Ideally, the \gls{irf} would be measured using a pulsed laser source.
+In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote{
+    Realistically, the true \gls{irf} of the \glspl{spcm} will be some asymmetric rather than a symmetric normal distribution.
+    This was also observed in the pulsed Stark-shift experiment in \citer{Descamps2023}.
+}
+The convolution then becomes
+\begin{align}
+    \tilde{g}\gth{2}(\tau) &= \frac{1}{\sigma\sqrt{2\pi}}\int\dd{\tau^\prime} g\gth{2}(\tau^\prime)\e^{-\left(\tau - \tau^\prime\right)^2/2\sigma^2} \notag \\
+                           &= 1 - 2 K_{\flatfrac{\gamma}{2}}(\tau) + K_{\gamma}(\tau) \label{eq:setup:optics:g2:fit}
+\end{align}
+with
+\begin{align}
+    K_\alpha(\tau) &= \e^{\frac{\alpha^2\sigma^2}{2}}\left\lbrace
+        \e^{-\alpha\tau}\Phi\left(\frac{\tau - \alpha\sigma^2}{\sigma}\right)
+        + \e^{\alpha\tau}\left[1 - \Phi\left(\frac{\tau + \alpha\sigma^2}{\sigma}\right)\right]
+    \right\rbrace
+\end{align}
+where $\Phi(z) = (\flatfrac{1}{2})\left[1 + \erf\left(z/\sqrt{2}\right)\right]$ is the the Gaussian cumulative distribution function.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-7]
     \centering
     \includegraphics{img/pdf/setup/ingaas_g2}
     \caption[\imgsource{img/py/setup/g2.py}]{
@@ -515,13 +534,8 @@ where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission ra
     \label{fig:setup:optics:ingaas:g2}
 \end{marginfigure}
 
-The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
-$\g2(0)$ does not quite reach the theoretically expected value of zero.
-Likely causes include the remnant dark counts of the detectors\sidenote{
-    On the order of \qty{50}{cps} each.
-    The average count rate during the experiment was $\sim\qty{5.5}{\kilo cps}$ and \qty{5.9}{\kilo cps}.
-}
-and additional decay channels.
+The upper panel of \cref{fig:setup:optics:ingaas:g2} shows the measurement after a total run time of around \qty{17}{\hour} together with a fit to \cref{eq:setup:optics:g2:fit} (magenta line) from which we extract a lifetime of $\gamma\inverse = \qty{430+-11}{\pico\second}$.
+The dashed orange line is the deconvoluted function (\cref{eq:setup:optics:g2:explicit}).
 The lower panel shows the same measurement for logarithmically spaced time lags $\tau$ covering a wider range.
 A peculiar feature shows at $\tau = \qty{13.4}{\nano\second}$, where the measurement suggests a bunching of photons with $\g2(\tau) \approx 2$.
 The origin of this bump is not understood.

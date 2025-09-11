@@ -5,48 +5,95 @@
 # Compiling
 - There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively.
 - Dependencies are included as git submodules
-	- The TeX style is at `lib/kaobook`. 
-	- Fonts not available from CTAN are at `lib/fonts`.
-- To automatically set up the repository to compile with `latexmk`, run `shell/init.{sh,ps1}`. 
+    - The TeX style is at `lib/kaobook`.
+    - Fonts not available from CTAN are at `lib/fonts`.
+- To automatically set up the repository to compile with `latexmk`, run `shell/init.{sh,ps1}`.
   This creates symlinks (copies on Windows) to `$HOME/texmf/tex/latex/kaobook` and `$HOME/texmf/fonts/truetype/LiberationMono/`.
-- Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`
+- ~~Note that the bibliography is included as a remote one by default. To compile without access to my Zotero library, comment/uncomment the lines in `tex/preamble.tex`~~
 - `minted` needs to be installed and Python on `PATH`. If Python is installed as part of the miniforge3 distribution at either `$HOME/miniforge3` or `$LOCALAPPDATA/miniforge3`, this is automatically taken care of when compiling with `latexmk -r windows.latexmkrc`.
+- Once you started the compilation, lay back and relax. Make some tea. Chat with a colleague. It will take a while, and might also not succeed on the first run. If it did not, clean auxiliary files using `latexmk -r [windows,linux].latexmkrc -C` and try again.
 
 # To Dos
 
+- [x] Is "behavior" proper use of English in the context of "optical behavior" etc?
+- [x] Use `\subequations{}` where appropriate
+- [ ] Instrument citations
+- [ ] migrate repo to github
+- [x] migrate `lindblad_mc_tools` repo
+
 ## Content
-- [ ] Acknowledgements / author contributions
- 
-### How to read this thesis
-- [ ] PDF viewer
-- [ ] Image sources
-- [ ] Disjunct parts
+- [ ] Zusammenfassung
+- [ ] Preface
+- [ ] How to read this thesis
+    - [ ] PDF viewer
+    - [ ] Image sources & parameters
+    - [ ] Disjunct parts
+    - [ ] $\mathrm{asinh}$ scale
+- [ ] Acknowledgements
+
+## Feedback
+- [ ] HB
+  - [ ] Part III
+- [ ] DH
+  - [ ] Part I
+  - [ ] Part III
+- [ ] EK
+  - [ ] Part II
+  - [ ] Part III
 
 ### pyspeck
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
 - [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
 - [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
-- [ ] More representative cumulative spectra
-- [ ] Discuss cumulative with dB scale?
+- [x] More representative cumulative spectra
+- [ ] ~~Discuss cumulative with dB scale?~~
 
 ### Setup
-- [ ] Knife edge fit
+- [x] Knife edge fit
 - [x] Spot image fits
-- [ ] Go over derivation in appendix.
-- [ ] Vibration spectra on lab floors?
+- [x] Go over derivation in appendix.
+- [ ] ~~Vibration spectra on lab floors?~~
 - [ ] ~~Indicate noise floor from accelerometer signal conditioner?~~
+- [x] IRF-convoluted $g^{(2)}$ fit
+
+### Experiment
+- [x] author contributions
 
 ### FF
-- [ ] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
-- [ ] `\mathcal{}` for FF, regular for fidelity.
-- [ ] split up `prr.tex`
- 
+- [x] I/we
+- [ ] ~~Hilbert space calculations in appendix~~
+- [x] Parse text for "second order not implemented"
+- [x] Figures, tables, listings
+- [x] `\mathsf{}` for `\Hspace`, `\basis`, `\Lspace`?
+- [x] `\mathcal{}` for FF, regular for fidelity.
+- [x] split up `prr.tex`
+- [x] author contributions
+- [x] discrete FF sampling?
+- [x] Second order concatenation
+- [ ] ~~Master equation~~
+
+## Code
+- [x] `uv pip freeze` *or* just make installable.
+    - [x] Finalize envs
+- [x] Test running all.
+- [x] Add `README`
+- [x] Draft new `filter_functions` release
+- [ ] Draft new `lindblad_mc_tools` release
+- [x] Move and make public `lindblad_mc_tools`
+    - [ ] Add `README`
+- [x] Check `qutil`, `python_spectrometer` releases
+
 ## Layout
-- [ ] Tune the bibliography style
+- [ ] Go over glossary. Are all acronyms necessary?
+- [x] Tune the bibliography style
+    - [x] arXiv IDs
+    - [x] remove "visited on"
+    - [x] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
 - [ ] Part title page design
-- [ ] `\margintoc`?
+- [ ] ~~`\margintoc`?~~
+- [x] Move LOF to end of document.
 
 ## `latexmk`
 
@@ -64,7 +111,7 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
   <details><summary>postscript code</summary>
 
   ```js
-  /* 
+  /*
   Thanks chatty:
   https://genai.rwth-aachen.de/app/conversations/6800f383ef384a984672ee4a
   */
@@ -155,10 +202,10 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
     tex.add({ name: 'title', value: title });
   }
   ```
-  
+
   </details>
-   
-  This does a couple of things. 
+
+  This does a couple of things.
   - First, it protects `$`-delimited math mode (see [here](https://retorque.re/zotero-better-bibtex/exporting/scripting/#detect-and-protect-latex-math-formulas)) in `title` fields.
   - Next, it protects LaTeX macros (`\texttt{}` for example) in `title` fields, but takes care to not nest `<script>` blocks from previous math mode protections.
   - Finally, it replaces `_` underscores.
@@ -177,7 +224,7 @@ If fonts are not found, download and install them in your system:
 Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
 
 ## XeTeX
- 
+
 ### `luaotfload-tool`
 - Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
 
@@ -198,14 +245,14 @@ These diffs should already be applied in the submodule shipped with this reposit
 - `kaorefs.sty`
 
    - `cleveref`
-	 ```diff	 
-	 - \RequirePackage{hyperref}
-	 - \RequirePackage{varioref}
-	 - \RequirePackage{cleveref} % Don't use cleveref! It breaks everything
-	 + \RequirePackage{varioref}
-	 + \RequirePackage{hyperref}
-	 + \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
-	 ```
+     ```diff
+     - \RequirePackage{hyperref}
+     - \RequirePackage{varioref}
+     - \RequirePackage{cleveref} % Don't use cleveref! It breaks everything
+     + \RequirePackage{varioref}
+     + \RequirePackage{hyperref}
+     + \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
+     ```
 See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
 
    - Commented out the line

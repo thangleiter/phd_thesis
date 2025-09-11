@@ -1,20 +1,22 @@
 %----------------------------------------------------------------------------------------
 %    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
-
 % Choose the language
 \ifxetexorluatex
     \usepackage{polyglossia}
     \setmainlanguage[variant=american]{english}
+    \setotherlanguage{german}
 \else
     \usepackage[english]{babel} % Load characters and hyphenation
 \fi
-\usepackage[english=american]{csquotes}    % English quotes
+\usepackage[autostyle=true,english=american]{csquotes}    % English quotes
 
 % Load the bibliography package
 \PassOptionsToPackage{
     natbib=true,
+    url=false,
     datamodel=software,
+    maxbibnames=15,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
 
@@ -30,15 +32,15 @@
 \addbibresource[label=ownpubs]{bib/00_own_publications.bib}
 \addbibresource[label=ownsoft]{bib/01_own_software.bib}
 \addbibresource[label=main]{bib/02_phd_thesis.bib}
-%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;name:My%20Library/collection/00_own_publications.biblatex.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/01_own_software.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/02_phd_thesis.biblatex&useJournalAbbreviation=true}
-%\addbibresource[label=filter_function_paper,location=remote]{http://127.0.0.1:23119/better-bibtex/export/collection?/1/03_filter_function_paper.biblatex&useJournalAbbreviation=true}
+\addbibresource[label=thesispubs]{bib/03_thesis_publications.bib}
+%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9DZH4WT9/00_own_publications.biblatex}
+%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9JGLAL7M/01_own_software.biblatex}
+%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:EHEBFZ3Q/02_phd_thesis.biblatex}
+%\addbibresource[label=thesispubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:CTNSY4GR/03_thesis_publications.biblatex}
 
 %----------------------------------------------------------------------------------------
 % Custom packages
 %----------------------------------------------------------------------------------------
-%\usepackage{pdfpages}
 \PassOptionsToPackage{
     chapter,%
     cache=true,%
@@ -48,18 +50,6 @@
 \setminted[python]{
     fontfamily=tt,% tt,courier,helvetica
     style=gruvbox-light,%gruvbox-light,github-light,default
-}
-
-\newminted[py]{python}{
-    autogobble=true,%
-    frame=leftline,% none | leftline | topline | bottomline | lines | single
-    fontsize=\small,% normalsize, small, footnotesize
-    linenos=false,
-    firstnumber=last,% line number counts incrementally
-}
-\newmintinline[pyinline]{python}{
-    breaklines,%
-    breakafter=._,%
 }
 
 \usepackage{lettrine}
@@ -84,7 +74,6 @@
     positioning,
     calc,
     angles,
-    quotes,
     shadows,
     decorations.markings
 }
@@ -116,14 +105,18 @@
 \usepackage{chemformula}
 \usepackage{physics}
 \usepackage{siunitx}
-\sisetup{per-mode = single-symbol}
+\sisetup{%
+    per-mode = single-symbol,%
+    list-final-separator = {\text{, and }},%
+    print-unity-mantissa = false,%
+}
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 %! end preamble = math
 %----------------------------------------------------------------------------------------
 % Config
 %----------------------------------------------------------------------------------------
 % Margin TOC
-%\setcounter{margintocdepth}{\sectiontocdepth}
+\setcounter{margintocdepth}{\sectiontocdepth}
 % Use like so:
 % \setchapterpreamble[u]{\margintoc}
 % \chapter{foo}
@@ -134,6 +127,26 @@
 % https://github.com/latex3/hyperref/issues/362
 \AddToHook{cmd/appendix/before}{\crefalias{chapter}{appendix}}
 
+% Add sidenotes to the exceptions for xspace so that macros that end on \xspace don't get a space if followed by \sidenote
+\xspaceaddexceptions{\sidenote}
+
+% Set pdf version, but tectonic still thinks it's 1.5
+% https://tex.stackexchange.com/a/618019
+\ExplSyntaxOn
+\pdf_version_gset:n{2.0}
+\pdf_uncompress: % to check the pdf
+\ExplSyntaxOff
+
+% Make "Figure X.Y" link back to the list of figures
+\DeclareCaptionLabelFormat{linked}{\hyperref[lof]{#1~#2}}
+\captionsetup[figure]{labelformat=linked}
+
+% Hyphenation rules
+\begin{hyphenrules}{english}
+    \hyphenation{Lo-rentz-ian}
+    \hyphenation{Gauss-ian}
+    \hyphenation{Cou-lomb}
+\end{hyphenrules}
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
@@ -169,22 +182,34 @@
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
 \includeonly{
-    tex/publications,
-    tex/software,
-%    chs/spectrometer/introduction,
-%    chs/spectrometer/theory,
-%    chs/spectrometer/software,
-%    chs/spectrometer/conclusion,
+    chs/titlepage,
+    chs/summary,
+    chs/acknowledgements,
+    chs/preface,
+    chs/howto,
+    chs/publications,
+    chs/software,
+    chs/spectrometer/introduction,
+    chs/spectrometer/theory,
+    chs/spectrometer/software,
+    chs/spectrometer/conclusion,
     chs/setup/introduction,
-    chs/setup/cooling.tex,
-    chs/setup/optics.tex,
+    chs/setup/cooling,
+    chs/setup/optics,
     chs/setup/vibrations,
     chs/setup/conclusion,
-    chs/appendices/setup/optics,
-    chs/appendices/setup/vibrations,
-%    chs/filter_functions/introduction,
-%    chs/filter_functions/prr,
-%    chs/filter_functions/time_domain_methods,
-%    chs/filter_functions/validation,
-%    chs/appendices/filter_functions,
+    chs/experiment/introduction,
+    chs/experiment/theory,
+    chs/experiment/mjolnir,
+    chs/experiment/observations,
+    chs/experiment/conclusion,
+    chs/filter_functions/introduction,
+    chs/filter_functions/formalism,
+    chs/filter_functions/validation,
+    chs/filter_functions/software,
+    chs/filter_functions/applications,
+    chs/filter_functions/conclusion,
+    chs/appendices/setup,
+    chs/appendices/experiment,
+    chs/appendices/filter_functions,
 }

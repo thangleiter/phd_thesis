@@ -49,7 +49,7 @@ mathtext.fontset: custom  # Should be 'dejavusans' (default),
                        # the special name "regular" for the same font
                        # used in regular text.
 
-axes.formatter.use_locale : True  ## When True, format tick labels
+axes.formatter.use_locale : False  ## When True, format tick labels
                                    ## according to the user's locale.
                                    ## For example, use ',' as a decimal
                                    ## separator in the fr_FR locale.
@@ -73,9 +73,10 @@ axes.prop_cycle: cycler('color', ['00549f', 'e30066', '57ab27', 'f6a800', '0098a
                   # See also https://matplotlib.org/stable/tutorials/intermediate/color_cycle.html
                   # for more details on prop_cycle usage.
 axes.xmargin : 0  # x margin. See `axes.Axes.margins`
+axes.titlesize:     medium   # font size of the axes title
 
 #### SAVING FIGURES
-savefig.dpi:         600   # figure dots per inch or 'figure'
+savefig.dpi:         1200  # figure dots per inch or 'figure'
 savefig.bbox:        tight # {tight, standard}
                            # 'tight' is incompatible with generating frames
                            # for animation
@@ -83,5 +84,5 @@ savefig.transparent: True  # setting that controls whether figures are saved wit
 
 ### pgf parameter
 pgf.rcfonts : False
-pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase]{Liberation Mono}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}\usepackage{hyperref}\hypersetup{colorlinks=false,hidelinks=true}
+pgf.preamble : \usepackage{amssymb}\usepackage[force]{filehook}\usepackage{unicode-math}\usepackage{newcomputermodern} \usepackage[ScaleRM=1.04,mono=false]{libertinus}\setmonofont[Scale=MatchLowercase,SmallCapsFeatures={Renderer=Basic},Extension=.ttf,UprightFont=*-Regular,ItalicFont=*-Italic, BoldFont=*-Bold,BoldItalicFont=*-BoldItalic]{LiberationMono}\setmathfont[range=\mathcal]{NewComputerModernMath}\usepackage{physics}\usepackage{siunitx}\sisetup{per-mode=single-symbol,mode=text,reset-text-family=false,reset-text-series=false,reset-text-shape=false}\DeclareSIUnit{\electron}{\ensuremath{e}}\usepackage{hyperref}\hypersetup{colorlinks=false,hidelinks=true}\AtBeginDocument{\RenewCommandCopy\qty\SI}
 pgf.texsystem : lualatex

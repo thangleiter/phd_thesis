@@ -1,7 +1,9 @@
 # %% Imports
 import json
+import os
 import pathlib
 import sys
+from unittest.mock import patch
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -26,6 +28,7 @@ from common import (  # noqa
     MAINSTYLE, MARGINSTYLE, MARGINWIDTH, PATH, TEXTWIDTH, init, markerprops, n_GaAs
 )
 
+EXTRACT_DATA = os.environ.get("EXTRACT_DATA", "False") == "True"
 ORIG_DATA_PATH = pathlib.Path(
     r'\\janeway\User AG Bluhm\Common\GaAs\Hangleiter\characterization\vibrations'
 )
@@ -38,11 +41,13 @@ init(MAINSTYLE, backend := 'qt')
 # %% Functions
 
 
-def to_relative_paths(spect, file, *keys):
-    with io.changed_directory(DATA_PATH):
+def to_relative_paths(spect, file):
+    with io.changed_directory(DATA_PATH), patch('builtins.input', lambda: 'y'):
         spect.savepath = '.'
         spect.relative_paths = True
-        for key in keys:
+
+        data = {}
+        for key in spect.keys():
             # 'x' in the metadata corresponds to 'y' in the thesis.
             spect[key]['comment'] = spect[key]['comment'].replace('x Valhalla puck ', '')
             spect[key]['comment'] = spect[key]['comment'].replace('Optical gate x ', '')
@@ -55,9 +60,14 @@ def to_relative_paths(spect, file, *keys):
                     cls=NumpyJSONEncoder
                 )
             spect.reprocess_data(key, save='overwrite')
-        for key in set(spect.keys()).difference(spect._parse_keys(*keys)):
-            spect.drop(key)
-        spect.serialize_to_disk(file, verbose=True)
+            data[(key[0], spect[key]['comment'])] = spect[key]
+
+        # Update plot with overridden settings
+        spect.drop('all')
+        spect._data.update(data)
+        for key in spect.keys():
+            spect._plot_manager.add_new_line_entry(key)
+        spect.show('all')
 
 
 # %%% Accelerometer
@@ -108,8 +118,8 @@ def cps_calib(cts, fs, pos_vs_cps_calibration, **_):
     return pos_vs_cps(cts*fs, *pos_vs_cps_calibration)
 
 
-def erf_theory(x, I0, w0, x0, r):
-    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - r)*special.erf((x - x0)*np.sqrt(2)/w0))
+def erf_theory(x, I0, w0, x0, R):
+    return 0.5*I0*w0*np.sqrt(0.5*np.pi)*(1 - (1 - R)*special.erf((x - x0)*np.sqrt(2)/w0))
 
 
 # %% Calibrations
@@ -165,7 +175,7 @@ popt_posvdc, pcov_posvdc = np.polyfit(vdc_calib, unp.nominal_values(position), 1
                                       w=1/unp.std_devs(position))
 
 # %%%% Count rate calibration
-ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5')
+ds = xr.load_dataset(DATA_PATH / 'vdc_calibration.h5', engine='h5netcdf')
 count_rate = ds.counter_countrate
 # 'y_axis' somewhat surprisingly correctly corresponds to 'y' in the thsis.
 x = count_rate['positioners_y_axis_voltage']
@@ -273,7 +283,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
                    functools.partial(pos_vs_vdc, a=popt_posvdc[0], b=popt_posvdc[1]))
     )
     ax2.sharex(axs[0])
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
     ax.set_yticks([2, 3, 4])
@@ -287,23 +297,24 @@ x = np.linspace(-1.5, 1.5, 1001)
 I0 = 2
 w0 = .3
 x0 = 0
-r = 0.2
+R = 0.2
 N = I0*w0*np.sqrt(0.5*np.pi)
 
 with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig, ax = plt.subplots(layout='constrained')
 
-    ax.plot(x, erf_theory(x*w0, I0, w0, x0, r) / N)
+    ax.plot(x, erf_theory(x*w0, I0, w0, x0, R) / N)
 
     ylim = ax.get_ylim()
-    ax.plot(x, (-I0*(1-r)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
+    ax.plot(x, (-I0*(1-R)*x*w0 + 0.5*N) / N, ls='--', color=RWTH_COLORS_75['black'])
     ax.set_ylim(ylim)
 
     ax.grid()
     ax.margins(x=0)
-    ax.set_yticks([r/2, 0.5, 1-r/2], [r'$\frac{r}{2}$', r'$\frac{1}{2}$', r'$1-\frac{r}{2}$'],
+    ax.set_yticks([R/2, 0.5, 1-R/2],
+                  [r'$\frac{\mathrm{r}_0}{2}$', r'$\frac{1}{2}$', r'$1-\frac{\mathrm{r}_0}{2}$'],
                   va='center')
-    ax.set_ylabel(r'$P_R(y) / (I_0 w_0 \sqrt{\pi/2})$')
+    ax.set_ylabel(r'$P_{\mathrm{r}}(y) / (I_0 w_0 \sqrt{\pi/2})$')
 
     match mpl.get_backend():
         case 'pgf':
@@ -314,6 +325,7 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     fig.savefig(SAVE_PATH / 'knife_edge_theory.pdf')
 
 # %%% Full knife-edge fit
+x = count_rate['positioners_y_axis_voltage']
 xx = pos_vs_vdc(x, *popt_posvdc)
 yy = y1.mean('counter_time_axis')
 sxx = [xx - pos_vs_vdc(x, *(popt_posvdc - np.sqrt(np.diag(pcov_posvdc)))),
@@ -322,12 +334,12 @@ syy = y1.std('counter_time_axis') / np.sqrt(count_rate.sizes['counter_time_axis'
 
 # GaAs @ 800 nm
 n = n_GaAs(30e-3)
-r = abs((n - 1) / (n + 1))**2  # at 30 mK
+R = abs((n - 1) / (n + 1))**2  # at 30 mK
 
 knife_edge_data = odr.RealData(xx, yy, sx=np.average(sxx, axis=0), sy=syy)
 knife_edge_model = odr.Model(lambda beta, x: erf_theory(-x, *beta))
 
-knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r], ifixb=[1, 1, 1, 1])
+knife_edge_fit = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R], ifixb=[1, 1, 1, 1])
 knife_edge_output = knife_edge_fit.run()
 if 'Sum of squares convergence' not in knife_edge_output.stopreason:
     knife_edge_output = knife_edge_fit.restart(100)
@@ -336,9 +348,9 @@ fitpar = unp.uarray(knife_edge_output.beta, knife_edge_output.sd_beta)
 
 print('Knife edge fit results:')
 print(f'w_0 = {fitpar[1]:.3g} μm')
-print(f'r = {fitpar[3]:.3g}')
+print(f'R = {fitpar[3]:.3g}')
 
-knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, r],
+knife_edge_fit_rfix = odr.ODR(knife_edge_data, knife_edge_model, beta0=[5, 1, 0, R],
                               ifixb=[1, 1, 1, 0])
 knife_edge_output_rfix = knife_edge_fit_rfix.run()
 if 'Sum of squares convergence' not in knife_edge_output_rfix.stopreason:
@@ -362,9 +374,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     ylim = ax.get_ylim()
     ax.plot(xtmp, erf_theory(-xtmp, *unp.nominal_values(fitpar_rfix)), ls='--',
-            color=RWTH_COLORS_75['magenta'], zorder=5)
+            color=RWTH_COLORS_50['magenta'], zorder=5)
 
-    ax.set_ylabel(r'$\Phi_R$ (Mcps)')
+    ax.set_ylabel(r'$\Phi_{\mathrm{r}}$ (Mcps)')
     ax.set_xlabel(r'$y - \langle y\rangle$ (μm)')
     ax.grid()
     ax.set_yticks([2, 3, 4])
@@ -372,11 +384,39 @@ with mpl.style.context(MARGINSTYLE, after_reset=True), changed_plotting_backend(
 
     fig.savefig(SAVE_PATH / 'knife_edge_erf.pdf')
 
-# %% Load spects
-with io.changed_directory(DATA_PATH), changed_plotting_backend('qtagg'):
-    spect_accel = Spectrometer.recall_from_disk('spectrometer_odin_puck', savepath='.')
-    spect_optic = Spectrometer.recall_from_disk('spectrometer_photon_counting_23-09-06',
-                                                savepath='.')
+# %% Get data
+files_accel = [
+    'spectrometer_data_2023-05-30_18-36-51_x_Valhalla_puck_PTR_on_cold_head_resting_suspension_off.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-55-08_x_Valhalla_puck_PTR_on_cold_head_resting_suspension_on.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-57-31_x_Valhalla_puck_PTR_off_cold_head_resting_suspension_off.npz',  # noqa
+    'spectrometer_data_2023-05-31_09-53-49_x_Valhalla_puck_PTR_off_cold_head_resting_suspension_on.npz'  # noqa
+]
+files_optic = [
+    'spectrometer_data_2023-09-06_18-49-15_Optical_gate_x_PTR_on_suspension_off.npz',
+    'spectrometer_data_2023-09-06_19-12-16_Optical_gate_x_PTR_on_suspension_on.npz',
+    'spectrometer_data_2023-09-06_18-45-06_Optical_gate_x_PTR_off_suspension_off.npz',
+    'spectrometer_data_2023-09-06_19-10-56_Optical_gate_x_PTR_off_suspension_on.npz'
+]
+if EXTRACT_DATA:
+    files_accel = [ORIG_DATA_PATH / file for file in files_accel]
+    files_optic = [ORIG_DATA_PATH / file for file in files_optic]
+else:
+    files_accel = [DATA_PATH / file for file in files_accel]
+    files_optic = [DATA_PATH / file for file in files_optic]
+
+spect_accel = Spectrometer(savepath=DATA_PATH)
+spect_optic = Spectrometer(savepath=DATA_PATH)
+for file in files_accel:
+    spect_accel.add_spectrum_from_file(file, show=False)
+for file in files_optic:
+    spect_optic.add_spectrum_from_file(file, show=False)
+
+if EXTRACT_DATA:
+    to_relative_paths(spect_accel, 'spectrometer_odin_puck')
+    to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06')
+else:
+    spect_accel.show('all')
+    spect_optic.show('all')
 
 spects = [spect_accel, spect_optic]
 
@@ -428,10 +468,6 @@ for typ, spect in zip(['spect_accel', 'spect_optic'], spects):
 # spect_optic.ax[1].set_ylim(0)
 spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
 spect_accel.ax[1].set_yticks([0, 5, 10])
-
-# %%% Resave
-# to_relative_paths(spect_accel, 'spectrometer_odin_puck', 2, 3, 4, 5)
-# to_relative_paths(spect_optic, 'spectrometer_photon_counting_23-09-06', *spect_optic.keys())
 
 # %% Plot
 data = spect_optic[0]

@@ -12,7 +12,7 @@ However, several factors, both passive and active, introduce additional heat loa
     These introduce thermal links between the sample and higher temperature stages as well as add noise that raises the electron temperature in the sample.
     \item \label{itm:setup:cooling:positioners}
     Wiring and operation of the \positioner nanopositioners.
-    The nanopositioners require special low-impedance connections to ensure a large enough bandwidth for the stick-slip mode of operation.
+    The nanopositioners require special low-impedance connections to ensure a large enough bandwidth for the slip-stick mode of operation.
     Moreover, the resistive position readout introduces additional heating.
     \item \label{itm:setup:cooling:optical}
     Optical access.
@@ -33,7 +33,7 @@ Then, in \cref{sec:setup:cooling:etemp}, I present measurements of the \emph{ele
 The base temperature (\Tmxc) can be read out from the resistance bridge connected to the gas handling PC controlling the cryostat.
 Two different thermometers are installed on the mixing chamber, a Cernox\textsuperscript{\textregistered} sensor that works in the range from room temperature down to around \qty{2}{\kelvin} for cooldown, and a \ch{RuO_2} sensor that works from \qty{30}{\kelvin} down to the Millikelvin regime for base temperature operation.
 The resistance bridge performs a four-terminal measurement of the sensor resistance and converts it to a temperature according to a sensor-specific calibration $\Tmxc(R_{\ch{RuO_2}})$.
-Since the particular sensor installed in our system was only calibrated down to \qty{30}{\milli\kelvin}, I had to extrapolate the calibration curve as the system reaches lower temperatures than this, and hence the temperatures below this threshold quoted here are not guaranteed to be correct.
+Since the particular sensor installed in the system was only calibrated down to \qty{30}{\milli\kelvin}, I had to extrapolate the calibration curve as the system reaches lower temperatures than this, and hence the temperatures below this threshold quoted here are not guaranteed to be correct.
 
 \begin{marginfigure}
     \centering
@@ -51,7 +51,7 @@ To investigate the influence of ambient thermal radiation entering the cryostat 
 The windows (\thewindow) are made from UV fused silica with \gls{ar} coating.\sidenote{
     Depending on the manufacturer, the coating for the range \qtyrange{650}{1050}{\nano\meter} is called \acrshort{bbar} VIS-\acrshort{nir} or \acrshort{bbar}-B.
 }
-The manufacturer quotes a typical reflectance of \qty{0.25}{\percent} in the relevant wavelength range, while the glass is largely transmissive for wavelengths below $\lambda_{\mr{cutoff}}\sim\qty{4.5}{\micro\meter}$.
+The manufacturer quotes a typical reflectance of \qty{0.25}{\percent} in the relevant wavelength range of \qtyrange{700}{1000}{\nano\meter}, while the glass is largely transmissive for wavelengths below $\lambda_{\mr{cutoff}}\sim\qty{4.5}{\micro\meter}$.
 Since the spectral radiance of thermal black-body radiation~\cite{Planck1900}
 \begin{equation}\label{eq:setup:cooling:blackbody}
     B_\lambda(\lambda, T) = \frac{2 h c^2}{\lambda^5}\frac{1}{\exp(\flatfrac{hc}{\lambda\kb T}) - 1}
@@ -89,7 +89,7 @@ As the samples are flip-chip bonded, light that is transmitted through the chip 
 Thus, to be precise, I measured $A+T$ this way, where $T$ is the transmittance, assuming that light that exits the membrane will be absorbed \emph{somewhere} and contribute to heating.
 I will nonetheless refer to the measured quantity as simply $A$.
 
-With the power meter mounted in the transmission direction of the excitation arm of the optical head (\cf \cref{fig:setup:optics:optical_path}), I measured the amount of power directed towards the sample by scaling the measured power with the ratio of transmittance and reflectance of the \gls{bs}, $T\div R\approx\num{15}$.
+With the power meter mounted in the transmission direction of the excitation arm of the optical head (\cf \cref{fig:setup:optics:optical_path}), I measured the amount of power directed towards the sample by scaling the measured power with the ratio of transmittance and reflectance of the \gls{bs}, $\transmittance\div\reflectance\approx\num{15}$.
 Assuming negligible losses on the way towards the sample, I then recorded the mixing chamber temperature as function of laser power.
 To relate that change in temperature to a heat load $\dot{Q}$ deposited on the sample, I calibrated the cooling power of the \gls{dr} using the built-in heaters.
 Setting a heater power and waiting for the mixing chamber temperature to settle thus yields the cooling power $P_{\mr{cool}}$ as function of temperature \Tmxc, which is expected to follow the quadratic relationship~\cite{DeWaele2011}
@@ -160,7 +160,7 @@ transition~\cite{Maradan2014} or the width of the inter-dot transition in a doub
 Simpler still, one can measure the width of a Coulomb resonance in the conductance through a \gls{qd}~\cite{Ihn2009,Maradan2014}.
 All of these methods rely on some form of energy reference scale that relates the energy of an electron confined in a \gls{qd} to some externally controlled parameter such as a voltage, however.
 Typically this is the so-called \emph{lever arm} $\alpha$, which is the constant of proportionality between the plunger gate voltage and the electrochemical potential $\mu_N$ for adding the $N$th electron to the quantum dot~\cite{Ihn2009}.
-It can be measured using photon-assisted tunneling~\cite{Kouwenhoven1994} or finite-bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}, for example.
+It can be measured using pulsed-gate spectroscopy~\cite{Fujisawa2001,Harbusch2010}, photon-assisted tunneling~\cite{Kouwenhoven1994}, or finite-bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}, for example.
 
 \begin{marginfigure}
     \centering
@@ -243,7 +243,7 @@ Their sign depends on the tunnel coupling of the state to source and drain~\cite
     \includegraphics{img/pdf/setup/coulomb_resonance}
     \caption[\imgsource{img/py/setup/transport.py}]{
         Conductance of a Coulomb resonance in the sequential tunneling regime.
-        Magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
+        The magenta line is a fit to \cref{eq:setup:cooling:etemp:resonance} with $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV}$.
     }
     \label{fig:setup:cooling:etemp:resonance}
 \end{marginfigure}
@@ -259,7 +259,7 @@ For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}
 in linear response (small bias).
 Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
 The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
-From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-10]{
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin} = \qty{6.5}{\micro\eV}/\kb$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}\times\kb$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-9]{
     In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
     The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
     \begin{equation*}
@@ -271,3 +271,4 @@ From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin}$ and $
     \end{equation*}
     The precise physical mechanism behind this behavior is not understood.
 }
+The achieved electron temperature is therefore low enough for high-fidelity qubit experiments with energy splittings $\sim\qty{100}{\micro\eV}$.

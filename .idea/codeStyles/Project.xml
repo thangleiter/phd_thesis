@@ -8,5 +8,12 @@
         <option name="SMART_TABS" value="true" />
       </value>
     </option>
+    <Python>
+      <option name="OPTIMIZE_IMPORTS_SORT_NAMES_IN_FROM_IMPORTS" value="true" />
+      <option name="OPTIMIZE_IMPORTS_JOIN_FROM_IMPORTS_WITH_SAME_SOURCE" value="true" />
+    </Python>
+    <codeStyleSettings language="Python">
+      <option name="SOFT_MARGINS" value="72,79,99" />
+    </codeStyleSettings>
   </code_scheme>
 </component>
