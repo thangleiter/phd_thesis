@@ -185,7 +185,7 @@ Here, the instrument is armed (if necessary), and subsequently data is fetched f
 An exemplary implementation of a \code{DAQ} subclass for a fictitious instrument is shown in \cref{lst:speck:daq:pseudocode}.
 In addition to the methods to configure the instrument and perform data acquisition, it is possible to override the \code{DAQSettings} property to implement instrument-specific hardware constraints such as, in this example, the number of samples per buffer being constrained to the discrete interval $[1, 2048]$.
 Leveraging the \code{qutil.domains} module~\cite{Hangleiter_qutil}, more complex constraints such as sample rates restricted to an internal clock rate divided by a power of two\sidenote{
-    See for example the implementation of the \href{https://git.rwth-aachen.de/qutech/python-spectrometer/-/blob/main/src/python_spectrometer/daq/atsaverage.py}{AlazarTech ATS9440} digitizer card.
+    See for example the implementation of the \href{https://git.rwth-aachen.de/qutech/python-spectrometer/-/blob/v2025.9.1/src/python_spectrometer/daq/atsaverage.py}{AlazarTech ATS9440} digitizer card.
 }
 can be specified.
 

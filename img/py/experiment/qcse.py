@@ -531,6 +531,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.7, 1.05)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     # Valence band
     ax = axs[1]
@@ -545,6 +546,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.0, -0.65)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     sketch_style(fig, axs)
     fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')
@@ -574,6 +576,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.675, 1.175)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     # Valence band
     ax = axs[1]
@@ -589,6 +592,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.125, -0.625)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     sketch_style(fig, axs)
     fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')
