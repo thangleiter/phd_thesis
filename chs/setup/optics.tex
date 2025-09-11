@@ -72,7 +72,7 @@ From \cref{eq:setup:optics:coupling:gaussian:divergence} we find, by setting $w 
     w_0 \approx \frac{\lambda f}{\pi w}
 \end{equation}
 where $w$ is the beam radius at the focusing lens.\sidenote{
-    Note that this disregards diffraction at the aperture and is thus only a good approximation for a \acrshort{ca} well larger than $w$.
+    Note that this disregards diffraction at the aperture and is thus only a good approximation for a \gls{ca} well larger than $w$.
 }
 For non-Gaussian beams one typically assumes a flattop profile whose diffraction pattern is given by~\cite{Hecht2017},
 \begin{equation}\label{eq:setup:optics:coupling:flattop:diffraction_pattern}
@@ -282,13 +282,13 @@ Indeed, evaluating \cref{eq:setup:optics:coupling:efficiency:mode_matching} for 
     \eta_{\mr{m}}(E_{\mr{l}}, E_{\mr{g}})\approx\qty{83}{\percent}
 \end{equation}
 for our parameters, slightly better than the naive result using the flattop beam.
-Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittivity of the \gls{bs}, $\transmittance\approx\qty{87}{\percent}$,\sidenote[][*-2]{
+Together with the collection efficiency (\cref{eq:setup:optics:coupling:efficiency:collection}) and accounting for the transmittance of the \gls{bs}, $\transmittance_{\mr{\acrshort{bs}}}\approx\qty{87}{\percent}$,\sidenote[][*-2]{
     \label{sidenote:setup:optics:bs}
     While the specifications of the beamsplitter are $\transmittance\div\reflectance = \qty{90}{\percent}\div \qty{10}{\percent}$, in reality $\transmittance\div \reflectance\approx\qty{87}{\percent}\div \qty{6}{\percent}$ which also varies slightly with polarization.
 }
 the \emph{optical efficiency}~\cite{Sze2007} from sample to fiber is thus
 \begin{equation}\label{eq:setup:optics:coupling:efficiency:optical}
-    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} \transmittance \approx\qty{1.0}{\percent}.
+    \eta_{\mr{o}} = \eta_{\mr{c}}\eta_{\mr{m}} \transmittance_{\mr{\acrshort{bs}}} \approx\qty{1.0}{\percent}.
 \end{equation}
 
 \begin{margintable}[*-3]
@@ -326,7 +326,8 @@ Due to the small intensities when dealing with \gls{pl} emitted from a membrane 
 What can be done rather easily is measure the reflected laser power as it is collected by the objective lens.
 Together with the reflectance obtained from the calibration measurement in \cref{sec:setup:vibrations:optic}, we can then estimate the various efficiencies.
 With the polarizer and analyzer co-polarized for maximum transmission and the laser $s$-polarized \wrt to \gls{bs}1 (\cf \cref{fig:setup:optics:optical_path}), I measured the efficiencies listed in \cref{tab:setup:optics:efficiency:measured}.
-The \enquote{Collection + \gls{bs}1} efficiency corresponds to $Tr$ with $r$ the reflectance of the sample and matches reasonably well the expected value of $r=\abs{(n-1)/(n+1)}^2\approx\qty{32}{\percent}$ for \ch{GaAs}.
+The \enquote{Collection + \gls{bs}1} efficiency corresponds to $\transmittance_{\mr{\acrshort{bs}}}\reflectance_{\mr{S}}$ with $\reflectance_{\mr{S}}$ the reflectance of the sample and matches reasonably well the expected value of $\reflectance_{\mr{S}}=\abs{(n-1)/(n+1)}^2\approx\qty{32}{\percent}$ for \ch{GaAs}.
+In \cref{sec:exp:tmm}, I analyze the reflectance of membrane samples in more detail using \gls{tmm} simulations and find thin-film interference effects should should actually decrease the bare sample reflectance around \qty{20}{\percent}.
 The transmittance of the analyzer (a nanoparticle linear film polarizer~\cite{ThorlabsLPVIS050-MP2}) is lower than expected from the datasheet, which quotes around \qty{80}{\percent} at \qty{800}{\nano\meter}.
 Coupling into the \gls{smf} (\enquote{Detection fiber}) is significantly worse than expected from the considerations in \cref{subsec:setup:optics:coupling:lenses} for a Gaussian beam.
 Since the beam used to measure the efficiencies is launched from and collimated by the same fiber type and lens as used to collect the light, the coupling efficiency should theoretically be as large as unity.
@@ -366,10 +367,10 @@ From \cref{eq:setup:optics:coupling:efield:tem00}, we can deduce that a perfect,
 \begin{equation}\label{eq:setup:optics:coupling:intensity:tem00}
     I(x, y) = I(0, 0) \exp\left\lbrace -\frac{2 x^2}{w_{0,x}^2} -\frac{2 y^2}{w_{0,y}^2} \right\rbrace,
 \end{equation}
-where $w_{0,\lbrace x,y\rbrace}$ are the beam waist radii in $x$ and $y$-direction, respectively, which are equal in the perfect case and introduce ellipticity else.
+where $w_{0,x(y)}$ are the beam waist radii in $x$ and $y$-direction, respectively, which are equal in the perfect case and introduce ellipticity else.
 Allowing for ellipticity as well as a rotation of the coordinate system with respect to the axes of the \gls{cmos} camera, we can fit \cref{eq:setup:optics:coupling:intensity:tem00} to the pictures obtained previously.
 The result is shown in \cref{fig:setup:optics:coupling:imaging} for the excitation path in the upper and the detection path in the lower row.
-The first column shows a cropped section of the recorded images, showing good alignment between both spots but also some sidelobes along perpendicular axes rotated by around \qty{45}{\degree} to the camera axes.
+The first column shows a cropped section of the recorded images, showing good alignment (large overlap) between both spots but also some sidelobes along perpendicular axes rotated by around \qty{45}{\degree} to the camera axes.
 This is also reflected in the relative residuals of the fitted spot that clearly shows that the spot is not described only by a Gaussian \TEM{00} mode.
 However, extracting the beam waist radii from the fits and scaling with the magnification factors, which display a slight asymmetry between the two axes, \num{30} to \num{27.4}, we obtain reasonable results between \num{1.4} and \num{2} times larger than the diffraction limit given by the lens geometries, \cf \cref{subsec:setup:optics:coupling:lenses}, as shown in \cref{tab:setup:optics:coupling:imaging}.
 For a more faithful measurement of the spot size one typically performs a knife-edge measurement.
@@ -419,11 +420,11 @@ Previously, a third rotation stage was used to rotate the analyzer, but I found 
     This effect was less pronounced with the unmounted version of the same polarizer, \polarizerunmounted.
     That though introduced significant etaloning with a free spectral range of $\Delta\lambda\approx\lambda^2/2 n l\approx\qty{100}{\pico\meter}$ matching the substrate thickness of $l = \qty{2}{\milli\meter}$~\cite{Ismail2016}.
 }
-Furthermore, the optics behind the analyzer such as the diffraction grating have polarization-dependent properties so that it is in any case a good idea to fix the plane of polarization.
+Furthermore, the optics behind the analyzer such as the diffraction grating have polarization-dependent properties so that it is in any case a good idea to fix the plane of polarization of the detection path after the analyzer.
 I therefore used only the waveplates on the excitation arm to fine-tune the excitation rejection, which is not ideal since the same argument as before naturally also applies to the optics behind these, such as the beam splitter whose ratio is polarization dependent.
 It is hence advisable to insert another \halfwave plate on a rotation stage before the analyzer and use it together with the \quarterwave plate for rejection control as indicated in \cref{fig:setup:optics:optical_path}.
 
-To analyze the properties of the excitation rejection, I measured the \gls{od} as a function of the relative waveplate angles $\Delta\phi_{\lbrace\halfwave,\quarterwave\rbrace}$.
+To analyze the properties of the excitation rejection, I measured the \gls{od} as a function of the relative waveplate angles $\Delta\phi_{\halfwave(\quarterwave)}$.
 The \gls{od} is defined as
 \begin{equation}\label{eq:setup:optics:od}
     \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right) = \log_{10}\left(\frac{1}{\transmittance}\right),
@@ -445,16 +446,16 @@ Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subse
     \label{fig:setup:optics:rejection}
 \end{figure}
 
-\Cref{fig:setup:optics:rejection} shows the measurement when the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
+\Cref{fig:setup:optics:rejection} shows a measurement for which the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
 The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate changes the plane of polarization, so the \quarterwave plate should need to be rotated by the same amount to retain a constant angle between plane of polarization and fast axis of the waveplate).
 The \gls{od} reaches maximum values around \num{6.4} -- corresponding to an extinction ratio of \num{2.5e6} -- but quickly falls off by more than an order of magnitude even for small angular displacements.\sidenote{
     The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016}.
 }
-Qualitatively, one finds that close to the extinction maximum, the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
+Qualitatively, one finds that close to the extinction maximum (maximal \gls{od}), the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
 \begin{equation}
     \dot{\Phi}_{\mr{t}} = \bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0
 \end{equation}
-with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$, and $R(\theta)$ a rotation matrix.
+with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$ and $R(\theta)$ a rotation matrix.
 Inserting into \cref{eq:setup:optics:od:eval} yields
 \begin{equation}\label{eq:setup:optics:od:fit}
     \OD = \log_{10}\left(\frac{P \reflectance\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
@@ -478,6 +479,15 @@ This so-called photon \emph{anti-bunching} behavior\sidenote{
 }
 can be measured with a \gls{hbt} interferometer and serves as a fingerprint of single-photon source behavior.
 
+The \gls{hbt} interferometer consists of a symmetric ($\transmittance :\reflectance=\num{50}:\num{50}$) \acrlong{bs} with \glspl{spcm} on each exit port.
+Photons incident on the \gls{bs} will be transmitted and reflected with equal probability, and either the detectors at each output will register the photons (a \enquote{click}).
+If the distribution of arrival times of the incident photons is Poissonian, the times at which the two detectors will click will be uncorrelated, and hence the distribution of time differences between clicks on either detector will be uncorrelated as well.
+This is the classical case.
+In the case of sub- or super-Poissonian photon statistics, the click rate will be reduced or enhanced for a time difference at zero, implying that two photons are less or more likely to arrive at the same time, respectively.
+The latter case corresponds to thermal light and \emph{photon bunching}.
+Here, two photons are more likely to arrive in pairs at exactly the same time.
+The former case is that of a single-photon source; once it has emitted a photon, a finite amount of time will pass before it can emit another, and hence the two detectors can never register a click at the same time.
+
 \begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/ingaas_pl}
@@ -494,7 +504,7 @@ The brightest line at $\qty{1.4212}{\eV} = \qty{872.39}{\nano\meter}$ has a widt
 }
 resolution limit of around \qty{5}{pm}.
 To perform a \g2 experiment, light emitted by the source is spectrally filtered using the \thespectrometer diffraction grating spectrometer and sent through a 50:50 \gls{bs} with an \thespcm \gls{spcm} on each exit port.
-The clicks from the detectors are time-correlated using a counting card (\tagger), computing the second-order coherence function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
+The clicks from the detectors are time-correlated using a counting card (\tagger), computing the second-order correlation function~\cite{Kimble1976,Walls1979,Cohen-Tannoudji1998}
 \begin{equation}
     \g{2}(\tau) = \frac{\expval{\hat{n}_1(t)\hat{n}_2(t + \tau)}}{\expval{\hat{n}_1(t)}\expval{\hat{n}_2(t)}},
 \end{equation}
@@ -504,9 +514,9 @@ For a weakly excited artificial atom and in the absence of dephasing, one expect
     \g{2}(\tau) = \left[1 - \exp(-\flatfrac{\tau\gamma}{2})\right]^2,
 \end{equation}
 where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $T_1\inverse$ of the excited state.
-Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and one fits a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data instead.
+Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and one typically fits a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data instead.
 Ideally, the \gls{irf} would be measured using a pulsed laser source.
-In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote{
+In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote[][*-7]{
     Realistically, the true \gls{irf} of the \glspl{spcm} will be some asymmetric rather than a symmetric normal distribution.
     This was also observed in the pulsed Stark-shift experiment in \citer{Descamps2023}.
 }
@@ -524,7 +534,7 @@ with
 \end{align}
 where $\Phi(z) = (\flatfrac{1}{2})\left[1 + \erf\left(z/\sqrt{2}\right)\right]$ is the the Gaussian cumulative distribution function.
 
-\begin{marginfigure}[*-7]
+\begin{marginfigure}[*-15]
     \centering
     \includegraphics{img/pdf/setup/ingaas_g2}
     \caption[\imgsource{img/py/setup/g2.py}]{
@@ -547,5 +557,5 @@ Assuming a refractive index of $n=\num{1.4}$ for a typical \gls{smf} results in 
 What can be said is that it is related to the setup rather than a physical process in the sample since the feature also appeared in \g2 measurements on different samples.
 For measurements such as the one performed here, though, this effect may safely be treated as a measurement artefact and ignored.
 Only in case the characteristic decay time $\gamma\inverse$ approached \qty{10}{\nano\second} this would need to be investigated more carefully.
-Finally, I note that the dependence of the integrated peak power on excitation power for this line was superlinear, suggesting an excitonic complex rather than the natural exciton as the source of emission.
+Finally, I note that the dependence of the integrated peak power on excitation power for this line was superlinear, suggesting an excitonic complex rather than the neutral exciton as the source of emission.
 The line at \qty{1.4196}{\eV} did show a linear relationship and produced qualitatively the same \g2 results.

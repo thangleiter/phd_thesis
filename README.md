@@ -17,9 +17,10 @@
 
 - [x] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [x] Use `\subequations{}` where appropriate
-- [ ] Instrument citations
+- [ ] Instrument citations?
 - [ ] migrate repo to github
 - [x] migrate `lindblad_mc_tools` repo
+- [ ] Read II.3 and II.4 once again.
 
 ## Content
 - [ ] Zusammenfassung
@@ -38,7 +39,7 @@
   - [ ] Part I
   - [ ] Part III
 - [ ] EK
-  - [ ] Part II
+  - [x] Part II
   - [ ] Part III
 
 ### pyspeck
@@ -91,7 +92,7 @@
     - [x] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
-- [ ] Part title page design
+- [ ] Part title page design?
 - [ ] ~~`\margintoc`?~~
 - [x] Move LOF to end of document.
 
