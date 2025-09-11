@@ -84,6 +84,7 @@
 - [x] Check `qutil`, `python_spectrometer` releases
 
 ## Layout
+- [ ] Go over glossary. Are all acronyms necessary?
 - [x] Tune the bibliography style
     - [x] arXiv IDs
     - [x] remove "visited on"

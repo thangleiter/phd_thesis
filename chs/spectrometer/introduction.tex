@@ -39,7 +39,7 @@ If the amplitude is small enough, we might not need to care, and if the frequenc
 Although numerous other techniques for measuring and estimating a noise's properties exist, analyzing noise in frequency space by means of the Fourier transform imposes itself when considering these two notions.
 
 This approach is the central topic of \thispart.
-However, we will neither be too much concerned with the theoretical side of the subject matter nor with the details of its practical application in identifying and mitigating noise.\sidenote{
+However, I will neither be too much concerned with the theoretical side of the subject matter nor with the details of its practical application in identifying and mitigating noise.\sidenote{
     I refer the interested reader to the lecture material of \citerr{Bluhm2021}{Bluhm2022} and references therein.
 }
 Rather, I will focus on making these techniques readily and easily accessible to experimentalists in the lab.
@@ -60,6 +60,7 @@ By abstracting \gls{daq} hardware into a unified interface, it is portable betwe
 With the goal to make noise spectroscopy as accessible as possible and lower the entry barrier, it automatically handles parameter inference and hardware constraints.
 Finally, it provides a comprehensive plotting solution that allows for interactively analyzing the data using various different data visualization methods.
 I will employ the tool to perform displacement noise spectroscopy in a cryogenic confocal microscope in \cref{part:setup} using two different methods that highlight its versatility.
+As such, \thispart is intended to serve as an introduction to noise spectroscopy and the \pyspeck software package presented here aimed at potential users.
 
 The remainder of this part is structured as follows.
 In \cref{ch:speck:theory}, I review the mathematical groundwork underpinning noise spectroscopy by means of Fourier transforms of time series and discuss parameters and properties of the central quantity of interest, the \gls{psd}.
