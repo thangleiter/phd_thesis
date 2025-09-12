@@ -384,6 +384,18 @@ Curiously, the map also shows a shifting of the Fermi edge close to the gate.
 This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
 The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
 
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/sem}
+    \caption[\imgsource{img/py/experiment/sem.py}]{
+        \acrshort{sem} image of an exciton trap with both central and guard gates.
+        Gates on the bottom side are visible through the membrane.
+        Positions (symbolic) of the line cuts in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} are indicated in the same colors.
+        Images taken by Thomas Descamps.
+    }
+    \label{fig:exp:pl:sem}
+\end{marginfigure}
+
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_positioning}
@@ -400,6 +412,7 @@ The former effect could potentially be caused by band-deformation due to strain 
         \Gls{pl} of a large exciton trap as function of position perpendicular (left) and parallel (right) to gravity.
         The trap is biased so that the emission is Stark-shifted towards lower energy.
         Upper panels show line cuts taken along the dash-dotted lines in the lower panels, demonstrating fairly identical behavior along both axes.
+        The cuts in orange, green, and teal are taken at positions corresponding to the ones marked in the bottom panel of \cref{fig:exp:pl:sem}.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_positioning}
 \end{figure}
@@ -409,12 +422,12 @@ While this is not unequivocal proof of zero-dimensional confinement, it does sug
 The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
 Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
 Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
-We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$-direction.
+We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
 Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features, the displayed ranges should be roughly the same.
-The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels.
+The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on a different trap in \cref{fig:exp:pl:sem}.
 Both sweeps display very similar features.
 In the center of the trap (yellow), the Stark-shifted emission line consists of a single peak.
-Towards the edges (turquoise and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
+Towards the edges (teal and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
 The increase in effective electric field towards the edge of an exciton trap is reminiscent of the simulation of the same type of experiment for an undoped \gls{qw} by \citet[Figure~6.4]{Descamps2021}, although it was not explained there.
 Indeed, it also appears to be in conflict with Figure~2.16 \ibid, where a monotonic increase in effective exciton potential as function of distance from the trap center was predicted.
 In the device under study here, there is of course a \gls{2deg} whose presence towards the edge of the trap screens the voltages, in theory contributing to an attenuation of the Stark shift.
