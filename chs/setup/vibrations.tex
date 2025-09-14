@@ -166,7 +166,7 @@ In order to evaluate the vibration level at the sample position, I designed a sm
     \accelerometer kindly lent by Marcus Eßer~\cite{WilcoxonAccel}.
 }
 can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, enabling measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
-The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \gls{sma} connector.
+The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \acrshort{sma} connector.
 Outside of the cryostat, the signal is routed to a signal conditioner that provides the necessary current bias and outputs a voltage which is digitized by a \thedmm \gls{dmm} connected to the measurement computer.
 Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
