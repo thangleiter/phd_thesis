@@ -1,1026 +1,649 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 19 13:09:45 2018
+# %% Imports
+import datetime
+import pathlib
+import os
+import sys
+import time
+from collections import defaultdict
+from itertools import compress
+from typing import Sequence
 
-@author: Tobias Hangleiter (tobias.hangleiter@rwth-aachen.de)
-"""
-from pathlib import Path
-
-import numpy as np
+from cycler import cycler
+import filter_functions as ff
 import matplotlib.pyplot as plt
-import matplotlib.colors as mpc
-from filter_functions import util
-from scipy import odr
-from mpl_toolkits.axes_grid1 import ImageGrid
+import numpy as np
+import quaternion as quat
+import qutil.linalg as qla
+import qutip as qt
+from filter_functions import PulseSequence, util
+from numpy import ndarray
+from numpy.random import permutation, randn
+from qutil.plotting.colors import RWTH_COLORS
+from scipy.integrate import trapezoid
+from scipy.io import loadmat
+from scipy.optimize import curve_fit
+from tqdm import tqdm
 
-from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition)
+sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))  # noqa
 
-plt.style.use('thesis')
-# Hotfix latex preamble
-for key in ('text.latex.preamble', 'pgf.preamble'):
-    plt.rcParams.update({key: '\n'.join(plt.rcParams.get(key).split('|'))})
+from common import MAINSTYLE, TOTALWIDTH, PATH, init, markerprops
 
-golden_ratio = (np.sqrt(5) - 1.)/2.
-figsize_narrow = (3.40457, 3.40457*golden_ratio)
-figsize_wide = (5.65071, 5.65071*golden_ratio)
-exts = ('pdf', 'eps', 'pgf')
-# %% Functions
+LINE_COLORS = list(RWTH_COLORS.values())
+DATA_PATH = PATH.parent / 'data/filter_functions'
+DATA_PATH.mkdir(exist_ok=True)
+SAVE_PATH = PATH / 'pdf/filter_functions'
+SAVE_PATH.mkdir(exist_ok=True)
+RUN_SIMULATION = os.environ.get('RUN_SIMULATION', 'False') == 'True'
 
+init(MAINSTYLE, backend := 'pgf')
 
-def ent_fidelity(gates, target):
-    """Calculate the entanglement fidelity"""
-    d = gates.shape[-1]
-    return util.abs2(np.einsum('...ll', gates @ target.conj().T)/d)
-
-
-def avg_gate_fidelity(gates, target):
-    """Calculate the average gate fidelity"""
-    d = gates.shape[-1]
-    return (d*ent_fidelity(gates, target) + 1)/(d + 1)
+# %% Function definitions
 
 
-def state_fidelity(gates, psi: np.ndarray = None):
+def MC_state_fidelity(gates, psi: ndarray = None):
     """Calculate state fidelity for input state psi"""
     if psi is None:
         psi = np.c_[1:-1:-1]
 
-    fidelity = util.abs2(psi.T @ gates @ psi).squeeze()
+    fidelity = np.abs(psi.T @ gates @ psi).squeeze()
     return fidelity
 
 
-def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
-    '''
-    Function to offset the "center" of a colormap. Useful for
-    data with a negative min and positive max and you want the
-    middle of the colormap's dynamic range to be at zero.
+def run_simulation():
+    def FF_state_infidelity(pulse: PulseSequence, S: ndarray, omega: ndarray,
+                            ind: int = 3) -> float:
+        R = pulse.get_control_matrix(omega)
+        F = np.einsum('jko->jo', ff.util.abs2(R[:, np.delete([0, 1, 2, 3], ind)]))
+        return trapezoid(F*S, omega)/(2*np.pi*pulse.d)
 
-    Input
-    -----
-      cmap : The matplotlib colormap to be altered
-      start : Offset from lowest point in the colormap's range.
-          Defaults to 0.0 (no lower offset). Should be between
-          0.0 and `midpoint`.
-      midpoint : The new center of the colormap. Defaults to
-          0.5 (no shift). Should be between 0.0 and 1.0. In
-          general, this should be  1 - vmax / (vmax + abs(vmin))
-          For example if your data range from -15.0 to +5.0 and
-          you want the center of the colormap at 0.0, `midpoint`
-          should be set to  1 - 5/(5 + 15)) or 0.75
-      stop : Offset from highest point in the colormap's range.
-          Defaults to 1.0 (no upper offset). Should be between
-          `midpoint` and 1.0.
+    def monte_carlo_gate(N_MC: int, S0: float, alpha: float,
+                         f_min: float, f_max: float, dt: ndarray,
+                         coeffs: Sequence[ndarray], seed: int | None = 42, threads: int = 1):
+        """
+        Return N_MC gates with ceil(dt.min()*f_max) noise steps per time step of
+        the gate.
+        """
+        import lindblad_mc_tools as lmt
 
-    https://stackoverflow.com/a/20528097
-    '''
-    cdict = {
-        'red': [],
-        'green': [],
-        'blue': [],
-        'alpha': []
+        # Indices of nonzero control vector components
+        coeff_idx = np.array([coeff is not None for coeff in coeffs])
+
+        samplers = []
+        for i in range(len(coeffs)):
+            if not coeff_idx[i]:
+                samplers.append(None)
+            else:
+                sampler = lmt.noise.FFTSpectralSampler(
+                    N_MC, lmt.noise.PowerLawSpectralFunction(S0[i], -alpha),
+                    dt, f_max=f_max, f_min=f_min, seed=seed, threads=threads
+                )
+                samplers.append(sampler)
+        if all(sampler is None for sampler in samplers):
+            raise RuntimeError
+
+        N_n = sampler.shape[-1] // dt.size
+        dt = np.repeat(dt, N_n)/N_n
+        a = np.zeros((coeff_idx.sum(), N_MC, dt.size))
+
+        i = 0
+        for idx, val in enumerate(coeff_idx):
+            if val:
+                # Control on this pauli vector component
+                a[i] = np.tile(np.repeat(coeffs[idx], N_n), (N_MC, 1)) + samplers[idx]().squeeze()
+                i += 1
+
+        a *= dt/2
+        U = qla.pauli_expm(a, coeff_idx)
+        U_tot = qla.mdot(np.flip(U.transpose([3, 2, 0, 1]), axis=0))
+        return U_tot
+
+    def run_randomized_benchmarking(N_G: int, N_m: int, N_MC: int,
+                                    m_min: int, m_max: int,
+                                    S0: ndarray, alpha: ndarray, omega: ndarray,
+                                    gate_type: str, run_MC: bool = True,
+                                    seed: int | None = 42, threads: int = 1):
+        """
+        Run monte carlo randomized benchmarking with gate independent errors
+        """
+        if run_MC:
+            MC_gates = {a: np.empty((N_m, N_G, N_MC, 2, 2), dtype=complex) for a in alpha}
+
+        FF_infid_tot = {a: np.empty((N_m, N_G, 3), dtype=float) for a in alpha}
+        lengths = np.round(np.linspace(m_min, m_max, N_m)).astype(int)
+        S = np.einsum('an,oa->ano', S0, np.power.outer(1/omega, alpha))
+
+        t_start = time.perf_counter()
+        print(f'Start simulation with {N_m} sequence lengths')
+        print('------------------------------------------------')
+        for m, length in enumerate(lengths):
+            for j in tqdm(range(N_G), desc=f'Sequence length {length}'):
+                randints = np.random.randint(0, len(cliffords[gate_type]), length)
+                cliffs = cliffords[gate_type][randints]
+                # Total RB sequence without inverting gate
+                U_RB = ff.concatenate(cliffs, omega=omega)
+                U_inv = find_inverse(U_RB.total_propagator, gate_type)
+                U_ID = U_RB @ U_inv
+
+                for k, a in enumerate(alpha):
+                    FF_infid_tot[a][m, j] = FF_state_infidelity(U_ID, S[k], omega)
+                    # Run Monte Carlo only on RB sequence since we take the
+                    # inversion gate to be perfect
+                    if not run_MC:
+                        continue
+
+                    match gate_type:
+                        case 'naive':
+                            coeffs = [U_RB.c_coeffs[0], U_RB.c_coeffs[1], None]
+                        case 'zyz':
+                            coeffs = [U_RB.c_coeffs[0], U_RB.c_coeffs[1], None]
+                        case 'single':
+                            coeffs = []
+                            i = 0
+                            for ax in ('X', 'Y', 'Z'):
+                                if ax in U_RB.c_oper_identifiers:
+                                    coeffs.append(U_RB.c_coeffs[i])
+                                    i += 1
+                                else:
+                                    coeffs.append(None)
+                        case 'optimized':
+                            coeffs = [U_RB.c_coeffs[0], None, U_RB.c_coeffs[1]]
+
+                    # Don't forget to append inversion gate
+                    MC_gates[a][m, j] = U_inv.total_propagator @ monte_carlo_gate(
+                        N_MC, S0[alpha.index(a)], a,
+                        1e-2/U_RB.t[-1], 1e2/U_RB.t[-1], U_RB.dt, coeffs,
+                        seed=seed, threads=threads
+                    )
+        print('------------------------------------------------')
+        print(f'Finished simulation in {time.perf_counter() - t_start:2f} s')
+
+        if run_MC:
+            return MC_gates, FF_infid_tot
+        else:
+            return FF_infid_tot
+
+    def find_inverse(U: ndarray, gate_type) -> ndarray:
+        """
+        Function to find the inverting gate to take the input state back to itself.
+        """
+        eye = np.identity(U.shape[0])
+        if util.oper_equiv(U, eye, eps=1e-8)[0]:
+            return Id[gate_type]
+
+        for i, gate in enumerate(permutation(cliffords[gate_type])):
+            if util.oper_equiv(gate.total_propagator @ U, eye, eps=1e-8)[0]:
+                return gate
+
+        # Shouldn't reach this point because the major axis pi and pi/2 rotations
+        # are in the Clifford group, the state is always an eigenstate of a Pauli
+        # operator during the pulse sequence.
+        raise Exception
+
+    def construct_clifford_group(gateset: Sequence[PulseSequence]) -> ndarray:
+        """Construct clifford group from gateset (Id, X/2, Y/2)"""
+        for gate in gateset:
+            gate.cleanup('all')
+            gate.diagonalize()
+
+        X2, Y2 = gateset
+        cliffords = np.array([
+            Y2 @ Y2 @ Y2 @ Y2,                  # Id
+            X2 @ X2,                            # X
+            Y2 @ Y2,                            # Y
+            Y2 @ Y2 @ X2 @ X2,                  # Z
+            X2 @ Y2,                            # Y/2 ○ X/2
+            X2 @ Y2 @ Y2 @ Y2,                  # -Y/2 ○ X/2
+            X2 @ X2 @ X2 @ Y2,                  # Y/2 ○ -X/2
+            X2 @ X2 @ X2 @ Y2 @ Y2 @ Y2,        # -Y/2 ○ -X/2
+            Y2 @ X2,                            # X/2 ○ Y/2
+            Y2 @ X2 @ X2 @ X2,                  # -X/2 ○ Y/2
+            Y2 @ Y2 @ Y2 @ X2,                  # X/2 ○ -Y/2
+            Y2 @ Y2 @ Y2 @ X2 @ X2 @ X2,        # -X/2 ○ -Y/2
+            X2,                                 # X/2
+            X2 @ X2 @ X2,                       # -X/2
+            Y2,                                 # Y/2
+            Y2 @ Y2 @ Y2,                       # -Y/2
+            X2 @ Y2 @ Y2 @ Y2 @ X2 @ X2 @ X2,   # Z/2
+            X2 @ X2 @ X2 @ Y2 @ Y2 @ Y2 @ X2,   # -Z/2
+            X2 @ X2 @ Y2,                       # Y/2 ○ X
+            X2 @ X2 @ Y2 @ Y2 @ Y2,             # -Y/2 ○ X
+            Y2 @ Y2 @ X2,                       # X/2 ○ Y
+            Y2 @ Y2 @ X2 @ X2 @ X2,             # -X/2 ○ Y
+            X2 @ Y2 @ X2,                       # X/2 ○ Y/2 ○ X/2
+            X2 @ Y2 @ Y2 @ Y2 @ X2              # X/2 ○ -Y/2 ○ X/2
+        ], dtype=object)
+        return cliffords
+
+    # %% Load data
+    gates = ['X2', 'Y2']
+    # Set up Hamiltonian for X2, Y2 gate
+    struct = {'X2': loadmat(DATA_PATH / 'X2ID.mat'),
+              'Y2': loadmat(DATA_PATH / 'Y2ID.mat')}
+    eps = {key: np.asarray(struct[key]['eps'], order='C') for key in gates}
+    dt = {key: np.asarray(struct[key]['t'].ravel(), order='C') for key in gates}
+    B = {key: np.asarray(struct[key]['B'].ravel(), order='C') for key in gates}
+
+    J = {key: np.exp(eps[key]) for key in gates}
+    n_dt = {key: len(dt[key]) for key in gates}
+
+    d = 2
+    H = np.empty((3, d, d), dtype=complex)
+
+    P0, Px, Py, Pz = util.paulis
+    H[0] = 1/2*Px
+    H[1] = 1/2*Py
+    H[2] = 1/2*Pz
+
+    # %% Parameters
+    m_min = 1
+    m_max = 101
+
+    eps0 = 2.7241e-4
+
+    T = dt['X2'].sum()
+    omega = np.geomspace(1e-2/(7*m_max*T), 1e2/T, 500)*2*np.pi
+    # omega = np.geomspace(1e-2, 1e2/T.mean(), 250)*2*np.pi
+    # %% Optimized gates
+    opers = list(H)
+
+    c_opers = opers.copy()
+    n_opers = opers.copy()
+
+    identifiers = ['X', 'Y', 'Z']
+    c_coeffs = {key: [J[key][0], np.zeros(n_dt[key]),
+                      B[key][0]*np.ones(n_dt[key])] for key in gates}
+    n_coeffs = {key: [np.ones(n_dt[key]), np.ones(n_dt[key]), np.ones(n_dt[key])]
+                for key in gates}
+
+    # Add identity gate, choosing the X/2 operation on the right qubit
+    H_c = {'optimized': {key: list(zip(c_opers, val, identifiers))
+                         for key, val in c_coeffs.items()}}
+    H_n = {'optimized': {key: list(zip(n_opers, val, identifiers))
+                         for key, val in n_coeffs.items()}}
+    dt = {'optimized': dt}
+
+    # #######################
+    H_c['optimized']['Y2'][0] = list(H_c['optimized']['Y2'][0])
+    H_c['optimized']['Y2'][0][1] = H_c['optimized']['Y2'][0][1][::-1]
+    # #######################
+    # %% naive gates
+    sens = 1
+    H_c['naive'] = {'X2': [[H[0], [np.pi/2/T], 'X'],
+                           [H[1], [0], 'Y'],
+                           [H[2], [0], 'Z']],
+                    'Y2': [[H[0], [0], 'X'],
+                           [H[1], [np.pi/2/T], 'Y'],
+                           [H[2], [0], 'Z']]}
+    H_n['naive'] = {'X2': list(zip(H, [[sens]]*3, identifiers)),
+                    'Y2': list(zip(H, [[sens]]*3, identifiers))}
+    dt['naive'] = {'X2': [T],
+                   'Y2': [T]}
+    # %% PulseSequences
+    gate_types = ['naive', 'optimized']
+    X2 = {gate_type: ff.PulseSequence(H_c[gate_type]['X2'],
+                                      H_n[gate_type]['X2'],
+                                      dt[gate_type]['X2'])
+          for gate_type in gate_types}
+    Y2 = {gate_type: ff.PulseSequence(H_c[gate_type]['Y2'],
+                                      H_n[gate_type]['Y2'],
+                                      dt[gate_type]['Y2'])
+          for gate_type in gate_types}
+
+    X2_perfect = {
+        gate_type: ff.PulseSequence(
+            H_c[gate_type]['X2'],
+            [[f(arg) for f, arg in
+              zip([lambda arg: arg, np.zeros_like, lambda arg: arg], H)]
+             for H in H_n[gate_type]['X2']],
+            dt[gate_type]['X2']
+        ) for gate_type in gate_types
+    }
+    Y2_perfect = {
+        gate_type: ff.PulseSequence(
+            H_c[gate_type]['Y2'],
+            [[f(arg) for f, arg in
+              zip([lambda arg: arg, np.zeros_like, lambda arg: arg], H)]
+             for H in H_n[gate_type]['Y2']],
+            dt[gate_type]['Y2']
+        ) for gate_type in gate_types
+    }
+    # %% Diagonalize and cache control matrices
+    for gate_type in gate_types:
+        X2[gate_type].cache_control_matrix(omega)
+        X2_perfect[gate_type].cache_control_matrix(omega)
+        Y2[gate_type].cache_control_matrix(omega)
+        Y2_perfect[gate_type].cache_control_matrix(omega)
+
+    # %% Clifford group
+    cliffords = {
+        k: construct_clifford_group((X2[k], Y2[k]))
+        for k in gate_types
+    }
+    cliffords_perfect = {
+        k: construct_clifford_group((X2_perfect[k], Y2_perfect[k]))
+        for k in gate_types
     }
 
-    # regular index to compute the colors
-    reg_index = np.linspace(start, stop, 257)
+    Id = {gate_type: cliffords[gate_type][0] for gate_type in gate_types}
+    Id_perfect = {gate_type: cliffords_perfect[gate_type][0]
+                  for gate_type in gate_types}
+    # %% Find ZYZ Euler angles for Clifford group
+    cliffords['zyz'] = []
+    cliffords_perfect['zyz'] = []
+    cliffords['single'] = []
+    cliffords_perfect['single'] = []
+    dt_zyz = np.mean([c.t[-1] for c in cliffords['optimized']])/3
+    P = util.paulis
+    identifiers = ['X', 'Y', 'Z']
 
-    # shifted index to match the data
-    shift_index = np.hstack([
-        np.linspace(0.0, midpoint, 128, endpoint=False),
-        np.linspace(midpoint, 1.0, 129, endpoint=True)
-    ])
+    for i, c in enumerate(cliffords['naive']):
+        # Random input state
+        psi_i = (randn() + 1j*randn())*qt.basis(2)
+        psi_i += (randn() + 1j*randn())*qt.basis(2, 1)
+        psi_i /= np.linalg.norm(psi_i.full())
 
-    for ri, si in zip(reg_index, shift_index):
-        r, g, b, a = cmap(ri)
+        coeffs = ff.basis.expand(c.total_propagator, P)
+        coeffs[1:] /= -1j
+        q = quat.quaternion(*coeffs.real)
+        a = quat.as_euler_angles(q)
+        r = quat.as_rotation_vector(q)
 
-        cdict['red'].append((si, r, r))
-        cdict['green'].append((si, g, g))
-        cdict['blue'].append((si, b, b))
-        cdict['alpha'].append((si, a, a))
+        r = ff.util.remove_float_errors(r, 10)
+        axis = r.astype(bool)
 
-    newcmap = mpc.LinearSegmentedColormap(name, cdict)
-    plt.register_cmap(cmap=newcmap)
+        cliffords['zyz'].append(
+            ff.PulseSequence(
+                [[H[2], np.array([a[2], 0, a[0]])/dt_zyz, 'Z'],
+                 [H[1], np.array([0, a[1], 0])/dt_zyz, 'Y']],
+                list(zip(H, [[sens]*3]*3, identifiers)),
+                [dt_zyz, dt_zyz, dt_zyz]
+            )
+        )
+        cliffords_perfect['zyz'].append(
+            ff.PulseSequence(
+                [[H[2], np.array([a[2], 0, a[0]])/dt_zyz, 'Z'],
+                 [H[1], np.array([0, a[1], 0])/dt_zyz, 'Y']],
+                list(zip(H, [[0]*3]*3, identifiers)),
+                [dt_zyz, dt_zyz, dt_zyz]
+            )
+        )
+        # factor two already in r
+        cliffords['single'].append(
+            ff.PulseSequence(
+                list(zip(compress(P[1:]/2, axis), [[r/3/dt_zyz] for r in compress(r, axis)],
+                         compress(identifiers, axis))),
+                list(zip(H, [[sens]]*3, identifiers)),
+                [3*dt_zyz]
+            )
+        )
+        cliffords_perfect['single'].append(
+            ff.PulseSequence(
+                list(zip(compress(P[1:]/2, axis), [[r/3/dt_zyz] for r in compress(r, axis)],
+                         compress(identifiers, axis))),
+                list(zip(H, [[0]]*3, identifiers)),
+                [3*dt_zyz]
+            )
+        )
 
-    return newcmap
+        # Diagonalize them also
+        cliffords['zyz'][-1].cache_control_matrix(omega)
+        cliffords_perfect['zyz'][-1].cache_control_matrix(omega)
+        cliffords['single'][-1].cache_control_matrix(omega)
+        cliffords_perfect['single'][-1].cache_control_matrix(omega)
+
+    gate_types += ['zyz', 'single']
+    cliffords['zyz'] = np.array(cliffords['zyz'], dtype=object)
+    cliffords['single'] = np.array(cliffords['single'], dtype=object)
+    cliffords_perfect['zyz'] = np.array(cliffords_perfect['zyz'], dtype=object)
+    cliffords_perfect['single'] = np.array(cliffords_perfect['single'], dtype=object)
+    Id['zyz'] = cliffords['zyz'][0]
+    Id['single'] = cliffords['single'][0]
+    Id_perfect['zyz'] = cliffords_perfect['zyz'][0]
+    Id_perfect['single'] = cliffords_perfect['single'][0]
+
+    # %% Scale noise
+    # Scale noise of unoptimized gates so that the average fidelity per clifford is
+    # the same for all gate types
+
+    alpha = [0.7, 0.0]
+    noise_scaling_factor = defaultdict(dict)
+
+    gate_types = ('optimized', 'single', 'naive', 'zyz',)
+    for gate_type in gate_types:
+        for i, a in enumerate(alpha):
+            S0 = 4e-11*(2*np.pi*1e-3)**a/eps0**2
+            S = S0/omega**a
+
+            if gate_type == 'optimized' and a == alpha[0]:
+                optimized_correl_infids = np.array([ff.infidelity(c, S, omega)
+                                                    for c in cliffords[gate_type]]).mean(0)
+
+            infids = np.array([ff.infidelity(c, S, omega) for c in cliffords[gate_type]]).mean(0)
+
+            noise_scaling_factor[gate_type][a] = optimized_correl_infids / infids
+
+    # %% Run RB
+    now = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    print('================================================')
+    print(f'Start time:\t\t{now}')
+    print('================================================')
+    print()
+
+    N_m = 11  # Number of sequence m
+    N_G = 100  # Number of RB sequences per length
+    N_MC = 100  # Number of Monte Carlo runs per RB sequence
+    run_MC = False
+
+    MC_gates = defaultdict(dict)
+    FF_infid_tot = defaultdict(dict)
+    single_clifford_infids = defaultdict(dict)
+
+    for gate_type in gate_types:
+        print('================================================')
+        print(f'Running RB with {gate_type} gates')
+        print('================================================')
+
+        S0 = [4e-11*(2*np.pi*1e-3)**a/eps0**2*noise_scaling_factor[gate_type][a]
+              for a in alpha]
+        S = np.einsum('an,oa->ano', S0, np.power.outer(1/omega, alpha))
+
+        result = run_randomized_benchmarking(
+            N_G, N_m, N_MC, m_min, m_max, S0, alpha, omega,
+            gate_type, run_MC
+        )
+
+        for i, a in enumerate(alpha):
+            single_clifford_infids[gate_type][a] = np.array([ff.infidelity(c, S[i], omega)
+                                                             for c in cliffords[gate_type]])
+
+        if run_MC:
+            MC_gates[gate_type], FF_infid_tot[gate_type] = result
+            np.savez_compressed(
+                DATA_PATH / f'RB_normalized_XYZ_noise_MC_{gate_type}_gates_{now}',
+                white=MC_gates[gate_type][0.0]
+            )
+        else:
+            FF_infid_tot[gate_type] = result
+
+        np.savez(
+            DATA_PATH / f'RB_normalized_XYZ_noise_FF_{gate_type}_gates_{now}',
+            white=FF_infid_tot[gate_type][alpha[1]],
+            correlated=FF_infid_tot[gate_type][alpha[0]]
+        )
+        np.savez(
+            DATA_PATH / f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates_{now}',
+            white=single_clifford_infids[gate_type][alpha[1]],
+            correlated=single_clifford_infids[gate_type][alpha[0]]
+        )
 
 
-def shift_zero_bwr_colormap(z: float, transparent: bool = True):
-    """shifted bwr colormap"""
-    if (z < 0) or (z > 1):
-        raise ValueError('z must be between 0 and 1')
-
-    cdict1 = {'red': ((0.0, max(-2*z + 1, 0), max(-2*z + 1, 0)),
-                      (z,   1.0, 1.0),
-                      (1.0, 1.0, 1.0)),
-
-              'green': ((0.0, max(-2*z + 1, 0), max(-2*z + 1, 0)),
-                        (z,   1.0, 1.0),
-                        (1.0, max(2*z - 1, 0),  max(2*z - 1, 0))),
-
-              'blue': ((0.0, 1.0, 1.0),
-                       (z,   1.0, 1.0),
-                       (1.0, max(2*z - 1, 0), max(2*z - 1, 0))),
-              }
-    if transparent:
-        cdict1['alpha'] = ((0.0, 1-max(-2*z + 1, 0), 1-max(-2*z+1, 0)),
-                           (z,   0.0, 0.0),
-                           (1.0, 1-max(2*z - 1, 0),  1-max(2*z - 1, 0)))
-
-    return mpc.LinearSegmentedColormap('shifted_rwb', cdict1)
-
+# %% Run benchmark
+if RUN_SIMULATION:
+    run_simulation()
 
 # %% Load pickled files
-sha = '9754468'  # '3baa09e'
-date = '20190822-153458'  # '20190716-162957'
-folder = 'RB_normalized_XYZ_noise_no_sensitivities'
+date = '20250823-122351'
 m_min, m_max = 1, 101
 
-thesis_path = Path('/home/tobias/Physik/Master/Thesis')
-# thesis_path = Path('C:/Users/Tobias/Documents/Uni/Physik/Master/Thesis')
-# thesis_path = Path('Z:/MA/')
-data_path = thesis_path / 'data'
-save_path = thesis_path / 'thesis' / 'img'
-spath = save_path
-
-gate_types = ['naive', 'optimized', 'single']  # , 'zyz']
+gate_types = ['naive', 'optimized', 'single']
 noise_types = ['white', 'correlated']
-infid_types = ['tot', 'nocorr']
+infid_types = ['tot']
 calc_types = ['FF', 'MC']
 
-MC_gates = {}
-data = {'MC': {}, 'FF': {}, 'single_clifford': {}}
-single_clifford_FF = {}
+MC_gates = defaultdict(dict)
+data = defaultdict(dict)
 for gate_type in gate_types:
-    MC_gates[gate_type] = {}
-    single_clifford_FF[gate_type] = {}
-    data['MC'][gate_type] = {'tot': {}}
-    data['FF'][gate_type] = {'tot': {}, 'nocorr': {}}
-    data['single_clifford'][gate_type] = {'tot': {}}
-    with np.load(data_path / folder / sha / date /
-                 f'RB_FF_infids_tot_{gate_type}_gates_m1-{m_max}.npz') as arch:
+    data['FF'][gate_type] = defaultdict(dict)
+    data['MC'][gate_type] = defaultdict(dict)
+    data['single_cliffords'][gate_type] = defaultdict(dict)
+    MC_gates[gate_type] = defaultdict(dict)
+    with np.load(DATA_PATH / f'RB_normalized_XYZ_noise_FF_{gate_type}_gates_{date}.npz') as arch:
         for file in arch.files:
-            data['FF'][gate_type]['tot'][file] = arch[file]
+            data['FF'][gate_type][file] = arch[file]
 
-    with np.load(data_path / folder / sha / date /
-                 f'RB_FF_infids_nocorr_{gate_type}_gates_m1-{m_max}.npz') as arch:
+    with np.load(
+            DATA_PATH / f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates_{date}.npz'
+    ) as arch:
         for file in arch.files:
-            data['FF'][gate_type]['nocorr'][file] = arch[file]
-
-    data['single_clifford'][gate_type]['avg'] = {}
-    fname = f'single_clifford_FF_en_infids_{gate_type}_gates.npz'
-    with np.load(data_path / folder / sha / date / fname) as arch:
-        for file in arch.files:
-            data['single_clifford'][gate_type]['tot'][file] = arch[file]
-            data['single_clifford'][gate_type]['avg'][file] = arch[file]*2/3
+            data['single_cliffords'][gate_type][file] = arch[file]
 
     try:
-        with np.load(data_path / folder / sha / date /
-                     f'RB_MC_gates_{gate_type}_gates_m1-{m_max}.npz') as arch:
+        with np.load(
+                DATA_PATH / f'RB_normalized_XYZ_noise_MC_{gate_type}_gates_{date}.npz'
+        ) as arch:
             for file in arch.files:
                 MC_gates[gate_type][file] = arch[file]
 
-        data['MC'][gate_type]['tot']['white'] = \
-            1 - state_fidelity(MC_gates[gate_type]['white'])
-
-        for infid_type, infid in data['MC'][gate_type].items():
-            infid['white'] = infid['white'].mean(axis=-1)
+        data['MC'][gate_type]['white'] = 1 - MC_state_fidelity(MC_gates[gate_type]['white']).mean(
+            axis=-1, keepdims=True
+        )
     except FileNotFoundError:
         pass
-
-    with np.load(data_path / folder / sha /date /
-                 f'single_clifford_FF_avg_{gate_type}_gates.npz') as arch:
-        for file in arch.files:
-            single_clifford_FF[gate_type][file] = arch[file]
 
 # %% Fit
 
 
-def exponential(beta, x):
-    return 0.5 + 0.5*(1 - 2*beta[1])**x
-#    return beta[0] + 0.5*(1 - 2*beta[1])**x
-#    return 0.5 + beta[0]*(1 - 2*beta[1])**x
+def exponential(m, r):
+    return 0.5 + 0.5*(1 - 2*r)**m
 
 
-def linear(beta, x):
-    return 1 - beta[1]*x
-#    return beta[0] - beta[1]*x
-#    return 0.5 + beta[0]*(1 - 2*beta[1]*x)
+def linear(m, r):
+    return 1 - r*m
 
 
-n_m = data['FF']['naive']['tot']['white'].shape[0]
-m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-exp_model = odr.Model(exponential)
-lin_model = odr.Model(linear)
-fit = {'MC': {}, 'FF': {}}
+def fitit(m, mean, err, model):
+    popt, pcov = curve_fit(model, m, mean, p0=[1e-3], sigma=err)
+    return popt[0], np.sqrt(pcov[0, 0])
+
+
+fit = dict()
 for calc_type, c in data.items():
-    if calc_type != 'single_clifford':
-        fit[calc_type] = {}
-        for gate_type, g in c.items():
-            fit[calc_type][gate_type] = {}
-            for infid_type, I in g.items():
-                fit[calc_type][gate_type][infid_type] = {}
-                for noise_type, n in I.items():
-                    print('======================================================')
-                    print(f'{calc_type}\t{gate_type}\t{infid_type}\t{noise_type}')
-                    print('------------------------------------------------------')
-                    fit[calc_type][gate_type][infid_type][noise_type] = {'sep': {}}
-                    for i in range(n.shape[-1]):
-                        mean = 1 - n[..., i].mean(axis=1)
-                        err = n[..., i].std(axis=1)/np.sqrt(n[..., i].shape[1])
-                        odr_data = odr.RealData(m, mean, err)
-                        if noise_type == 'white' and calc_type == 'MC':
-                            model = exp_model
-                        else:
-                            model = lin_model
+    if calc_type == 'single_cliffords':
+        continue
+
+    fit[calc_type] = dict()
+    for gate_type, g in c.items():
+        fit[calc_type][gate_type] = dict()
+        for noise_type, n in g.items():
+            fit[calc_type][gate_type][noise_type] = dict()
+            fit[calc_type][gate_type][noise_type]['sep'] = defaultdict(dict)
+            fit[calc_type][gate_type][noise_type]['tot'] = defaultdict(dict)
+            m = np.round(np.linspace(m_min, m_max, n.shape[0])).astype(int)
+            if calc_type == 'MC':
+                model = exponential
+            else:
+                model = linear
+
+            r, sr = fitit(m,
+                          1 - n.sum(-1).mean(axis=1),
+                          n.sum(-1).std(axis=1)/np.sqrt(n.shape[1]),
+                          model)
+            fit[calc_type][gate_type][noise_type]['tot']['r'] = r
+            fit[calc_type][gate_type][noise_type]['tot']['sr'] = sr
+
+            for i in range(n.shape[-1]):
+                r, sr = fitit(m,
+                              1 - n[:, :, i].mean(axis=1),
+                              n[:, :, i].std(axis=1)/np.sqrt(n.shape[1]),
+                              model)
+                fit[calc_type][gate_type][noise_type]['sep'][i]['r'] = r
+                fit[calc_type][gate_type][noise_type]['sep'][i]['sr'] = sr
+
+# %% Plot
+
+
+def quantile_error(data, q=(0.159, 0.841), axis=-1):
+    # return 1 - (mean := data.mean(axis)), abs(mean - np.quantile(data, q, axis=axis))
+    return 1 - data.mean(axis), data.std(axis)
 
-                        beta0 = [1, 1e-3]
-                        ODR = odr.ODR(odr_data, model, beta0)
-                        fit[calc_type][gate_type][infid_type][noise_type]['sep'][i] = \
-                            ODR.run()
-                        fit[calc_type][gate_type][infid_type][noise_type]['sep'][i].pprint()
 
-                    mean = 1 - n.sum(-1).mean(axis=1)
-                    err = n.sum(-1).std(axis=1)/np.sqrt(n.sum(-1).shape[1])
-                    odr_data = odr.RealData(m, mean, err)
-                    if noise_type == 'white' and calc_type == 'MC':
-                        model = exp_model
-                    else:
-                        model = lin_model
-
-                    beta0 = [1, 1e-3]
-                    ODR = odr.ODR(odr_data, model, beta0)
-                    fit[calc_type][gate_type][infid_type][noise_type]['tot'] = \
-                        ODR.run()
-                    fit[calc_type][gate_type][infid_type][noise_type]['tot'].pprint()
-                    print('======================================================')
-
-# %% Plot white vs correlated, gate type vs gate type
-
-# gates = gate_types[:2]
-
-# fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(7, 3))
-# # First row is white noise, second correlated.
-# # First column is naive gates, second optimized
-# for i, noise_type in enumerate(noise_types):
-#     for j, gate_type in enumerate(gates):
-#         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-
-#         mean_tot = ax[i, j].errorbar(
-#             m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-#             (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color='tab:red'
-#         )
-
-#         fit_tot = ax[i, j].plot(
-#             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color='tab:red', linestyle='--'
-#         )
-
-#         mean_nocorr = ax[i, j].errorbar(
-#             m, 1 - data['FF'][gate_type]['nocorr'][noise_type].sum(-1).mean(-1),
-#             (data['FF'][gate_type]['nocorr'][noise_type].sum(-1).std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color='tab:green'
-#         )
-
-#         fit_nocorr = ax[i, j].plot(
-#             m, linear(fit['FF'][gate_type]['nocorr'][noise_type]['tot'].beta, m),
-#             color='tab:green', linestyle='--'
-#         )
-
-#         rb_theory = ax[i, j].plot(
-#             m,
-#             1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-#             '-', zorder=4, color='tab:blue'
-#         )
-
-#         ax[i, j].grid(zorder=0)
-#         ax[i, j].set_ylim(top=1)
-#         ax[i, j].tick_params(direction='in', which='both')
-
-#     ax[0, 0].set_xlim(0, 80)
-#     # ax[0, 0].ticklabel_format(style='sci', scilimits=(-2, 2), axis='y')
-
-# for i in range(2):
-#     ax[0, i].set_xlabel(gates[i])
-#     ax[0, i].xaxis.set_label_position("top")
-# for j in range(2):
-#     ax[j, 1].set_ylabel(noise_types[j])
-#     ax[j, 1].yaxis.set_label_position("right")
-
-# # Add proxy subplot for common axis labels
-# common_ax = fig.add_subplot(111, frameon=False)
-# common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                       left=False, right=False)
-# common_ax.set_xticks([])
-# common_ax.set_yticks([])
-# common_ax.grid(False)
-# common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
-# common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-
-# handles = [mean_tot, mean_nocorr, fit_tot[0], fit_nocorr[0], rb_theory[0]]
-# labels = ['Total state fidelity', 'State fidelity w/o corr.', 'Fit', 'Fit',
-#           'SRB theory']
-
-# # ax[0, 1].legend(handles, labels, loc='lower left', framealpha=1)
-# common_ax.legend(handles, labels, bbox_to_anchor=(0, 1.1, 1, 0.2),
-#                  loc="lower left", mode="expand", borderaxespad=0, ncol=5,
-#                  fancybox=False, frameon=True)
-
-# fig.tight_layout(w_pad=0.5, h_pad=0.5)
-# fname = 'RB_{}_vs_{}_gates_white_vs_correl_{}_{}_{}'.format(*gates, folder,
-#                                                             sha, date)
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% Plot white vs correlated, gate type vs gate type
-
-# gates = gate_types[:2]
-# N_l, N_G, n_nops = data['FF']['naive']['tot']['white'].shape
-
-# for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
-#     fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(7, 3))
-#     # First row is white noise, second correlated.
-#     # First column is naive gates, second optimized
-#     for i, noise_type in enumerate(noise_types):
-#         for j, gate_type in enumerate(gates):
-#             N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-
-#             mean_tot = ax[i, j].errorbar(
-#                 m, 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1),
-#                 (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1) /
-#                  np.sqrt(N_G)),
-#                 fmt='.', color='tab:red'
-#             )
-
-#             fit_tot = ax[i, j].plot(
-#                 m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#                 color='tab:red', linestyle='--'
-#             )
-
-#             mean_nocorr = ax[i, j].errorbar(
-#                 m, 1 - data['FF'][gate_type]['nocorr'][noise_type][..., k].mean(-1),
-#                 (data['FF'][gate_type]['nocorr'][noise_type][..., k].std(-1) /
-#                  np.sqrt(N_G)),
-#                 fmt='.', color='tab:green'
-#             )
-
-#             fit_nocorr = ax[i, j].plot(
-#                 m, linear(fit['FF'][gate_type]['nocorr'][noise_type]['sep'][k].beta, m),
-#                 color='tab:green', linestyle='--'
-#             )
-
-#             rb_theory = ax[i, j].plot(
-#                 m,
-#                 1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-#                 '-', zorder=4, color='tab:blue'
-#             )
-
-#             ax[i, j].grid(zorder=0)
-#             ax[i, j].set_ylim(top=1)
-#             ax[i, j].tick_params(direction='in', which='both')
-
-#         ax[0, 0].set_xlim(0, 80)
-#         # ax[0, 0].ticklabel_format(style='sci', scilimits=(-2, 2), axis='y')
-
-#     for i in range(2):
-#         ax[0, i].set_xlabel(gates[i])
-#         ax[0, i].xaxis.set_label_position("top")
-#     for j in range(2):
-#         ax[j, 1].set_ylabel(noise_types[j])
-#         ax[j, 1].yaxis.set_label_position("right")
-
-#     # Add proxy subplot for common axis labels
-#     common_ax = fig.add_subplot(111, frameon=False)
-#     common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                           left=False, right=False)
-#     common_ax.set_xticks([])
-#     common_ax.set_yticks([])
-#     common_ax.grid(False)
-#     common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
-#     common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-
-#     handles = [mean_tot, mean_nocorr, fit_tot[0], fit_nocorr[0], rb_theory[0]]
-#     labels = ['Total state fidelity', 'State fidelity w/o corr.', 'Fit', 'Fit',
-#               'SRB theory']
-
-#     # ax[0, 1].legend(handles, labels, loc='lower left', framealpha=1)
-#     common_ax.legend(handles, labels, bbox_to_anchor=(0, 1.1, 1, 0.2),
-#                      loc="lower left", mode="expand", borderaxespad=0, ncol=5,
-#                      fancybox=False, frameon=True)
-
-#     fig.tight_layout(w_pad=0.5, h_pad=0.5)
-#     fname = 'RB_{}_vs_{}_gates_white_vs_correl_{}_{}_{}_{}-noise'.format(
-#         *gates, folder, sha, date, identifier
-#     )
-#     for ext in exts:
-#         fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# # %% Correlation infidelities
-# infids = {}
-# for gate_type in gate_types:
-#     infids[gate_type] = {}
-#     with np.load(data_path / folder / sha / date /
-#                  f'RB-correl_infids_{gate_type}_gates_m30.npz') as f:
-#         for file in f:
-#             infids[gate_type][file] = f[file]
-#
-#
-# K, m, m, n_nops = infids[gate_type][file].shape
-# m -= 1
-#
-# gates = gate_types[:2]
-# alpha = (0.0, 0.7)
-# means = np.empty((2, 2, m, m, n_nops))
-# errs = np.empty((2, 2, m, m, n_nops))
-# for i, (a, n) in enumerate(zip(alpha, noise_types)):
-#     for j, g in enumerate(gates):
-#         means[i, j] = infids[g][n][:, :-1, :-1].mean(axis=0)
-#         errs[i, j] = infids[g][n][:, :-1, :-1].std(axis=0)/np.sqrt(K)
-#
-# # %% imagegrid plot
-# mask = ~np.eye(m, dtype=bool)
-# vmax = np.abs(means[:, :, mask].sum(-1).max())
-# # vmin = means[:, :, mask].sum(-1).min()
-# vmin = -vmax
-# # cmap = shift_zero_bwr_colormap(1 + vmin/vmax)  # naive vs optimized
-# # cmap = shift_zero_bwr_colormap(.580)  # optimized vs zyz
-# cmap = plt.get_cmap('bwr')
-# cmap.set_over((1/256, 0, 0, 1))
-
-# fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(4.8, 4))
-# for i, (a, n) in enumerate(zip(alpha, noise_types)):
-#     for j, g in enumerate(gates):
-#         ax[i, j].set_aspect('equal', 'box')
-#         mean = means[i, j].sum(-1)
-
-#         pcm = ax[i, j].pcolor(
-#             mean, norm=mpc.SymLogNorm(linthresh=1e-7, vmin=vmin, vmax=vmax),
-#             cmap=cmap
-#         )
-
-# for i in range(2):
-#     ax[0, i].set_xlabel(gates[i])
-#     ax[0, i].xaxis.set_label_position("top")
-# for j in range(2):
-#     ax[j, 1].set_ylabel(noise_types[j])
-#     ax[j, 1].yaxis.set_label_position("right")
-
-# ax[0, 0].set_xticks(np.linspace(0, m, 6))
-# ax[0, 1].set_xticks(np.linspace(0, m, 6))
-# ax[0, 0].set_yticks(np.linspace(0, m, 6))
-# ax[1, 0].set_yticks(np.linspace(0, m, 6))
-# ax[1, 0].set_xlabel(r"$g$")
-# ax[1, 1].set_xlabel(r"$g$")
-# ax[0, 0].set_ylabel(r"$g'$")
-# ax[1, 0].set_ylabel(r"$g'$")
-
-# fig.tight_layout(h_pad=0, w_pad=0)
-
-# cb = fig.colorbar(pcm, ax=ax.ravel().tolist(), fraction=0.045, pad=0.1)
-# cb.set_label(r"$\mathcal{I}^{(gg')}$")
-
-# fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_one_cbar'.format(
-#     *gates,
-# )
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# # %% imagegrid plots each noise operator separately
-# for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
-#     mask = ~np.eye(m, dtype=bool)
-#     vmax = np.abs(means[:, :, mask, k].max())
-#     # vmin = means[:, :, mask, k].min()
-#     vmin = -vmax
-#     # cmap = shift_zero_bwr_colormap(.375)  # naive vs optimized
-#     # cmap = shift_zero_bwr_colormap(.580)  # optimized vs zyz
-#     cmap = plt.get_cmap('bwr')
-#     cmap.set_over((1/256, 0, 0, 1))
-
-#     fig, ax = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(4.8, 4))
-#     for i, (a, n) in enumerate(zip(alpha, noise_types)):
-#         for j, g in enumerate(gates):
-#             ax[i, j].set_aspect('equal', 'box')
-#             mean = means[i, j, ..., k]
-
-#             pcm = ax[i, j].pcolor(
-#                 mean, norm=mpc.SymLogNorm(linthresh=1e-7, vmin=vmin, vmax=vmax),
-#                 cmap=cmap
-#             )
-
-#     for i in range(2):
-#         ax[0, i].set_xlabel(gates[i])
-#         ax[0, i].xaxis.set_label_position("top")
-#     for j in range(2):
-#         ax[j, 1].set_ylabel(noise_types[j])
-#         ax[j, 1].yaxis.set_label_position("right")
-
-#     ax[0, 0].set_xticks(np.linspace(0, m, 6))
-#     ax[0, 1].set_xticks(np.linspace(0, m, 6))
-#     ax[0, 0].set_yticks(np.linspace(0, m, 6))
-#     ax[1, 0].set_yticks(np.linspace(0, m, 6))
-#     ax[1, 0].set_xlabel(r"$g$")
-#     ax[1, 1].set_xlabel(r"$g$")
-#     ax[0, 0].set_ylabel(r"$g'$")
-#     ax[1, 0].set_ylabel(r"$g'$")
-
-#     fig.tight_layout(h_pad=0, w_pad=0)
-
-#     cb = fig.colorbar(pcm, ax=ax.ravel().tolist(), fraction=0.045, pad=0.1)
-#     cb.set_label(r"$\mathcal{I}^{(gg')}$")
-
-#     fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_one_cbar_{}-noise'.format(
-#         *gates, identifier
-#     )
-#     for ext in exts:
-#         fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% linecuts
-# rng = np.arange(m)
-# fig, ax = plt.subplots(2, 1, sharex=True, figsize=(4, 5))
-# color = ('tab:green', 'tab:orange')
-# for i, (a, n) in enumerate(zip(alpha, noise_types)):
-#     for j, g in enumerate(gates):
-#         markers, caps, bars = ax[i].errorbar(
-#             rng, np.diag(means[i, j].sum(-1)[:, ::-1]*1e6, 0),
-#             yerr=np.diag(errs[i, j].sum(-1)[:, ::-1]*1e6, 0),
-#             fmt='.-', linewidth=1, label=f'{g}',
-#             color=color[j]
-#         )
-#         [bar.set_alpha(0.5) for bar in bars]
-
-#         axy = ax[i].twinx()
-#         axy.set_ylabel(f'{n}', fontsize=12)
-#         axy.set_yticks([], [])
-#         axy.yaxis.set_label_position("right")
-#         ax[i].set_ylabel(r"$\mathcal{I}^{(gg')}\times 10^6$")
-#         ax[i].grid(True)
-
-# ax[1].legend()
-# ax[1].set_xticklabels
-# ax[1].set_xlim(rng.min(), rng.max()+1)
-# ax[1].set_xlabel(r"$g$")
-# axx = ax[0].twiny()
-# axx.set_xlim(rng.max(), rng.min()-1)
-# axx.set_xticks(ax[0].get_xticks()-1)
-# axx.set_xlabel(r"$g'$")
-
-# fig.tight_layout()
-# fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_linecuts'.format(
-#     *gates,
-# )
-# fig.savefig(spath / (fname + '.pdf'), dpi=600)
-# fig.savefig(spath / (fname + '.eps'), dpi=600)
-
-# %% linecuts
-# for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
-#     rng = np.arange(m)
-#     fig, ax = plt.subplots(2, 1, sharex=True, figsize=(4, 5))
-#     color = ('tab:green', 'tab:orange')
-#     for i, (a, n) in enumerate(zip(alpha, noise_types)):
-#         for j, g in enumerate(gates):
-#             markers, caps, bars = ax[i].errorbar(
-#                 rng, np.diag(means[i, j, ..., k][:, ::-1]*1e6, 0),
-#                 yerr=np.diag(errs[i, j, ..., k][:, ::-1]*1e6, 0),
-#                 fmt='.-', linewidth=1, label=f'{g}',
-#                 color=color[j]
-#             )
-#             [bar.set_alpha(0.5) for bar in bars]
-
-#             axy = ax[i].twinx()
-#             axy.set_ylabel(f'{n}', fontsize=12)
-#             axy.set_yticks([], [])
-#             axy.yaxis.set_label_position("right")
-#             ax[i].set_ylabel(r"$\mathcal{I}^{(gg')}\times 10^6$")
-#             ax[i].grid(True)
-
-#     ax[1].legend()
-#     ax[1].set_xticklabels
-#     ax[1].set_xlim(rng.min(), rng.max()+1)
-#     ax[1].set_xlabel(r"$g$")
-#     axx = ax[0].twiny()
-#     axx.set_xlim(rng.max(), rng.min()-1)
-#     axx.set_xticks(ax[0].get_xticks()-1)
-#     axx.set_xlabel(r"$g'$")
-
-#     fig.tight_layout()
-#     fname = 'correlation_infids_{}_vs_{}_gates_white_vs_correl_linecuts_{}-noise'.format(
-#         *gates, identifier
-#     )
-#     fig.savefig(spath / (fname + '.pdf'), dpi=600)
-#     fig.savefig(spath / (fname + '.eps'), dpi=600)
-
-# # %% all gate types in one
-# colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-#           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-
-# fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
-#                          figsize=(3.4, 3.4))
-
-# m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-# for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
-#     for g, gate_type in enumerate(gate_types):
-#         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#         mean_tot = ax.errorbar(
-#             m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-#             (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color=colors[g]
-#         )
-
-#         fit_tot = ax.plot(
-#             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color=colors[g], linestyle='--',
-#         )
-
-#     rb_theory = ax.plot(
-#         m,
-#         1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-#         '-', zorder=4, color='k'
-#     )
-#     ax.grid(False)
-#     ax.text(0.85, 0.8, subfig, transform=ax.transAxes)
-#     ax.tick_params(top=True, bottom=True, left=True, right=True,
-#                    direction='in')
-#     # ax.set_ylabel(r'Survival probability')
-
-# # Add proxy subplot for common axis labels
-# common_ax = fig.add_subplot(111, frameon=False)
-# common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                       left=False, right=False)
-# common_ax.set_xticks([])
-# common_ax.set_yticks([])
-# common_ax.grid(False)
-# # common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
-# common_ax.set_ylabel(r'Survival probability', labelpad=25.)
-# axes[0].legend(loc='lower left', frameon=False,
-#                labels=gate_types + ['0th order SRB theory'])
-# ax.set_xlim(0, 100)
-# ax.set_ylim(ymax=1)
-# ax.set_xlabel(r'Sequence length $m$')
-
-# fig.tight_layout()
-# fname = 'RB_all_gates_white_vs_correl'
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% all gate types in one
-# colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-#           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-
-# for k, identifier in zip(range(n_nops), ('X', 'Y', 'Z')):
-#     fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
-#                              figsize=(3.4, 3.4))
-
-#     m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-#     for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
-#         for g, gate_type in enumerate(gate_types):
-#             N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#             mean_tot = ax.errorbar(
-#                 m, 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1),
-#                 (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1) /
-#                  np.sqrt(N_G)),
-#                 fmt='.', color=colors[g]
-#             )
-
-#             fit_tot = ax.plot(
-#                 m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#                 color=colors[g], linestyle='--', linewidth=1
-#             )
-
-#         rb_theory = ax.plot(
-#             m,
-#             1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-#             '-', zorder=4, color='k'
-#         )
-#         ax.grid(False)
-#         ax.text(0.85, 0.8, subfig, transform=ax.transAxes)
-#         ax.tick_params(top=True, bottom=True, left=True, right=True,
-#                        direction='in')
-#         # ax.set_ylabel(r'Survival probability')
-
-#     # Add proxy subplot for common axis labels
-#     common_ax = fig.add_subplot(111, frameon=False)
-#     common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                           left=False, right=False)
-#     common_ax.set_xticks([])
-#     common_ax.set_yticks([])
-#     common_ax.grid(False)
-#     # common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
-#     common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-#     axes[0].legend(loc='lower left', frameon=False,
-#                    labels=gate_types + ['0th order SRB theory'])
-#     ax.set_xlim(0, 100)
-#     ax.set_ylim(ymax=1)
-#     ax.set_xlabel(r'Sequence length $m$')
-
-#     fig.tight_layout()
-#     fname = 'RB_all_gates_white_vs_correl_{}-noise'.format(identifier)
-#     fig.savefig(spath / (fname + '.pdf'), dpi=600)
-#     fig.savefig(spath / (fname + '.eps'), dpi=600)
-
-# # %% all gate types in one, individual noise operator contributions
-# colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-#           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-
-# fig, axes = plt.subplots(2, 2, sharex=True, sharey=False,
-#                          figsize=figsize_wide)
-
-# m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-# noise_type = 'correlated'
-# for k, (ax, subfig, identifier) in enumerate(zip(axes.ravel(),
-#                                                  ('(a)', '(b)', '(c)'),
-#                                                  ('X', 'Y', 'Z'))):
-#     for g, gate_type in enumerate(gate_types):
-#         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#         mean_tot = ax.errorbar(
-#             m, 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1),
-#             (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color=colors[g]
-#         )
-
-#         fit_tot = ax.plot(
-#             m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#             color=colors[g], linestyle='--'
-#         )
-
-#     rb_theory = ax.plot(
-#         m,
-#         1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-#         '-', zorder=4, color='k'
-#     )
-#     ax.grid(False)
-#     ax.text(0.90, 0.85, subfig, transform=ax.transAxes)
-#     ax.tick_params(top=True, bottom=True, left=True, right=True,
-#                    direction='in')
-#     ax.set_title(f'{identifier}-noise')
-
-# ax = axes.ravel()[3]
-# subfig = '(d)'
-# for g, gate_type in enumerate(gate_types):
-#     N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#     mean_tot = ax.errorbar(
-#         m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-#         (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-#          np.sqrt(N_G)),
-#         fmt='.', color=colors[g]
-#     )
-
-#     fit_tot = ax.plot(
-#         m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#         color=colors[g], linestyle='--'
-#     )
-
-# rb_theory = ax.plot(
-#     m,
-#     1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-#     '-', zorder=4, color='k'
-# )
-# ax.grid(False)
-# ax.text(0.90, 0.85, subfig, transform=ax.transAxes)
-# ax.tick_params(top=True, bottom=True, left=True, right=True,
-#                direction='in')
-# ax.set_title(f'Sum of all noise')
-
-# # Add proxy subplot for common axis labels
-# common_ax = fig.add_subplot(111, frameon=False)
-# common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                       left=False, right=False)
-# common_ax.set_xticks([])
-# common_ax.set_yticks([])
-# common_ax.grid(False)
-# common_ax.set_xlabel(r'Sequence length $m$', labelpad=15.)
-# common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-# axes[0, 0].legend(loc='lower left', frameon=False,
-#                   labels=gate_types + ['0th order SRB theory'])
-# ax.set_xlim(0, 100)
-# ax.set_ylim(ymax=1)
-
-# fig.tight_layout()
-# fname = 'RB_all_gates_noise_comparison'
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# %% all gates white vs correl with inset
-colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
 gate_types = ['naive', 'optimized', 'single']
+cycle = cycler(marker=('.', 'x', '+', 's'), color=LINE_COLORS[:4])
 
-fig, axes = plt.subplots(1, 2, sharex=True, sharey=True,
-                         figsize=(figsize_wide[0], figsize_wide[1]*.6))
+fig, axes = plt.subplots(1, 2, sharex=True, sharey=True, layout='constrained',
+                         figsize=(TOTALWIDTH, 2.))
 
-m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
+for i, (ax, noise_type, subfig) in enumerate(zip(axes, noise_types, ('(a)', '(b)'))):
     means = []
-    for g, gate_type in enumerate(gate_types):
-        N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
+    for gate_type, sty in zip(gate_types, cycle):
+        N_m, N_G, n_nops = data['FF'][gate_type][noise_type].shape
         means.append(ax.errorbar(
-            m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-            (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-             np.sqrt(N_G)),
-            fmt='.', color=colors[g]
+            np.arange(m_min, m_max+1, (m_max-m_min)//(N_m-1)),
+            *quantile_error(data['FF'][gate_type][noise_type].sum(-1)),
+            **markerprops(**sty),
         ))
 
-        fit_tot = ax.plot(
-            m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-            color=colors[g], linestyle='--', linewidth=1
-        )
+        m = np.linspace(m_min, m_max*1.1, 2)
+        fit_tot = ax.plot(m, linear(m, fit['FF'][gate_type][noise_type]['tot']['r']),
+                          color=sty['color'], alpha=0.6)
 
     rb_theory = ax.plot(
         m,
-        1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-        '-', zorder=4, color='k'
+        # entanglement to average gate infidelity: 2/3
+        1 - 2/3*data['single_cliffords'][gate_type][noise_type].sum(-1).mean()*m,
+        linestyle='-', zorder=4, color='k'
     )
-    ax.grid(False)
-    ax.text(0.85, 0.8, subfig, transform=ax.transAxes, fontsize=10)
-    # ax.tick_params(top=True, bottom=True, left=True, right=True,
-    #                direction='out')
-    # ax.set_ylabel(r'Survival probability')
 
-# Add proxy subplot for common axis labels
-common_ax = fig.add_subplot(111, frameon=False)
-common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-                      left=False, right=False)
-common_ax.set_xticks([])
-common_ax.set_yticks([])
-common_ax.grid(False)
-common_ax.set_xlabel(r'Sequence length $m$', labelpad=20.)
-# common_ax.set_ylabel(r'Survival probability', labelpad=30.)
+if backend == 'pgf':
+    axes[0].set_ylabel(r'Survival probability $p(\ket{\psi})$')
+else:
+    axes[0].set_ylabel(r'Survival probability $p(|\psi\rangle)$')
 axes[0].legend(loc='lower left', frameon=False,
-               labels=gate_types + ['0th order SRB theory'],
-               handles=means + rb_theory)
-axes[0].set_xlim(0, 100)
-axes[0].set_ylim(0.9, 1)
-# axes[1].set_xlabel('Sequence length $m$')
-axes[0].set_ylabel(r'Survival probability $p(|\psi\rangle\!)$')
+               labels=gate_types + ['Theory'], handles=means + rb_theory)
+axes[0].set_xlim(0, 105)
+axes[0].set_ylim(top=1)
+fig.supxlabel(r'Sequence length $m$', fontsize='medium')
 
 # INSET
-ins_ax = inset_axes(axes[1], 1, 1)
-inset_position = InsetPosition(axes[1], [0.125, 0.125, 0.5, 0.4])
-ins_ax.set_axes_locator(inset_position)
+ins_ax = axes[1].inset_axes([0.1, 0.125, 0.4, 0.4])
 
 k = 2
 identifier = 'Z'
-for g, gate_type in enumerate(gate_types):
-    N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
+for gate_type, sty in zip(gate_types, cycle):
+    N_m, N_G, n_nops = data['FF'][gate_type][noise_type].shape
     mean_tot = ins_ax.errorbar(
-        m[:-1], 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1)[:-1],
-        (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1)[:-1] /
-         np.sqrt(N_G)),
-        fmt='.', color=colors[g],
-        linewidth=0.75, markersize=2
+        np.arange(m_min, m_max+1, (m_max-m_min)//(N_m-1)),
+        *quantile_error(data['FF'][gate_type][noise_type][..., k]),
+        **markerprops(**sty, markersize=2.5),
     )
 
+    m = np.linspace(m_min, m_max*1.1, 2)
     fit_tot = ins_ax.plot(
-        m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-        color=colors[g], linestyle='--', linewidth=0.75
+        m, linear(m, fit['FF'][gate_type][noise_type]['sep'][k]['r']),
+        linewidth=0.75, color=sty['color'], alpha=0.6
     )
 
 rb_theory = ins_ax.plot(
     m,
-    1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-    '-', zorder=4, color='k', linewidth=0.75
+    1 - 2/3*data['single_cliffords'][gate_type][noise_type][..., k].mean()*m,
+    linestyle='-', zorder=4, color='k', linewidth=0.75
 )
-ins_ax.grid(False)
-ins_ax.set_xlim(0, 100)
-ins_ax.set_ylim(ymax=1)
-ins_ax.tick_params(direction='in', which='both', labelsize=8)
-ins_ax.set_xticks(axes[1].get_xticks())
-# ins_ax.set_xticklabels([])
-ins_ax.set_yticks([0.98, 0.99, 1])
+ins_ax.tick_params(direction='in', which='both', labelsize='x-small')
+ins_ax.set_xticks(axes[0].get_xticks())
+ins_ax.set_xlim(axes[0].get_xlim())
+ins_ax.set_yticks([0.96, 0.98, 1])
 ins_ax.spines['right'].set_visible(False)
 ins_ax.spines['top'].set_visible(False)
 ins_ax.patch.set_alpha(0)
 
-fig.tight_layout(h_pad=0, w_pad=0, pad=0)
-fname = 'RB_{}-{}-{}_gates_white_vs_correl_with_Z_noise_inset'.format(*gate_types)
-
-for ext in exts:
-    fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# # %% all gates white vs correl with inset 2 row
-# colors = ('tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-#           'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan')
-# gate_types = ['naive', 'optimized', 'single']
-
-# fig, axes = plt.subplots(2, 1, sharex=True, sharey=True,
-#                          figsize=(5, 4))
-
-# m = np.round(np.linspace(m_min, m_max, n_m)).astype(int)
-# for ax, noise_type, subfig in zip(axes, noise_types, ('(a)', '(b)')):
-#     means = []
-#     for g, gate_type in enumerate(gate_types):
-#         N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#         means.append(ax.errorbar(
-#             m, 1 - data['FF'][gate_type]['tot'][noise_type].sum(-1).mean(-1),
-#             (data['FF'][gate_type]['tot'][noise_type].sum(-1).std(-1) /
-#              np.sqrt(N_G)),
-#             fmt='.', color=colors[g]
-#         ))
-
-#         fit_tot = ax.plot(
-#             m, linear(fit['FF'][gate_type]['tot'][noise_type]['tot'].beta, m),
-#             color=colors[g], linestyle='--', linewidth=1
-#         )
-
-#     rb_theory = ax.plot(
-#         m,
-#         1 - data['single_clifford'][gate_type]['avg'][noise_type].sum(-1).mean()*m,
-#         '-', zorder=4, color='k'
-#     )
-#     ax.grid(False)
-#     ax.text(0.85, 0.8, subfig, transform=ax.transAxes)
-#     # ax.tick_params(top=True, bottom=True, left=True, right=True,
-#     #                direction='out')
-#     ax.set_ylabel('Survival probability')
-
-# # Add proxy subplot for common axis labels
-# # common_ax = fig.add_subplot(111, frameon=False)
-# # common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-# #                       left=False, right=False)
-# # common_ax.set_xticks([])
-# # common_ax.set_yticks([])
-# # common_ax.grid(False)
-# # common_ax.set_xlabel(r'Sequence length $m$', labelpad=20.)
-# # common_ax.set_ylabel(r'Survival probability', labelpad=30.)
-# axes[0].legend(loc='lower left', frameon=False,
-#                labels=gate_types + ['0th order SRB theory'],
-#                handles=means + rb_theory)
-# axes[0].set_xlim(0, 100)
-# axes[0].set_ylim(0.9, 1)
-# axes[1].set_xlabel('Sequence length $m$')
-# # axes[0].set_ylabel('Survival probability')
-
-# # INSET
-# ins_ax = inset_axes(axes[1], 1, 1)
-# inset_position = InsetPosition(axes[1], [0.1, 0.075, 0.5, 0.4])
-# ins_ax.set_axes_locator(inset_position)
-
-# k = 2
-# identifier = 'Z'
-# for g, gate_type in enumerate(gate_types):
-#     N_l, N_G, n_nops = data['FF'][gate_type]['tot'][noise_type].shape
-#     mean_tot = ins_ax.errorbar(
-#         m[:-1], 1 - data['FF'][gate_type]['tot'][noise_type][..., k].mean(-1)[:-1],
-#         (data['FF'][gate_type]['tot'][noise_type][..., k].std(-1)[:-1] /
-#          np.sqrt(N_G)),
-#         fmt='.', color=colors[g],
-#         linewidth=0.75, markersize=2
-#     )
-
-#     fit_tot = ins_ax.plot(
-#         m, linear(fit['FF'][gate_type]['tot'][noise_type]['sep'][k].beta, m),
-#         color=colors[g], linestyle='--', linewidth=0.75
-#     )
-
-# rb_theory = ins_ax.plot(
-#     m,
-#     1 - data['single_clifford'][gate_type]['avg'][noise_type][..., k].mean()*m,
-#     '-', zorder=4, color='k', linewidth=0.75
-# )
-# ins_ax.grid(False)
-# ins_ax.set_xlim(0, 100)
-# ins_ax.set_ylim(ymax=1)
-# ins_ax.tick_params(direction='in', which='both')
-# ins_ax.set_xticks(axes[1].get_xticks())
-# ins_ax.set_xticklabels([])
-# ins_ax.set_yticks([0.98, 1])
-# ins_ax.spines['right'].set_visible(False)
-# ins_ax.spines['top'].set_visible(False)
-# ins_ax.patch.set_alpha(0)
-
-# fig.tight_layout(h_pad=0, w_pad=0, pad=0)
-# fname = 'RB_{}-{}-{}_gates_white_vs_correl_with_Z_noise_inset'.format(*gate_types)
-
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
-
-# # %% avg filter function for single clifford
-# fig, ax = plt.subplots(3, 1, sharex=True, sharey=True,
-#                        figsize=(figsize_narrow[0], figsize_narrow[0]))
-#
-# subfigs = ('(a)', '(b)', '(c)')
-# for g, (subfig, gate_type) in enumerate(zip(subfigs, gate_types)):
-#     dta = single_clifford_FF[gate_type]
-#     ax[g].loglog(dta['omega'][250:],
-#                  dta['filter_function'][range(3), range(3), 250:].real.T)
-#     ax[g].text(0.9, 0.8, subfig, transform=ax[g].transAxes, fontsize=10)
-#
-# ax[g].set_xlim(dta['omega'][250], dta['omega'][-1])
-# ax[g].set_xlabel(r'$\omega$ (a.u.)')
-# ax[1].legend(labels=['$F_{xx}$', '$F_{yy}$', '$F_{zz}$'], ncol=3,
-#              frameon=False)
-#
-# # Add proxy subplot for common axis labels
-# common_ax = fig.add_subplot(111, frameon=False)
-# common_ax.tick_params(labelcolor='none', top=False, bottom=False,
-#                       left=False, right=False)
-# common_ax.set_xticks([])
-# common_ax.set_yticks([])
-# common_ax.grid(False)
-# common_ax.set_ylabel(r'Filter function', labelpad=30.)
-#
-# fig.tight_layout(pad=0)
-# fname = 'single_clifford_avg_FF_{}-{}-{}_gates'.format(*gate_types)
-# for ext in exts:
-#     fig.savefig(save_path / ext / '.'.join((fname, ext)))
+fig.savefig(SAVE_PATH / 'randomized_benchmarking.pdf')

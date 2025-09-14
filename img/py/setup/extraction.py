@@ -587,7 +587,7 @@ ax.plot(q / w0, q*(x := abs(E_gaussian(q, w0, kn))**2)/(x[0]*w0), color=RWTH_COL
 
 ax.set_xlim(xlim := ax.get_xlim())
 ax.set_ylim(ylim := ax.get_ylim())
-ax.set_xticks([0, 1, 2, 3], labels=[])
+ax.set_xticks([0, 1, 2, 3])
 ax.set_ylabel(r'$\rho I(\rho)/(w_0 I(0))$')
 
 # power included in circle of radius q

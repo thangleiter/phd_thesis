@@ -343,6 +343,10 @@ axs[1, 0].axhline(ΔE_v, color='k')
 T = tunneling_probability(F, ΔV, eps, m[:, None])
 Γ_T = tunneling_rate(F, ΔV, eps, L, m[:, None])
 Γ_E = thermionic_emission_rate(F, 10, ΔV, eps, L, m[:, None])
+print('Tunnel rate @ 1μm diameter, 5e15/cm², 1V:',
+      f'{Γ_T[0, 0, F == 1/200e-9].item()*np.pi*.5e-6**2*5e15*const.e:.3g} A')
+print('Tunnel rate @ 1μm diameter, 5e15/cm², 1.5V:',
+      f'{Γ_T[0, 0, F == 1.5/200e-9].item()*np.pi*.5e-6**2*5e15*const.e:.3g} A')
 # %% 3d wavefunctions in a trap
 omega = 7.38e11 * F / 5e6
 rho = np.linspace(0, 75e-9, 151)
@@ -527,6 +531,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.7, 1.05)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     # Valence band
     ax = axs[1]
@@ -541,6 +546,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.0, -0.65)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     sketch_style(fig, axs)
     fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')
@@ -570,6 +576,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, +1, N, scale=1e-5)
 
     ax.set_ylim(0.675, 1.175)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     # Valence band
     ax = axs[1]
@@ -585,6 +592,7 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     plot_states(ax, zw*1e-9, z[1]*1e-9, F0, E0, -1, N, scale=1e-5)
 
     ax.set_ylim(-1.125, -0.625)
+    ax.grid(axis='both', color=RWTH_COLORS_25['black'], alpha=0.5)
 
     sketch_style(fig, axs)
     fig.savefig(SAVE_PATH / f'qw_undoped_{F0*200e-9:1g}V.pdf')

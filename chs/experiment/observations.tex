@@ -16,7 +16,7 @@ The emitted \gls{pl} radiation is picked up by the same lens and coupled into a 
 In total, I show measurements from three different samples.
 Unfortunately, none of the samples tested had a fully functional exciton trap with four working gates.
 Several old samples fabricated during the work of \citet{Descamps2021} appeared to have aged, resulting in broken gates or otherwise unconventional behavior.
-Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different \gls{ebl} resolution steps, or Ohmics, while other gates had leakage to ground or the \gls{qw}.
+Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different \gls{ebl} resolution steps, or Ohmic contacts, while other gates had leakage to ground or the \gls{qw}.
 
 I pursued two different approaches to positioning the laser on the samples.
 The first was using the white-light imaging arm of the confocal microscope (see \cref{part:setup}).
@@ -72,7 +72,7 @@ As the Fermi sea is at a finite temperature, the high-energy shoulder of the \gl
 The associated temperature is around \qty{1.5}{\kelvin} and hence orders of magnitude higher than the lattice temperature of \qty{10}{\milli\kelvin}.
 This effect has already been observed by \citet{Pinczuk1984}.
 Like in those experiments, the temperature of the Fermi edge does not vary significantly with excitation power, making local heating of the lattice due to high excitation power an unlikely cause~\cite{Ulbrich1973}.
-I show a power-dependence measurement of the Fermi edge supporting this statement in \cref{ch:app:exp:observations}.
+I show a power-dependence measurement of the Fermi edge supporting this statement in \cref{sec:app:exp:observations}.
 \citet{Bockelmann1990} showed that in low-dimensional electron gases electron cooling by phonon emission is limited by a finite scattering rate.
 Thus, under continuous excitation a quasi-equilibrium is established as hot electrons cannot loose heat quickly enough.
 Although their simulations were performed for higher temperatures and smaller confinement widths, their results of electron temperatures in the range of \qty{2}{\kelvin} for lattice temperatures of \qty{300}{\milli\kelvin} is comparable to ours.
@@ -93,9 +93,9 @@ From the width of the \gls{2deg} emission, we can calculate the charge carrier d
 \end{equation}
 where $\Delta E$ is the bandwidth of the emission (dashed gray lines in \cref{fig:exp:pl:2deg}) and $\mu = m^{\ast}_{\mr{c}}m^{\ast}_{\mr{hh}}/(m^{\ast}_{\mr{c}} + m^{\ast}_{\mr{hh}})$ is the reduced mass of conduction and valence band.
 For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$ or, equivalently, $E_{\mr{F}} = \qty{18}{\milli\electronvolt}$ and $k_{\mr{F}} = \qty{1.8e8}{\per\meter}$.
-Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.9e11}{\per\square\centi\meter}$ (refer to \cref{ch:app:exp:observations} for simulation parameters), shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
+Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.9e11}{\per\square\centi\meter}$ (refer to \cref{sec:app:exp:observations} for simulation parameters), shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
     Note that the carrier density obtained thus does not vary significantly with excitation power, ruling out photo-doping as a source of the discrepancy.
-    See \cref{ch:app:exp:observations} for a measurement of the \gls{2deg} \gls{pl} as function of power.
+    See \cref{sec:app:exp:observations} for a measurement of the \gls{2deg} \gls{pl} as function of power.
 }
 Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt}~\cite{Vurgaftman2001} by \qty{13}{\milli\electronvolt}.\sidenote{
     The redshift is in fact larger still due to the confinement energy of the \gls{qw}, estimated to be $\qty{17}{\milli\electronvolt}$ in \cref{sec:exp:theory:qcse}.
@@ -159,7 +159,7 @@ I elucidate this issue in \cref{sec:exp:tmm}.
         \Gls{pl} as function of difference-mode voltage on a large exciton trap.
         The observed Stark shift follows roughly the expected quadratic dispersion, but is offset by \qty{0.75}{\volt} with respect to zero bias.
         Dashed gray line is a guide to the eye of a parabola with curvature \qty{-3.5}{\milli\electronvolt\per\volt\squared}.
-        Line cuts in the upper panel are taken at the voltages indicated by dash-dotted lines in the lower.
+        Line cuts in the upper panel are taken at the voltages indicated by dash-dotted lines in the lower, and arrows indicate positions of individual peaks making up the yellow line shape.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_difference_mode}
 \end{marginfigure}
@@ -229,7 +229,7 @@ well within reasonable bounds.
 In the literature, this is known as carrier sweep-out and has been studied in the context of solar cells and other electroabsorptive devices~\cite{Larsson1988,Schneider1988,Fox1991}.
 
 The dashed gray line in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} shows a parabola, $\Delta E\propto \alpha\VDM^2$, with curvature $\alpha = \qty{-3.5}{\milli\electronvolt\per\volt\squared}$ as a guide to the eye.
-For difference-mode voltages below \qty{-1.8}{\volt}, the exciton Stark shift follows this quite closely.
+For difference-mode voltages below \qty{-1.8}{\volt}, the exciton Stark shift follows this quite closely, establishing that the exciton energy can be tuned by over \qty{20}{\milli\electronvolt} in the depleted regime, which simulations suggest is sufficient for confinement of single excitons in a smaller trap geometry~\cite{Descamps2021}.
 The upper panel depicts three line cuts at the positions indicated by the dash-dotted lines in the main panel.
 As can be seen from the cut at \qty{-2.3}{\volt} (orange), the line shape appears to consist of three individual emission lines assigned by \citet{Descamps2021} as the neutral, singly, and doubly negatively charged excitons. % TODO: exciton/trion mixing ref
 I return to the question of line assignment below.
@@ -297,7 +297,7 @@ All but the two outermost lines in the best fit are dominated by the inhomogeneo
 
 According to \citer{Descamps2021}, the lifetime of a Stark-shifted exciton is on the order of \qty{1}{\nano\second} due to the reduced wave function overlap.
 This corresponds to a homogeneous linewidth of $2\gamma = \flatfrac{\hbar}{\tau} \sim \qty{660}{\nano\electronvolt}$, several orders of magnitude below the observed linewidth, and it is thus consistent with the fact that most peaks are best fit by inhomogeneously broadened line shapes.
-The large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
+This large a number of lines is certainly unexpected and cannot be explained by different excitonic species.
 Where it is possible to track individual peaks as function of excitation power, their power dependence is linear, $\int\dd{E} V(E)\propto P$, suggesting neutral excitons or band-to-band recombination as origins of the emission.
 
 \begin{figure*}
@@ -384,6 +384,18 @@ Curiously, the map also shows a shifting of the Fermi edge close to the gate.
 This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
 The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
 
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/sem}
+    \caption[\imgsource{img/py/experiment/sem.py}]{
+        \acrshort{sem} image of an exciton trap with both central and guard gates.
+        Gates on the bottom side are visible through the membrane.
+        Positions (symbolic) of the line cuts in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} are indicated in the same colors.
+        Images taken by Thomas Descamps.
+    }
+    \label{fig:exp:pl:sem}
+\end{marginfigure}
+
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_positioning}
@@ -400,21 +412,22 @@ The former effect could potentially be caused by band-deformation due to strain 
         \Gls{pl} of a large exciton trap as function of position perpendicular (left) and parallel (right) to gravity.
         The trap is biased so that the emission is Stark-shifted towards lower energy.
         Upper panels show line cuts taken along the dash-dotted lines in the lower panels, demonstrating fairly identical behavior along both axes.
+        The cuts in orange, green, and teal are taken at positions corresponding to the ones marked in the bottom panel of \cref{fig:exp:pl:sem}, with orange corresponding to the center of the trap gate.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_positioning}
 \end{figure}
 
 \Cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets}.
-While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is lowered in a laterally local fashion. % TODO: me, pleeaase
+While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is laterally lowered.
 The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
 Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
 Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
 We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
-Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features the displayed ranges should be roughly the same.
-The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels as usual.
+Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features, the displayed ranges should be roughly the same.
+The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on a different trap in \cref{fig:exp:pl:sem}.
 Both sweeps display very similar features.
-In the center of the trap, the Stark-shifted emission line consists of a single peak.
-Towards the edges, two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
+In the center of the trap (yellow), the Stark-shifted emission line consists of a single peak.
+Towards the edges (teal and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
 The increase in effective electric field towards the edge of an exciton trap is reminiscent of the simulation of the same type of experiment for an undoped \gls{qw} by \citet[Figure~6.4]{Descamps2021}, although it was not explained there.
 Indeed, it also appears to be in conflict with Figure~2.16 \ibid, where a monotonic increase in effective exciton potential as function of distance from the trap center was predicted.
 In the device under study here, there is of course a \gls{2deg} whose presence towards the edge of the trap screens the voltages, in theory contributing to an attenuation of the Stark shift.
@@ -559,8 +572,8 @@ where $\gamma_i = \sqrt{\epsilon_{r,i}k_0^2 - k_x^2}$ with $k_0=\flatfrac{\omega
 In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces~\cite{Langevin2024},
 \begin{equation}\label{eq:exp:tmm:fields}
     \begin{dcases}
-        E_{y,i}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
-        E_{y,i}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
+        E_{y,i}^{+}(z) = A_i^{+}\exp{\i\gamma_i[z-z_{i}]} + B_i^{+}\exp{-\i\gamma_i[z-z_{i}]}, \\
+        E_{y,i}^{-}(z) = A_i^{-}\exp{\i\gamma_i[z-z_{i+1}]} + B_i^{-}\exp{-\i\gamma_i[z-z_{i+1}]},
     \end{dcases}
 \end{equation}
 where the coefficients with superscript $+$ ($-$) are referenced to the phase at the upper (lower) interface, respectively.
@@ -638,7 +651,7 @@ In the main text I take the half-space below the membrane to be the epoxy resin 
     \href{https://www.epotek.com/docs/en/Datasheet/353ND.pdf}{Epotek 353ND}
 }
 corresponding to there being no coherent back-scattering at the interface between epoxy and Silicon host chip.
-I discuss the influence a finite epoxy thickness in \cref{ch:app:exp:tmm}.
+I discuss the influence of a finite epoxy thickness in \cref{sec:app:exp:tmm}.
 I then consider four different scenarios,
 \begin{enumerate}
     \item The bare heterostructure,
@@ -669,7 +682,7 @@ Since furthermore the effective wavelength in \ch{GaAs} is $\lambda = \lambda_0/
 In turn, this means that changing the thickness of the membrane we can change the resonance condition of the cavity such that the electric field has a peak or trough at the \gls{qw} position, maximizing the coupling matrix element leading to absorption.
 As the width of the \gls{qw} determines the optical properties, the \ch{AlGaAs} barrier thickness remains as the only parameter we can reasonably vary.
 \emph{Reducing} the thickness, however, is ill-advised as it decreases the mobility in the \gls{qw} due to enhanced scattering and further increases the probability of tunneling through the barrier.
-I therefore used \pymoosh to optimize \gls{qw} absorptance over the barrier thickness of a double-gated structure at $\lambda_0\qty{825}{\nano\meter}$ with the unoptimized case of \qty{90}{\nano\meter} as a lower bound.
+I therefore used \pymoosh to optimize \gls{qw} absorptance over the barrier thickness of a double-gated structure at $\lambda_0 = \qty{825}{\nano\meter}$ with the unoptimized case of \qty{90}{\nano\meter} as a lower bound.
 
 \begin{figure}
     \centering
