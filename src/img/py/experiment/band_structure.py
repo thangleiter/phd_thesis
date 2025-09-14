@@ -118,7 +118,8 @@ fig, axs = plt.subplots(structure.number_eigenvectors, sharex=True, sharey=True,
                         layout='constrained')
 for i, ax in enumerate(axs):
     ax.pcolormesh(z := structure.z_nm[slice(*z_qw_ix)], V, abs(psi[:, slice(*z_qw_ix - 10), i]))
-    ax.plot(z.mean() + np.trapezoid((z-z.mean()) * abs(psi[:, slice(*z_qw_ix - 10), i]) ** 2, z), V, 'k')
+    ax.plot(z.mean() + np.trapezoid((z-z.mean()) * abs(psi[:, slice(*z_qw_ix - 10), i]) ** 2, z),
+            V, 'k')
 
 # %%%
 npts = 101

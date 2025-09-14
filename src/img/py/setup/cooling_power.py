@@ -47,7 +47,7 @@ T = np.linspace(1e-3, 300, 101)
 E_c = const.lambda2eV(mpm.mpf(4.5e-6))
 
 P_0, P_inf = [], []
-for t in tqdm(T):
+for t in tqdm(T, desc='Integrating Planck spectrum'):
     kT = const.k * mpm.mpf(t) / const.e
     P_0.append(mpm.quad(functools.partial(planck_mpm, kT=kT), [E_c, mpm.inf]))
     P_inf.append(mpm.quad(functools.partial(planck_mpm, kT=kT), [0, mpm.inf]))
@@ -58,7 +58,7 @@ fig, ax = plt.subplots(layout='constrained')
 ax.semilogy(T, F)
 ax.grid()
 ax.set_xlim(0)
-ax.set_ylim(1e-20, 1e1)
+ax.set_ylim(1e-20, 1e0)
 ax.set_yticks([1e-20, 1e-10, 1e-0])
 ax.set_xlabel(r'$T$ (K)')
 ax.set_ylabel('Rel. radiance')

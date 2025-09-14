@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{The \mjolnir measurement framework}\label{ch:exp:mjolnir}
-\AutoLettrine{To} facilitate the optical experiments in \thispart, I wrote a software package that controls the measurement workflow and all other interactions with the setup described in \cref{part:setup}, \sidehref{https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir}{\mjolnir}~\cite{Hangleiter_mjolnir}.
+\AutoLettrine{To} facilitate the optical experiments in \thispart, I wrote a software package that controls the measurement workflow and all other interactions with the setup described in \cref{part:setup}, \sidehref{https://git.rwth-aachen.de/qutech/mjolnir}{\mjolnir}~\cite{Hangleiter_mjolnir}.
 The package is written in \python, is open source, and has a documentation as well as some rudimentary tests.\sidenote{
     Testing code interacting with hardware is notoriously difficult to achieve in an automated manner.
 }
@@ -175,7 +175,7 @@ A caching mechanism stores the optimal angles together with the current waveleng
 The calibration is quite tedious and time-consuming for several reasons.
 Chiefly, moving the waveplate angles is slow simply because it is a mechanical movement, and optimizers typically do not take into account the distance between subsequent sample points, potentially resulting in unnecessarily inefficient exploration of the parameter space.
 Incorporating a penalty on the sample distance into the optimization algorithm would hence improve the convergence speed.
-Additionally, due to vibrations in the cryostat (\cref{ch:setup:vibrations}), the \gls{rms} intensity of the back-scattered laser is large -- and larger the closer the excitation rejection is to its optimal value\sidenote{
+Additionally, due to vibrations in the cryostat (\cref{ch:setup:vibrations}), the \gls{rms} intensity of the back-scattered laser is large -- and the larger the closer the excitation rejection is to its optimal value\sidenote{
     The count rate can vary by up to a factor of two with the frequency of the \gls{ptr} pulses.
 } -- and thus requires long averaging times for a robust measurement.
 Finally, the algorithm outlined above fails when the starting guess is too far away from the optimum, such as when the new wavelength is on the order of tens of \unit{nm} away from the previously optimized one.
@@ -219,8 +219,8 @@ dataset = handler.measure(
     sweeps,
     measures,
     parameter_contexts={
-	sample.trap.central_common_mode: -1,
-	detection_path.central_wavelength: 825,
+        sample.trap.central_common_mode: -1,
+        detection_path.central_wavelength: 825,
     },
     exposure_time=2
 )
@@ -240,7 +240,7 @@ A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketc
 The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
 Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
 Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
-More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.git-ce.rwth-aachen.de/lab_software/python-mjolnir/}{documentation.}
+More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
 Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
 I leave this option for future work.
 

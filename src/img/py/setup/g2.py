@@ -6,7 +6,7 @@ import sys
 import matplotlib as mpl  # noqa
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy as sc
+import scipy as sp
 import xarray as xr
 from mjolnir.helpers import save_to_hdf5
 from mjolnir.plotting import plot_nd  # noqa
@@ -30,6 +30,19 @@ SAVE_PATH.mkdir(exist_ok=True)
 
 init(MARGINSTYLE, backend := 'pgf')
 # %% Functions
+
+
+def K(tau, alpha, sigma):
+    # analytical convolution of exp(-α|τ|) and a Gaussian
+    return 0.5*np.exp(0.5*(alpha*sigma)**2) * (
+        np.exp(-alpha*tau) * (1 + sp.special.erf((tau - alpha*sigma**2)/(np.sqrt(2)*sigma)))
+        + np.exp(alpha*tau) * (1 - sp.special.erf((tau + alpha*sigma**2)/(np.sqrt(2)*sigma)))
+    )
+
+
+def g2_model_convolved(tau, gamma, sigma=350*np.sqrt(2)):
+    # analytical convolution of g2_model() and a Gaussian
+    return 1 - 2*K(tau, gamma/2, sigma) + K(tau, gamma, sigma)
 
 
 def g2_model(tau, gamma):
@@ -117,10 +130,11 @@ g2_data = g2.tagger_correlation_1_data_normalized
 g2_data_log = g2.tagger_histogram_log_bins_1_g2
 
 mask = np.abs(x := g2_data.tagger_correlation_1_time_bins) < 11e3
-popt, pcov = sc.optimize.curve_fit(g2_model, x[mask], g2_data.data.squeeze()[mask], p0=[1e-3])
+popt, pcov = sp.optimize.curve_fit(g2_model_convolved, x[mask], g2_data.data.squeeze()[mask],
+                                   p0=[1e-3], bounds=np.transpose([(0, np.inf)]*1))
 
 τmax = g2_data_log.tagger_histogram_log_bins_1_time_bins[g2_data_log.argmax()].item()
-print(f'γ = {ufloat(popt[0], np.sqrt(np.diag(pcov))[0])} THz')
+print(f'γ = {ufloat(popt[0], np.sqrt(np.diag(pcov))[0])*1e3} GHz')
 print(f'Bump is at τ = {τmax} ps = {τmax*1e-12*const.c} m')
 # %%% Plot
 DOWNSAMPLING = 10
@@ -131,19 +145,22 @@ fig, axs = plt.subplots(2, layout='constrained', sharey=False, figsize=(MARGINWI
 axs[0].plot(x_down * 1e-3, y_down,
             **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=0.75,
                           markerfacealpha=0.25))
-axs[0].plot(x*1e-3, g2_model(x, *popt))
+axs[0].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
+axs[0].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--', color=RWTH_COLORS['orange'])
 axs[1].semilogx(g2_data_log.tagger_histogram_log_bins_1_time_bins * 1e-3, g2_data_log.T,
                 **markerprops(RWTH_COLORS['blue'], marker='.', markeredgealpha=.75,
                               markerfacealpha=0.25))
+axs[1].plot(x[mask]*1e-3, g2_model_convolved(x[mask], *popt))
+axs[1].plot(x[mask]*1e-3, g2_model(x[mask], *popt), ls='--', color=RWTH_COLORS['orange'])
 
 axs[0].grid()
 axs[1].grid()
 axs[1].set_yticks([0, 1, 2])
 axs[0].set_xlim(-11, 11)
-axs[0].set_ylim(top=1.3)
+axs[0].set_ylim(0, 1.3)
 axs[1].set_ylim(top=2)
 axs[1].set_xlabel(r'$\tau$ (ns)')
 
-fig.supylabel(r'$g^{(2)}(\tau)$', fontsize=mpl.rcParams['font.size'])
+fig.supylabel(r'$\tilde{g}^{(2)}(\tau)$', fontsize=mpl.rcParams['font.size'])
 fig.get_layout_engine().set(hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'ingaas_g2.pdf')

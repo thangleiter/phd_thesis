@@ -22,7 +22,7 @@ There are several possible avenues for future development of the \pyspeck packag
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
-Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
+Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2025}.
 \qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
@@ -148,14 +148,14 @@ for data_buffers in zip(*acquisition_generators):
     \label{lst:speck:conclusion:cross_workflow}
 \end{listing}
 
-Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\sidecite{CSDScipy} for \gls{csd} estimation\sidenote{
+Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\cite{CSDScipy} for \gls{csd} estimation\sidenote{
     In practice, working with the normalized \gls{csd}, or correlation coefficient~\cite{Rojas-Arias2023,Yoneda2023}
     \begin{align}
         r_{ij}(\omega) = \frac{S_{ij}(\omega)}{\sqrt{S_{ii}(\omega)S_{jj}(\omega)}}
     \end{align}
     with $S_{ii}(\omega)$ the \gls{psd} of process $x_i$ would likely be more favorable.
 }
-and make the plotting conform to complex data.\sidenote{
+and making the plotting conform to complex data.\sidenote{
     It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
 }
 % TODO:

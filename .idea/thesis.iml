@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/lib/kaobook/examples" />
       <excludeFolder url="file://$MODULE_DIR$/lib/kaobook/instructions" />
+      <excludeFolder url="file://$MODULE_DIR$/img/py/.pixi" />
     </content>
     <orderEntry type="jdk" jdkName="py313" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -369,6 +369,10 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
     ax2.set_xlabel(rf'$\lambda$ ({unit})')
 
     ax.annotate('', (x1, 15), (x2, 15), **annotate_kwargs)
+    ax.annotate(r'$E_\mathrm{g}$', (1.506 - 1e-3, 1.5e3), ha='right', va='bottom',
+                fontsize=txtfontsize, color=RWTH_COLORS['black'])
+    ax.annotate(r'$\mu$', (1.5277 + 1e-3, 1.5e3), ha='left', va='bottom', fontsize=txtfontsize,
+                color=RWTH_COLORS['black'])
     ax.annotate(r'$E_\mathrm{F}\left(1 + \frac{m_{\mathrm{c}}^\ast}{m_{\mathrm{hh}}^\ast}\right)$',
                 ((x2-x1)/2 + x1, 25), ha='center', va='bottom', fontsize=txtfontsize,
                 color=RWTH_COLORS['black'])
@@ -420,6 +424,8 @@ da.assign_coords({
         da.doped_M1_05_49_2_trap_2_central_difference_mode + (delta_alpha := .6)*(-1.3)
     ) / np.sqrt(1 + delta_alpha**2)
 })
+arrowprops = dict(arrowstyle='->', mutation_scale=7.5, color=RWTH_COLORS['black'],
+                  linewidth=0.5, shrinkA=0, shrinkB=0)
 
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 2))
@@ -439,6 +445,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
         ls='--', lw=0.75, color=RWTH_COLORS_75['black'], alpha=0.66
     )
     axs[0, 0]['img'].set_xlim(1.48, 1.54)
+    axs[0, 0]['slc'].annotate('', (1.4942, 1.5e3), (1.4942, 1.5e3 + 1.5e3), arrowprops=arrowprops)
+    axs[0, 0]['slc'].annotate('', (1.4994, 2.5e3), (1.4994, 2.5e3 - 1.5e3), arrowprops=arrowprops)
+    axs[0, 0]['slc'].annotate('', (1.5059, 0.7e3), (1.5059, 0.7e3 + 1.5e3), arrowprops=arrowprops)
 
     fig.get_layout_engine().set(w_pad=2/72, h_pad=1/72)
     fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_difference_mode.pdf')

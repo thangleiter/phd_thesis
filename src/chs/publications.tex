@@ -1,0 +1,16 @@
+%*******************************************************
+% Publications
+%*******************************************************
+\pdfbookmark[1]{Publications}{publications}
+\chapter*{Publications}
+%\noindent Put your publications from the thesis here. The packages \texttt{multibib} or \texttt{bibtopic} etc. can be used to handle multiple different bibliographies in your document.
+
+\begin{refsection}[ownpubs]
+    \small
+    \nocite{*} % is local to to the enclosing refsection
+    { % https://planeta.github.io/latex/maxbibnames-for-different-bibliographies/
+      \expandafter\def\csname blx@maxbibnames\endcsname{99}%
+      \printbibliography[heading=none]
+    }
+\end{refsection}
+

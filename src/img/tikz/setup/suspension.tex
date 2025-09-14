@@ -1,0 +1,134 @@
+\begin{tikzpicture}[x=1cm,y=1cm,line cap=butt,line join=miter]
+
+    %--------------------------------
+    % Styles
+    %--------------------------------
+    \tikzset{
+        frame/.style  ={line width=0.8},
+        bracket/.style={line width=0.8},
+        brace/.style  ={line width=0.6},
+        spring/.style ={line width=0.8, decorate, decoration={zigzag,segment length=4pt,amplitude=1.2pt}},
+        springGuides/.style={line width=0.5, draw=RWTHblack75, densely dotted},
+        cryo/.style   ={line width=0.7, color=RWTHblack75},
+        hidden/.style ={dash pattern=on 2pt off 1.3pt, color=RWTHblack75},
+        groundline/.style={line width=0.6},
+        hatch/.style={thin}
+    }
+
+    %--------------------------------
+    % Parameters (match your current drawing)
+    %--------------------------------
+    \def\W{2.5}      % total width
+    \def\Hlow{4.0}   % lower frame outer height
+    \def\BW{0.4}     % frame wall thickness (both frames)
+    \def\Gap{0.5}    % vertical gap between frames
+    \def\Hup{1.5}    % upper frame outer height
+
+    \def\Bext{0.7}   % bracket extension
+    \def\Bv{0.7}     % bracket vertical leg length
+    \def\Bth{0.1}    % bracket leg thickness
+
+    % Cryostat envelope (rectangle in 2D)
+    \def\CxL{0.6}    % left x of cryostat
+    \def\CxR{1.9}    % right x of cryostat
+    \def\Cpt{0.2}    % top plate thickness
+    \def\CyBot{1.6}  % cryostat bottom y
+
+    % Key coordinates
+    \coordinate (Llow) at (0,\Hlow);
+    \coordinate (Lup)  at (0,\Hlow+\Gap);
+    \coordinate (Rlow) at (\W,\Hlow);
+    \coordinate (Rup)  at (\W,\Hlow+\Gap);
+
+    %--------------------------------
+    % Ground (line + simple hatch)
+    %--------------------------------
+    \draw[groundline] (-\Bext,0) -- (\W+\Bext,0);
+    \foreach \i in {0,...,13}{
+        \draw[hatch] ({-\Bext+0.3*\i},0) -- ({-\Bext-0.3+0.3*\i},-0.3);
+    }
+
+    %--------------------------------
+    % Lower frame
+    %--------------------------------
+    \draw[frame] (0,0) rectangle (\W,\Hlow);
+    \draw[frame] (\BW,0) rectangle (\W-\BW,\Hlow-\BW);
+
+    %--------------------------------
+    % Upper frame
+    %--------------------------------
+    \draw[frame] (0,\Hlow+\Gap) rectangle (\W,\Hlow+\Gap+\Hup);
+    \draw[frame] (\BW,\Hlow+\Gap+\BW) rectangle (\W-\BW,\Hlow+\Gap+\Hup-\BW);
+
+    %--------------------------------
+    % Left brackets (L-angles) and spring
+    %--------------------------------
+    % Lower left bracket
+    \draw[bracket]
+    ($(Llow)+(-\Bext,0)$) -- (Llow) -- ++(0,-\Bv) -- ++(-\Bth,0)
+    -- ++(0,\Bv-\Bth) -- ++(-\Bext+\Bth,0) -- cycle;
+    \draw[brace] ($(Llow)+(-\Bext+\Bth,-\Bth)$) -- ($(Llow)+(-\Bth,-\Bv+\Bth)$);
+
+    % Upper left inverted bracket
+    \draw[bracket]
+    ($(Lup)+(-\Bext,0)$) -- (Lup) -- ++(0,\Bv) -- ++(-\Bth,0)
+    -- ++(0,-\Bv+\Bth) -- ++(-\Bext+\Bth,0) -- cycle;
+    \draw[brace] ($(Lup)+(-\Bext+\Bth,\Bth)$) -- ($(Lup)+(-\Bth,\Bv-\Bth)$);
+
+    % Left spring: end plates + zigzag + dashed guides
+    \draw[frame] ($(Llow)+(-\Bext+\Bth,0)$) -- ($(Llow)+(-\Bth,0)$);
+    \draw[frame] ($(Lup)+(-\Bext+\Bth,0)$) -- ($(Lup)+(-\Bth,0)$);
+    \draw[spring] ($(Llow)+(-\Bext+0.34,0)$) -- ($(Lup)+(-\Bext+0.34,0)$);
+    \draw[springGuides] ($(Llow)+(-\Bext+\Bth,0)$) -- ($(Lup)+(-\Bext+\Bth,0)$);
+    \draw[springGuides] ($(Llow)+(-\Bth,0)$) -- ($(Lup)+(-\Bth,0)$);
+
+    %--------------------------------
+    % Right brackets (mirror) and spring
+    %--------------------------------
+    % Lower right bracket
+    \draw[bracket]
+    ($(Rlow)+(\Bext,0)$) -- (Rlow) -- ++(0,-\Bv) -- ++(\Bth,0)
+    -- ++(0,\Bv-\Bth) -- ++(\Bext-\Bth,0) -- cycle;
+    \draw[brace] ($(Rlow)+(\Bext-\Bth,-\Bth)$) -- ($(Rlow)+(\Bth,-\Bv+\Bth)$);
+
+    % Upper right inverted bracket
+    \draw[bracket]
+    ($(Rup)+(\Bext,0)$) -- (Rup) -- ++(0,\Bv) -- ++(\Bth,0)
+    -- ++(0,-\Bv+\Bth) -- ++(\Bext-\Bth,0) -- cycle;
+    \draw[brace] ($(Rup)+(\Bext-\Bth,\Bth)$) -- ($(Rup)+(\Bth,\Bv-\Bth)$);
+
+    % Right spring: end plates + zigzag + dashed guides
+    \draw[frame] ($(Rlow)+(\Bth,0)$) -- ($(Rlow)+(\Bext-\Bth,0)$);
+    \draw[frame] ($(Rup)+(\Bth,0)$) -- ($(Rup)+(\Bext-\Bth,0)$);
+    \draw[spring] ($(Rlow)+(0.34,0)$) -- ($(Rup)+(0.34,0)$);
+    \draw[hidden] ($(Rlow)+(\Bth,0)$) -- ($(Rup)+(\Bth,0)$);
+    \draw[hidden] ($(Rlow)+(\Bext-\Bth,0)$) -- ($(Rup)+(\Bext-\Bth,0)$);
+
+    %--------------------------------
+    % Cryostat (front edges solid, hidden edges dashed)
+    %--------------------------------
+    % Hidden edges behind upper frame web
+    \draw[hidden] (\CxL,\Hlow+\Gap) -- (\CxL,\Hlow+\Gap+\BW);
+    \draw[hidden] (\CxR,\Hlow+\Gap) -- (\CxR,\Hlow+\Gap+\BW);
+
+    % Top plate
+    \draw[cryo] (\CxL,\Hlow+\Gap+\BW) -- ++(0,\Cpt) -- ++(\CxR-\CxL,0) -- ++(0,-\Cpt);
+
+    % Visible front edges down to top of lower frame
+    \draw[cryo] (\CxL,\Hlow+\Gap) -- (\CxL,\Hlow);
+    \draw[cryo] (\CxR,\Hlow+\Gap) -- (\CxR,\Hlow);
+
+    % Hidden through lower frame web
+    \draw[hidden] (\CxL,\Hlow) -- (\CxL,\Hlow-\BW);
+    \draw[hidden] (\CxR,\Hlow) -- (\CxR,\Hlow-\BW);
+
+    % Visible down to near floor
+    \draw[cryo] (\CxL,\Hlow-\BW) -- (\CxL,\CyBot);
+    \draw[cryo] (\CxR,\Hlow-\BW) -- (\CxR,\CyBot);
+    \draw[cryo] (\CxL,\CyBot) -- (\CxR,\CyBot);
+
+    % Small bottom features (optional)
+    \draw[cryo] (\CxL+0.1,\CyBot) rectangle ++(0.2,-0.4);
+    \draw[cryo] (\CxR-0.1,\CyBot) rectangle ++(-0.2,-0.4);
+
+\end{tikzpicture}

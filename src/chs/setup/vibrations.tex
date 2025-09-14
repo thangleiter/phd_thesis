@@ -5,13 +5,13 @@
 }
 Various types of aberrations exist, and modern microscopes usually include a complex assembly of optics to compensate for these errors.
 The second factor is vibration noise.
-This becomes more significant the higher the resolution of the microscope simply because ambient, environmental vibrations within the range of human civilization is typically on the order of $\qty{100}{\micro\meter\per\second}$ \gls{rms}~\cite{Gordon1999}.
+This becomes more significant the higher the resolution of the microscope simply because ambient, environmental vibrations within the range of human civilization are typically on the order of $\qty{100}{\micro\meter\per\second}$ \gls{rms}~\cite{Gordon1999}.
 Comparing that to transmission electron microscopes with atomic resolution, it is clear that these instruments require purpose-built rooms to reduce the vibration level to acceptable levels.
 
 The demands on the microscope discussed in \thethesis are fortunately much more relaxed as the features we need to resolve are on the micrometer scale.
 However, we face the additional challenge of ultra-low temperatures, or rather the manner in which they are achieved.
 The microscope is integrated into a \emph{dry} \gls{dr}.
-In contrast to a \emph{wet} \gls{dr}, which uses a liquid Helium bath, these systems achieve the pre-cooling necessary for the \ch{^3He}/\ch{^4He} dilution refrigeration cycle to work by adding a secondary refrigeration mechanism, a \gls{ptr}.
+In contrast to a \emph{wet} \gls{dr}, which uses a liquid Helium bath, these systems achieve the pre-cooling necessary for the \ch{^3He}/\ch{^4He} dilution refrigeration cycle to work by adding a secondary refrigeration mechanism, usually a \gls{ptr}.
 These are closed-cycle systems that work with \ch{^4He} compressed to \textasciitilde\qty{21}{\bar} on the high-pressure and \textasciitilde\qty{7}{\bar} on the low-pressure side.
 A rotating valve connecting high and low pressure lines to the cryostat in turn produces alternating gas flow inside a regenerator, where the gas absorbs heat at the low-temperature and and deposits heat at the high-temperature end~\cite{Radebaugh2009,DeWaele2011}.
 In commercial \glspl{ptr} the frequency of the pulses of Helium gas, determined by the rotary valve motor, is usually fixed at values around \qty{1.5}{\hertz}.
@@ -86,37 +86,42 @@ The second is to do the opposite, \ie, make the entire system as stiff (large $k
 While this minimizes the attenuation region, it also moves the amplification region close to the resonance to higher frequencies, and possibly further away from the external excitation.
 Consequently, this approach makes most sense if it is known that low-frequency excitations are the dominant source of vibrations.
 
-A widely used metric for the isolation demand of vibration-sensitive equipment are the so-called \acrfullpl{vc}~\cite{Gordon1992,Gordon1999}.
+A widely used metric for the isolation demand of vibration-sensitive equipment are the so-called \gls{vc}~\cite{Gordon1992,Gordon1999}.
 These are design standard specifications for buildings housing, for example, lithography tools.
-The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what I have used in \thethesis (\cf \cref{eq:setup:vibrations:rms,eq:speck:psd:bandpower}).
+The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what we have employed in \cref{part:speck} (\cf \cref{eq:setup:vibrations:rms,eq:speck:psd:bandpower}).
 However, instead of computing the band-limited \gls{rms} with a fixed lower band edge, one uses bands of a fixed width, typically over one-third of an octave.
 To be specific, the one-third octave is defined in terms of its midband frequency $f_{\mr{m}}$ as the interval
 \begin{equation}\label{eq:setup:vibrations:third_octave}
     f\in f_{\mr{m}}\times\left[10^{-\flatfrac{1}{20}},10^{\flatfrac{1}{20}}\right] \approx f_{\mr{m}}\times\left[2^{-\flatfrac{1}{6}},2^{\flatfrac{1}{6}}\right]
 \end{equation}
 whose bandwidth \df is approximately \qty{26}{\percent} larger than $f_{\mr{m}}$ and where the latter is defined referenced to \qty{1000}{\hertz}~\cite{ansi_octave_bands}.
+The $\flatfrac{1}{3}$ octave band \gls{rms} is then given by
+\begin{equation}\label{eq:setup:vibrations:octave_band_rms}
+    \rms_{\flatfrac{1}{3}\,\mr{oct.}}(f_{\mr{m}}) = \sqrt{\int_{f_{\mr{m}}/10^{1/20}}^{f_{\mr{m}}\times 10^{1/20}}\dd{f}S(f)},
+\end{equation}
+where $S(f)$ is the noise \gls{psd} (see \cref{ch:speck:theory}).
 The criteria, given as velocities rather than displacements or accelerations because it is argued that the limit to photolithography resolution is image velocity, are reproduced from \citer{Gordon1999} in \cref{tab:setup:vibrations:vc}.
-For the typical feature sizes we would like our microscope to resolve, the VC-B criterion is a fair target.
+For the typical feature sizes we would like our microscope to resolve, the \acrshort{vc}-B criterion is a fair target.
 I will use them below to classify the vibration isolation of the confocal microscope.
 
-\begin{margintable}[*-12]
+\begin{margintable}[*-13]
     \centering
     \footnotesize
-    \caption{\Glspl{vc} and \gls{iso} guidelines}
+    \caption{\Glspl{vc} and \gls{iso} guidelines~\cite{Gordon1999}.}
     \label{tab:setup:vibrations:vc}
     \begin{tabular}{ c @{}S@{} }
         \toprule
         \multicolumn{2}{l}{$\flatfrac{1}{3}$ \textsc{octave band \gls{rms} (\unit{\micro\meter\per\second})}} \\
         \midrule
-        Workshop (ISO)        & 800  \\
-        Office (ISO)          & 400  \\
-        Residential day (ISO) & 200  \\
-        Op. theater (ISO)     & 100  \\
-        VC-A                  & 50   \\
-        VC-B                  & 25   \\
-        VC-C                  & 12.5 \\
-        VC-D                  & 6    \\
-        VC-E                  & 3    \\
+        Workshop (\acrshort{iso})        & 800  \\
+        Office (\acrshort{iso})          & 400  \\
+        Residential day (\acrshort{iso}) & 200  \\
+        Op. theater (\acrshort{iso})     & 100  \\
+        \acrshort{vc}-A                  & 50   \\
+        \acrshort{vc}-B                  & 25   \\
+        \acrshort{vc}-C                  & 12.5 \\
+        \acrshort{vc}-D                  & 6    \\
+        \acrshort{vc}-E                  & 3    \\
         \bottomrule
     \end{tabular}
 \end{margintable}
@@ -132,11 +137,22 @@ However, prompted by a sudden increase in visually observed vibrations in the mi
     As it turned out, the cause was a damaged nanopositioner bearing rather than environmental.
     Fortuitiously, the endeavour still proved successful and resulted in an improved vibration performance as I show below.
 }
-To this end, I decoupled the frame from which the cryostat itself is suspended from the support frame standing on the lab ground.
+To this end, I decoupled the frame from which the cryostat itself is suspended from the support frame resting on the lab ground as sketched in \cref{fig:setup:vibrations:suspension}.
 Extruding from the square footprint of the support frame at two adjacent corners and the center of the diametrically opposite side, the three air springs are mounted with the base on angle brackets connected to the support frame while their plunger is mounted to a second angle bracket connected to the cryostat frame.
 The springs are connected by pneumatic tubing to a central pressure regulation panel that is connected to the building's central air pressure line.
 The vertical placement of the springs is chosen such that when the air springs are deflated the cryostat frame rests on the support frame, establishing the same rigid connection that existed previously.
 This allows examining the influence of the air springs on the vibration isolation without modifying the setup by simply venting the pressurized air from the springs.
+
+\begin{marginfigure}[*-7]
+    \centering
+    \input{img/tikz/setup/suspension}
+    \caption[\imgsource{img/tikz/setup/suspension.tex}]{
+        Sketch of the cryostat suspension.
+        There are two separate frames (thick black lines), the upper of which the cryostat (grey outline) is attached to.
+        The frames are connected by air springs mounted on angle brackets extruding from the frames.
+    }
+    \label{fig:setup:vibrations:suspension}
+\end{marginfigure}
 
 In the following, I will characterize the performance of the system with and without the air springs active using two different methods.
 
@@ -150,7 +166,7 @@ In order to evaluate the vibration level at the sample position, I designed a sm
     \accelerometer kindly lent by Marcus Eßer~\cite{WilcoxonAccel}.
 }
 can be screwed either in vertical or horizontal direction in the sample puck of the \gls{dr}, enabling measurements of the displacement noise along the direction of gravity as well as perpendicular to it and the optical axis.
-The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \gls{sma} connector.
+The accelerometer is connected to the coaxial cables installed in the cryostat via an adapter cable from imperial 10-32 to \acrshort{sma} connector.
 Outside of the cryostat, the signal is routed to a signal conditioner that provides the necessary current bias and outputs a voltage which is digitized by a \thedmm \gls{dmm} connected to the measurement computer.
 Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
@@ -171,7 +187,10 @@ fourier_procfn = chain(
     fourier_space.derivative
 )
     \end{minted}
-    \caption{Functionality to transform the conditioned voltage to displacement in Fourier space.}
+    \caption{
+        Functionality to transform the conditioned voltage to displacement in Fourier space.
+        \code{sensitivity} is the calibration function from voltage to acceleration.
+    }
     \label{lst:setup:vibrations:accel}
 \end{marginlisting}
 \begin{figure}
@@ -190,8 +209,9 @@ To assess the impact of the \gls{ptr} and the suspension, I measured the displac
 The cryostat was closed, its vacuum chamber evacuated, and the magnet, a significant seismic mass, mounted as usual.
 The measurements are shown in \cref{fig:setup:vibrations:accel} together with the band-limited \gls{rms} (\cf \cref{eq:speck:psd:bandpower}),
 \begin{equation}\label{eq:setup:vibrations:rms}
-    \rms_S(f) = \sqrt{\int_{f_\mr{min}}^{f}\dd{f^\prime}S^2(f^\prime)}.
+    \rms_S(f) = \sqrt{\int_{f_\mr{min}}^{f}\dd{f^\prime}S(f^\prime)}
 \end{equation}
+with $S(f)$ the displacement noise \gls{psd}.
 When the \gls{ptr} is switched off, the spectra with and without suspension are dominated by broadband vibration noise, although quite some structure around \qtylist{15;33;60}{\hertz} can be observed.\sidenote{
     Note the curious peaks slightly offset from the second and third harmonic of the \gls{ptr} frequency in the spectrum with suspension enabled and \gls{ptr} disabled.
     We may speculate that these are due to the \glspl{ptr} of other cryostats in other labs in the vicinity that are transmitted through the floor.
@@ -202,10 +222,11 @@ Clearly, the suspension has a larger impact in this case, matching qualitatively
 At high frequencies, it manages to almost completely suppress the broadband excitation observed without the suspension.
 At low frequencies, on the other hand, the \gls{ptr} harmonics are amplified to the degree that the band-limited \gls{rms} is dominated by their contribution.
 Only at around \qty{10}{\hertz}, the attenuation starts to take effect.
+The accelerometer noise floor can be seen to roughly fall off as $1/f^2$, compatible with white noise in the signal conditioning electronics.
 Overall, the \gls{ptr} is found to raise the displacement noise \gls{rms} amplitude from \qty{0.5}{\micro\meter} to \qty{10}{\micro\meter} while the suspension, over the entire frequency range, has at best no positive influence.
 
 This result is less than encouraging.
-At that level of \gls{rms}-fluctuations, we'd have a slim chance of resolving micrometer-scale features using the microscope.
+At that level of \gls{rms}-fluctuations, we would have a slim chance of resolving micrometer-scale features using the microscope.
 But is the \emph{absolute} magnitude of displacement noise at the sample position really the correct measure for the microscope performance?
 Indeed, if the sample oscillates in phase with the objective and ocular lenses as well as the \gls{smf}, we will still obtain a perfect imaging fidelity.
 So actually only the \emph{relative} displacements of sample, lenses, and detection fiber affect the achievable resolution of the microscope.
@@ -319,7 +340,7 @@ By measuring the total width of the gate on the camera image, I obtained the mag
 Again performing a linear fit to the data for different voltages then results in the linear transformation from DC voltage to position (upper panel of \cref{fig:setup:vibrations:calibration:pos_vs_cps}).
 Of course it is also possible to fit the full knife-edge function, \cref{eq:setup:knife_edge}, to the data shown in \cref{fig:setup:vibrations:calibration:pos_vs_cps}.
 From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectance $\reflectance_0$ can be extracted.
-Here we are content with the linear approximation; refer to \cref{sec:app:setup:vibrations:knife_edge} for the full fits.
+Here we are content with the linear approximation; refer to \cref{subsec:app:setup:vibrations:knife_edge} for the full fits.
 
 \begin{marginfigure}[*-7]
     \centering
@@ -372,11 +393,11 @@ Although the harmonics of the \gls{ptr} frequency of \qty{1.4}{\hertz} are again
 \subsection{Noise floor}\label{subsec:setup:vibrations:optic:noise_floor}
 The noise floor in the optical vibration measurements shown in \cref{fig:setup:vibrations:optic} is qualitatively very different from that observed with the accelerometer.
 There, the \emph{acceleration} noise floor was white,\sidenote{
-    Remember that as acceleration is the second time derviative of displacement, in frequency space it is proportional to $f^2$ times the latter.
+    Remember that as acceleration is the second time derviative of displacement, in frequency space this translates to $y\propto a/f^2$ (\cref{eq:speck:fourier_derivative}).
 }
 whereas with the optical method the \emph{displacement} noise floor is white, hinting at a different underlying mechanism.
 
-To elucidate this issue, we model the detection event of a single photon (a \enquote{click}) arriving at the detector at a random time $t_i$ as a $\delta$-function so that the total flux as function of time is given by
+To elucidate this issue, and thereby understand the limitations of the optical vibration spectroscopy technique, we model the detection event of a single photon (a \enquote{click}) arriving at the detector at a random time $t_i$ as a $\delta$-function so that the total flux as function of time is given by
 \begin{equation}\label{eq:setup:flux_comb}
     \Phi(t) = \sum_i \delta(t-t_i).
 \end{equation}
@@ -439,12 +460,13 @@ This shows a clear path towards improving the \gls{snr} of the method.
 Just as the sensitivity $s$ is improved by increasing $\bar{\Phi}$ and $1-\reflectance_0$ and by decreasing $w_0$, so is the shot noise floor, albeit quadratically in $w_0$ and $1-\reflectance_0$.
 For example, for a reduction in spot size by a factor of two from inserting a different objective lens and a tenfold increase in maximum count rate achieved by replacing the counting card with a more powerful model,\sidenote{
     \swinst offers models with up to \qty{1.2}{\giga\sample\per\second}, although at that rate the jitter and dead time of the \glspl{apd} would start to become the limiting factors~\cite{SwabianTimeTagger}.
+    Since very high frequencies are not of interest, a simpler photo-diode that supports batched measurement would also suffice.
 }
 our simple model predicts a noise floor of $\qty{25}{\pico\meter\per\sqrt{\hertz}}$, a reduction by a factor of \num{40}.
 
 To conclude this section, let us come back to the \acrlongpl{vc} defined in \cref{subsec:setup:vibrations:isolation:theory} and evaluate the microscope based on the two different measurement methods presented in this chapter.
 The $\flatfrac{1}{3}$ octave band \gls{rms} velocities computed for the vibration spectra with \gls{ptr} enabled shown in \cref{fig:setup:vibrations:accel,fig:setup:vibrations:optic} are plotted in \cref{fig:setup:vibrations:vc}.
-Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (VC-B, solid gray line) over three octaves.
+Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (\acrshort{vc}-B, solid gray line) over three octaves.
 Because this method of measuring the vibration noise is sensitive to absolute changes, we can understand qualitatively why this is the case if we view the accelerometer at the sample position as the end of a large pendulum whose fulcrum is in the center of the plane spanned by the three air springs.
 A rough estimate gives a resonant frequency of \qty{0.5}{\hertz},\sidenote{
     The center of mass sits close to the magnet approximately $l = \qty{1}{\meter}$ below the springs so that we have $f = (2\pi)\inverse\sqrt{\flatfrac{g}{l}}\approx\qty{0.5}{\hertz}$.
@@ -452,7 +474,7 @@ A rough estimate gives a resonant frequency of \qty{0.5}{\hertz},\sidenote{
 implying frequencies in the considered range, $[4, 32]\,\unit{\hertz}$, are fairly effective at exciting motion in the pendulum (\cf \cref{subsec:setup:vibrations:isolation:theory}).
 By contrast, with the optical method we do not pick up on such motion because the ocular lens focusing the light into the \gls{smf} is fixed in the co-rotating frame with respect to our imagined pendulum.
 Indeed, the \gls{vc} velocities computed for this method show that they are orders of magnitude smaller at low frequencies in particular since only deviations from the rigid body picture established above induce a change in signal.
-Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indicated by the loosely dashed dark gray line, implying that the true vibration-induced \gls{rms} is well below our targeted VC-B criterion.
+Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indicated by the loosely dashed dark gray line, implying that the true vibration-induced \gls{rms} is well below our targeted \acrshort{vc}-B criterion.
 
 \begin{figure}
     \centering
@@ -460,10 +482,10 @@ Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indica
     \caption[\imgsource{img/pdf/setup/vibration_spectroscopy.py}]{
         $\flatfrac{1}{3}$ octave band \gls{rms} velocity computed for vibration measurements with the \gls{ptr} enabled and the suspension disabled (magenta) or enabled (green).
         Circles (diamonds) show data obtained with the accelerometer (optical method).
-        The \glspl{vc} VC-B, VC-A and first two \gls{iso} levels are indicated as gray lines (solid, dashed, dash-dotted, dotted); see \cref{tab:setup:vibrations:vc}.
-        Accelerometer data are above the VC-B criterion for about three octaves centered around $f_{\mr{m}}=\qty{10}{\hertz}$, where even the \gls{iso} \enquote{residential day} level is breached.
+        The \glspl{vc} \acrshort{vc}-B, \acrshort{vc}-A and first two \gls{iso} levels are indicated as gray lines (solid, dashed, dash-dotted, dotted); see \cref{tab:setup:vibrations:vc}.
+        Accelerometer data are above the \acrshort{vc}-B criterion for about three octaves centered around $f_{\mr{m}}=\qty{10}{\hertz}$, where even the \gls{iso} \enquote{residential day} level is breached.
         Optical data are more favorable, in particular with the suspension enabled (green).
-        Towards high frequencies, the data are dominated by the wideband shot noise floor indicated by the loosely dashed dark gray line, suggesting the true displacement \gls{rms} is well below the VC-B criterion.
+        Towards high frequencies, the data are dominated by the wideband shot noise floor indicated by the loosely dashed dark gray line, suggesting the true displacement \gls{rms} is well below the \acrshort{vc}-B criterion.
     }
     \label{fig:setup:vibrations:vc}
 \end{figure}
@@ -481,11 +503,11 @@ Increasing the length of the hose should reduce its relative rigidity and thereb
 
 Next, the cold head should be mounted firmly to a secondary reference frame, for instance the ceiling or the lower cryostat frame on which the springs rest.
 An intuitively obvious step, it has also been shown in the literature that decoupling the \gls{ptr} from the cryostat in this fashion leads to significant improvements in vibration isolation~\cite{Olivieri2017}.\sidenote{
-    The former option was attempted, but showed no clear improvements in the measurements for reasons unclear, see \cref{ch:app:setup:vibrations} for additional data.
+    The former option was attempted, but showed no clear improvements in the measurements for reasons unclear, see \cref{sec:app:setup:vibrations} for additional data.
     It did emphatically deteriorate the inter-departmental atmosphere.
     Apologies to the institute on the floor above.
 }
 Acoustic insulation of the room and \gls{ptr} flex hoses could further improve the low-frequency response of the system~\cite{Schmoranzer2019,Oh2021}.
 Lastly, let me note that there also exist cryocoolers with variable operating frequency that can thus be tuned away from problematic resonances in the system~\cite{TransMitPTR}.
 
-In \cref{ch:app:setup:vibrations} I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.
+In \cref{sec:app:setup:vibrations} I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.

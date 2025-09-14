@@ -1,43 +1,43 @@
 % mainfile: ../../main.tex
 \chapter{Conclusion and outlook}\label{ch:ff:conclusion}
-% TODO: structure
 Before we conclude, let us address two possible avenues for future work, one for the formalism itself and one for its application.
 
-To extend our approach to the filter function formalism beyond the scope discussed in this work, the most evident path forward is to allow for quantum mechanical baths instead of purely classical ones.
+To extend our approach to the filter-function formalism beyond the scope discussed in this work, the most evident path forward is to allow for quantum mechanical baths instead of purely classical ones.
 Such an extension would facilitate studying for example non-unital $T_1$-like processes.
-In fact, the filter function formalism was originally introduced considering quantum baths such as spin-boson models~\cite{Martinis2003,Uhrig2007} or more general baths~\cite{Kofman2001,Yuge2011,Paz-Silva2017}, but it remains an open question whether this can be applied to our presentation of the formalism and the numerical implementation in particular.
+In fact, the filter-function formalism was originally introduced considering quantum baths such as spin-boson models~\cite{Martinis2003,Uhrig2007} or more general baths~\cite{Kofman2001,Yuge2011,Paz-Silva2017}, but it remains an open question whether this can be applied to our presentation of the formalism and the numerical implementation in particular.
 In a fully quantum-mechanical treatment, (sufficiently weak) noise coupling into the quantum system can be modelled via a set of bath operators $\{D_\alpha(t)\}_\alpha$ so that $\Hn(t) = \sum_\alpha\Ba(t)\otimes D_\alpha(t)$ (the classical case is recovered by replacing $D_\alpha(t)\rightarrow b_\alpha(t)\eye$)~\cite{Breuer2007}.
 Accordingly, the ensemble average over the stochastic bath variables $\{b_\alpha(t)\}_\alpha$ needs to be replaced by the quantum expectation value $\tr_B(\placeholder\rho_B)$ with respect to the state $\rho_B$ of the bath $B$.
 One therefore needs to deal with correlation functions of bath operators instead of stochastic variables.
 An immediate consequence for numerical applications is hence an increased dimensionality of the system, which could be dealt with by using analytical expressions for the partial trace over the bath.
 
-For future applications of our method, it would be interesting to study the effects of noise correlations in quantum error correction (QEC) schemes~\cite{Devitt2013,Ng2011,Nickerson2019}. % TODO: recent reference on arxiv
-While extensive research has been performed on QEC, noise is usually assumed to be uncorrelated between error correction cycles.
+For future applications of our method, it would be interesting to study the effects of noise correlations in \gls{qec} schemes~\cite{Devitt2013,Ng2011,Nickerson2019,Clader2021,Liu2024b}.
+While extensive research has been performed on \gls{qec}, noise is usually assumed to be uncorrelated between error correction cycles.
 In this respect, our formalism may shed light on effects that need to be taken into account for a realistic description of the protocol.
 As outlined above, we can compute expectation values of (stabilizer) measurements in a straightforward manner from the error transfer matrix.
 Unfortunately, this implies performing the ensemble average over different noise realizations, therefore removing all correlations between subsequent measurement outcomes for a given noise realization.
 Hence, the same feature that allows us to calculate the quantum process for correlated noise, namely that we compute only the final map by averaging over all \enquote{paths} leading to it, prevents us from studying correlations between consecutive cycles.
 To overcome this limitation in the context of quantum memory one could invoke the principle of deferred measurement~\cite{Nielsen2011} and move all measurements to the end of the circuit, replacing classically controlled operations dependent on the measurement outcomes by conditional quantum operations.
 Alternatively, to incorporate the probabilistic nature of measurements, one could devise a branching model that implements the classically controlled recovery operation by following both conditional branches of measurement outcomes with weights corresponding to the measurement probabilities as computed from the ensemble-averaged error transfer matrix.
-An intriguing connection also exists to the quantum Zeno effect, for which quantum systems subject to periodic projective measurements have been identified with a filter function~\cite{Kofman2000,Kofman2001,Chaudhry2016}.
+An intriguing connection also exists to the quantum Zeno effect, for which quantum systems subject to periodic projective measurements have been identified with a filter function~\cite{Kofman2000,Kofman2001,Chaudhry2016} and which recently has been shown to \emph{improve} error correction in the presence of non-Markovian noise~\cite{Nila2025}.
 
-As quantum control schemes become more sophisticated and take into account realistic hardware constraints and sequencing effects, their analytic description becomes cumbersome, making numerical tools invaluable for analyzing pulse performance.
-In the above, we have shown that the filter function formalism lends itself naturally to these tasks since the central objects of our formulation, the interaction picture noise operators, obey a simple composition rule which can be utilized to efficiently calculate them for a sequence of quantum gates.
+As quantum control schemes become more sophisticated and take into account realistic hardware constraints and sequencing effects, their analytical description becomes cumbersome, making numerical tools invaluable for analyzing pulse performance.
+In the above, we have shown that the filter-function formalism lends itself naturally to these tasks since the central objects of our formulation, the interaction picture noise operators, obey a simple composition rule which can be utilized to efficiently calculate them for a sequence of quantum gates.
 Because the nature of the noise is encoded in a power spectral density in the frequency domain, its effects are isolated from the description of the control until they are evaluated by the overlap integral of noise spectrum and filter function.
 Hence, the noise operators are highly reusable in calculations and can serve as an economic way of simulating pulse sequences.
 
-Building on the results of a separate publication~\cite{Cerfontaine2021}, we have presented a general framework to study decoherence mechanisms and pulse correlations in quantum systems coupled to generic classical noise environments.
-By combining the quantum operations and filter function formalisms, we have shown how to compute the Liouville representation of the exact error channel of an arbitrary control operation in the presence of Gaussian noise.
-For non-Gaussian noise our results become perturbative in the noise strength.
-Furthermore, we have introduced the \filterfunctions \python software package that implements the aforementioned method.
-We showed both analytically and numerically that our software implementation can outperform Monte Carlo techniques by orders of magnitude.
-By employing the formalism and software to study several examples we demonstrated the wide range of possible applications.
+Building on the results of \citer{Cerfontaine2021}, we have presented a general framework to study decoherence mechanisms and pulse correlations in quantum systems coupled to generic classical noise environments.
+By combining the quantum-operations and filter-function formalisms, we have shown in \cref{ch:ff:theory} how to compute the Liouville representation of the error channel of an arbitrary control operation in the presence of Gaussian noise.
+This expression is exact in the case of commuting noise Hamiltonians, and we have investigated the error of the perturbative expansion in all other cases in \cref{ch:ff:validation}, finding that the filter functions for single elements of the error transfer matrix deviate from the exact results at very low frequency and close to zeros of the functions.
+Furthermore, we have introduced the \filterfunctions \python software package that implements the aforementioned method in \cref{ch:ff:software}.
+We showed both analytically and numerically that our software implementation can outperform \acrlong{mc} techniques by orders of magnitude.
+By employing the formalism and software to study several examples in \cref{ch:ff:examples}, we demonstrated the wide range of possible applications.
 
 The capacity for applications in quantum optimal control has already been established above.
-In a forthcoming publication, we will present analytical derivatives for the fidelity filter function, \cref{eq:ff:filter_function:fidelity}, and their implementation in the software package~\cite{Le2022}.
+In \citer{Le2022}, we presented analytical derivatives for the fidelity filter function, \cref{eq:ff:filter_function:fidelity}, and their implementation in the software package.
 Together with the infidelity, \cref{eq:ff:infidelity:ent:integral}, they can serve as efficient cost functions for pulse optimization in the presence of realistic, correlated noise~\cite{Teske2022}.
-Since our method offers insight into correlations between pulses at different positions in a sequence, the pulse correlation filter function $F\gth{gg'}(\omega)$ with $g\neq g'$ can additionally serve as a tool for studying under which conditions pulses decouple from noise with long correlation times.
+Since our method offers insight into correlations between pulses at different positions in a sequence, the pulse correlation filter function $F\gth{gg^\prime}(\omega)$ with $g\neq g^\prime$ can additionally serve as a tool for studying under which conditions pulses decouple from noise with long correlation times.
 Such insight would be valuable to design pulses for algorithms.
 Another interesting application could be quantum error correction in the regime of long-time correlated noise as outlined above, where we also briefly touched upon a possible extension of the framework to quantum mechanical baths.
 
 The tools presented here, both analytical and numerical as implemented in the \filterfunctions software package~\cite{Hangleiter_ff}, provide an accessible way for computing filter functions in generic control settings across the different material platforms employed in quantum technologies and beyond.
+

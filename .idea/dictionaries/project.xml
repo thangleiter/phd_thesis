@@ -3,6 +3,8 @@
     <words>
       <w>cernox</w>
       <w>cumulant</w>
+      <w>detuning</w>
+      <w>diagonalization</w>
       <w>discretization</w>
       <w>discretized</w>
       <w>discretizing</w>
@@ -17,8 +19,10 @@
       <w>hangleiter</w>
       <w>hann</w>
       <w>lindblad</w>
+      <w>liouvillian</w>
       <w>mesoscopic</w>
       <w>ohmics</w>
+      <w>overset</w>
       <w>parseval's</w>
       <w>periodogram</w>
       <w>periodograms</w>
@@ -31,6 +35,7 @@
       <w>superpropagator</w>
       <w>thorlabs</w>
       <w>ungrounds</w>
+      <w>unitaries</w>
       <w>unshifted</w>
       <w>voigt</w>
       <w>wien</w>

@@ -1,16 +1,39 @@
 % mainfile: ../../main.tex
 \chapter{Introduction}\label{ch:ff:introduction}
-In the circuit model of quantum computing, computations are driven by applying time-local quantum gates.
+
+\begin{partcontribs}
+    \Thispart is based to large extent on \sideciter{Hangleiter2021}, an early draft of which in turn was my Master's thesis~\sidecite{Hangleiter2019}, and as such contains text contributions from all three authors.
+    \Cref{ch:ff:examples,sec:app:ff:time_domain_methods} additionally contain results published in \sideciter{Cerfontaine2021}, an early draft of which appears in \sideciter{Cerfontaine2019}.
+    The first-order concatenation rule was originally derived by Pascal Cerfontaine.\sidenote[a]{Then at \RWTHFZJ}
+    He also conceived and performed initial calculations of the linearized quantum process expressed in terms of filter functions.
+    Hendrik Bluhm\sidenote[b]{\RWTHFZJ} initiated the project and wrote the initial draft of the introduction.
+    I recast the approach in the quantum operations formalism based on stochastic Liouville equations and the cumulant expansion, and derived expressions for the second-order terms, as well as developed an optimized expression for periodic Hamiltonians, derived quantities, discussed operator bases, and analyzed the computational efficiency.
+    I also wrote the software package, performed all simulations, and developed all examples.
+    \Cref{ch:ff:validation,sec:app:ff:concatenation} contain new results that I derived.
+\end{partcontribs}
+
+\begin{authornote}
+    In Reference~\cite{Hangleiter2021}, extensive use was made of \citeauthor{Kubo1962}'s cumulant expansion~\cite{Kubo1962}.
+    Due to an error in \citeauthor{Kubo1962}'s paper which was only pointed out several years later by \citet{Fox1976} and we were not aware of, those results turned out to be not exact as claimed but approximate~\sidecite{Hangleiter2024}.\sidenote{
+        Unfortunately, the error has proliferated through the literature and proves quite pervasive despite the significant amount of time that has passed since it was first discovered.
+        Recent examples include~\citer{Norris2016}.
+        One may only speculate if this is because of the 14 years that passed between the original publication and the correction, the lack of an erratum once the mistake had been discovered, or simply because of \citeauthor{Kubo1962}'s fame.
+        In any case, it might serve as a cautionary tale and possibly an impetus to a less static publication system that allows, for example, cross-linking commentaries and critiques.
+    }
+    We address this discrepancy in \cref{ch:ff:validation}.
+\end{authornote}
+
+\AutoLettrine{In} the circuit model of quantum computing, computations are driven by applying time-local quantum gates.
 Any algorithm can be compiled using sequences of one- and two-qubit gates~\cite{DiVincenzo1995}.
 Ideal, error-free gates are represented by unitary transformations, so that simulating the action of an algorithm on an initial state of a quantum computer amounts to simple matrix multiplication.
 Real implementations are subject to noise that causes decoherence resulting in gate errors.
 If the noise is uncorrelated between gates, its effect can be described by quantum operations acting as linear maps on density matrices, even when several gates are concatenated.
-A closely related approach is the use of a Master equation in Lindblad form~\cite{Lindblad1976}, which governs the dynamics of density matrices under the influence of Markovian noise with a flat power spectral density.
+A closely related approach is the use of a master equation in \gls{gksl} form~\cite{Gorini1976,Lindblad1976}, which governs the dynamics of density matrices under the influence of Markovian noise with a flat power spectral density.
 
 Yet many physical systems used as hosts for qubits do not satisfy the condition of uncorrelated noise.
-One example frequently encountered in solid state systems is that of \oneoverf noise, which in principle contains arbitrarily long correlation times.
+One example frequently encountered in solid-state systems is that of \oneoverf noise, which in principle contains arbitrarily long correlation times.
 It emerges for instance as flux noise in superconducting qubits and electrical noise in quantum dot qubits~\cite{Brownnutt2015,Kumar2016a,Yoneda2018,Paladino2014}.
-Whereas simple approaches exist to treat for example quasistatic noise, which corresponds to perfectly correlated noise (\ie, a spectrum with weight only at zero frequency), they cannot be applied to \oneoverf noise because of the wide distribution of correlation times it contains.
+Whereas simple approaches exist to treat for example quasistatic noise, which corresponds to perfectly correlated noise (\ie, a spectrum with weight only at zero frequency), they cannot be applied to \oneoverf noise because of the wide distribution of correlation times it contains~\cite{Connors2022}.
 Thus, there is a gap in the mathematical descriptions of gate operations for noises with arbitrary power spectra that exist between the extremal cases of perfectly flat (white) and sharply peaked (quasistatic) spectra.
 To capture experimentally relevant effects important to understand the capabilities of quantum computing systems, a universally applicable formalism is hence desirable.
 For example, one may expect the fidelity requirements for quantum error correction to be more stringent for correlated noise as errors of different gates can interfere constructively~\cite{Ng2009}.
@@ -20,9 +43,9 @@ As experimental platforms begin to approach fidelity limits set by employing pri
 This calls for flexible and generically applicable tools as a basis for the numerical optimization of pulses as well as the detailed analysis of the quantum processes they effect.
 In order to obtain a useful description also for gate operations that decouple from leading orders of noise, such as \glspl{dcg}~\cite{Khodjasteh2009}, beyond leading order results are required.
 
-In an accompanying publication~\cite{Cerfontaine2021} we presented a formalism based on filter functions and the \gls{me} that addresses these needs and limitations of the canonical master equation approach for correlated noise.
+In \citer{Cerfontaine2021} we presented a formalism based on filter functions and the \gls{me} that addresses these needs and limitations of the canonical master equation approach for correlated noise.
 Specifically, we showed how process descriptions can be obtained perturbatively for arbitrary classical noise spectra and derived a concatenation rule to obtain the filter function of a sequence of gates from those of the individual gates.
-This paper extends these results.
+This work generalizes and extends these results.
 
 \Glspl{ff} were originally introduced to describe the decay of phase coherence under \gls{dd} sequences~\cite{Kofman2001,Martinis2003,Uhrig2007,Cywinski2008} consisting of wait times and perfect $\pi$-pulses.
 The formalism facilitated recognizing these sequences as band-pass filters that allow for probing the environmental noise characteristics of a quantum system through noise spectroscopy~\cite{Alvarez2011,Bylander2011,Paz-Silva2017,Malinowski2017} or optimizing sequences to suppress specific noise bands~\cite{Biercuk2009,Uys2009,Soare2014,Malinowski2017}.
@@ -31,38 +54,40 @@ The works by~\citet{Green2013} and~\citet{Clausen2010} also introduced the notio
 In this context, the formalism's capability to predict fidelities of gate implementations has been identified and experimentally tested~\cite{Green2013,Kabytayev2014,Soare2014,Ball2016}.
 More recently, it has also proved useful in assessing the performance requirements for classical control electronics~\cite{VanDijk2019}.
 
-While analytic approaches allow for the calculation of filter functions of arbitrary quantum control protocols in principle, it is in practice often a tedious task to determine analytic solutions to the integrals involved if the complexity of the applied wave forms goes beyond simple square pulses or extend to multiple qubits.
+While analytical approaches allow for the calculation of filter functions of arbitrary quantum control protocols in principle, it is in practice often a tedious task to determine analytical solutions to the integrals involved if the complexity of the applied wave forms goes beyond simple square pulses or extends to multiple qubits.
 Moreover, one does not always have a closed-form expression of the control at hand, such as is the case for numerically optimized control pulses.
-This calls for a numerical approach which, while giving up some of the insights an analytical form offers, is universally applicable and eliminates the need for laborious analytic calculations.
+This calls for a numerical approach which, while giving up some of the insights an analytical form offers, is universally applicable and eliminates the need for laborious analytical calculations.
 
-Here, we build and extend upon our accompanying work of~\citer{Cerfontaine2021} and that of~\citer{Green2013} to show that the formalism can be recast within the framework of stochastic Liouville equations by means of the cumulant expansion~\cite{Kubo1962,Kubo1963,Fox1976,Bianucci2020}.
+Here, we build and extend upon our work of~\citer{Cerfontaine2021} and that of~\citer{Green2013} to show that the formalism can be recast within the framework of stochastic Liouville equations by means of the cumulant expansion~\cite{Kubo1962,Kubo1963,Fox1976,Bianucci2020}.
 For Gaussian noise commuting with the control, this entails exact results for the quantum process of an arbitrary control operation using only first and second order terms of the \gls{me}~\cite{Magnus1954}.
-Moreover, due to the fact that the \gls{me} retains the algebraic structure of the expanded quantity~\cite{Blanes2009} we are able to separate incoherent and coherent contributions to the process.
+If the noise is Gaussian but in general non-commuting, the cumulant expansion does not terminate~\cite{Fox1976}, but we show that the truncation still yields highly accurate results except in the ultralow-frequency regime by computing the exact filter function from random sampling.
+Moreover, due to the fact that the \gls{me} retains the algebraic structure of the expanded quantity~\cite{Blanes2009} we are able to separate incoherent and coherent contributions to the quantum process.
 We give explicit methods to evaluate these terms for piecewise-constant control pulses.
 Moreover, we show that the formalism naturally lends itself as a tool for numerical calculations and present the \filterfunctions \python software package that enables calculating the filter function of arbitrary, piecewise constant defined pulses~\cite{Hangleiter_ff}.
 On top of providing methods to handle individual quantum gates, the package also implements the concatenation operation as well as parallelized execution of pulses on different groups of qubits, allowing for a highly modular and hence computationally powerful treatment of quantum algorithms in the presence of correlated noise.
 Given an arbitrary, classical noise spectral density, it can be used to calculate a matrix representation of the error process.
 From this matrix one can extract average gate fidelities, transition probabilities, and leakage rates as we derive below.
-To simplify adaptation the software's API is strongly inspired by and compatible with \qutip~\cite{Johansson2012} as well as \qopt~\cite{Teske2022a}.
+To simplify adaptation the software's \gls{api} is strongly inspired by and compatible with \qutip~\cite{Johansson2012} as well as \qopt~\cite{Teske2022}.
 This allows users to use these packages in conjunction.
-Assessing the computational performance, we show that our method outperforms Monte Carlo simulations for single gates.
-New analytic results applicable to periodic Hamiltonians and employing the concatenation property make this advantage even more pronounced for sequences of gates.
+Assessing the computational performance, we show that our method outperforms \gls{mc} simulations for single gates.
+New analytical results applicable to periodic Hamiltonians and employing the concatenation property make this advantage even more pronounced for sequences of gates.
 To highlight the main software features, we show example applications below.
 
 We provide this package in the expectation that it will be a useful tool for the community.
-Besides recasting and expanding on our earlier introduction of the formalism in~\citer{Cerfontaine2021}, the present paper is intended to provide an overview of the software and its capabilities.
-It is structured as follows: In \cref{ch:ff:theory} we derive a closed-form expression for unital quantum operations in the presence of non-Markovian Gaussian noise and lay out how it may be evaluated using the filter function formalism.
+Besides recasting and expanding on our earlier introduction of the formalism in~\citer{Cerfontaine2021}, the present work is intended to provide an overview of the software and its capabilities.
+It is structured as follows: In \cref{ch:ff:theory} we derive a closed-form expression for unital quantum operations in the presence of non-Markovian Gaussian noise and lay out how it may be evaluated using the filter-function formalism.
 We review the concatenation of quantum operations shown in~\citer{Cerfontaine2021} and furthermore adapt the method by~\citet{Green2013} to calculate the filter function of an arbitrary control sequence numerically.
 We will specifically focus on computational aspects of the formalism and lay out how to compute various quantities of interest.
 Moreover, we classify its computational complexity for calculating average gate fidelities and remark on simplifications that allow for drastic improvements in performance in certain applications.
-In \cref{ch:ff:software}, we introduce the software package by outlining the programmatic structure and giving a brief overview over the API.
+In \cref{ch:ff:validation}, we validate the truncation of the cumulant expansion after the second order using a random sampling approach to compute the exact filter functions of the noisy quantum process for Gaussian noise.
+In \cref{ch:ff:software}, we then introduce the \filterfunctions software package by outlining the programmatic structure and giving a brief overview over the \gls{api}.
 Lastly, in \cref{ch:ff:examples}, we show the application of the software by means of four examples that highlight various features of the formalism and its implementation.
-Therein, we first demonstrate that the formalism can predict average gate fidelities for complex two-qubit quantum gates in agreement with computationally much more costly Monte Carlo calculations.
+Therein, we first demonstrate that the formalism can predict average gate fidelities for complex two-qubit quantum gates in agreement with computationally much more costly \gls{mc} calculations.
 Next, we show how it can be applied to periodically driven systems to efficiently analyze Rabi oscillations.
 We finally establish the formalism's ability to predict deviations from the simple concatenation of unitary gates for sequences and algorithms in the presence of correlated noise by simulating a \gls{rb} experiment as well as assembling a \gls{qft} circuit from numerically optimized gates.
 We conclude by briefly remarking on possible future application and extension of our method in \cref{ch:ff:conclusion}.
 
-Throughout the paper we will denote operators by Roman font, \eg $U$, and quantum operations and their representations as transfer matrices by calligraphic font, \eg \liouvU, which we also use for the control matrix \ctrlmat to emphasize its innate connection to a transfer matrix.
+Throughout this part we will denote Hilbert-space operators by Roman font, \eg $U$, and quantum operations and their representations as transfer matrices in Liouville space by calligraphic font, \eg \liouvU, which we also use for the control matrix \ctrlmat to emphasize its innate connection to a transfer matrix.
 For consistency, a unitary quantum operation will share the same character as the corresponding unitary operator.
 An operator in the interaction picture will furthermore be designated by an overset tilde, \eg $\tilde{H} = U\adjoint H U$ with $U$ the unitary operator defining the co-moving frame.
 Definitions of new quantities on the left and right side of an equality are denoted by $\coloneqq$ and $\eqqcolon$, respectively.
