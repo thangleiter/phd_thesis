@@ -93,7 +93,7 @@ By making use of the concatenation property of the filter functions, our formali
 The problem that arises when trying to numerically investigate Rabi pulses in the weak driving regime in the lab frame is that typical control operations have a duration $\tau\gg T$ with $T = \flatfrac{2\pi}{\omega_0}$.
 Since the sampling time step $\Delta t$ should additionally be chosen much smaller than a single drive period in order to sample the time evolution accurately ($\Delta t\ll T$), brute-force simulations are costly.
 
-For $\flatfrac{T}{\Delta t} = 100$ samples per period and assuming Rabi and drive frequencies in typical regimes for \ch{SiGe} and \gls{mos} quantum dots~\cite{Zajac2018,Pla2012} or trapped ions~\cite{Soare2014}, $\Omega_\mr{R} = \qty{1}{\per\micro\second}$ and $\omega_0 = \qty{20}{\per\nano\second}$, a Monte Carlo simulation of a $\pi$-rotation with approximately \qty{3}{\percent} relative error would require $10^9$ samples in total.
+For $\flatfrac{T}{\Delta t} = 100$ samples per period and assuming Rabi and drive frequencies in typical regimes for \ch{SiGe} and \acrshort{mos} quantum dots~\cite{Zajac2018,Pla2012} or trapped ions~\cite{Soare2014}, $\Omega_\mr{R} = \qty{1}{\per\micro\second}$ and $\omega_0 = \qty{20}{\per\nano\second}$, a Monte Carlo simulation of a $\pi$-rotation with approximately \qty{3}{\percent} relative error would require $10^9$ samples in total.
 Using the filter-function formalism, we can drastically reduce the simulation time even beyond the improvement gained from concatenating precomputed filter functions of individual drive periods using \cref{eq:ff:control_matrix:sequence:freq}.
 This can be achieved with \cref{eq:ff:control_matrix:sequence:periodic:simplified}, which simplifies the calculation of the control matrix for periodic Hamiltonians.
 
@@ -164,7 +164,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 \end{figure*}
 
 \section{Randomized Benchmarking}\label{sec:ff:examples:randomized_benchmarking}
-\Gls{srb} and related methods, for example \gls{irb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012a}.
+\Gls{rb} and related methods, for example interleaved \gls{rb}, are popular tools to assess the quality of a qubit system and the operations used to control it~\cite{Knill2008,Magesan2011,Magesan2012a}.
 The basic protocol consists of constructing $K$ random sequences of varying length $m$ of gates drawn from the Clifford group,\sidenote{
     The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
     This makes the Clifford gates a convenient choice for benchmarking.
@@ -175,12 +175,12 @@ Each of these pulse sequences is applied to an initial state $\kpsi$ in order to
 In reality, the applied operations are subject to noise and experimental imprecisions.
 This renders them imperfect and results in a survival probability smaller than one.
 Assuming gate-independent errors, the average gate fidelity $\avgfid$ is then obtained by fitting the measured survival probabilities for each sequence length to the zeroth-order exponential model~\cite{Magesan2011}
-\begin{equation}\label{eq:ff:SRB}
+\begin{equation}\label{eq:ff:RB}
     p(\kpsi) = A \left(1 - \frac{dr}{d-1}\right)^m + B,
 \end{equation}
-where $r = 1 - \avgfid$ is the average error per single gate to be extracted from the fit, $A$ and $B$ are parameters capturing \gls{spam} errors, and $d$ is the dimensionality of the system.
+where $r = 1 - \avgfid$ is the average error per single gate to be extracted from the fit, $A$ and $B$ are parameters capturing \acrshort{spam} errors, and $d$ is the dimensionality of the system.
 
-One of the main assumptions of the \gls{srb} protocol is that temporal correlations of the noise are small on timescales longer than the average gate time~\cite{Magesan2011}.
+One of the main assumptions of the \gls{rb} protocol is that temporal correlations of the noise are small on timescales longer than the average gate time~\cite{Magesan2011}.
 If this requirement is not satisfied, \eg if \oneoverf noise plays a dominant role, the decay of the sequence fidelity can have non-exponential components~\cite{Epstein2014,Fogarty2015,Feng2016} and a single exponential fit will not produce the true average gate fidelity~\cite{Mavadia2018,Edmunds2020}.
 The filter-function formalism suggests itself to numerically probe \gls{rb} experiments in such systems for two reasons.
 First, it enables the study of gate performance subject to noise with correlation times longer than individual gate times.
@@ -206,13 +206,13 @@ Assuming we prepare and measure in the computational basis, $\kpsi\in\lbrace\ket
 \end{split}
 \end{equation}
 For the second equality we used that \liouvUe is trace-preserving and unital (\cf \cref{subsec:ff:theory:transfer_matrix:derivation}) while in the last step we approximated the expression using \cref{eq:ff:error_transfer_matrix:approx,eq:ff:cumulant:truncated:liouville:pauli}.
-For our simulation, we neglect \gls{spam} errors so that $A =  B =  0.5$, choose $\kpsi = \ket{0}$, and approximate \cref{eq:ff:SRB} as
+For our simulation, we neglect \acrshort{spam} errors so that $A =  B =  0.5$, choose $\kpsi = \ket{0}$, and approximate \cref{eq:ff:RB} as
 \begin{equation}\label{eq:ff:fidelity:state:RB:fit}
 p(\ket{0}) = \fid(\ket{0}, \liouvU_\mr{RB}(\op{0}))\approx 1 - rm
 \end{equation}
 for small gate errors $r\ll 1$ since this is the regime which we can efficiently simulate using the concatenation property.
 
-We simulate single-qubit \gls{srb} experiments using three different gate sets to generate the 24 elements of the Clifford group.
+We simulate single-qubit \gls{rb} experiments using three different gate sets to generate the 24 elements of the Clifford group.
 For the first gate set we implement the group by naive \enquote{single} rotations about the symmetry axes of the cube.
 Each pulse corresponds to a single time segment during which one rotation is performed so that the $j$th element is given by $Q_j = \exp(-\i\phi_j\bvec{n}_j\cdot\bvec{\sigma})$.
 We compile the other two gate sets from primitive $\flatfrac{\pi}{2}$ $x$- and $y$-rotations so that on average each Clifford gate consists of \num{3.75} primitive gates (see~\citer{Cerfontaine2020}).
@@ -231,48 +231,48 @@ Similarly, the infrared cutoff is chosen as $f_\mr{IR} = 10^{-2}/m_\mr{max}\tau_
 Finally, we fit \cref{eq:ff:fidelity:state:RB:fit} to the infidelities computed for the different noise spectra.
 
 The results of the simulation are shown in \cref{fig:ff:randomized_benchmarking:noise_comparison}(a) and (b) for white and correlated noise, respectively.
-For white noise, the survival probability agrees well with the \gls{srb} prediction for all gate types whereas for \oneoverf-like noise the \enquote{single} gates (green pluses) deviate considerably.
-Hence, fitting the zeroth-order \gls{srb} model to such data will not reveal the true average gate fidelity although errors are of order unity.
+For white noise, the survival probability agrees well with the \gls{rb} prediction for all gate types whereas for \oneoverf-like noise the \enquote{single} gates (green pluses) deviate considerably.
+Hence, fitting the zeroth-order \gls{rb} model to such data will not reveal the true average gate fidelity although errors are of order unity.
 We note that~\citerr{Epstein2014}{Ball2016} found similar results using different methods for \oneoverf and perfectly correlated DC noise, respectively.
-The former observed \gls{srb} to estimate $r$ within \qty{25}{\percent} and the latter found the mean of the \gls{srb} fidelity distribution to deviate from the mode, thereby giving rise to incorrectly estimated fidelities.
+The former observed \gls{rb} to estimate $r$ within \qty{25}{\percent} and the latter found the mean of the \gls{rb} fidelity distribution to deviate from the mode, thereby giving rise to incorrectly estimated fidelities.
 
 \begin{figure*}
     \centering
     \includegraphics{img/pdf/filter_functions/randomized_benchmarking}
     \caption[\imgsource{img/py/filter_functions/randomized_benchmarking.py}]{
-        Simulation of a \gls{srb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
-        Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{srb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
-        Errorbars show the standard deviation of the \gls{srb} sequence fidelities, illustrating that for the \enquote{single} gate set noise correlations can lead to amplified destructive and constructive interference of errors.
+        Simulation of a \gls{rb} experiment using \num{100} random sequences per point for different gate and noise types (see the main text for an explanation of the gate type monikers).
+        Dashed lines are fits of \cref{eq:ff:fidelity:state:RB:fit} to the data while the solid black lines correspond to a zeroth-order \gls{rb} model with $A=B=\num{0.5}$ and the true average gate infidelity per Clifford $r$.
+        Errorbars show the standard deviation of the \gls{rb} sequence fidelities, illustrating that for the \enquote{single} gate set noise correlations can lead to amplified destructive and constructive interference of errors.
         The same noise spectrum is used for all three error channels (\sx, \sy, \sz) and the large plots show the sum of all contributions.
         (a) Uncorrelated white noise with the noise power adjusted for each gate type so that the average error per gate $r$ is constant over all gate types.
         No notable deviation is seen between different gate types.
         (b) Correlated \oneoverf-like noise with noise power adjusted to match the average Clifford fidelity in (a).
-        The decay of the \enquote{single} gate set differs considerably from that of the other gate sets and the \gls{srb} decay expected for the given average gate fidelity, whereas \enquote{naive} and \enquote{optimized} gates match the zeroth order \gls{srb} model well, indicating that correlations in the noise affect the relation between \gls{srb} decay and average gate fidelity in a gate-set--dependent way.
+        The decay of the \enquote{single} gate set differs considerably from that of the other gate sets and the \gls{rb} decay expected for the given average gate fidelity, whereas \enquote{naive} and \enquote{optimized} gates match the zeroth order \gls{rb} model well, indicating that correlations in the noise affect the relation between \gls{rb} decay and average gate fidelity in a gate-set--dependent way.
         Inset: contributions from \sz-noise show that the sequence fidelity can be better than expected for certain gate types and noise channels.
     }
     \label{fig:ff:randomized_benchmarking:noise_comparison}
 \end{figure*}
 
-On top of affirming the findings by the references, our results demonstrate that the accuracy of the predictions made by \gls{srb} theory, \ie that the \gls{rb} decay rate directly corresponds to the average error rate of the gates, not only depends on the gate implementation but also on which error channels are assumed.
+On top of affirming the findings by the references, our results demonstrate that the accuracy of the predictions made by \gls{rb} theory, \ie that the \gls{rb} decay rate directly corresponds to the average error rate of the gates, not only depends on the gate implementation but also on which error channels are assumed.
 This can be seen from the inset of \cref{fig:ff:randomized_benchmarking:noise_comparison}(b), where only dephasing noise (\sz) contributions are shown.
 For this noise channel and the \enquote{naive} gates (blue points), one finds a slower \gls{rb} decay than expected from the actual average gate fidelity, so that the latter would be overestimated by an \gls{rb} experiment, whereas the \enquote{single} gates show the opposite behavior.
 Depending on the gate set and relevant error channels, non-Markovian noise may thus even lead to improved sequence fidelities due to errors interfering destructively.
-This behavior is captured by the pulse correlation filter functions whose contributions to the sequence fidelity lead to the deviations from the \gls{srb} prediction.
+This behavior is captured by the pulse correlation filter functions whose contributions to the sequence fidelity lead to the deviations from the \gls{rb} prediction.
 
 Notably, the data for the \enquote{optimized} gates (magenta crosses) agree with the prediction for every noise channel individually which implies that correlations between pulses are suppressed.
 This highlights the formalism's attractiveness for numerical gate optimization as the pulse correlation filter functions $\FF\gth{gg^\prime}(\omega)$ may be exploited to suppress correlation errors.
-To be more explicit, the correlation decay amplitudes $\decayamps\gth{gg^\prime}$ from \cref{eq:ff:decay_amplitudes:pulse_correlation} can be used to construct cost functions for quantum optimal control algorithms like \gls{grape}~\cite{Khaneja2005,Schulte-Herbruggen2005} or \gls{crab}~\cite{Caneva2011}.
+To be more explicit, the correlation decay amplitudes $\decayamps\gth{gg^\prime}$ from \cref{eq:ff:decay_amplitudes:pulse_correlation} can be used to construct cost functions for quantum optimal control algorithms like \acrshort{grape}~\cite{Khaneja2005,Schulte-Herbruggen2005} or \acrshort{crab}~\cite{Caneva2011}.
 By constructing linear combinations of $\decayamps\gth{gg'}$ with different pulse indices $g$ and $g'$, correlations between any number of pulses can be specifically targeted and suppressed using numerical pulse optimization.
 
 \section{Quantum Fourier transform}\label{sec:ff:examples:qft}
 To demonstrate the flexibility of our software implementation, we calculate filter functions for a four-qubit \acrfull{qft}~\cite{Coppersmith1994,Nielsen2011} circuit.
 The \gls{qft} routine plays an important role in many quantum algorithms such as Shor's algorithm~\cite{Shor1997} and quantum phase estimation~\cite{Nielsen2011}.
-For the underlying gate set, we assume a standard Rabi driving model with \gls{iq} control and nearest neighbor exchange.
+For the underlying gate set, we assume a standard Rabi driving model with \acrshort{iq} control and nearest neighbor exchange.
 That is, we assume full control of the $x$- and $y$-axes of the individual qubits as well as the exchange interaction mediating coupling between two neighboring qubits.
 This system allows for native access to the minimal gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\pi/2),\mr{Y}_{i}(\pi/2),\mr{CR}_{ij}(\pi/2^3)\rbrace$ where $\mr{CR}_{ij}(\phi)$ denotes a controlled rotation by $\phi$ about $z$ with control qubit $i$ and target qubit $j$.
 Controlled-$z$ rotations by angles $\pi/2^m$ as required for the \gls{qft} can thus be obtained by concatenating $2^{3-m}$ minimal gates $\mr{CR}_{ij}(\pi/2^3)$.
 
-Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the \gls{grape} algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
+Despite native access to all necessary gates, we employ \qutip's implementation~\cite{Johansson2012} of the \acrshort{grape} algorithm~\cite{Khaneja2005,Schulte-Herbruggen2005} to generate the gates in order to highlight our method's suitability for numerically optimized pulses.
 For the optimization we choose a time step of $\Delta t = \qty{1}{\nano\second}$ and a total gate duration of $\tau = \qty{30}{\nano\second}$.
 For completeness, see \cref{subsec:app:ff:fidelity:qft} for details on the optimized gates.
 We then construct the remaining required gates by sequencing these elementary gates, \ie the Hadamard gate $\mr{H}_i = \mr{X}_{i}(\pi/2)\circ\mr{X}_{i}(\pi/2)\circ\mr{Y}_{i}(\pi/2)$, where $\mr{B}\circ\mr{A}$ denotes the composition of gates A and B such that gate A is executed before gate B\@.

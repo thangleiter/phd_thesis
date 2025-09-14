@@ -541,15 +541,15 @@ In \cref{fig:app:ff:filter_function:cnot} we show the filter functions once incl
     \centering
     \includegraphics{img/pdf/filter_functions/qft_atomic_pulses}
     \caption[\imgsource{img/py/filter_functions/quantum_fourier_transform.py}]{
-        Control fields (top row) and corresponding filter functions (bottom row) of the \gls{grape}-optimized pulses in $\mathbb{G}$.
+        Control fields (top row) and corresponding filter functions (bottom row) of the \acrshort{grape}-optimized pulses in $\mathbb{G}$.
         (a),(b) $\mr{X}_0(\pi/2)$; (c),(d) $\mr{Y}_0(\pi/2)$; (e),(f) $\mr{CR}_{01}(\pi/2^3)$.
         Note that the optimization is neither very sophisticated nor realistic as the algorithm only maximizes the systematic (coherent) fidelity $\mr{tr}\bigl(UQ\adjoint_\mr{targ}\bigr)/d$ and the randomly distributed initial control amplitudes are not subject to any constraints.
     }
     \label{fig:app:ff:qft:gates}
 \end{figure}
 
-In this section we give details on the \gls{grape}-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\pi/2),\mr{Y}_{i}(\pi/2),\mr{CR}_{ij}(\pi/2^3)\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm, and validate the fidelities using time-domain simulations.
-As mentioned in the main text, we consider a toy Rabi driving model with \gls{iq} single-qubit control and exchange to mediate inter-qubit coupling.
+In this section we give details on the \acrshort{grape}-optimized pulses for the gate set $\mathbb{G} = \lbrace\mr{X}_{i}(\pi/2),\mr{Y}_{i}(\pi/2),\mr{CR}_{ij}(\pi/2^3)\rbrace$ used in \cref{sec:ff:examples:qft} to simulate a \gls{qft} algorithm, and validate the fidelities using time-domain simulations.
+As mentioned in the main text, we consider a toy Rabi driving model with \acrshort{iq} single-qubit control and exchange to mediate inter-qubit coupling.
 Cast in the language of quantum optimal control theory this translates to a vanishing drift (static) Hamiltonian, $H_\mr{d} =  0$, and a control Hamiltonian in the rotating frame given by
 \begin{gather}
     \Hc(t) = \Hc\gth{0}(t)\otimes\eye + \eye\otimes\Hc\gth{1}(t) + \Hc\gth{01}(t), \\
@@ -558,7 +558,7 @@ Cast in the language of quantum optimal control theory this translates to a vani
 \end{gather}
 where $I_i(t)$ and $Q_i(t)$ are the in-phase and quadrature pulse envelopes and $\sigma_{x,y}\gth{i}$ are the Pauli matrices acting on the $i$th and extended trivially to the other qubit.
 For simplicity, we assume periodic boundary conditions so that qubits 1 and 4 are nearest neighbors as well.
-As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the \gls{grape} algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
+As our goal is only of illustrative nature and not to provide a detailed gate optimization, we obtain the controls $\lbrace I_0(t), Q_0(t), I_1(t), Q_1(t), J_{12}(t)\rbrace$ for the gate set $\mathbb{G}$ using the \acrshort{grape} algorithm implemented in \qutip~\cite{Johansson2012} initialized with randomly distributed amplitudes.
 The resulting pulses and the corresponding filter functions for the relevant noise operators are shown in \cref{fig:app:ff:qft:gates}.
 
 We now perform \gls{gksl} master equation and \gls{mc} simulations using the methods laid out in \cref{subsec:app:ff:time_domain_methods:methods} to verify the fidelities predicted for the \gls{qft} circuit in \cref{sec:ff:examples:qft}.

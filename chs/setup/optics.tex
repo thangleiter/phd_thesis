@@ -162,7 +162,7 @@ Having picked the lenses defining the characteristics of the microscope, let us 
 In a confocal microscope geometry, light is collected using the same lens that is also used for illumination of the sample.
 For excitation with a Gaussian laser beam but non-Gaussian radiation being emitted, this means that two different beam behaviors need to be matched, a task that is likely not possible to achieve completely.
 In the case of photoluminescence in a pristine semiconductor \gls{qw}, the optical interband transitions are well described by in-plane dipole matrix elements~\cite{Gu2013}.
-If, on the other, the light emerges from a \gls{pcc}, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024a}.
+If, on the other, the light emerges from a photonic crystal cavity for example, the far field pattern is close to a Gaussian mode and the considerations below need to be adjusted accordingly~\cite{Wu2024a}.
 Here, I discuss dipole emission from the \gls{qw}, which needs to be coupled into a \gls{smf} with near-Gaussian mode profile, invariably resulting in losses.
 A detailed analysis of the electric field profile to compute the expected coupling efficiency from the sample into the \gls{smf} is beyond our scope here as it would require taking into account the full sample and lens geometries as well as diffraction, a task only possible by employing a full-fledged numerical optics simulation suite.
 However, we can make some crude simplifications of the problem to estimate the order of magnitude of these effects.
@@ -356,7 +356,7 @@ Once aligned and blocking the beam from each arm in turn, I recorded a picture o
     \includegraphics{img/pdf/setup/spots}
     \caption[\imgsource{img/py/setup/imaging.py}]{
         Imaging of the laser spots using the free-space imaging capabilities of the confocal microscope.
-        Left column shows cropped images of the spot on an optical gate taken with the \gls{cmos} camera, while the middle column shows the fit to \cref{eq:setup:optics:coupling:intensity:tem00} rotated by a variable amount.
+        Left column shows cropped images of the spot on an optical gate taken with the \acrshort{cmos} camera, while the middle column shows the fit to \cref{eq:setup:optics:coupling:intensity:tem00} rotated by a variable amount.
         Right column shows the residuals of the fit, highlighting non-Gaussian components in the beam.
         Top row is the excitation, bottom the detection path.
     }
@@ -368,7 +368,7 @@ From \cref{eq:setup:optics:coupling:efield:tem00}, we can deduce that a perfect,
     I(x, y) = I(0, 0) \exp\left\lbrace -\frac{2 x^2}{w_{0,x}^2} -\frac{2 y^2}{w_{0,y}^2} \right\rbrace,
 \end{equation}
 where $w_{0,x(y)}$ are the beam waist radii in $x$ and $y$-direction, respectively, which are equal in the perfect case and introduce ellipticity else.
-Allowing for ellipticity as well as a rotation of the coordinate system with respect to the axes of the \gls{cmos} camera, we can fit \cref{eq:setup:optics:coupling:intensity:tem00} to the pictures obtained previously.
+Allowing for ellipticity as well as a rotation of the coordinate system with respect to the axes of the \acrshort{cmos} camera, we can fit \cref{eq:setup:optics:coupling:intensity:tem00} to the pictures obtained previously.
 The result is shown in \cref{fig:setup:optics:coupling:imaging} for the excitation path in the upper and the detection path in the lower row.
 The first column shows a cropped section of the recorded images, showing good alignment (large overlap) between both spots but also some sidelobes along perpendicular axes rotated by around \qty{45}{\degree} to the camera axes.
 This is also reflected in the relative residuals of the fitted spot that clearly shows that the spot is not described only by a Gaussian \TEM{00} mode.

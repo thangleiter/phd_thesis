@@ -79,13 +79,13 @@
 - [x] Test running all.
 - [x] Add `README`
 - [x] Draft new `filter_functions` release
-- [ ] Draft new `lindblad_mc_tools` release
+- [x] Draft new `lindblad_mc_tools` release
 - [x] Move and make public `lindblad_mc_tools`
-    - [ ] Add `README`
+    - [x] Add `README`
 - [x] Check `qutil`, `python_spectrometer` releases
 
 ## Layout
-- [ ] Go over glossary. Are all acronyms necessary?
+- [x] Go over glossary. Are all acronyms necessary?
 - [x] Tune the bibliography style
     - [x] arXiv IDs
     - [x] remove "visited on"
