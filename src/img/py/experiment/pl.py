@@ -637,6 +637,7 @@ with changed_plotting_backend('qtagg'), contextlib.redirect_stderr(StringIO()):
 
     fig.savefig(SAVE_PATH / 'plot_nd.pdf')
     plt.close(fig)
+
 # %%% Positioning
 day = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ypos.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'
@@ -655,9 +656,33 @@ img, prefix, ax2 = plot_pl_slice(fig, axs[0, 1], daz,
                                  ylabel=r'$\Delta z$ (steps)', sel=dict(), linewidth=.75,
                                  slice_vals=[17, 26, 45, 70])
 axs[0, 0]['img'].invert_yaxis()
-axs[0, 0]['img'].set_xlim(1.485, 1.53)
+axs[0, 0]['img'].set_xlim(1.485, const.lambda2eV(810e-9))
 axs[0, 0]['img'].set_ylim(top=-45)
 axs[0, 0]['slc'].sharey(axs[0, 1]['slc'])
+
+rect = [0.55, 0.4, 0.55, 0.55]
+colors = [RWTH_COLORS['green'], RWTH_COLORS['orange'], RWTH_COLORS['teal']]
+circle_kwargs = dict(edgecolor=RWTH_COLORS['black'], facecolor='none', lw=1)
+scatter_kwargs = dict(s=10, c=[mpl.colors.to_rgba(c, 0.5) for c in colors], alpha=0.5, marker='o',
+                      linewidths=1, edgecolors=colors)
+
+ins_ax = axs[0, 0]['slc'].inset_axes(rect)
+circle = mpl.patches.Circle((0, 0), 1, **circle_kwargs)
+ins_ax.add_patch(circle)
+ins_ax.scatter([-1, 0, 1], [0, 0, 0], **scatter_kwargs)
+ins_ax.set_xlim(-1.25, 1.25)
+ins_ax.set_ylim(-1.25, 1.25)
+ins_ax.axis('off')
+ins_ax.set_aspect('equal')
+
+ins_ax = axs[0, 1]['slc'].inset_axes(rect)
+circle = mpl.patches.Circle((0, 0), 1, **circle_kwargs)
+ins_ax.add_patch(circle)
+ins_ax.scatter([0, 0, 0], [-1, 0, 1], **scatter_kwargs)
+ins_ax.set_xlim(-1.25, 1.25)
+ins_ax.set_ylim(-1.25, 1.25)
+ins_ax.axis('off')
+ins_ax.set_aspect('equal')
 
 fig.get_layout_engine().set(hspace=0, h_pad=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_positioning.pdf')

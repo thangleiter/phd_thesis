@@ -4,9 +4,21 @@ In this chapter, I present and discuss optical measurements of gated semiconduct
 All of the samples under investigation had the almost same nominal heterostructure layout; a \qty{20}{\nano\meter} \ch{GaAs} \gls{qw} sandwiched between two modulation-doped \qty{90}{\nano\meter} \ch{Al_{0.33}Ga_{0.67}As} barriers of which \qty{50}{\nano\meter} are an undoped spacer layer.
 Together with either a \qty{5}{\nano\meter} or \qty{10}{\nano\meter} \ch{GaAs} cap to on both sides to protect the aluminium from oxidation, the membranes had a thickness of \qty{210}{\nano\meter} or \qty{220}{\nano\meter} after thinning.
 
-Gate electrodes were patterned on the top and bottom side of the membrane using \gls{ebl}, where here and elsewhere in \thethesis I refer by \enquote{top} to gates on the etched and by \enquote{bottom} to those on the as-grown surface.
+\begin{marginfigure}
+    \centering
+    \includegraphics{img/pdf/experiment/sem}
+    \caption[\imgsource{img/py/experiment/sem.py}]{
+        \acrshort{sem} image of an exciton trap with both central and guard gates.
+        Gates on the bottom side are visible through the membrane.
+        Images taken by Thomas Descamps.
+    }
+    \label{fig:exp:sem}
+\end{marginfigure}
+
+Gate electrodes were patterned on the top and bottom side of the membrane using electron-beam lithography, where here and elsewhere in \thethesis I refer by \enquote{top} to gates on the etched and by \enquote{bottom} to those on the as-grown surface.
 That is, \enquote{top} gates are on the air side facing the microscope objective when the sample is mounted in the fridge, whereas \enquote{bottom} gates are in contact with the epoxy gluing them to the Silicon host chip.
-Typical designs have gates on the top and bottom sides of the membrane that are contacted at different positions on the edge of the mesa and converge towards the exciton trap site, where only there they overlap laterally.
+Typical designs have gates on the top and bottom sides of the membrane that are contacted at different positions on the edge of the mesa and converge towards the exciton trap site, only close to where they overlap laterally.
+\Cref{fig:exp:sem} shows \acrshort{sem} images taken of such a trap.
 For details about the fabrication process, refer to \citerr{Descamps2021}{Kindel2025}.
 
 I installed and cooled the samples to Millikelvin temperatures in the \gls{dr} introduced in \cref{part:setup}, typically using the bottom-loading technique.
@@ -16,11 +28,11 @@ The emitted \gls{pl} radiation is picked up by the same lens and coupled into a 
 In total, I show measurements from three different samples.
 Unfortunately, none of the samples tested had a fully functional exciton trap with four working gates.
 Several old samples fabricated during the work of \citet{Descamps2021} appeared to have aged, resulting in broken gates or otherwise unconventional behavior.
-Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different \gls{ebl} resolution steps, or Ohmic contacts, while other gates had leakage to ground or the \gls{qw}.
+Newly fabricated samples on old heterostructure pieces frequently showed contact problems, either of optical gates to the mesa, between different lithography resolution steps, or Ohmic contacts, while other gates had leakage to ground or the \gls{qw}.
 
 I pursued two different approaches to positioning the laser on the samples.
 The first was using the white-light imaging arm of the confocal microscope (see \cref{part:setup}).
-The larger, thicker gate structures on the samples typically show good contrast in the \gls{cmos} camera image owing to the large reflectance of \ch{Au} compared to \ch{GaAs} (at normal incidence and a single interface $\reflectance = \qtylist{98;32}{\percent}$, respectively, see \cref{sec:exp:tmm}), allowing orientating oneself following the sample design.
+The larger, thicker gate structures on the samples typically show good contrast in the \acrshort{cmos} camera image owing to the large reflectance of \ch{Au} compared to \ch{GaAs} (at normal incidence and a single interface $\reflectance = \qtylist{98;32}{\percent}$, respectively, see \cref{sec:exp:tmm}), allowing orientating oneself following the sample design.
 However, the simplicity of the optics\sidenote{
     The objective is just a singlet lens, compared to sophisticated commerical objectives containing a large number of optics inside to correct optical abberations.
     See for example the \href{https://www.attocube.com/en/products/microscopes/features/cryogenic-compatible-achromatic-high-na-objectives/lt-apo-lwd}{Attocube LT-APO/LWD}.
@@ -124,7 +136,7 @@ There, the authors put forth a renormalization of the band gap due to many-body 
 \end{figure}
 
 Let us now address the behavior of the \gls{pl} under electric fields.
-To this end, the laser is positioned on an \gls{ebl}-written gate and a negative voltage is applied to the gate.
+To this end, the laser is positioned on a gate written by electron-beam lithography and a negative voltage is applied to the gate.
 \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate} depicts two measurements on a well-behaved sample.
 The left (right) panel shows the \gls{pl} as function of voltage with the laser positioned on a bottom (top) gate.
 In contrast to the intuition obtained in \cref{sec:exp:theory:qcse}, there is no immediate effect to be observed once the voltage is switched on.
@@ -384,18 +396,6 @@ Curiously, the map also shows a shifting of the Fermi edge close to the gate.
 This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
 The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
 
-\begin{marginfigure}
-    \centering
-    \includegraphics{img/pdf/experiment/sem}
-    \caption[\imgsource{img/py/experiment/sem.py}]{
-        \acrshort{sem} image of an exciton trap with both central and guard gates.
-        Gates on the bottom side are visible through the membrane.
-        Positions (symbolic) of the line cuts in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} are indicated in the same colors.
-        Images taken by Thomas Descamps.
-    }
-    \label{fig:exp:pl:sem}
-\end{marginfigure}
-
 \begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_positioning}
@@ -412,7 +412,7 @@ The former effect could potentially be caused by band-deformation due to strain 
         \Gls{pl} of a large exciton trap as function of position perpendicular (left) and parallel (right) to gravity.
         The trap is biased so that the emission is Stark-shifted towards lower energy.
         Upper panels show line cuts taken along the dash-dotted lines in the lower panels, demonstrating fairly identical behavior along both axes.
-        The cuts in orange, green, and teal are taken at positions corresponding to the ones marked in the bottom panel of \cref{fig:exp:pl:sem}, with orange corresponding to the center of the trap gate.
+        The cuts in orange, green, and teal are taken at positions corresponding to the ones marked on the circle in the upper panel.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_positioning}
 \end{figure}
@@ -424,7 +424,7 @@ Regrettably, the resistive position readout did not yield anything but noise in 
 Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
 We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
 Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features, the displayed ranges should be roughly the same.
-The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on a different trap in \cref{fig:exp:pl:sem}.
+The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on the black circle in the upper panel.
 Both sweeps display very similar features.
 In the center of the trap (yellow), the Stark-shifted emission line consists of a single peak.
 Towards the edges (teal and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
@@ -523,8 +523,8 @@ Going to even more negative voltage and fully depleting the \gls{2deg}, the over
 
 Panel (c) of the figure shows line cuts taken at the voltages indicated by dash-dotted lines in panels (a) and (b) with solid lines corresponding the emission (\gls{pl}) and dashed lines to absorption (\gls{ple}).
 The energy shift of the two most prominent peaks in both spectra is labeled.
-Although not a perfect match, the shift of around \qty{28}{\milli\electronvolt} is not far off the energy of \gls{to} phonons in \ch{GaAs}, known in bulk to be \qty{33}{\milli\electronvolt}~\cite{Strauch1990}.
-Similarly, the shift of \qty{40}{\milli\electronvolt} at $\VDM=-\qty{2.65}{\volt}$ is off by approximately the same amount from the second, \ch{AlAs}-like \gls{to} phonon mode in \ch{Al_{0.32}Ga_{0.68}As}, \qty{44}{\milli\electronvolt}~\cite{Ilegems1970,Leng1989,Gammon1991}.
+Although not a perfect match, the shift of around \qty{28}{\milli\electronvolt} is not far off the energy of \acrshort{to} phonons in \ch{GaAs}, known in bulk to be \qty{33}{\milli\electronvolt}~\cite{Strauch1990}.
+Similarly, the shift of \qty{40}{\milli\electronvolt} at $\VDM=-\qty{2.65}{\volt}$ is off by approximately the same amount from the second, \ch{AlAs}-like \acrshort{to} phonon mode in \ch{Al_{0.32}Ga_{0.68}As}, \qty{44}{\milli\electronvolt}~\cite{Ilegems1970,Leng1989,Gammon1991}.
 It is conceivable that the thinning of the heterostructure to a membrane modifies the phonon energies by $\qty{5}{\milli\electronvolt}$ and it would be interesting to perform Raman spectroscopy on the membranes to investigate this further.
 Additionally, temperature-dependent measurements could reveal information on the possible existence of a phonon bottleneck~\cite{Murdin1997}, which would show as a change in decay rate at a certain temperature corresponding to a crossover in acoustic-phonon--dominated and optical-phonon--dominated cooling of hot electrons.
 

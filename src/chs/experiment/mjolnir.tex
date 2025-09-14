@@ -41,7 +41,7 @@ At the same time, it is designed to be modular, and different functionalities sh
 
 Central to the \mjolnir package is the abstraction of physical instruments into logical ones, thereby grouping logical functionality provided by different physical devices.
 Take for instance the tunable \gls{cw} \tisalaser laser.
-It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser \gls{dpss} laser.
+It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser diode-pumped solid state laser.
 Behind its exit aperture, a \thorlabsflipper acts as a shutter, a \gls{nd} filter mounted on a \thorlabsrotator controls the output power, while a \thorlabspowermeter monitors the power at the optical head and an \rotatorcontroller controls the polarization state of the optical head.
 Thus, seven different instruments from five different manufacturers are required to control the illumination state of the sample.
 As a user, however, one would simply like to en- or disable the laser and set wavelength, power, and polarization configuration of the optical head.
@@ -293,7 +293,7 @@ The data variable to be shown in the main panel can be selected with the \code{a
 Similarly, the coordinates to be plotted on the $x$- and $y$-axes are selected with the \code{horizontal_target} and \code{vertical_target} arguments, respectively.
 
 In addition to plotting measurement data, \mjolnir implements live plotting of instrument data leveraging the \code{qutil.plotting.live_view} module.
-Since most instruments do not support multiple concurrent connections, switching control between the \python console and the \gls{gui} program provided by the manufacturer can often be tedious.\sidenote{
+Since most instruments do not support multiple concurrent connections, switching control between the \python interpreter and the \gls{gui} program provided by the manufacturer can often be tedious.\sidenote{
     For instance, the \gls{ccd} \gls{gui}, Andor Solis, by default disables the thermoelectric cooler when exiting the program.
 }
 Thus, making use of their continuous data acquisition functionality is prohibitively time-consuming, but at the same time optical experiments frequently call for live observation of instrument data, for example when aligning the optics.
