@@ -50,11 +50,17 @@ def oscillator_strength(z, i, j, Delta_E, m, in_plane=True):
     )
 
 
-def tunneling_probability(F, ΔV, E, m):
+def tunneling_probability(F, ΔV, E, m, d=90e-9):
+    z0 = (ΔV - E)/(const.e*F)
     with np.errstate(divide='ignore'):
         # WKB gives a factor 4/3*sqrt{2} instead of 2
         result = np.exp(-np.sqrt(4*m*(ΔV - E)**3)/(const.e*F*const.hbar))
-    result[np.isnan(result)] = 0
+        # Distance across which the electric field energy compensates the band offset.
+        # I.e., at which point tunneling can occur because the bands are pulled down
+        # below the energy level
+        z0 = (ΔV - E)/(const.e*F)
+
+    result[np.isnan(result) | (z0 > d)] = 0
     return result
 
 

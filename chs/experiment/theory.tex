@@ -20,6 +20,8 @@ Therefore, to accommodate \glspl{gdqd} next to the \gls{oaqd} in the membrane, t
 In the following, I discuss the optical behavior of these structures under illumination.\sidenote{
     The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2025}.
 }
+I take a simple analytical approach in order to capture the most relevant physics and obtain a qualitative understanding.
+For quantitative results, a more detailed method incorporating electrostatics would be required; I refer the reader to \citer{Descamps2021} for such simulations.
 
 \section{Photoluminescence in doped \GaAsAlGaAs heterostructures}\label{sec:exp:theory:pl}
 Consider an intrinsic, direct-gap, Zincblende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature~\cite{Vurgaftman2001}.
@@ -178,8 +180,7 @@ The ground state transition energy at this field is \qty{10}{\milli\electronvolt
 
 For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
 The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wave functions is reduced when applying an electric field, pulling the wave functions to opposite interfaces~\cite{Miller1984}.
-\Citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
-The latter should have a small effect on the ground state energy as argued above.
+For the latter, \citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 
 \subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
 % TODO: Motivate why we do all this! -> oscillator strength
@@ -199,10 +200,10 @@ We then have
     \Psi_{np\ell}(z_{\mr{e}}, z_{\mr{h}}, \rho, \phi) = \psi_n(z_{\mr{e}})\psi_n(z_{\mr{h}})\chi_{p\ell}(\rho)\exp(i\ell\phi)
 \end{equation}
 where\sidenote{
-    Note that \citeauthor{Karimi2014} miss a factor $2\pi$ in the normalization.
+    Note that \citet{Karimi2014} miss a factor $2\pi$ in the normalization.
 }~\cite{Karimi2014}
 \begin{equation}\label{eq:exp:theory:qcse:trap:ho:psi}
-    \chi_{p\ell}(\rho, \phi) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right)
+    \chi_{p\ell}(\tilde{\rho}, \phi) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right)
 \end{equation}
 with the associated Laguerre polynomial $L_p^{\abs{\ell}}(x)$ and we used the shorthand $\tilde{\rho} = \rho/\xi$.
 The numbers $p\in\mathbb{N}$ and $\ell\in\mathbb{Z}$ denote the principal and orbital momentum quantum numbers.
@@ -212,7 +213,7 @@ The eigenenergies of the harmonic oscillator solution, \cref{eq:exp:theory:qcse:
 \end{equation}
 To account for a finite well width ($L\approx\xi$ in our case), we can to a first approximation perform the replacement $\rho\to r = \sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi}.
 The resulting wave function $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
-For $\ell=0$ $\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$.
+For $\ell=0$, $\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$.
 
 \begin{figure}
     \centering
@@ -249,8 +250,9 @@ and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and cond
 From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$!
 This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
 
-As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n}\sim eFd$ with $d$ the width of the barrier.
+As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n} < eFd$ with $d$ the width of the barrier and $\Delta E_{\mr{c}(\mr{hh})}$ is the height of the conduction (valence) band discontinuity.
 This allows confined carriers to escape the \gls{qw} with a finite probability by tunneling through the barrier, an effect known as Fowler-Nordheim tunneling.
+If this probability becomes too large, trapped excitons can dissociate by electron or hole tunneling through the barriers before recombining, and thereby lower the radiative recombination efficiency (internal quantum efficiency, see \cref{subsec:setup:optics:coupling:efficiency}) and introduce additional errors in the spin-photon interface.
 Following \citer{Davies2009}, we can estimate the tunneling probability as\sidenote{
     The same result up to a slightly different numerical prefactor in the exponent is obtained more formally from the WKB approximation~\cite{Descamps2021}.
 }

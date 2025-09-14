@@ -34,13 +34,14 @@
 
 ## Feedback
 - [ ] HB
+  - [x] Part I
   - [ ] Part III
 - [ ] DH
   - [ ] Part I
   - [ ] Part III
-- [ ] EK
+- [x] EK
   - [x] Part II
-  - [ ] Part III
+  - [x] Part III
 
 ### pyspeck
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
@@ -59,6 +60,7 @@
 
 ### Experiment
 - [x] author contributions
+- [ ] Device image early on
 
 ### FF
 - [x] I/we
