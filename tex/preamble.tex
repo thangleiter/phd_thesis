@@ -130,13 +130,6 @@
 % Add sidenotes to the exceptions for xspace so that macros that end on \xspace don't get a space if followed by \sidenote
 \xspaceaddexceptions{\sidenote}
 
-% Set pdf version, but tectonic still thinks it's 1.5
-% https://tex.stackexchange.com/a/618019
-\ExplSyntaxOn
-\pdf_version_gset:n{2.0}
-\pdf_uncompress: % to check the pdf
-\ExplSyntaxOff
-
 % Make "Figure X.Y" link back to the list of figures
 \DeclareCaptionLabelFormat{linked}{\hyperref[lof]{#1~#2}}
 \captionsetup[figure]{labelformat=linked}
@@ -149,6 +142,7 @@
 \end{hyphenrules}
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
+% Required somehow even if not used.
 \usepackage[framed=true]{kaotheorems}
 
 % Load the package for hyperreferences

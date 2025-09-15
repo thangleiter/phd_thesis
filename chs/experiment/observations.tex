@@ -359,11 +359,10 @@ I excited the sample above the gap and spectrally filtered the emitted \gls{pl} 
 Due to the low brightness, a compromise between high excitation power (leading to power broadening) and measurement duration (to gather statistics) was chosen at \qty{100}{\nano\watt}.
 However, after \qty{48}{\hour} no deviation from a flat and uncorrelated \g2 could be observed.\sidenote{
     I also attempted a \g2 measurement to no avail in a different parameter regime where a single, isolated emission line appears.
-    % TODO: #218; expand, show data?
 }
 
 \subsection{Spatial dependence}\label{subsec:exp:observations:pl:spatial}
-\begin{marginfigure}
+\begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/fig_F10_positioning}
     \caption[
@@ -373,13 +372,16 @@ However, after \qty{48}{\hour} no deviation from a flat and uncorrelated \g2 cou
         \protect\newline
         \imgsource{img/py/experiment/pl.py}
     ]{
-        \Gls{pl} of the unbiased \gls{qw} as the laser is stepped across a bottom gate.
-        The line traces in the upper panel are taken at the positions indicated by dash-dotted lines.
-        Positioner steps are converted to distance using a linear fit of the positioner readout after the initial hysteresis has worn off (about \num{10} steps).
+        \Gls{pl} of the unbiased \gls{qw} as the laser is stepped across a bottom gate of nominal width $L = \qty{3}{\micro\meter}$.
         The Fermi edge shows a slight redshift when on top of the gate in this sample.
+        The line traces in the upper panel are taken at the positions indicated by horizontal dash-dotted lines.
+        Positioner steps are converted to distance using a linear fit of the positioner readout after the initial hysteresis has worn off (about \num{10} steps).
+        The left panel shows a vertical line cut together with a fit to a Gaussian beam spot convolved with a step profile, indicated by a dotted gray line.
+        From the fit, the width of the gate is $L = \qty{2}{\micro\meter}$ (beam waist radius \qty{0.75}{\micro\meter}, see \cref{eq:setup:optics:coupling:gaussian:radius}), indicating the position readout is off by \qty{50}{\percent}.
+        The dashed gray lines in the left panel indicate the expected gate edges for the nominal width.
     }
     \label{fig:exp:pl:fig_F10_positioning}
-\end{marginfigure}
+\end{figure}
 
 As mentioned several times already, the nanopositioners on which the sample is mounted show hysteresis and are therefore not suited for reproducible spatial maps of the sample.
 The hysteresis is due to the non-adiabaticity of the method of movement in the so-called slip-stick mode (\cf \cref{ch:setup:cooling}).
@@ -387,14 +389,37 @@ What is more, the resistive position readout is also fairly unreliable below, sa
 Nonetheless, we can at the very least perform simple one-dimensional sweeps after manually positioning the sample at a given starting position and assume that the displacement per step has some sufficiently narrow distribution around a fixed mean.
 A more sophisticated algorithmic approach using feature detection may allow also two-dimensional maps with a reasonable accuracy.
 
-\Cref{fig:exp:pl:fig_F10_positioning} shows the \gls{pl} collected from the sample as the positioner is stepped perpendicularly across an unbiased gate.
-The vertical axis also gives a position coordinate which is computed from the steps by fitting the position readout once hysteresis has worn off.
+\Cref{fig:exp:pl:fig_F10_positioning} shows the \gls{pl} collected from the sample as the positioner is stepped perpendicularly across an unbiased gate with a nominal width of $L = \qty{3}{\micro\meter}$.
+The vertical axis also gives a position coordinate which is computed from the steps by fitting the position readout with a linear function once hysteresis has worn off.
 The blue and green dash-dotted line correspond to the center of and beside the gate, respectively, with line cuts drawn in the upper panel.
 Clearly, the \gls{pl} intensity is quenched significantly by the gate, beyond what one could expect from simple reflection and absorption of laser and \gls{pl} radiation.
 I perform \gls{tmm} simulations to explain this behavior in \cref{sec:exp:tmm} (see also \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate}).
+The left panel shows a line cut taken at $\qty{1.517}{\electronvolt}$ together with a fit to a convolution of a Gaussian beam spot (\cref{eq:setup:gaussian}) and a step function,
+\begin{equation}\label{eq:exp:pl:gate_convolution}
+    \Phi(y) = I(y)\ast\left[\theta\left(y - y_0 + \frac{L}{2}\right) - \theta\left(y - y_0 - \frac{L}{2}\right)\right] + \Phi_0,
+\end{equation}
+where $I(y)$ is the one-dimensional Gaussian intensity distribution, $\theta(y)$ the Heaviside step function, and $y_0$ the center of the gate.
+Close to the gate, \cref{fig:exp:pl:fig_F10_positioning} shows excellent agreement with \cref{eq:exp:pl:gate_convolution}, but yields a gate width of $L=\qty{2}{\micro\meter}$ at a beam waist radius of $w_0=\qty{0.75}{\micro\meter}$, some \qty{50}{\percent} off from the nominal design width whose extents are indicated by dashed gray lines in the left panel of the figure.
+This implies that the position calibration based on the nanopositioner readout in \cref{fig:exp:pl:fig_F10_positioning} is quite crude and inaccurate.
 Curiously, the map also shows a shifting of the Fermi edge close to the gate.
 This behavior was observed consistently on this sample next to an unusual \gls{pl} line shape (\cf \cref{fig:exp:pl:2deg}).
 The former effect could potentially be caused by band-deformation due to strain from the metallic gates.
+
+\Cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets}.
+While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is laterally lowered.
+The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
+Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
+Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
+We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
+Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features, the displayed ranges should be roughly the same.
+The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on the black circle in the upper panel.
+Both sweeps display very similar features.
+In the center of the trap (yellow), the Stark-shifted emission line consists of a single peak.
+Towards the edges (teal and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
+The increase in effective electric field towards the edge of an exciton trap is reminiscent of the simulation of the same type of experiment for an undoped \gls{qw} by \citet[Figure~6.4]{Descamps2021}, although it was not explained there.
+Indeed, it also appears to be in conflict with Figure~2.16 \ibid, where a monotonic increase in effective exciton potential as function of distance from the trap center was predicted.
+In the device under study here, there is of course a \gls{2deg} whose presence towards the edge of the trap screens the voltages, in theory contributing to an attenuation of the Stark shift.
+Why we observe to opposite is thus quite puzzling.
 
 \begin{figure}
     \centering
@@ -412,26 +437,10 @@ The former effect could potentially be caused by band-deformation due to strain 
         \Gls{pl} of a large exciton trap as function of position perpendicular (left) and parallel (right) to gravity.
         The trap is biased so that the emission is Stark-shifted towards lower energy.
         Upper panels show line cuts taken along the dash-dotted lines in the lower panels, demonstrating fairly identical behavior along both axes.
-        The cuts in orange, green, and teal are taken at positions corresponding to the ones marked on the circle in the upper panel.
+        The cuts in orange, green, and teal are taken at the positions indicated on the circle in the upper panel representing the trap gate.
     }
     \label{fig:exp:pl:doped_M1_05_49-2_positioning}
 \end{figure}
-
-\Cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows two sweeps along orthogonal axes across the biased exciton trap discussed before in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode,fig:exp:pl:doped_M1_05_49-2_power,fig:exp:pl:doped_M1_05_49-2_multiplets}.
-While this is not unequivocal proof of zero-dimensional confinement, it does suggest that the effective exciton potential is laterally lowered.
-The left panel of \cref{fig:exp:pl:doped_M1_05_49-2_positioning} shows a scan along the in-plane axis perpendicular to gravity, while the right shows the in-plane axis parallel and against gravity.
-Regrettably, the resistive position readout did not yield anything but noise in these measurements, prohibiting a conversion of positioner steps into relative position as before.
-Both scans were acquired with the sample voltage applied to the positioners (\qty{30}{\volt}), which is the same used in \cref{fig:exp:pl:fig_F10_positioning} as well.
-We can hence roughly expect \num{10} steps to correspond to \qty{1}{\micro\meter} in $y$ direction.
-Naturally, a single step against gravity displaces the sample by a smaller amount compared to the perpendicular direction, but given the circular shape of the trap and the similarity of the \gls{pl} features, the displayed ranges should be roughly the same.
-The upper panels show line cuts taken at the positions indicated by dash-dotted lines in the lower panels, with the orange, green, and teal lines corresponding to the positions indicated by markers on the black circle in the upper panel.
-Both sweeps display very similar features.
-In the center of the trap (yellow), the Stark-shifted emission line consists of a single peak.
-Towards the edges (teal and green), two surprising effects take place: first, the Stark shift of the dominant peak increases in magnitude, and second, a large number of additional, faint lines appear.
-The increase in effective electric field towards the edge of an exciton trap is reminiscent of the simulation of the same type of experiment for an undoped \gls{qw} by \citet[Figure~6.4]{Descamps2021}, although it was not explained there.
-Indeed, it also appears to be in conflict with Figure~2.16 \ibid, where a monotonic increase in effective exciton potential as function of distance from the trap center was predicted.
-In the device under study here, there is of course a \gls{2deg} whose presence towards the edge of the trap screens the voltages, in theory contributing to an attenuation of the Stark shift.
-Why we observe to opposite is thus quite puzzling.
 
 The second surprising feature seen in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} is the addition of faint lines that appear to branch out from the main exciton line as the laser spot is moved away from the center of the trap.
 These could be related to the lines observed in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets} as well as the large number of lines required to fit the peak in \cref{fig:exp:pl:doped_M1_05_49-2_power}.
@@ -463,7 +472,7 @@ Applying an external electric field should further enhance the light-hole transi
 Furthermore, the electric field depletes the \gls{2deg} as we have seen in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} and should result in a laterally local potential well for excitons with discrete and approximately equidistant energy levels as laid out in \cref{subsec:exp:theory:qcse:trap}.
 If such were the case, we would expect resonances in the \gls{ple} at intervals corresponding to the level spacing $\hbar\omega$ of the potential well that would confirm 0D-confinement.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics{img/pdf/experiment/doped_M1_05_49-2_ple}
     \caption[

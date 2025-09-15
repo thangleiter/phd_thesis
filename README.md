@@ -25,11 +25,11 @@
 ## Content
 - [ ] Zusammenfassung
 - [ ] Preface
-- [ ] How to read this thesis
-    - [ ] PDF viewer
-    - [ ] Image sources & parameters
     - [ ] Disjunct parts
-    - [ ] $\mathrm{asinh}$ scale
+- [ ] How to read this thesis
+    - [x] PDF viewer
+    - [x] Image sources & parameters
+    - [x] $\mathrm{asinh}$ scale
 - [ ] Acknowledgements
 
 ## Feedback
