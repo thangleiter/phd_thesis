@@ -105,8 +105,8 @@ From the width of the \gls{2deg} emission, we can calculate the charge carrier d
 \end{equation}
 where $\Delta E$ is the bandwidth of the emission (dashed gray lines in \cref{fig:exp:pl:2deg}) and $\mu = m^{\ast}_{\mr{c}}m^{\ast}_{\mr{hh}}/(m^{\ast}_{\mr{c}} + m^{\ast}_{\mr{hh}})$ is the reduced mass of conduction and valence band.
 For this particular sample, \cref{eq:exp:pl:n} yields $n = \qty{5e11}{\per\square\centi\meter}$ or, equivalently, $E_{\mr{F}} = \qty{18}{\milli\electronvolt}$ and $k_{\mr{F}} = \qty{1.8e8}{\per\meter}$.
-Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.9e11}{\per\square\centi\meter}$ (refer to \cref{sec:app:exp:observations} for simulation parameters), shows a significant discrepancy indicating a severe mismatch between nominal and actual doping concentrations.\sidenote{
-    Note that the carrier density obtained thus does not vary significantly with excitation power, ruling out photo-doping as a source of the discrepancy.
+Comparing this value to that obtained from a simulation of the heterostructure with nominal doping concentration $N_{\mr{d}} = \qty{6.5e17}{\per\cubic\centi\meter}$ using a self-consistent Poisson-Schrödinger solver~\cite{PoissonSchroedinger}, $n = \qty{1.9e11}{\per\square\centi\meter}$ (refer to \cref{sec:app:exp:observations} for simulation parameters), shows a significant discrepancy, indicating either a severe mismatch between nominal and actual doping concentrations or a Fermi level pinning very different from the one assumed in the simulation.\sidenote{
+    Note that the carrier density obtained this way does not vary significantly with excitation power, ruling out photo-doping as a source of the discrepancy.
     See \cref{sec:app:exp:observations} for a measurement of the \gls{2deg} \gls{pl} as function of power.
 }
 Finally, we observe that the gap according to the preceding analysis is redshifted from the undoped bulk gap of \qty{1.519}{\electronvolt}~\cite{Vurgaftman2001} by \qty{13}{\milli\electronvolt}.\sidenote{
@@ -114,7 +114,9 @@ Finally, we observe that the gap according to the preceding analysis is redshift
 }
 \Citet{Descamps2021} hypothesized that the removal of the \ch{GaAs} substrate and the associated change in strain leads to this lowering of the band gap.
 However, this effect was also already observed by \citet{Pinczuk1984} in \enquote{bulk} modulation-doped \ch{GaAs} \glspl{qw}.
-There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation, an interpretation since well-agreed upon~\cite{Jain1992}
+There, the authors put forth a renormalization of the band gap due to many-body interactions as an explanation, an interpretation since well-agreed upon~\cite{Jain1992}.
+At high doping concentrations, and hence high carrier densities, electron-electron interactions push the conduction band down while electron-hole interactions lift the valence band up~\cite{Jain1987}.
+Another effect leading to an effective narrowing of the band gap is the random distribution of ionized impurities that causes local fluctuations in the band edges and results in tail states decaying exponentially into the gap~\cite{Jain1987}.
 
 \subsection{Quantum-confined Stark shift}\label{subsec:exp:observations:pl:qcse}
 
@@ -148,7 +150,7 @@ As the electric field tilts the bands, the band edges of both conduction and val
 }
 As the \gls{2deg} is gradually depleted, a broad exciton peak emerges that shifts approximately quadratically with the applied voltage as ionization from the interaction with the Fermi sea of electrons becomes less pronounced (\cf \cref{sec:exp:theory:pl}).
 Beyond \qty{-1.5}{\volt}, the \gls{2deg} is completely depleted.
-The voltage difference between onset and completion of the depletion matches roughly the value expected from a simulation without screening for the nominal device parameters (see \cref{tab:app:exp:samples,tab:app:exp:samples:ps}), \qty{-0.7}{\volt}.
+The voltage difference of \qty{-0.7}{\volt} between onset and completion of the depletion matches roughly the value expected from a 1D-band structure simulation~\cite{PoissonSchroedinger} with the nominal device parameters (see \cref{tab:app:exp:samples,tab:app:exp:samples:ps}).
 
 Besides the voltage dependence, another feature stands out from \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate}: the \gls{pl} intensity is lower by an order of magnitude when on top of a back gate compared to a top gate.
 This is at first puzzling, as in the latter case there is an additional semi-transparent gate\sidenote{
@@ -194,7 +196,7 @@ This behavior is also observed in the response of the \gls{pl} to a single gate 
 Perhaps surprisingly, the gates on the \emph{bottom} side of the membrane display this behavior, \ie, the gates on the as-grown surface.\sidenote{
     I note that the sample of \cref{fig:exp:pl:honey_H13_stark_shift_vs_gate} was fabricated on the same heterostructure as the device in Figure 4(d) of \citer{Descamps2023}, which showed little to no electrical hysteresis unlike most other samples investigated by \citet{Descamps2021}.
 }
-This makes surface states an unlikely candidate for the screening as the quality of the grown surface should be better than that of the etched surface~\cite{Descamps2021}.
+This makes surface states an unlikely candidate for the screening as we would expect the quality of the grown surface to be better than that of the etched surface~\cite{Descamps2021}.
 A possible cause might be oxygen segregation during growth\sidenote{A.~Ludwig, private communication.} or other impurities~\cite{Nguyen2020}.
 
 The fact that the \gls{2deg} is depleted by \VDM in the range \qtyrange{-0.2}{-1.4}{\volt} and above \qty{1.5}{\volt} at all is unexpected.
@@ -222,9 +224,9 @@ $\Delta\alpha = \alpha_{\mr{T}} - \alpha_{\mr{B}}$ between \VT and \VB should mo
     \end{pmatrix}\begin{pmatrix}
         \VT \\
         \VB
-    \end{pmatrix}
+    \end{pmatrix},
 \end{align}
-and as such not modify the qualitative behavior of \VDM besides the offset.\sidenote{
+where the virtual gate matrix is orthogonal, acting as a rotation in voltage space, and as such not modify the qualitative behavior of \VDM besides the offset.\sidenote{
     Setting $\Delta\alpha = \num{0.6}$ yields a $\tilde{V}_{\mr{DM}}$ for which the Stark shift in \cref{fig:exp:pl:doped_M1_05_49-2_difference_mode} is symmetric about zero.
 }
 That is, in and of itself, \VDM should not reduce the charge carrier density in an isolated \gls{qw} to first order.\sidenote{
@@ -278,12 +280,10 @@ Above this value, the blueshift is much less pronounced.
 It is not understood though why the blueshift abruptly changes in quality at \qty{10}{\nano\watt} excitation power.
 At powers above \qty{10}{\nano\watt}, two additional lines on the low-energy side of the main peak become visible that appear to converge towards higher powers, while above \qty{100}{\nano\watt} a line appears on the high-energy side that has a similar blueshift as the main peak at low powers.
 In principle, the blueshift as function of power is to be expected.
-Increasing the excitation power increases the density of excitons, either because they are spatially localized or because of a finite diffusion speed.
-The increased density corresponds to an increased overlap of single excitons' constituents and thus in turn leads to an increasingly repulsive Coulomb interaction that raises their energy.\sidenote{
-    Of course, the opposite -- an attractive interaction -- is also possible for small numbers of excitons, resulting in biexcitons.
-    The two cases can be thought of analagously as bonding and anti-bonding orbital configurations.
-}
-This mechanism underpins the use of exciton traps such as \glspl{saqd} as single-photon sources; upon spectrally filtering on the emission wavelength of a single exciton, only a single photon can be emitted from the trap at a time since the presence of another exciton in the trap would shift the emission energy of both. % TODO: move this somewhere else?
+At high excitation power, the density of free charge carriers is increased, either because they are spatially localized or because of a finite diffusion speed.
+This screens the Coulomb interaction between electron and hole and thus leads to a reduction in binding energy corresponding to a blueshift of the exciton~\cite{Peyghambarian1984}.
+At low excitation power, exciton-exciton interaction leads to a renormalization of the self-energy linear in the exciton density that results in an increase in exciton energy by the same amount~\cite{Butov1999,Snoke2000,Brown2001,Schindler2008,Remeika2015}.
+This mechanism underpins the use of exciton traps such as \glspl{saqd} as single-photon sources; upon spectrally filtering on the emission wavelength of a single exciton, only a single photon can be emitted from the trap at a time since the presence of another exciton in the trap would shift the emission energy of both.
 
 The right panel shows a line cut taken at \qty{1}{\micro\watt}.
 A weighted sum of seven individual Voigt profile line shapes~\cite{VoigtProfileWiki},
@@ -444,7 +444,7 @@ Why we observe to opposite is thus quite puzzling.
 
 The second surprising feature seen in \cref{fig:exp:pl:doped_M1_05_49-2_positioning} is the addition of faint lines that appear to branch out from the main exciton line as the laser spot is moved away from the center of the trap.
 These could be related to the lines observed in \cref{fig:exp:pl:doped_M1_05_49-2_multiplets} as well as the large number of lines required to fit the peak in \cref{fig:exp:pl:doped_M1_05_49-2_power}.
-If the origin of these are indeed atomic steps or islands in the \gls{qw}, it makes sense that we observe them in these measurements.
+If the origin of these are indeed atomic steps or islands in the \gls{qw}, it makes sense that we observe them in these measurements, although their appearance strictly at the edges of the trap is suspicious.
 The Stark shift of the different lines appears depend on the position as well, indicating different coupling to the electric field and further strengthening the hypothesis that they originate from different spatial locations.
 
 \section{Photoluminescence excitation spectroscopy}\label{sec:exp:observations:ple}
@@ -459,7 +459,7 @@ Alternatively, the entire \gls{pl} spectrum can be integrated up to the excitati
 \end{equation}
 which yields a better \gls{snr} at the cost of potentially washing out selective transitions.
 
-What do we expect for the \gls{ple} of a doped \gls{qw}?
+What do we expect for the \gls{ple} of a \gls{qw} hosting a \gls{2deg}?
 By Fermi's exclusion principle, no free states are available below the Fermi level $\mu$ and thus excitation of an electron-hole pair from the valence band into the conduction band is only possible for photon energies above $E_{\mr{F}}(1 + m_{\mr{c}}^\ast/m_{\mr{hh}}^\ast)$ (\cref{sec:exp:theory:pl}).
 Accordingly, the \gls{ple} spectrum should show an onset at that energy.\sidenote{
     In fact, the \gls{fes} should lead to a peak at the onset of the spectrum.
@@ -578,6 +578,7 @@ The electric field component along $y$ of an electromagnetic wave \gls{te} mode 
     \pdv[2]{E_y}{z} + \gamma_i^2 E_y = 0,
 \end{equation}
 where $\gamma_i = \sqrt{\epsilon_{r,i}k_0^2 - k_x^2}$ with $k_0=\flatfrac{\omega}{c}$ the wave vector in vacuum and $k_x$ the component along $x$.
+Because $k_x$ is constant, $E_y$ depends trivially on it and we can without loss of generality set $x=0$, resulting in the $x$-dependence $\exp(ik_x x) = 1$.
 In layer $i$ of the structure, the solution to \cref{eq:exp:tmm:helmholtz} may be written as a superposition of plane waves incident and reflected on the lower and upper interfaces~\cite{Langevin2024},
 \begin{equation}\label{eq:exp:tmm:fields}
     \begin{dcases}
@@ -628,7 +629,10 @@ Finally, note that for a thorough accounting of in- and out-going field amplitud
 
 Beyond the calculation of the aforementioned coefficients, the \gls{tmm} formalism also allows to compute the full spatial dependence of the fields.
 Two cases are implemented in \pymoosh: irradiation of the layered structured with a Gaussian beam rather than plane waves of infinite extent, and a current line source inside the structure.
-In the first case, the previously assumed translational invariance along $x$ leading to a plane-wave spatial dependence is replaced by a superposition of plane waves weighted with a normally distributed amplitude,\sidenote{
+In the first case, the previously assumed translational invariance along $x$ leading to a plane-wave spatial dependence\sidenote{
+    Recall that $\gamma_i = \sqrt{\eps_{r,i}k_0^2 - k_x^2}$.
+}
+is replaced by a superposition of plane waves weighted with a normally distributed amplitude,\sidenote{
     \Ie, the inverse Fourier transform of $\mc{E}_0(k_x) E_{y,i}(k_x, z)$.
 }
 \begin{equation}\label{eq:exp:tmm:gauss:x}
@@ -690,7 +694,7 @@ The reason for this lies in the relatively high reflectivity ($\reflectance\sim\
 Since furthermore the effective wavelength in \ch{GaAs} is $\lambda = \lambda_0/n\sim\qty{230}{\nano\meter}$, the structure actually resembles a resonant cavity for which the electric field mode has a node in the center of the cavity, \ie, the \gls{qw}, and thus the absorption is strongly reduced.
 In turn, this means that changing the thickness of the membrane we can change the resonance condition of the cavity such that the electric field has a peak or trough at the \gls{qw} position, maximizing the coupling matrix element leading to absorption.
 As the width of the \gls{qw} determines the optical properties, the \ch{AlGaAs} barrier thickness remains as the only parameter we can reasonably vary.
-\emph{Reducing} the thickness, however, is ill-advised as it decreases the mobility in the \gls{qw} due to enhanced scattering and further increases the probability of tunneling through the barrier.
+\emph{Reducing} the thickness, however, is ill-advised as in doped structures it decreases the mobility in the \gls{qw} due to enhanced scattering at remote impurities and further increases the probability of tunneling through the barrier (\cf \cref{sec:exp:theory:qcse}).
 I therefore used \pymoosh to optimize \gls{qw} absorptance over the barrier thickness of a double-gated structure at $\lambda_0 = \qty{825}{\nano\meter}$ with the unoptimized case of \qty{90}{\nano\meter} as a lower bound.
 
 \begin{figure}
@@ -739,9 +743,9 @@ Conversely, the situation is reversed for the \qty{30}{\nano\meter} thicker barr
 
 So far, we have considered the absorption of the incident laser radiation in the \gls{qw}, a situation akin to placing the light source outside above the simulated structure.
 To see how multilayer interference affects the extraction of light emitted \emph{inside} the structure, we turn to the Green's function calculation of \cref{eq:exp:tmm:helmholtz:green}.
-That is, we place an infinitely long and in the $xz$ plane point-like current line in the center of the \gls{qw} to model the radiation emitted from a dipole.
-Evidently, this is an approximation as the solution will have the same cylindrical symmetry as the source, whereas a more realistic model would contain a point-dipole producing a field distribution as described in \cref{subsec:setup:optics:coupling:efficiency}.
-Nonetheless, in the plane of the point-dipole, the field should be well approximated by that of an infinitely long current line.
+That is, we place an infinitely long and thin current line in-plane (along $y$) in the center of the \gls{qw} to model the radiation emitted from a dipole.
+Evidently, this is an approximation as the solution will be translationally invariant along the current line axis $y$, whereas a more realistic model would contain a point-dipole at $y=0$ producing a field distribution as described in \cref{subsec:setup:optics:coupling:efficiency}.
+Nonetheless, in the plane of the point-dipole (\ie, at $y=0$), its field should be well approximated by that of the infinitely long current line considered here.
 We once again use \pymoosh to perform the simulation.
 
 \Cref{fig:exp:tmm:green} shows the real part of the electric field for two different geometries: the bare heterostructure (left column) and the double-gated structure (right column).
@@ -752,3 +756,6 @@ Increasing the barrier thickness (bottom left panel) in this case results in a c
 When adding the gates on both sides (bottom right panel), an emission pattern close to that of the unoptimized, bare structure is recovered, albeit with a higher extraction efficiency from the membrane.
 
 These results demonstrate that on top of increasing the absorption efficiency, the extraction efficiency of \gls{pl} radiation from inside the membrane is further enhanced when increasing the \ch{AlGaAs} barrier thickness by a modest \qty{32}{\nano\meter}, leading us to expect an improvement larger than 16-fold in the end-to-end optical efficiency of \gls{pl} experiments.
+While the simulations presented here suggest that this is true for an exciton trap in an unstructured membrane, \citeauthor{Wu2020}~\cite{Wu2020,Wu2024} found that when embedding the trap into a photonic crystal cavity to enhance the \acrlong{smf} coupling, the overall efficiency quickly falls off for barrier thicknesses above \qty{95}{\nano\meter} (membrane thickness above \qty{230}{\nano\meter}).
+The discrepancy between the two results indicates that the thicker barriers suggested here result in worse coupling to the Gaussian target mode optimized for by \citet{Wu2020}.
+It would be interesting therefore to also analyze the absorption efficiency of the cavity design, and perform systematic experimental studies of the absorption and emission efficiencies as function of barrier thickness.

@@ -34,13 +34,14 @@
 
 ## Feedback
 - [ ] HB
+  - [x] Part I
   - [ ] Part III
 - [ ] DH
   - [ ] Part I
   - [ ] Part III
-- [ ] EK
+- [x] EK
   - [x] Part II
-  - [ ] Part III
+  - [x] Part III
 
 ### pyspeck
 - [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
@@ -59,8 +60,10 @@
 
 ### Experiment
 - [x] author contributions
+- [x] Device image early on
 
 ### FF
+- [ ] QFT pulses
 - [x] I/we
 - [ ] ~~Hilbert space calculations in appendix~~
 - [x] Parse text for "second order not implemented"

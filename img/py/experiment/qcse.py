@@ -44,17 +44,28 @@ def coulomb(r, eps_r):
         return -const.e**2/(4*np.pi*const.epsilon_0*eps_r*abs(r))
 
 
-def oscillator_strength(z, i, j, Delta_E, m, in_plane=True):
+def oscillator_strength_davies(z, i, j, Delta_E, m):
+    # This is the Davies formula, but requires Bloch functions.
+    return 2*m*Delta_E/const.hbar**2*math.abs2(sp.integrate.simpson(j*i*z, z))
+
+
+def oscillator_strength_kavokin(z, rho, psi, Delta_E, m):
+    # Mix of Davies and Kavokin
     return 2*m*Delta_E/const.hbar**2*math.abs2(
-        sp.integrate.simpson(j*i*(z if not in_plane else 1), z)
+        sp.integrate.simpson(sp.integrate.simpson(2*np.pi*rho*psi, rho), z)
     )
 
 
-def tunneling_probability(F, ΔV, E, m):
+def tunneling_probability(F, ΔV, E, m, d=90e-9):
     with np.errstate(divide='ignore'):
         # WKB gives a factor 4/3*sqrt{2} instead of 2
         result = np.exp(-np.sqrt(4*m*(ΔV - E)**3)/(const.e*F*const.hbar))
-    result[np.isnan(result)] = 0
+        # Distance across which the electric field energy compensates the band offset.
+        # I.e., at which point tunneling can occur because the bands are pulled down
+        # below the energy level
+        z0 = (ΔV - E)/(const.e*F)
+
+    result[np.isnan(result) | (z0 > d)] = 0
     return result
 
 
@@ -295,6 +306,7 @@ Q_e = 0.57
 ΔE_c = Q_e * ΔE_g
 ΔE_v = (1 - Q_e) * ΔE_g
 
+# Number of energy levels to compute
 N = 2
 L = 20e-9
 m = effective_mass()
@@ -304,6 +316,7 @@ eps_r = pm.Material(['main', 'GaAs', 'Papatryfonos'], specialType="RII").get_per
 F = np.linspace(0, 10, 201)*1e6
 z = np.linspace(0, L, 101)
 # %% Parameter sweeps
+# The first axis corresponds to (electron, hole)
 with np.errstate(invalid='ignore'):
     eps = np.zeros((2, N, F.size))
     eps_a = np.zeros((2, N, F.size))
@@ -352,6 +365,7 @@ omega = 7.38e11 * F / 5e6
 rho = np.linspace(0, 75e-9, 151)
 zz = z - L/2
 mu = reduced_mass()
+# Number of orbital levels to compute
 P = 3
 
 f = np.empty((P, F.size), dtype=complex)
@@ -360,21 +374,17 @@ psi_com = np.empty((P, F.size, z.size, rho.size), dtype=complex)
 for p in range(P):
     # phi = 0 since ell != 0 does not couple
     psi_com[p] = psi_harmonic_oscillator(np.hypot(*np.meshgrid(rho, zz)), 0, m.sum(), omega, p, 0)
-    psi_com[p] /= np.sqrt(
-        sp.integrate.simpson(2*np.pi*rho*math.abs2(psi_com[p]), rho, axis=-1)
-    )[..., None]
 
-# Axes (e/h, n, p, F, z, rho)
 Delta_Ez = E_g_GaAs*const.e + (eps - const.e*F*L/2).sum(axis=0)
 Delta_E = Delta_Ez[:, None] + eps_com
-# 3d wavefunction
-PSI = psi[:, :, None, :, :, None] * psi_com
-# ψ_e * ψ_h
-psi_exc = psi[0] * psi[1, ..., ::-1]
-# 2π\int dρ ρ χ(r)
-psi_com_perp = sp.integrate.simpson(2*np.pi*rho*psi_com, rho, axis=-1)
-f_3d = oscillator_strength(zz, psi_exc[:, None], psi_com_perp, Delta_E, mu, in_plane=True)
-f_1d = oscillator_strength(zz, psi[0], psi[1, ..., ::-1], Delta_Ez, mu, in_plane=False)
+# 3d wavefunction with ell=0, ψ_e * ψ_h * χ(r) and zero e-h separation
+# Axes (n, p, F, z, rho)
+PSI = psi[0, :, None, :, :, None] * psi[1, :, None, :, ::-1, None] * psi_com
+# Normalize
+PSI /= np.sqrt(
+    sp.integrate.simpson(sp.integrate.simpson(2*np.pi*rho*math.abs2(PSI), rho), zz)
+)[..., None, None]
+f = oscillator_strength_kavokin(zz, rho, PSI, E_g_GaAs*const.e + Delta_E, const.m_e)
 
 # %%% For fun plot higher orbital angular momenta (unused)
 phi = np.arange(0, 2*np.pi, 2.5e-2)
@@ -400,11 +410,11 @@ F1 = 100
 
 for p in range(min(3, P)):
     # plot holes since they couple more strongly to the field
-    img1 = grid.axes_row[p][0].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F0, :, :].real,
+    img1 = grid.axes_row[p][0].contourf(rho*1e9, zz*1e9, PSI[n, p, F0, :, :].real,
                                         cmap=DIVERGING_CMAP,
                                         norm=norm,
                                         levels=21)
-    img2 = grid.axes_row[p][1].contourf(rho*1e9, zz*1e9, PSI[1, n, p, F1, :, :].real,
+    img2 = grid.axes_row[p][1].contourf(rho*1e9, zz*1e9, PSI[n, p, F1, :, :].real,
                                         cmap=DIVERGING_CMAP,
                                         norm=norm,
                                         levels=21)
@@ -417,11 +427,14 @@ for p in range(min(3, P)):
 
 cbar = grid.cbar_axes[0].colorbar(img1)
 cbar.set_ticks([0])
-cbar.set_label(r'$\mathrm{Re}\Psi_{np\ell}(r, z_{\mathrm{h}})$', loc='top')
+cbar.set_label(r'$\mathrm{Re}\,\Psi_{np\ell}(z, r)$', loc='top')
 cbar.ax.yaxis.set_label_coords(1.5, 1)
 
-grid.axes_row[-1][0].set_ylabel(r'$z_{\mathrm{h}}$ (nm)')
-grid.axes_row[-1][0].set_xlabel(r'$\rho$ (nm)')
+grid.axes_row[2][0].set_xticks([0, 20, 40, 60])
+grid.axes_row[2][1].set_xticks([0, 20, 40, 60])
+
+grid.axes_row[1][0].set_ylabel('$z$ (nm)')
+fig.supxlabel(r'$\rho$ (nm)', fontsize='medium', y=-0.05)
 
 match backend:
     case 'pgf':
@@ -453,24 +466,23 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
                 continue
             ax1[0].plot(F * 1e-6, (Delta_E[i, -p-1]/const.e - E_g_GaAs) * 1e3,
                         color=line_colors[i])
-            ax1[1].plot(F * 1e-6, f_3d[i, -p-1] / f_3d[0, 0, 0],
-                        color=line_colors[i])
+            ax1[1].plot(F * 1e-6, f[i, -p-1], color=line_colors[i])
 
     ax2[0].set_yticks([0, -5, -10])
     ax2[1].set_ylim(1)
     ax2[1].set_yscale('log')
     ax2[1].set_yticks([1e-6, 1, 1e6])
-    ax1[1].set_ylim(1.25e-3, 1.5)
+    ax1[1].set_ylim(3e-4, 3e-2)
     ax1[1].set_yscale('log')
     ax1[0].set_ylim(ylim := ax1[0].get_ylim())  # to freeze them
     ax1[0].plot([0, 3.7165, 3.7165], [0, 0, -ylim[1]], ls=':', color=RWTH_COLORS_50['black'],
                 zorder=1)
 
-    ax1[1].set_ylabel(r'$\tilde{f}_{np}$')
+    ax1[1].set_ylabel(r'$\tilde{f}_{np0}$')
     ax2[1].set_ylabel(r'$\Gamma$ (MHz)')
     match backend:
         case 'pgf':
-            ax1[0].set_ylabel(r'$\Delta E_{np} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
+            ax1[0].set_ylabel(r'$\Delta E_{np0} - E_\mathrm{g}$ (\unit{\milli\electronvolt})')
             ax1[1].set_xlabel(r'$F$ (\unit{\volt\per\micro\meter})')
             ax2[0].set_ylabel(r'$\pdv*{\Delta E}{F}$ (\unit{\electron\nano\meter})')
         case _:
