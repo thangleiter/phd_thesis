@@ -102,10 +102,6 @@ ax = axes[2]
 ax.imshow(small)
 colors = [RWTH_COLORS['orange'], RWTH_COLORS['green'], RWTH_COLORS['teal'],
           RWTH_COLORS['green'], RWTH_COLORS['teal']]
-ax.scatter([111, 81, 141, 111, 111],  [75, 75, 75, 106.5, 45], s=2.5,
-           c=[mpl.colors.to_rgba(c, 0.5) for c in colors],
-           alpha=0.5, marker='o', linewidths=0.25,
-           edgecolors=colors)
 bar = mpl.patches.Rectangle(
     xy := (30*scalex[2], small.height - 50*scaley[2]),
     scales[0]*scalex[2]*medium.width/small.width,

@@ -25,7 +25,7 @@ SAVE_PATH.mkdir(exist_ok=True)
 
 with misc.filter_warnings(action='ignore', category=RuntimeWarning):
     SEQUENTIAL_CMAP = colors.make_sequential_colormap('blue', endpoint='white').reversed()
-    DIVERGING_CMAP = colors.make_diverging_colormap(('magenta', 'green'), endpoint='blackwhite')
+    DIVERGING_CMAP = colors.make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 init(MAINSTYLE, backend := 'pgf')
 # %% Functions

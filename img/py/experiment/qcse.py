@@ -423,7 +423,7 @@ for p in range(min(3, P)):
 
 cbar = grid.cbar_axes[0].colorbar(img1)
 cbar.set_ticks([0])
-cbar.set_label(r'$\mathrm{Re}\Psi_{np\ell}(\rho, z_{\mathrm{h}})$', loc='top')
+cbar.set_label(r'$\mathrm{Re}\Psi_{np\ell}(r, z_{\mathrm{h}})$', loc='top')
 cbar.ax.yaxis.set_label_coords(1.5, 1)
 
 grid.axes_row[-1][0].set_ylabel(r'$z_{\mathrm{h}}$ (nm)')

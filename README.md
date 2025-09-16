@@ -25,11 +25,11 @@
 ## Content
 - [ ] Zusammenfassung
 - [ ] Preface
-- [ ] How to read this thesis
-    - [ ] PDF viewer
-    - [ ] Image sources & parameters
     - [ ] Disjunct parts
-    - [ ] $\mathrm{asinh}$ scale
+- [ ] How to read this thesis
+    - [x] PDF viewer
+    - [x] Image sources & parameters
+    - [x] $\mathrm{asinh}$ scale
 - [ ] Acknowledgements
 
 ## Feedback
@@ -60,7 +60,7 @@
 
 ### Experiment
 - [x] author contributions
-- [ ] Device image early on
+- [x] Device image early on
 
 ### FF
 - [x] I/we
@@ -81,13 +81,13 @@
 - [x] Test running all.
 - [x] Add `README`
 - [x] Draft new `filter_functions` release
-- [ ] Draft new `lindblad_mc_tools` release
+- [x] Draft new `lindblad_mc_tools` release
 - [x] Move and make public `lindblad_mc_tools`
-    - [ ] Add `README`
+    - [x] Add `README`
 - [x] Check `qutil`, `python_spectrometer` releases
 
 ## Layout
-- [ ] Go over glossary. Are all acronyms necessary?
+- [x] Go over glossary. Are all acronyms necessary?
 - [x] Tune the bibliography style
     - [x] arXiv IDs
     - [x] remove "visited on"

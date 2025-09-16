@@ -237,6 +237,13 @@ def multi_voigt(n: int):
     return fun
 
 
+def convolution(x, x0, w0: float = 0.65, L: float = 3.0, I0: float = 1.0):
+    # Convolution of a Gaussian spot of 1/e² diameter w0 and a step of width L.
+    prefactor = 0.5 * I0 * np.sqrt(np.pi/2) * w0
+    return prefactor * (sp.special.erf(np.sqrt(2)/w0*(x - x0 + L/2))
+                        - sp.special.erf(np.sqrt(2)/w0*(x - x0 - L/2)))
+
+
 # %% 2DEG PL sketch
 ΔE_g = E_AlGaAs(0.33) - E_AlGaAs(0)
 Q_e = 0.57
@@ -637,6 +644,7 @@ with changed_plotting_backend('qtagg'), contextlib.redirect_stderr(StringIO()):
 
     fig.savefig(SAVE_PATH / 'plot_nd.pdf')
     plt.close(fig)
+
 # %%% Positioning
 day = xr.load_dataset(DATA_PATH / 'doped_M1_05_49-2_ypos.h5', engine='h5netcdf')[
     'ccd_ccd_data_rate_bg_corrected'
@@ -652,14 +660,37 @@ img, prefix, ax2 = plot_pl_slice(fig, axs[0, 0], day,
                                  ylabel=r'$\Delta y$ (steps)', sel=dict(), linewidth=.75,
                                  slice_vals=[-8, -11, -20, -34])
 img, prefix, ax2 = plot_pl_slice(fig, axs[0, 1], daz,
-                                 ylabel=r'$\Delta z$ (steps)', sel=dict(), linewidth=.75,
+                                 sel=dict(), linewidth=.75,
                                  slice_vals=[17, 26, 45, 70])
 axs[0, 0]['img'].invert_yaxis()
-axs[0, 0]['img'].set_xlim(1.485, 1.53)
+axs[0, 0]['img'].set_xlim(1.485, const.lambda2eV(810e-9))
 axs[0, 0]['img'].set_ylim(top=-45)
 axs[0, 0]['slc'].sharey(axs[0, 1]['slc'])
+axs[0, 1]['img'].set_ylabel(r'$\Delta z$ (steps)', labelpad=0)
 
-fig.get_layout_engine().set(hspace=0, h_pad=0)
+rect = [0.55, 0.4, 0.55, 0.55]
+edgecolors = [RWTH_COLORS['green'], RWTH_COLORS['orange'], RWTH_COLORS['teal']]
+facecolors = [RWTH_COLORS_50['green'], RWTH_COLORS_50['orange'], RWTH_COLORS_50['teal']]
+circle_kwargs = dict(edgecolor=RWTH_COLORS['black'], facecolor='none', lw=1)
+scatter_kwargs = dict(s=10, c=facecolors, marker='o', linewidths=1, edgecolors=edgecolors)
+
+ins_ax = axs[0, 0]['slc'].inset_axes(rect)
+ins_ax.add_patch(mpl.patches.Circle((0, 0), 1, **circle_kwargs))
+ins_ax.scatter([-1, 0, 1], [0, 0, 0], **scatter_kwargs)
+ins_ax.set_xlim(-1.25, 1.25)
+ins_ax.set_ylim(-1.25, 1.25)
+ins_ax.axis('off')
+ins_ax.set_aspect('equal')
+
+ins_ax = axs[0, 1]['slc'].inset_axes(rect)
+ins_ax.add_patch(mpl.patches.Circle((0, 0), 1, **circle_kwargs))
+ins_ax.scatter([0, 0, 0], [-1, 0, 1], **scatter_kwargs)
+ins_ax.set_xlim(-1.25, 1.25)
+ins_ax.set_ylim(-1.25, 1.25)
+ins_ax.axis('off')
+ins_ax.set_aspect('equal')
+
+fig.get_layout_engine().set(wspace=0, w_pad=0/72, hspace=0, h_pad=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_positioning.pdf')
 
 # %% Fig F10
@@ -668,32 +699,69 @@ if EXTRACT_DATA:
 
     save_to_hdf5(4, DATA_PATH / 'fig_F10_positioning.h5', compress=True)
 # %%% Positioning
+# %%%% Fit extinction
 ds = xr.load_dataset(DATA_PATH / 'fig_F10_positioning.h5', engine='h5netcdf')
 # The first ten steps are hysteresis-afflicted, so drop them to extract x(steps)
 fit = ds.anc_y_axis_position[ds.anc_y_axis_steps >= 10].polyfit('anc_y_axis_steps', 1)
+slice_vals = [26, 44]
+x = ds.anc_y_axis_steps*fit.polyfit_coefficients[0].item()*1e3
+y = ds.ccd_ccd_data_rate_bg_corrected.sel(ccd_horizontal_axis=1.517, method='nearest') * 1e-3
+popt, pcov = sp.optimize.curve_fit(
+    lambda x, w0, L, I0, y0: y0 + convolution(x, x[slice_vals[0]], w0, L, I0=I0),
+    x[:53], y[:53], p0=[0.65, 3, -1, .5]
+)
+Lstep = popt[1]/fit.polyfit_coefficients[0].item()/1e3
+print(f'w0 = {popt[0]} ± {np.sqrt(pcov[0, 0])} μm')
+print(f'L = {popt[1]} ± {np.sqrt(pcov[1, 1])} μm')
+# %%%% Plot
+fig = plt.figure(layout='constrained', figsize=(TEXTWIDTH, 3))
+axs = fig.subplot_mosaic([['.', 'slc'], ['vslc', 'img']],
+                         height_ratios=[.3, 1], width_ratios=[.25, 1])
+axs['img'].sharex(axs['slc'])
 
-with mpl.style.context(MARGINSTYLE, after_reset=True):
-    fig = plt.figure(layout='constrained', figsize=(MARGINWIDTH, 1.7))
-    axs = generate_mosaic(fig, (1, 1), slc=True, cb=False, slc_height_ratio=1/3.5)
+img, prefix, ax2 = plot_pl_slice(fig, axs, ds['ccd_ccd_data_rate_bg_corrected'],
+                                 sel=dict(), slice_vals=slice_vals,
+                                 slice_scales=[20, 1], linewidth=1, labelpad=2, tickpad=1.7)
+axs['img'].axvline(1.517, **sliceprops(LINE_COLORS[2], linewidth=1))
 
-    img, prefix, ax2 = plot_pl_slice(fig, axs[0, 0], ds['ccd_ccd_data_rate_bg_corrected'],
-                                     ylabel='Positioner steps', sel=dict(), slice_vals=[26, 45],
-                                     slice_scales=[20, 1], linewidth=.75, labelpad=2, tickpad=1.7)
+axs['vslc'].stairs([popt[3], -popt[3] - popt[2], popt[3]],
+                   [-10, slice_vals[0] - Lstep/2, slice_vals[0] + Lstep/2, 100],
+                   orientation='horizontal', color=RWTH_COLORS_50['black'], alpha=0.66, ls=':')
+axs['vslc'].plot(
+    ds.ccd_ccd_data_rate_bg_corrected.sel(ccd_horizontal_axis=1.517, method='nearest') * 1e-3,
+    ds.anc_y_axis_steps,
+    color=LINE_COLORS[2]
+)
+axs['vslc'].plot(convolution(x, x[slice_vals[0]], *popt[:3]) + popt[3],
+                 x/fit.polyfit_coefficients[0].item()/1e3,
+                 color=RWTH_COLORS_75['black'], alpha=0.66)
+axs['vslc'].axhline(slice_vals[0] + 1.5/fit.polyfit_coefficients[0].item()/1e3,
+                    **sliceprops(RWTH_COLORS_50['black'], linewidth=1, linestyle='--'), zorder=1)
+axs['vslc'].axhline(slice_vals[0] - 1.5/fit.polyfit_coefficients[0].item()/1e3,
+                    **sliceprops(RWTH_COLORS_50['black'], linewidth=1, linestyle='--'), zorder=1)
 
-    axs[0, 0]['slc'].annotate(r'$\times 20$', (1.475, 300), color=LINE_COLORS[0],
-                              horizontalalignment='right')
-    axs[0, 0]['img'].set_ylim(top=53)
-    ax2y = axs[0, 0]['img'].secondary_yaxis(
-        -0.275,
-        functions=(lambda x: x*fit.polyfit_coefficients[0].item()*1e3,
-                   lambda x: x/fit.polyfit_coefficients[0].item()/1e3)
-    )
-    ax2y.set_ylabel(r'$\Delta y$ (μm)', labelpad=2)
+axs['slc'].annotate(r'$\times 20$', (1.475, 300), color=LINE_COLORS[0],
+                    horizontalalignment='right')
 
-    cax = axs[0, 0]['img'].inset_axes([0.05, 0.075, 0.05, 0.85])
-    cb = fig.colorbar(img, cax=cax)
-    prefix = reformat_axis(cb, ds['ccd_ccd_data_rate_bg_corrected'], 'cps', 'c')
-    cb.set_label(f'Rate ({prefix}cps)')
+ax2y = axs['img'].secondary_yaxis('right',
+                                  functions=(lambda x: x*fit.polyfit_coefficients[0].item()*1e3,
+                                             lambda x: x/fit.polyfit_coefficients[0].item()/1e3))
+ax2y.set_ylabel(r'$\Delta y$ (μm)', labelpad=2)
 
-    fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
-    fig.savefig(SAVE_PATH / 'fig_F10_positioning.pdf')
+cax = axs['img'].inset_axes([0.05, 0.075, 0.05, 0.85])
+cb = fig.colorbar(img, cax=cax)
+prefix = reformat_axis(cb, ds['ccd_ccd_data_rate_bg_corrected'], 'cps', 'c')
+cb.set_label(f'Count rate ({prefix}cps)')
+
+axs['img'].set_yticklabels([])
+axs['img'].set_ylim(top=53)
+
+axs['vslc'].set_ylabel(r'$\Delta y$ (steps)')
+axs['vslc'].margins(x=0.05)
+axs['vslc'].invert_xaxis()
+axs['vslc'].set_yticks(axs['img'].get_yticks())
+axs['vslc'].set_ylim(axs['img'].get_ylim())
+
+
+fig.get_layout_engine().set(w_pad=0/72, hspace=0, wspace=0)
+fig.savefig(SAVE_PATH / 'fig_F10_positioning.pdf')

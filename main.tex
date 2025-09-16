@@ -42,9 +42,9 @@
 %	TITLE PAGES
 %----------------------------------------------------------------------------------------
 
-%\KOMAoptions{twoside=semi}
+\KOMAoptions{twoside=semi}
 \input{chs/titlepage}
-%\KOMAoptions{twoside=true} % switch this to whatever you set in the documentclass options
+\KOMAoptions{twoside=false} % switch this to whatever you set in the documentclass options
 
 %----------------------------------------------------------------------------------------
 %	SUMMARY
@@ -193,6 +193,7 @@
 
 \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
 \printglossary[title=Glossary, toctitle=Glossary] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+\label{glo}
 
 %----------------------------------------------------------------------------------------
 %	INDEX
