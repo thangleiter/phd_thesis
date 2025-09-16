@@ -63,6 +63,7 @@
 - [x] Device image early on
 
 ### FF
+- [ ] QFT pulses
 - [x] I/we
 - [ ] ~~Hilbert space calculations in appendix~~
 - [x] Parse text for "second order not implemented"

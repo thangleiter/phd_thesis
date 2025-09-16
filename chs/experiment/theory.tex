@@ -92,8 +92,8 @@ The hole generates the Coulomb potential
 where $\eps_{\mr{r}} = \num{13.3}$ is the relative permittivity of \ch{GaAs} at low temperatures, which attracts the electron by the Coulomb energy $E(r) = qV(r) = -eV(r)$.
 \Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wave function sketched in black.
 The electron-hole separation $r$ is shown in units of the exciton Bohr radius in two dimensions~\cite{Olsen2016}
-\begin{equation}
-    a_{\mr{B}} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
+\begin{equation}\label{eq:exp:theory:qcse:bohr_radius_2d}
+    a_{\mr{B}}\gth{2} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
 \end{equation}
 with $\mu$ the reduced effective mass of conduction and heavy-hole valence bands.
 
@@ -182,77 +182,9 @@ For a full quantitative accounting of the transition energies, the exciton bindi
 The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wave functions is reduced when applying an electric field, pulling the wave functions to opposite interfaces~\cite{Miller1984}.
 For the latter, \citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 
-\subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
-% TODO: Motivate why we do all this! -> oscillator strength
-So far, we have considered the \gls{qcse} in a single dimension, as if we were to apply a global electric field.
-However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
-\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
-To obtain a qualitative picture, let us interpolate this result for different fields.
-The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
-At vanishing field, there should be no in-plane potential, $\omega=0$.
-Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
-
-How does this in-plane confinement modify the wave function?
-We ignore the relative motion of electron and hole as the optical properties of the exciton are dominated by the behavior at zero separation for $a_{\mr{B}}/\xi < 1$~\cite{Kavokin1994}, and consider only $\Delta n = 0$ transitions, \ie, electron and hole in the same $z$ quantum state, as $\Delta n\neq 0$ transitions are much weaker~\cite{Davies2009}.
-Let us further initially assume a separable wave function and choose cylindrical coordinates according to the symmetry of the potential.
-We then have
-\begin{equation}\label{eq:exp:theory:qcse:trap:psi}
-    \Psi_{np\ell}(z_{\mr{e}}, z_{\mr{h}}, \rho, \phi) = \psi_n(z_{\mr{e}})\psi_n(z_{\mr{h}})\chi_{p\ell}(\rho)\exp(i\ell\phi)
-\end{equation}
-where\sidenote{
-    Note that \citet{Karimi2014} miss a factor $2\pi$ in the normalization.
-}~\cite{Karimi2014}
-\begin{equation}\label{eq:exp:theory:qcse:trap:ho:psi}
-    \chi_{p\ell}(\tilde{\rho}, \phi) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right)
-\end{equation}
-with the associated Laguerre polynomial $L_p^{\abs{\ell}}(x)$ and we used the shorthand $\tilde{\rho} = \rho/\xi$.
-The numbers $p\in\mathbb{N}$ and $\ell\in\mathbb{Z}$ denote the principal and orbital momentum quantum numbers.
-The eigenenergies of the harmonic oscillator solution, \cref{eq:exp:theory:qcse:trap:ho:psi}, are given by
-\begin{equation}\label{eq:exp:theory:qcse:trap:ho:eps}
-    \eps_{p\ell} = \hbar\omega\left(2p + \abs{\ell} + 1\right).
-\end{equation}
-To account for a finite well width ($L\approx\xi$ in our case), we can to a first approximation perform the replacement $\rho\to r = \sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi}.
-The resulting wave function $\Psi_{np\ell}(r, z_{\mr{h}})$ at fixed electron coordinate $z_{\mr{e}}$ is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
-For $\ell=0$, $\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$.
-
-\begin{figure}
-    \centering
-    \includegraphics{img/pdf/experiment/wavefunction}
-    \caption[\imgsource{img/py/experiment/qcse.py}]{
-        Center-of-mass exciton wave function (hole sector) in a harmonic trap under an electric field.
-        Left column shows the low-field and right column the high-field case.
-        Top row is the ground state, middle and bottom row the first and second excited state in the plane, respectively.
-        The out-of-plane wave function is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ for $F=\qty{5}{\volt\per\micro\meter}$~\cite[Section~2.2.2]{Descamps2021} and linearly interpolated for \qty{1}{\volt\per\micro\meter} (see text).
-    }
-    \label{fig:exp:theory:qcse:wf}
-\end{figure}
-
-At last, we can use the exciton wave function $\Psi_{nm\ell}(r, \phi, z_{\mr{e}}, z_{\mr{h}})$ to estimate the \emph{oscillator strength}, a quantity often quoted in semiconductor spectroscopy.
-The oscillator strength puts in relation the quantum mechanical transition rate with the emission rate of a classical oscillator with frequency $\omega = \Delta E/\hbar$ matching the transition energy~\cite{Hilborn1982}.
-For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be written as~\cite{Davies2009}
-\begin{equation}
-    f_{ji} = \frac{2\mu\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2,
-\end{equation}
-where $\mu$ is the reduced mass of the exciton.
-As the selection rules only allow in-plane dipole transitions for heavy holes, we write~\cite{Kavokin1994}
-\begin{subequations}\label{eq:exp:oscillator_strength}
-    \begin{equation}\tag{\ref{eq:exp:oscillator_strength}}
-        f_{np\ell} = \frac{2\mu\eps_{np\ell}}{\hbar^2} J_{r}^2 J_{\phi}^2 \abs{\!\matrixelement*{u_{\mr{c}}}{x}{u_{\mr{hh}}}}^2
-    \end{equation}
-    for transitions with $\Delta n = \Delta p = \Delta\ell = 0$, where
-    \begin{align}
-        J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
-        J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi} \\
-        \eps_{np\ell} &= \eps_n + \eps_{p\ell},
-    \end{align}
-\end{subequations}
-and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the Bloch functions of the valence and conduction band, respectively, that we have neglected so far.
-From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$!
-This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
-
 As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n} < eFd$ with $d$ the width of the barrier and $\Delta E_{\mr{c}(\mr{hh})}$ is the height of the conduction (valence) band discontinuity.
 This allows confined carriers to escape the \gls{qw} with a finite probability by tunneling through the barrier, an effect known as Fowler-Nordheim tunneling.
-If this probability becomes too large, trapped excitons can dissociate by electron or hole tunneling through the barriers before recombining, and thereby lower the radiative recombination efficiency (internal quantum efficiency, see \cref{subsec:setup:optics:coupling:efficiency}) and introduce additional errors in the spin-photon interface.
+If this probability becomes too large, trapped excitons can dissociate by electron or hole tunneling through the barriers before recombining, and thereby lower the radiative recombination efficiency (internal quantum efficiency, see \cref{subsec:setup:optics:coupling:efficiency}), introducing additional errors in the spin-photon interface.
 Following \citer{Davies2009}, we can estimate the tunneling probability as\sidenote{
     The same result up to a slightly different numerical prefactor in the exponent is obtained more formally from the WKB approximation~\cite{Descamps2021}.
 }
@@ -274,15 +206,103 @@ and
 \end{equation}
 What is the order of magnitude of $\tau_n$?
 For an energy of $\eps_n = \qty{10}{\milli\electronvolt}$, $\tau_n\approx\qty{200}{\femto\second}$ for electrons and \qty{400}{\femto\second} for holes.
-The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small indeed for the rate $\Gamma_n$ to remain small.
+The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small indeed for the rate $\Gamma_n$ to remain small and retain carriers inside the \gls{qw} sufficiently long.
 
-\begin{marginfigure}
+\subsection{In-plane confinement}\label{subsec:exp:theory:qcse:trap}
+So far, we have considered the \gls{qcse} in a single dimension, as if we were to apply a global electric field.
+However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
+In order to understand the energy level structure and optical properties of excitons confined in such an electrostatic trap, we now go beyond the 1D case and add a lateral confinement potential.
+
+\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
+To obtain a qualitative picture, let us interpolate this result for different fields.
+The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
+At vanishing field, there should be no in-plane potential, $\omega=0$.
+Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
+
+How does this in-plane confinement modify the wave function?
+Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than both the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
+Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3}=2a_{\mr{B}}\gth{2}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
+\begin{equation}\label{eq:exp:theory:qcse:trap:psi:tot}
+    \Psi_{nmp\ell}(z_{\mr{e}},z_{\mr{h}},\rho,\phi,\bvec{\varrho}) = \psi_n(z_{\mr{e}})\psi_m(z_{\mr{h}})\zeta_{p\ell}(\rho,\phi) F(\bvec{\varrho}),
+\end{equation}
+where $\psi_n(z)$ are the out-of-plane wave functions derived above, $F(\bvec{\varrho})$ is the wave function of the relative electron-hole motion, and
+\begin{equation}\label{eq:exp:theory:qcse:trap:psi:COM}
+    \zeta_{p\ell}(\rho,\phi) = \chi_{p\ell}(\rho)\exp(\i\ell\phi)
+\end{equation}
+with\sidenote{
+    Note that \citet{Karimi2014} miss a factor $\flatfrac{1}{\sqrt{2\pi}}$ in the normalization.
+}~\cite{Karimi2014}
+\begin{equation}\label{eq:exp:theory:qcse:trap:psi:radial}
+    \chi_{p\ell}(\tilde{\rho}) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right),
+\end{equation}
+is the center-of-mass wave function of the exciton in a harmonic potential in cylindrical coordinates.
+Here, $L_p^{\abs{\ell}}(x)$ is the associated Laguerre polynomial and we used the shorthand $\tilde{\rho} = \rho/\xi$.
+The numbers $p\in\mathbb{N}$ and $\ell\in\mathbb{Z}$ denote the principal and orbital momentum quantum numbers.
+The eigenenergies of the harmonic oscillator solution are given by
+\begin{equation}\label{eq:exp:theory:qcse:trap:ho:eps}
+    \eps_{p\ell} = \hbar\omega\left(2p + \abs{\ell} + 1\right),
+\end{equation}
+and so (excluding excitations of the relative degree of freedom as well as the exciton binding energy) the energy of a trapped exciton is given by
+\begin{equation}
+    \Delta E_{nmp\ell} = E_{\mr{g}} + \eps_n + \eps_m + \eps_{p\ell}
+\end{equation}
+with $\eps_{n(m)}$ the out-of-plane eigenenergies of an electron (hole) in state $n$ ($m$).
+
+Now, in order for the exciton to recombine efficiently, electron and hole must be in the same location and hence $F(\bvec{\varrho}) = F(0)$~\cite{Andreani1990a,Kavokin1994}.
+In this case, we can also slightly relax the assumption that in- and out-of-plane motion separate and to a first approximation perform the replacement $\rho\to r=\sqrt{\rho^2 + z^2}$ in \cref{eq:exp:theory:qcse:trap:psi:radial} so that $\Psi_{nmp\ell}(z_{\mr{e}},z_{\mr{h}},\rho,\phi,\bvec{\varrho})=\Psi_{nmp\ell}(z, z, r, \phi, 0)$.
+Furthermore, we consider only transitions with $n = m$ since those with unequal $z$ quantum numbers are much weaker~\cite{Davies2009} and write in this case as a shorthand $\Psi_{nmp\ell}(z, z, r, \phi, 0) = \Psi_{np\ell}(z,r,\phi)$ as well as $\Delta E_{np\ell}$.
+The wave function for vanishing electron-hole separation is shown in \cref{fig:exp:theory:qcse:wf} for $n = \ell = 0$ (which makes it independent of $\phi$).
+For $\ell=0$, $\Psi_{np\ell}$ has $n$ nodes along $z$ and $p$ nodes along $\rho$.
+
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/experiment/wavefunction}
+    \caption[\imgsource{img/py/experiment/qcse.py}]{
+        Exciton wave function at zero electron-hole separation in a harmonic trap under an electric field.
+        Left column shows the low-field and right column the high-field case.
+        Top row is the ground state, middle and bottom row the first and second excited state in the plane, respectively.
+        The out-of-plane wave function is the ground state in all cases ($n=0$) and the trap confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ for $F=\qty{5}{\volt\per\micro\meter}$~\cite[Section~2.2.2]{Descamps2021} and linearly interpolated for \qty{1}{\volt\per\micro\meter} (see text).
+    }
+    \label{fig:exp:theory:qcse:wf}
+\end{figure}
+
+We can now use the exciton wave function $\Psi_{np\ell}$ to calculate the \emph{oscillator strength}, a quantity often quoted in optical spectroscopy of semiconductors.
+The oscillator strength puts in relation the quantum mechanical transition rate with the emission rate of a classical oscillator with frequency $\omega = \Delta E/\hbar$ matching the transition energy~\cite{Hilborn1982}.
+For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be written as~\cite{Davies2009}
+\begin{equation}\label{eq:exp:theory:qcse:oscillator_strength:general}
+    f_{ji} = \frac{2m\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2.
+\end{equation}
+The states $\ket{i}$ and $\ket{j}$ are the full Bloch wave functions of valence and conduction band.
+Adapting the expression given by \citet{Andreani1990a} to account for the in-plane confinement, we posit $\Psi_{np\ell}$ as the envelope function overlap of the Bloch states $\ket{i}$ and $\ket{j}$ so that the matrix element in \cref{eq:exp:theory:qcse:oscillator_strength:general} factorizes into a matrix element of the lattice-periodic part and an integral over the envelope function overlap,
+\begin{subequations}\label{eq:exp:qcse:oscillator_strength:exciton}
+\begin{align}
+    f_{np\ell} &= \frac{2m\Delta E_{np\ell}}{\hbar^2} \abs{\int\dd{\bvec{r}}\Psi_{np\ell}(\bvec{r})}^2\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2\notag \\
+               &= \frac{2m\Delta E_{np\ell}}{\hbar^2} \abs{J_r J_{\phi} F(0)}^2 \abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2\tag{\ref{eq:exp:qcse:oscillator_strength:exciton}}
+\end{align}
+with~\cite{Andreani1990a,Kavokin1994}
+\begin{align}
+    J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
+    J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi} \\
+    F(0) &= \frac{1}{a_{\mr{B}}\gth{2}}\sqrt{\frac{2}{\pi}}, \label{eq:exp:theory:osc:relative}
+\end{align}
+\end{subequations}
+and where $m$ is the free electron mass.
+\Cref{eq:exp:theory:osc:relative} holds exactly only for strict two-dimensional excitons~\cite{Andreani1990a} and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the lattice-periodic parts of the Bloch functions of the conduction and valence bands, respectively.
+Since these are not readily available, we will use the reduced oscillator strengths in the following, assuming that the lattice-periodic matrix element is independent of the electric field,
+\begin{equation}\label{eq:exp:qcse:oscillator_strength:reduced}
+    \tilde{f}_{np\ell} = \frac{f_{np\ell}}{\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2}.
+\end{equation}
+From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$, meaning that states with $\ell\neq 0$ are not optically active!
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
+Of course, the radial symmetry will most likely be broken in a realistic experimental scenario, and it would be interesting to investigate if indeed those states are optically inactive.
+
+\begin{marginfigure}[*-24]
     \centering
     \includegraphics{img/pdf/experiment/qcse_field_dependence}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
         Electric field dependence of the \gls{qcse} for the first two energy levels in the \gls{qw}.
         Top: the ground state energy (magenta) shows the expected quadratic dependence; the confinement energy is compensated at around $F=\qty{3.7}{\volt\per\micro\meter}$.
-        Higher in-plane orbital levels are shown for the \gls{qw} ground state in decreasing saturation.
+        Higher in-plane orbital levels ($p$) are shown for the \gls{qw} ground state in decreasing saturation.
         For zero field, the splitting is zero as there is no in-plane confinement.
         At maximum field, the splitting is $2\hbar\omega = \qty{2}{\milli\electronvolt}$.
         Dashed lines (right axis) show the derivative, revealing that the \gls{qw} excited state is actually raised in energy at low fields.
@@ -293,21 +313,22 @@ The tunneling probability $\mathscr{T}_n$ therefore needs to be quite small inde
 \end{marginfigure}
 
 \Cref{fig:exp:theory:qcse:field} summarizes the \gls{qcse} in a \gls{qw} additionally confined in the plane by local electric fields.
-The top panel shows the exciton transition energy $\Delta E_{np}$ for $\Delta n = \Delta p = 0$ in solid lines.\sidenote{
+The top panel shows the exciton transition energy $\Delta E_{np0}$ for the optically active $\ell = 0$ states in solid lines.\sidenote[][*1]{
     Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduces the redshift~\cite{Miller1984}.
 }
 The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane \gls{qw} subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
-The ground state shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
+The ground state (magenta) shows the expected quadratic dependence on the electric field also obtained, for example, from perturbation theory.
 Drawn as a dashed line is the induced dipole moment,
 \begin{equation}
     \bvec{p}_{np}(F) = \pdv{\Delta E_{np}}{F}\ubvec{z},
 \end{equation}
 which is monotonously decreasing for the ground state as function of electric field $F$, consistent with a continuous lowering of energy.
-For the first excited state, the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
-The lower panel shows the oscillator strength, \cref{eq:exp:oscillator_strength}, normalized to its value of the ground state at zero field, $f_{00}(F=0)$.
-For the ground state it decays exponentially with the electric field as the overlap between electron and hole wave functions, which decay exponentially into the \gls{qw} themselves, is reduced.
-$f_{0p}$ for higher in-plane orbital states ($p > 0$, magenta, decreasing saturation) has an envelope following the ground state's exponential decay but vanishes at $p$ points in $F$ due to the fact that the wave function has $p$ nodes.
-By contrast, $f_{10}$ for the first excited \gls{qw} state (green) does not decay to zero at large fields but also has a zero at an intermediate field because of the wave function's node along $z$.
+For the first excited state (green), the induced dipole moment is actually positive below \qty{2}{\volt\per\micro\meter}, leading to a repulsive interaction and hence a raising of the transition energy by up to \qty{1}{\milli\electronvolt}.
+The lower panel shows the reduced oscillator strength, \cref{eq:exp:qcse:oscillator_strength:reduced}.
+For the ground state it decays approximately exponentially with the electric field as the overlap between electron and hole wave functions, which decay exponentially into the \gls{qw} themselves, is reduced.
+At $F = \qty{10}{\volt\per\micro\meter}$, $\tilde{f_{000}}$ is reduced by around an order of magnitude, which indicates that the brightness of an exciton trap should not be diminished too much by the applied field.
+$f_{0p0}$ for higher in-plane orbital states ($p > 0$, magenta, decreasing saturation) has an envelope following the ground state's exponential decay but vanishes at $p$ points in $F$ due to the fact that the wave function has $p$ nodes.
+By contrast, $f_{100}$ for the first excited \gls{qw} state (green) does not appear to decay to zero at large fields but also has a zero at an intermediate field because of the wave function's node along $z$.
 
 Finally, the right axis shows the estimated tunneling rates (\cref{eq:exp:theory:qcse:tunneling:rate}) of the electron (hole) ground (excited) states in dashed (dash-dotted) magenta (green) lines, respectively.
 Rates of electrons are at least four orders of magnitude larger than those of holes owing to their smaller effective mass despite the larger band offset.
