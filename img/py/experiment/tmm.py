@@ -26,7 +26,7 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
-    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 # Lengths are in units of nm
 WAV = 825

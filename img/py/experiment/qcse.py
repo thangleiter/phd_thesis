@@ -28,7 +28,7 @@ LINE_COLORS_50 = [color for name, color in RWTH_COLORS_50.items() if name not in
 LINE_COLORS_25 = [color for name, color in RWTH_COLORS_25.items() if name not in ('blue',)]
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
-    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 with np.errstate(divide='ignore', invalid='ignore'):
     CYCLIC_CMAP = mpl.colors.ListedColormap(np.concatenate(
         [make_sequential_colormap('purple', endpoint='blackwhite').colors[:-1],

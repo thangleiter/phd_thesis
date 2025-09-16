@@ -27,7 +27,7 @@ DATA_PATH = PATH.parent / 'data/transport'
 DATA_PATH.mkdir(exist_ok=True)
 SAVE_PATH = PATH / 'pdf/setup'
 SAVE_PATH.mkdir(exist_ok=True)
-DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'))
+DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 with np.errstate(divide='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('red', endpoint='blackwhite')
 
