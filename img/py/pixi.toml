@@ -17,7 +17,7 @@ spyder-kernels = ">=3.0.5,<4"
 qutip = ">=5.2.1,<6"
 xarray = ">=2025.9.0,<2026"
 sympy = ">=1.14.0,<2"
-numpy = ">=2.2.6,<3"
+numpy = ">=2.2.6,<2.3"  # in 2.3 linalg.eigh sometimes does not converge for some reason
 numba = ">=0.61.2,<0.62"
 matplotlib = ">=3.10.6,<4"
 opt_einsum = ">=3.4.0,<4"
@@ -73,7 +73,7 @@ python = ">=3.9,<=3.12"
 matlabengine = ">=25.1.2, <26"
 
 [feature.band_structure.pypi-dependencies]
-poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
+poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "2aa23aaa8bc0a698b1558a83145c3a87e982e2db" }
 
 [environments]
 default = ["core", "logm_frechet"]
