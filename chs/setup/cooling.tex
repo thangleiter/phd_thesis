@@ -165,7 +165,7 @@ All of these methods rely on some form of energy reference scale that relates th
 Typically this is the so-called \emph{lever arm} $\alpha$, which is the constant of proportionality between the plunger gate voltage and the electrochemical potential $\mu_N$ for adding the $N$th electron to the quantum dot~\cite{Ihn2009}.
 It can be measured using pulsed-gate spectroscopy~\cite{Fujisawa2001,Harbusch2010}, photon-assisted tunneling~\cite{Kouwenhoven1994}, or finite-bias spectroscopy (Coulomb diamonds)~\cite{Kouwenhoven2001,Ihn2009}, for example.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-7]
     \centering
     \includegraphics{img/pdf/setup/diamonds_gl}
     \caption[\imgsource{img/py/setup/transport.py}]{
@@ -187,7 +187,7 @@ I applied a bias voltage at the Ohmic contact situated to the right of gate SA\s
 }
 using a home-built \decadac voltage source and measured the current at the Ohmic contact to the left of gate SD using a \baseltia I/V converter with non-inverting input shorted to ground.
 Gate voltages were also supplied by the \decadac, divided by six and low-pass filtered at room temperature in the \gls{bob}.
-All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.\sidenote{
+All but the four long gates (RFA--RFD) coming in from the top of the device were connected to the filtered DC lines as described in \citer{Descamps2021}.\sidenote[][*-3]{
     The sample is mounted on a high-frequency \gls{pcb} whose on-board capacitors form the second link in a second-order $RC$ low-pass filter.
     Between the \gls{pcb} and the $z$-axis nanopositioner, there is a \ch{Cu} plate connected directly to the top interface of the sample puck via flexible braids for heat sinking as the positioners have poor thermal conductivity~\cite{Descamps2024}.
     However, this plate is also crucial for providing a ground connection for the \gls{pcb} and, consequently, the functioning of the $RC$ low-pass, as the positioners are also not electrically conductive.
@@ -204,22 +204,6 @@ Having set up the virtual plunger gate, I performed a Coulomb diamond measuremen
     In this case, the source-drain bias is asymmetric as the drain is always grounded and only the electrochemical potential of the source reservoir is changed.
     This does not qualitatively change the physics of the measurement, though.
 }
-The left panel of \cref{fig:setup:cooling:etemp:diamonds} shows the current of the Coulomb diamond measurement.
-Starting from zero bias, when current can only flow through the Coulomb-blockaded \gls{qd} when both source and drain are aligned with an energy level in the dot, increasing the bias voltage opens up the \emph{bias window}, allowing current to flow as long as the dot's energy level is inside the window.
-This defines areas of zero (blockaded) current within the space of plunger and bias voltage that takes on the shape of a diamond whose height (along the bias axis) is given by the energy penalty of adding another electron to the dot~\cite{Ihn2009},
-\begin{equation}
-    E_\mr{add} = \mu_{N+1} - \mu_N = E_c + \Delta E,
-\end{equation}
-where $\mu_N$ is the electrochemical potential of the dot with $N$ electrons, $E_c$ is the charging energy due to Coulomb repulsion, and $\Delta E$ is the single-particle energy spacing.
-At the same time, the width of a diamond (along the gate voltage axis) is given by
-\begin{equation}
-    \Delta V_{\mr{p}} = \alpha\inverse E_\mr{add},
-\end{equation}
-implying that we can extract the lever arm $\alpha$ from the geometry of the diamonds.
-Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of current through the Coulomb resonance at zero bias (dashed gray lines), I obtained
-\begin{equation}
-    \alpha = \abs{\Delta m} = \abs{m_1 - m_2} \approx\qty{0.11}{\eV\per\volt}.
-\end{equation}
 
 \begin{figure*}
     \centering
@@ -236,14 +220,32 @@ Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of curren
     \label{fig:setup:cooling:etemp:diamonds}
 \end{figure*}
 
-Although not of particular interest for the electron temperature, a Coulomb diamond measurement can also be used for excited state spectroscopy.
-Computing the differential conductance $\partial I/\partial V_{\mr{p}}$ makes visible a host of additional transition lines in the conducting region of the map (right panel of \cref{fig:setup:cooling:etemp:diamonds}).\sidenote[][*-2]{
+The left panel of \cref{fig:setup:cooling:etemp:diamonds} shows the current of the Coulomb diamond measurement.
+At zero bias current can only flow through the Coulomb-blockaded \gls{qd} when both source and drain are aligned with an energy level in the dot.
+Increasing the bias voltage opens up the \emph{bias window}, allowing current to flow as long as the dot's energy level is inside the window.
+This defines areas of zero (blockaded) current within the space of plunger and bias voltage that takes on the shape of a diamond whose height (along the bias axis) is given by the energy penalty of adding another electron to the dot~\cite{Ihn2009},
+\begin{equation}
+    E_\mr{add} = \mu_{N+1} - \mu_N = E_c + \Delta E,
+\end{equation}
+where $\mu_N$ is the electrochemical potential of the dot with $N$ electrons, $E_c$ is the charging energy due to Coulomb repulsion, and $\Delta E$ is the single-particle energy spacing.
+At the same time, the width of a diamond (along the gate voltage axis) is given by
+\begin{equation}
+    \Delta V_{\mr{p}} = \alpha\inverse E_\mr{add},
+\end{equation}
+implying that we can extract the lever arm $\alpha$ from the geometry of the diamonds.
+Drawing lines with slopes $m_1$ and $m_2$ along the onsets and offsets of current through the Coulomb resonance at zero bias (dashed gray lines), I obtained
+\begin{equation}
+    \alpha = \abs{\Delta m} = \abs{m_1 - m_2} \approx\qty{0.11}{\eV\per\volt}.
+\end{equation}
+
+Although not of particular interest for the electron temperature, a Coulomb diamond measurement can also be used to perform excited-state spectroscopy.
+Computing the differential conductance $\partial I/\partial V_{\mr{p}}$ makes visible a host of additional transition lines in the conducting region of the map (right panel of \cref{fig:setup:cooling:etemp:diamonds}).\sidenote{
     Features inside the blockaded region can also occur, indicative of co-tunneling.
 }
 These correspond to excited states of the quantum dot entering the bias window.
 Their sign depends on the tunnel coupling of the state to source and drain~\cite{Ihn2009}.
 
-\begin{marginfigure}[*-3]
+\begin{marginfigure}
     \centering
     \includegraphics{img/pdf/setup/coulomb_resonance}
     \caption[\imgsource{img/py/setup/transport.py}]{
@@ -264,7 +266,7 @@ For sequential tunneling, the line shape of a resonance at $V_{\mr{p}}^{\mr{res}
 in linear response (small bias).
 Thus, I tuned the device to small tunnel couplings (high tunnel barriers) and measured $G(V_{\mr{p}})$ with a small bias voltage.
 The resulting conductance trace is shown in \cref{fig:setup:cooling:etemp:resonance} together with a fit to \cref{eq:setup:cooling:etemp:resonance}.
-From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin} = \qty{6.5}{\micro\eV}/\kb$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}\times\kb$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-9]{
+From the fit we can extract the parameters $T = \qty{74.9}{\milli\kelvin} = \qty{6.5}{\micro\eV}/\kb$ and $\Gamma = \qty{0.524+-0.005}{\micro\eV} = \qty{6.08+-0.06}{\milli\kelvin}\times\kb$, confirming the sequential tunneling regime of $\Gamma\ll\kb T$.\sidenote[][*-5]{
     In a different tuning state of the device, the conductance would also sometimes change sign close to the resonance at small biases.
     The line shape in this configuration was well described by source and drain reservoirs at different temperatures,
     \begin{equation*}

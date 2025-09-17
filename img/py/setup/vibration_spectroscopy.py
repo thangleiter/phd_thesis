@@ -312,7 +312,7 @@ with mpl.style.context([MARGINSTYLE]), changed_plotting_backend('pgf'):
     ax.grid()
     ax.margins(x=0)
     ax.set_yticks([R/2, 0.5, 1-R/2],
-                  [r'$\frac{\mathrm{r}_0}{2}$', r'$\frac{1}{2}$', r'$1-\frac{\mathrm{r}_0}{2}$'],
+                  [r'$\frac{\mathscr{R}_0}{2}$', r'$\frac{1}{2}$', r'$1-\frac{\mathscr{R}_0}{2}$'],
                   va='center')
     ax.set_ylabel(r'$P_{\mathrm{r}}(y) / (I_0 w_0 \sqrt{\pi/2})$')
 

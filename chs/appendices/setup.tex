@@ -143,6 +143,11 @@ Furthermore, note that likely the Fraunhofer approximation is only of limited ap
 In \cref{sec:setup:vibrations:optic}, I used a knife-edge measurement to calibrate the readout of the sample position using the count rate of laser radiation reflected off a lateral reflectance gradient.
 The gradient was determined by the convolution of the finite spatial extent of the laser spot and a step in reflectance from a \ch{Au} gate with approximately perfect reflectance and the bare \ch{GaAs} surface.
 The same measurement can also be used to extract the reflectance $\reflectance_{0}$ of the bare \ch{GaAs} surface as well as the spot size radius $w_0$ of a Gaussian beam by fitting the theoretical dependence of the reflected count rate on the lateral position, \cref{eq:setup:knife_edge}.
+From the refractive index of \ch{GaAs}, we would expect
+\begin{equation}
+    \reflectance_0 = \abs{\frac{n-1}{n+1}}^2 \approx \qty{32}{\percent}
+\end{equation}
+at zero temperature~\cite{Talghader1995}.
 
 \begin{marginfigure}
     \centering
@@ -154,11 +159,6 @@ The same measurement can also be used to extract the reflectance $\reflectance_{
     \label{fig:app:setup:vibrations:knife_edge}
 \end{marginfigure}
 
-From the refractive index of \ch{GaAs}, we would expect
-\begin{equation}
-    \reflectance_0 = \abs{\frac{n-1}{n+1}}^2 \approx \qty{32}{\percent}
-\end{equation}
-at zero temperature~\cite{Talghader1995}.
 \Cref{fig:app:setup:vibrations:knife_edge} shows the same data as \cref{fig:setup:vibrations:calibration:pos_vs_cps} together with fits to \cref{eq:setup:knife_edge} in magenta.
 The dashed line is a fit with $\reflectance_0$ fixed, whereas the solid line is a fit including $\reflectance_0$ as a free parameter.
 Clearly, the latter matches the data better, resulting in

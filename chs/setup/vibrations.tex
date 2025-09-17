@@ -171,7 +171,7 @@ Outside of the cryostat, the signal is routed to a signal conditioner that provi
 Since the sensor's (conditioned) output is a voltage directly proportional to the acceleration, it is straightforward to compute the displacement \gls{psd} from time series data measured with the \gls{dmm} using the \pyspeck package presented in \cref{ch:speck:software}~\cite{Hangleiter_pyspeck}.
 Leveraging the \code{fourier_procfn} argument, we can transform the voltage data first to acceleration and then, by integration, to displacement in frequency space as indicated in \cref{lst:setup:vibrations:accel}.
 
-\begin{marginlisting}
+\begin{marginlisting}[*-11]
     \begin{pycode}[
         fontsize=\footnotesize,
         breaklines,%
@@ -212,7 +212,7 @@ The measurements are shown in \cref{fig:setup:vibrations:accel} together with th
     \rms_S(f) = \sqrt{\int_{f_\mr{min}}^{f}\dd{f^\prime}S(f^\prime)}
 \end{equation}
 with $S(f)$ the displacement noise \gls{psd}.
-When the \gls{ptr} is switched off, the spectra with and without suspension are dominated by broadband vibration noise, although quite some structure around \qtylist{15;33;60}{\hertz} can be observed.\sidenote{
+When the \gls{ptr} is switched off, the spectra with and without suspension are dominated by broadband vibration noise, although quite some structure around \qtylist{15;33;60}{\hertz} can be observed.\sidenote[][*-6]{
     Note the curious peaks slightly offset from the second and third harmonic of the \gls{ptr} frequency in the spectrum with suspension enabled and \gls{ptr} disabled.
     We may speculate that these are due to the \glspl{ptr} of other cryostats in other labs in the vicinity that are transmitted through the floor.
     Two were running two rooms over at the time the data was acquired.
@@ -239,7 +239,7 @@ In the region where the two overlap on the mesa to establish electrical contact,
 Scanning perpendicularly across such a straight edge between a poorly and a highly reflecting material is known as a knife-edge measurement and is frequently used to measure the spatial extent of a laser spot~\cite{Arnaud1971,Skinner1972,Khosrofian1983}.
 We can use the same setup to measure the displacement noise; instead of manually shifting our knife edge across the beam spot, though, we measure the reflectance fluctuations induced by the knife edge fluctuating relative to the spot due to external perturbations.
 
-\begin{marginfigure}[*-10]
+\begin{marginfigure}
     \centering
     \input{img/tikz/setup/knife_edge}
     \caption[\imgsource{img/tikz/setup/knife_edge.tex}]{
@@ -284,8 +284,8 @@ in the $yz$ focal plane, where $\erf(y)$ is the error function.
     \label{fig:setup:vibrations:knife_edge:theory}
 \end{marginfigure}
 
-The function is plotted in \Cref{fig:setup:vibrations:knife_edge:theory}.
-The contrast that can be achieved is given by $1-\reflectance_0$.
+The function $P_{\mr{r}}(y)$ is plotted in \Cref{fig:setup:vibrations:knife_edge:theory}.
+The maximum contrast that can be achieved is given by $1-\reflectance_0$.
 Furthermore, for $y\in[-w_0/2, w_0/2]$ the function is well-approximated by
 \begin{equation}\label{eq:setup:knife_edge:approx}
     P_{\mr{r}}(y)\approx -I_0(1-\reflectance_0)y + \frac{I_0 w_0}{2}\sqrt{\frac{\pi}{2}}
@@ -299,7 +299,7 @@ where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
     s = \frac{\Phi_0}{w_0}(1 - \reflectance_0).
 \end{equation}
-Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
+Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote[][*-1]{
     Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
 In our case, the former two are fixed by the sample and the setup, respectively , whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
@@ -311,7 +311,7 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
-\begin{marginfigure}[*-6]
+\begin{marginfigure}[*-13]
     \centering
     \includegraphics{img/pdf/setup/knife_edge}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -342,7 +342,7 @@ Of course it is also possible to fit the full knife-edge function, \cref{eq:setu
 From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectance $\reflectance_0$ can be extracted.
 Here we are content with the linear approximation; refer to \cref{subsec:app:setup:vibrations:knife_edge} for the full fits.
 
-\begin{marginfigure}[*-7]
+\begin{marginfigure}[*-15]
     \centering
     \includegraphics{img/pdf/setup/knife_edge_fits}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -374,7 +374,7 @@ Clearly, the count rate is linear in the displacement over a large range, indica
 \end{figure}
 
 We are now at last able to measure the displacement noise using \pyspeck.
-Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the \taggershort,\sidenote[][*7]{
+Setting \code{procfn} to the linear transformation given in \cref{eq:setup:knife_edge:procfn} and measuring the counts registered by the \glspl{apd} using the \taggershort,\sidenote{
     Since the \glspl{apd} are arranged in a \gls{hbt} geometry, I combined the counts of both instruments using the virtual channel functionality of the \taggershort.
 }
 I obtained the displacement noise \glspl{psd} shown in \cref{fig:setup:vibrations:optic}.
@@ -464,18 +464,6 @@ For example, for a reduction in spot size by a factor of two from inserting a di
 }
 our simple model predicts a noise floor of $\qty{25}{\pico\meter\per\sqrt{\hertz}}$, a reduction by a factor of \num{40}.
 
-To conclude this section, let us come back to the \acrlongpl{vc} defined in \cref{subsec:setup:vibrations:isolation:theory} and evaluate the microscope based on the two different measurement methods presented in this chapter.
-The $\flatfrac{1}{3}$ octave band \gls{rms} velocities computed for the vibration spectra with \gls{ptr} enabled shown in \cref{fig:setup:vibrations:accel,fig:setup:vibrations:optic} are plotted in \cref{fig:setup:vibrations:vc}.
-Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (\acrshort{vc}-B, solid gray line) over three octaves.
-Because this method of measuring the vibration noise is sensitive to absolute changes, we can understand qualitatively why this is the case if we view the accelerometer at the sample position as the end of a large pendulum whose fulcrum is in the center of the plane spanned by the three air springs.
-A rough estimate gives a resonant frequency of \qty{0.5}{\hertz},\sidenote{
-    The center of mass sits close to the magnet approximately $l = \qty{1}{\meter}$ below the springs so that we have $f = (2\pi)\inverse\sqrt{\flatfrac{g}{l}}\approx\qty{0.5}{\hertz}$.
-}
-implying frequencies in the considered range, $[4, 32]\,\unit{\hertz}$, are fairly effective at exciting motion in the pendulum (\cf \cref{subsec:setup:vibrations:isolation:theory}).
-By contrast, with the optical method we do not pick up on such motion because the ocular lens focusing the light into the \gls{smf} is fixed in the co-rotating frame with respect to our imagined pendulum.
-Indeed, the \gls{vc} velocities computed for this method show that they are orders of magnitude smaller at low frequencies in particular since only deviations from the rigid body picture established above induce a change in signal.
-Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indicated by the loosely dashed dark gray line, implying that the true vibration-induced \gls{rms} is well below our targeted \acrshort{vc}-B criterion.
-
 \begin{figure}
     \centering
     \includegraphics{img/pdf/setup/vc}
@@ -489,6 +477,18 @@ Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indica
     }
     \label{fig:setup:vibrations:vc}
 \end{figure}
+
+To conclude this section, let us come back to the \acrlongpl{vc} defined in \cref{subsec:setup:vibrations:isolation:theory} and evaluate the microscope based on the two different measurement methods presented in this chapter.
+The $\flatfrac{1}{3}$ octave band \gls{rms} velocities computed for the vibration spectra with \gls{ptr} enabled shown in \cref{fig:setup:vibrations:accel,fig:setup:vibrations:optic} are plotted in \cref{fig:setup:vibrations:vc}.
+Based on the data from the accelerometer (circles), the microscope does not meet the targeted level of vibration isolation (\acrshort{vc}-B, solid gray line) over three octaves.
+Because this method of measuring the vibration noise is sensitive to absolute changes, we can understand qualitatively why this is the case if we view the accelerometer at the sample position as the end of a large pendulum whose fulcrum is in the center of the plane spanned by the three air springs.
+A rough estimate gives a resonant frequency of \qty{0.5}{\hertz},\sidenote{
+    The center of mass sits close to the magnet approximately $l = \qty{1}{\meter}$ below the springs so that we have $f = (2\pi)\inverse\sqrt{\flatfrac{g}{l}}\approx\qty{0.5}{\hertz}$.
+}
+implying frequencies in the considered range, $[4, 32]\,\unit{\hertz}$, are fairly effective at exciting motion in the pendulum (\cf \cref{subsec:setup:vibrations:isolation:theory}).
+By contrast, with the optical method we do not pick up on such motion because the ocular lens focusing the light into the \gls{smf} is fixed in the co-rotating frame with respect to our imagined pendulum.
+Indeed, the \gls{vc} velocities computed for this method show that they are orders of magnitude smaller at low frequencies in particular since only deviations from the rigid body picture established above induce a change in signal.
+Furthermore, the \gls{rms} is dominated by the broadband shot noise floor indicated by the loosely dashed dark gray line, implying that the true vibration-induced \gls{rms} is well below our targeted \acrshort{vc}-B criterion.
 
 \section{Routes for improvement}\label{sec:setup:vibrations:outlook}
 Several improvements could be made to the system if the external conditions would allow it.
