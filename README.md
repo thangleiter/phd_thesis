@@ -219,7 +219,7 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
 If fonts are not found, download and install them in your system:
 
 - Libertinus [here](https://github.com/alerque/libertinus).
-- Liberation Mono [here](https://git.nsa.his.se/latex/fonts/-/tree/master).
+- ~~Liberation Mono [here](https://git.nsa.his.se/latex/fonts/-/tree/master)~~. This font is included as a submodule at `lib/fonts`. Initialize manually or run `shell/init.sh`.
 - NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
 
 # TeXLive Integration
@@ -242,25 +242,4 @@ Delete the `build/` directories in the `examples/` subdirectories of `lib/kaoboo
 - The font size in `minted` also does not seem to adjust.
 
 # Kaobook
-
-## Diffs
-These diffs should already be applied in the submodule shipped with this repository.
-
-- `kaorefs.sty`
-
-   - `cleveref`
-     ```diff
-     - \RequirePackage{hyperref}
-     - \RequirePackage{varioref}
-     - \RequirePackage{cleveref} % Don't use cleveref! It breaks everything
-     + \RequirePackage{varioref}
-     + \RequirePackage{hyperref}
-     + \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
-     ```
-See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
-
-   - Commented out the line
-     ```latex
-     \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
-     ```
-     because `\refeq` is already defined by `mathtools`.
+The LaTeX style is at `lib/kaobook`. You might need to initialize the submodule, or just run `shell/init.sh` to set up.
