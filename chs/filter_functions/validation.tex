@@ -212,8 +212,8 @@ For non-commuting noise, we observed the expected deviation at very low frequenc
 
 Rather than random sampling using \gls{mc}, this average could also be performed deterministically as the expectation value over the probability distributions governing $A_i$ and $\phi$,
 \begin{equation}
-    \mathbb{E}_{A_i,\phi}[\liouvU] = \int\dd{x}\rho_{A_i}(x)\int\dd{y}\rho_{\phi}(y)\liouvU[x, y],
+    \expectation_{A_i,\phi}[\liouvU] = \int\dd{x}\rho_{A_i}(x)\int\dd{y}\rho_{\phi}(y)\liouvU[x, y],
 \end{equation}
-where we wrote $\liouvU[x, y]$ for the Liouville representation of the propagator for single $x$ and $y$ drawn from their respective distributions, and $\mathbb{E}_X[A]$ denotes the expectation value of an observable $A$ with respect to the random variable $X$ with probability density function $\rho_X$.
-This technique allows the expectation value $\mathbb{E}[\liouvU]\equiv\ev{\liouvU}$ to be evaluated to arbitrary precision numerically, but is typically less efficient than \gls{mc}.
+where we wrote $\liouvU[x, y]$ for the Liouville representation of the propagator for single $x$ and $y$ drawn from their respective distributions, and $\expectation_X[A]$ denotes the expectation value of an observable $A$ with respect to the random variable $X$ with probability density function $\rho_X$.
+This technique allows the expectation value $\expectation[\liouvU]\equiv\ev{\liouvU}$ to be evaluated to arbitrary precision numerically, but is typically less efficient than \gls{mc}.
 It would be interesting to see if the numerical noise observed in off-diagonal elements of the filter functions in \cref{fig:ff:monte_carlo:Z,fig:ff:monte_carlo:X,fig:ff:monte_carlo:se} persists with this method.

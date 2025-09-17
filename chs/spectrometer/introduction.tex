@@ -7,17 +7,16 @@
     Max Beer,\sidenotemark[a] Paul Surrey,\sidenotemark[a] and René Otten.\sidenote[b]{Then at \RWTHFZJ}
 \end{partcontribs}
 
-\AutoLettrine{Noise} is ubiquitous in condensed matter physics experiments, and in mesoscopic systems in particular it can easily drown out the sought-after signal.
-In solid-state quantum technology research, devices on the length scale of the Fermi wavelength -- say tens of nanometers -- are embedded in a crystalline matrix of \num{e23} atoms.
+\AutoLettrine{In} solid-state quantum technology research, devices with features on the order of the Fermi wavelength -- say tens of nanometers -- are embedded in a crystal containing $\sim\num{e23}$ atoms.
 These devices host single quantum objects such as electrons or quasiparticles---collective many-body excitations.
 They are controlled and measured by classical signals routed to the device through macroscopic connections like cables and fibers.
 The signals, in turn, are generated and analyzed by electronic (\eg, transistors) or optical instruments (\eg, lasers) that, in all likelihood, are again based on solid-state technology driven by the first quantum revolution~\cite{Dowling2003,Aspect2024}.
-Ultimately, then, the experiments take place in an environment full of external influences from trams passing by, shaking the ground, to cosmic rays creating electron-hole or breaking up Cooper pairs.
+Ultimately, then, the experiments take place in an environment full of external influences from trams passing by, shaking the ground, to cosmic rays, creating electron-hole or breaking up Cooper pairs.
 
 All of these different layers to such experiments are inherently -- and in fact often fundamentally\sidenote{
     Consider Johnson-Nyquist noise in a resistor, for example.
 }
--- \emph{noisy}, and it is the physicist's challenge to measure their desired effects in spite of this noise.
+-- \emph{noisy}, and it is the physicist's challenge to measure their sought-after effects in spite of this noise.
 A well-thought-out experimental setup is hence one that has been designed taking the various noise sources into consideration, and state-of-the-art experiments often need to push the frontier in order to be successful.
 From material choice in the sample to the signal path and the specs of the measurement equipment, many aspects need to be optimized and, in particular, characterized in order to assess the noise.
 Indeed, the assessment of noise might even be the entire \emph{goal} of the experiment, for instance to evaluate material properties.
@@ -35,7 +34,7 @@ is a stochastic process, meaning that we cannot predict with certainty a dynamic
 Only by obtaining statistics, \ie, repeated observations, either by preparing the system in the same initial state or measuring for a certain amount of time, can we make any statements about the underlying stochastic process.
 Two questions are key to assessing these statistics: first, what is the amplitude of the fluctuations?
 And second, at which frequency do the fluctuations occur?
-If the amplitude is small enough, we might not need to care, and if the frequency is large enough, we might be able to average out the fluctuations while if it is small enough, it might appear \emph{quasistatic} and we might be able to subtract them.
+If the amplitude is small enough, we might not need to care, and if the frequency is large enough, we might be able to average out the fluctuations while if it is small enough, it might appear \emph{quasistatic} and we might be able to subtract the constant value from our signal.
 Although numerous other techniques for measuring and estimating a noise's properties exist, analyzing noise in frequency space by means of the Fourier transform imposes itself when considering these two notions.
 
 This approach is the central topic of \thispart.
@@ -43,7 +42,7 @@ However, I will neither be too much concerned with the theoretical side of the s
     I refer the interested reader to the lecture material of \citerr{Bluhm2021}{Bluhm2022} and references therein.
 }
 Rather, I will focus on making these techniques readily and easily accessible to experimentalists in the lab.
-Given the arguments laid out above, noise spectroscopy should be an essential item in an experimentalists toolbelt.
+Given the arguments laid out above, noise spectroscopy, that is, the analysis of noise in Fourier space, should be an essential item in an experimentalists toolbelt.
 In practice, though, we are faced with several challenges.
 First, different experiments require different \gls{daq} hardware, all of which have both varying capabilities and software interfaces.
 Hence, transferring a spectroscopy code from one device or setup to another is a non-trivial task and can inhibit adoption of the technique.

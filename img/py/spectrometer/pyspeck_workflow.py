@@ -50,7 +50,6 @@ class MockMFLIDAQ(daq.simulator.DemodulatorQoptColoredNoise):
     def DAQSettings(self) -> type[daq.DAQSettings]:
         class MFLIDAQSettings(daq.DAQSettings):
             CLOCKBASE = 60e6
-            # TODO: always the same for each instrument?
             ALLOWED_FS = domains.ExponentialDiscreteInterval(-23, 0, base=2,
                                                              prefactor=CLOCKBASE / 70)
             DEFAULT_FS = CLOCKBASE / 70 / 2**6

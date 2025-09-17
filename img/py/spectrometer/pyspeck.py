@@ -1,4 +1,4 @@
-# %%
+# %% Imports
 import pathlib
 import sys
 
@@ -15,12 +15,16 @@ from common import (  # noqa
 )
 
 init(MARGINSTYLE, backend := 'pgf')
-# %%
+# %% Functions
 
 
 def rect(x, T=1):
     arg = .5 * x * T
     return T * np.sinc(arg / np.pi)
+
+
+def dirichlet_discrete(omega, N, m=0):
+    return np.exp(-1j*omega*(m*N + (N-1)/2))*np.sin(omega*N/2)/np.sin(omega/2)
 
 
 def hann(x, T=1):
@@ -31,7 +35,7 @@ def hann(x, T=1):
     return y
 
 
-# %%
+# %% Plot windows
 alpha = 0.5
 T = 1
 
@@ -53,7 +57,10 @@ with plt.style.context(MARGINSTYLE, after_reset=True):
 
         ax.set_xlim(-12.5*np.pi, 12.5*np.pi)
         ax.set_xticks([-10 * np.pi / T, 10 * np.pi / T])
-        ax.set_xticklabels([r'$\flatfrac{-10\pi}{T}$', r'$\flatfrac{+10\pi}{T}$'])
+        if backend == 'pgf':
+            ax.set_xticklabels([r'$\flatfrac{-10\pi}{T}$', r'$\flatfrac{+10\pi}{T}$'])
+        else:
+            ax.set_xticklabels([r'$-10\pi/T$', r'$+10\pi/T$'])
 
         ax.set_xlabel(r'$\omega_n$')
         ax.set_ylabel(r'$\hat{w}_n$')
@@ -62,7 +69,7 @@ with plt.style.context(MARGINSTYLE, after_reset=True):
 
         if window is rect:
             ax.set_yticks([T])
-            ax.set_yticklabels([r'$T$'])
+            ax.set_yticklabels(['$T$'])
             ax.set_ylim(-0.3, 1.2*T)
             ax.xaxis.set_tick_params(pad=5, length=7.5)
             ax.yaxis.set_tick_params(length=7.5)
@@ -70,7 +77,10 @@ with plt.style.context(MARGINSTYLE, after_reset=True):
             ax.yaxis.set_label_coords(2.25*np.pi/T, 1.1*T, transform=ax.transData)
         elif window is hann:
             ax.set_yticks([T/2])
-            ax.set_yticklabels([r'$\flatfrac{T}{2}$'])
+            if backend == 'pgf':
+                ax.set_yticklabels([r'$\flatfrac{T}{2}$'])
+            else:
+                ax.set_yticklabels(['$T/2$'])
             ax.set_ylim(-0.25/4, .6*T)
             ax.xaxis.set_tick_params(length=7.5)
             ax.yaxis.set_tick_params(length=7.5)
@@ -81,7 +91,7 @@ with plt.style.context(MARGINSTYLE, after_reset=True):
         fig.savefig(PATH / f'pdf/spectrometer/{window.__name__}.pdf', backend='pgf')
         plt.close(fig)
 
-# %%
+# %% Plot Welch
 L = 300
 N = 100
 K = 50
