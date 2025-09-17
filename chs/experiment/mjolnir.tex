@@ -56,12 +56,13 @@ three logical instruments implemented as subclasses of the \qcodes \code{Instrum
         Controls all physical instruments related to illumination of the sample, including the white light source.
     \item \label{itm:logical_instruments:det}
         \code{DetectionPath}.
-        Controls instruments related to the detection of radiation emitted by the sample, \ie, the spectrometer, \gls{ccd}, and photon counting card.
+        Controls instruments related to the detection of radiation emitted by the sample, \ie, the spectrometer, \acrshort{ccd}, and photon counting card.
     \item \label{itm:logical_instruments:sam}
         \code{Sample}.
         Controls the \qdac voltage source, cryostat, and magnet, and implements a software representation of the \gls{dut}.
 \end{enumerate}
 \Cref{fig:exp:mjolnir:layout} shows a graph outlining the relationship between physical and logical instruments.
+\Cref{fig:exp:mjolnir:tree} shows the repository structure.
 In the following, I give a brief overview of the functionalities comprised by these logical instruments.
 
 \subsection{Excitation path}\label{subsec:exp:mjolnir:logical_instruments:exc}
@@ -119,7 +120,7 @@ In practice, the deviation from an established calibration function is usually s
 The \code{CcdCalibrationHandler} implements three different calibration schemes specified as the \code{ccd_calibration_update_mode} parameter of the \code{DetectionPath} instrument:
 \begin{enumerate}
     \item \code{"full"}.
-        The pixel position of the maximum intensity of nine equidistant wavelengths centered around the grating central wavelength and spread out over the entire range of the \gls{ccd} screen ($\sim\qty{45}{\nano\meter}$ for the \qty{600}{gr\per\milli\meter} grating and $\sim\qty{9}{\nano\meter}$ for the \qty{1800}{gr\per\milli\meter} grating) is measured sequentially and fitted to a third-degree polynomial.
+        The pixel position of the maximum intensity of nine equidistant wavelengths centered around the grating central wavelength and spread out over the entire range of the \gls{ccd} screen (\qty{45}{\nano\meter} for the \qty{600}{gr\per\milli\meter} grating and \qty{9}{\nano\meter} for the \qty{1800}{gr\per\milli\meter} grating) is measured sequentially and fitted to a third-degree polynomial.
     \item \code{"fast"}.
         The laser is set to the grating central wavelength and the zeroth-order coefficient of the previous calibration polynomial is shifted by the pixel distance between the peak and the horizontal center of the \gls{ccd} screen.
     \item \code{"dirty"}.
@@ -160,7 +161,7 @@ Then, the residual sum of squares between the target power and the power meter r
 
 \subsection{Rejection feedback}\label{subsec:sec:exp:mjolnir:calibration:rejection}
 The excitation rejection by means of cross-polarization extinction has already been discussed in \cref{subsec:setup:optics:coupling:rejection}.
-As shown there, the \gls{od} achieved by cross-polarizing the excitation beam with the analyzer mounted in the detection path reaches a maximum close to \num{6} and is extremely sensitive to small variations in the angles of the \quarterwave- and \halfwave-plates controlling polarization state.
+As demonstrated there, the \gls{od} achieved by cross-polarizing the excitation beam with the analyzer mounted in the detection path reaches a maximum close to \num{6} and is extremely sensitive to small variations in the angles of the \quarterwave- and \halfwave-plates controlling polarization state.
 Close to the optimum, the \gls{od} is well-described by a parabola as function of those angles, with a second-order polynomial coefficient on the order of \qty[per-mode = symbol]{-0.15}{\per\square\milli\txtdegree}.
 Since the optics including the waveplates display chromatic dispersion, the excitation rejection needs to be re-optimized whenever the laser wavelength is changed, and the exponential angular dependence of the transmitted intensity places high demands on the dynamic range of the photo-detector used for measurement.
 Therefore, the reflected laser intensity is measured with the \gls{apd} signal digitized by the \tagger on the side exit port of the spectrometer.\sidenote{

@@ -13,11 +13,12 @@ This facilitates the construction of voltage-controlled transistors.
 The development of remote-doping techniques then enabled the growth of extremely high-mobility \glspl{2deg} in \GaAsAlGaAs heterostructures~\cite{Ihn2009}.
 In these structures, dopants are introduced into the \ch{AlGaAs} barrier layer some \qty{50}{\nano\meter} away from the \ch{GaAs} layer and thus spatially separated by a \ch{AlGaAs} spacer layer.
 This reduces Coulomb scattering in the \gls{2deg} induced by the doping and produces very high-quality samples as evidenced for example by the observation of the fractional quantum Hall effect~\cite{Stormer1999a}.
+
 It is hence not at all surprising that early quantum dot experiments also took place in this well-understood material system.
 While undoped approaches to electron and hole spin qubits in \ch{GaAs} exist~\cite{Harrell1999,Chen2012,Li2014,Tracy2014}, they introduce added complications because of the need to electrostatically induce a \gls{2deg} and reliably contacting it~\cite{Rossler2016}.
 What is more, these issues are exacerbated when the structures need to be thinned down to a membrane~\cite{Descamps2021,Kindel2025}.
-Therefore, to accommodate \glspl{gdqd} next to the \gls{oaqd} in the membrane, the devices measured in \thispart are fabricated on doped heterostructures hosting a \gls{2deg}.
-In the following, I discuss the optical behavior of these structures under illumination.\sidenote{
+Therefore, to accommodate \acrfullpl{gdqd} next to the \acrfull{oaqd} in the membrane, the devices measured in \thispart are fabricated on doped heterostructures hosting a \gls{2deg}.
+In the following, I discuss the optical behavior of these structures under illumination to develop an intuition for the measurements presented later on.\sidenote{
     The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2025}.
 }
 I take a simple analytical approach in order to capture the most relevant physics and obtain a qualitative understanding.
@@ -26,12 +27,12 @@ For quantitative results, a more detailed method incorporating electrostatics wo
 \section{Photoluminescence in doped \texorpdfstring{\GaAsAlGaAs}{\ch{GaAs/AlGaAs}} heterostructures}\label{sec:exp:theory:pl}
 Consider an intrinsic, direct-gap, Zincblende semiconductor such as \ch{GaAs} with a band gap of $E_{\mr{g}} = \qty{1.519}{\electronvolt}$ at zero temperature~\cite{Vurgaftman2001}.
 At the $\Gamma$-point, the conduction band is well approximated by a parabolic band with effective mass $m^\ast_{\mr{c}}/m_{\mr{e}} = 0.067$ and is offset by $E_{\mr{g}}/2$ above the Fermi level $\mu$.
-Offset by the same absolute amount in the opposite direction is the valence band, which close to $\Gamma$ is fourfold degenerate with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
+Offset by the same absolute amount in the opposite direction is the valence band, which is fourfold degenerate close to $\Gamma$ with heavy and light holes with effective masses $m^{\ast}_{\mr{hh}}/m_{\mr{e}} = 0.34$ and $m^{\ast}_{\mr{lh}}/m_{\mr{e}} = 0.09$, respectively~\cite{Miller1984a}.
 The third valence band\sidenote{
     The valence bands are $p$-like and hence contain contributions from three twofold degenerate atomic orbitals.
 }
 is split off by the spin-orbit interaction and lies \qty{0.34}{\electronvolt} below the other valence bands~\cite{Davies2009}.
-Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \gls{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
+Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \acrfull{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
 
 \begin{marginfigure}
     \centering
@@ -102,7 +103,7 @@ This modifies the potential seen by the electron by $erF$ as sketched in green \
 Ignoring changes to the electron wave function, we can see that the electron can tunnel out of the Coulomb potential, leading to \emph{field-induced ionization} of the exciton.
 Now place the exciton in a \gls{qw} instead of in bulk with the electric field pointed such that it is out-of-plane of the \gls{qw}.
 The field still tilts the potential, but because electrons and holes are confined into a quasi-two-dimensional plane, they cannot escape and hence do not dissociate.
-This is the \gls{qcse}~\cite{Miller1984}.
+This is the \acrfull{qcse}~\cite{Miller1984}.
 
 In order to obtain a qualitative understanding of the \gls{qcse}, consider an undoped \ch{GaAs/Al_{0.33}Ga_{0.66}As} \gls{qw} of width $L = \qty{20}{\nano\meter}$.
 We take a 57:43 ratio for the band offsets~\cite{Miller1984a}, resulting in discontinuities of height $\Delta E_{\mr{c}} = \qty{0.24}{\electronvolt}$ and $\Delta E_{\mr{hh}} = \qty{0.18}{\electronvolt}$ at the interfaces for the conduction and the heavy-hole valence band, respectively, and $m^\ast_{\mr{c}}/m_{\mr{e}} = \num{0.067}$ and $m^\ast_{\mr{hh}}/m_{\mr{e}} = \num{0.34}$ for the effective masses.\sidenote{
@@ -296,7 +297,7 @@ From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator streng
 This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
 Of course, the radial symmetry will most likely be broken in a realistic experimental scenario, and it would be interesting to investigate if indeed those states are optically inactive.
 
-\begin{marginfigure}[*-24]
+\begin{marginfigure}[*-25]
     \centering
     \includegraphics{img/pdf/experiment/qcse_field_dependence}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
@@ -313,7 +314,7 @@ Of course, the radial symmetry will most likely be broken in a realistic experim
 \end{marginfigure}
 
 \Cref{fig:exp:theory:qcse:field} summarizes the \gls{qcse} in a \gls{qw} additionally confined in the plane by local electric fields.
-The top panel shows the exciton transition energy $\Delta E_{np0}$ for the optically active $\ell = 0$ states in solid lines.\sidenote[][*1]{
+The top panel shows the exciton transition energy $\Delta E_{np0}$ for the optically active $\ell = 0$ states in solid lines.\sidenote{
     Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduces the red shift~\cite{Miller1984}.
 }
 The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane \gls{qw} subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.
