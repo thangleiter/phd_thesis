@@ -344,6 +344,7 @@ On that term, we can factor out the propagators of the first complete sequence,\
     \right]_{ij}.
 \end{align}
 
+\clearpage
 We can now finally put all pieces together and, starting from \cref{eq:app:ff:filter_function:12:2}, plug in \cref{eq:app:ff:ctrlmat_step:12,eq:app:ff:ctrlmat_cumulative:12,eq:app:ff:filter_function:incomplete_timestep:12}, so that we obtain\sidenote{
     Recall that \liouvQ is the Liouville representation of the unitary operator $Q$ and as such -- and because our chosen basis \basis is Hermitian -- is an orthogonal matrix for which $\liouvQ\transpose\liouvQ = \eye$.
 }
@@ -424,7 +425,7 @@ In total, this requires $\order{G + H}$ computations, where $H=\sum_{g=1}^{G}\et
 %           TIME-DOMAIN METHODS SECTION
 % ==================================================
 \section{Monte Carlo and \texorpdfstring{\acrshort{gksl}}{GKSL} master equation simulations}\label{sec:app:ff:time_domain_methods}
-In this section, we lay out two common time-domain simulation methods of noisy quantum dynamics for completeness; direct simulation of the \gls{gksl} master equation and stochastic \gls{mc} simulation of the Schrödinger equation.
+In this section, we lay out two common time-domain simulation methods of noisy quantum dynamics for completeness; direct simulation of the \gls{gksl} master equation as well as stochastic \gls{mc} simulation of the Schrödinger equation.
 These can serve as alternative and complementary approaches to the filter-function formalism presented in \cref{part:ff}.
 All simulations were performed using the \package{lindblad_mc_tools} software package written during the course of \thethesis~\cite{Hangleiter_lmt}.
 
@@ -516,7 +517,7 @@ since for unitary operations on the \gls{cs} we have $\cumulantfun_{00} \approx 
 Hence, excluding $\liouvUe_{00}$ from the trace corresponds to partially disregarding non-unitary components of the error channel on the computational subspace.
 Although not the only element that differs compared to the closest subspace unitary, $\cumulantfun_{00}$ contains the most obvious contribution, whereas those of other elements are more difficult to disentangle into unitary and non-unitary components.
 
-\begin{marginfigure}
+\begin{marginfigure}[*-3]
     \centering
     \includegraphics{img/pdf/filter_functions/CNOT_FF_unitary_v_complete}
     \caption[\imgsource{img/py/filter_functions/cnot_FF.py}]{

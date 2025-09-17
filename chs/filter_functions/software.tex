@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{The \texttt{filter\_functions} software package}\label{ch:ff:software}
-\AutoLettrine{In} this section we give a brief overview over the \filterfunctions software package implementing the main features of the formalism derived above.\sidenote{
+\AutoLettrine{In} this chapter, we give a brief overview over the \filterfunctions software package implementing the main features of the formalism derived above.\sidenote{
     For more details we refer the reader to the \href{https://filter-functions.readthedocs.io/en/latest/}{documentation}.
 }
 This includes the calculation of the decay amplitudes \decayamps, frequency shifts \freqshifts, and fidelities as well as the calculation of the control matrices for single gates and both generic and periodic sequences of gates.
@@ -66,7 +66,6 @@ In the software, we first define a \pulsesequence object representing the \gls{s
 As was already mentioned, the control and noise Hamiltonians are given as a list containing lists for every control or noise operator that is considered.
 These sublists consist of the respective operator as a \numpy array or \qutip \qobj and the amplitudes ($a_i\gth{g}$ or $s_\alpha\gth{g}$) in an iterable data structure such as a list.
 We can hence instantiate the \pulsesequence with the following code:
-
 \begin{pycode}
     import filter_functions as ff
     import qutip as qt
@@ -80,22 +79,17 @@ We can hence instantiate the \pulsesequence with the following code:
     dt = [tau, t_pi, tau]
     ECHO = ff.PulseSequence(H_c, H_n, dt)
 \end{pycode}
-
 where a basis is automatically chosen since we did not specify it in the constructor in the last line.
 Calculating the filter function of the pulse for a given frequency vector \code{omega} can then be achieved by calling
-
 \begin{pycode}
     F = ECHO.get_filter_function(omega)
 \end{pycode}
-
 where \code{F} is the dephasing filter function $\FF_{zz}(\omega)$ as we only defined a single noise operator.
 Finally, we calculate the error transfer matrix \liouvUe for the noise spectral density $S_{zz}(\omega) = \omega^{-2}$,
-
 \begin{pycode}
     S = 1/omega**2
     U = ff.error_transfer_matrix(ECHO, S, omega)
 \end{pycode}
-
 This code uses the control matrix previously cached when the filter function was first computed.
 Therefore, only the integration in \cref{eq:ff:decay_amplitudes:freq} and the calculation of the trace tensor in \cref{eq:ff:trace_tensor} are carried out in the last line.
 
@@ -104,7 +98,6 @@ For this, we interpret the \gls{se} as a sequence consisting of three separate p
 Each of the pulses has a single time segment during which a constant control is applied and concatenating the separate \pulsesequence instances yields the \pulsesequence representing a spin echo.
 This way analytical control matrices may be used to calculate the control matrix of the composite sequence.
 Pulses can be concatenated by using either the \code{concatenate()} function or the overloaded \code{@} operator:
-
 \begin{pycode}
     # Define PulseSequence objects as shown above
     FID = ff.PulseSequence(...)
@@ -115,7 +108,6 @@ Pulses can be concatenated by using either the \code{concatenate()} function or 
     # Concatenate the pulses
     ECHO = FID @ NOT @ FID
 \end{pycode}
-
 Since we have cached the control matrices of the \code{FID} and \code{NOT} pulses, that of the \code{ECHO} object is also automatically calculated and stored.
 Concatenating \pulsesequence objects is implemented as an arithmetic operator of the class to reflect the intrinsic composition property of the control matrices.
 

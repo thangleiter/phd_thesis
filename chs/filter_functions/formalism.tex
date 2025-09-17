@@ -114,7 +114,7 @@ In order to obtain the \emph{ensemble}-averaged evolution of many realizations o
 \begin{equation}\label{eq:ff:cumulant_expansion}
     \liouvUetavg = \ev{\exp\lbrace -\i\tau\Li_\mr{eff}(\tau)\rbrace} \eqqcolon \exp\cumulantfun(\tau)
 \end{equation}
-with $\ev{\placeholder}$ denoting the ensemble average\sidenote{
+with $\ev{\placeholder}$ denoting the ensemble average\sidenote[][*-1]{
     The ensemble average represents the expectation value over identical repetitions of an operation in an experiment.
     It can be taken to be a spatial ensemble of many identical systems, \eg an NMR system, or, for ergodic systems, a time ensemble of a single system under stationary noise as would be the case for a single spin measured repeatedly, for instance.
 }
@@ -125,11 +125,11 @@ and the cumulant function~\cite{Kubo1962}
 \end{align}
 The notation $\ev{\placeholder}_\mr{c}$ denotes the cumulant average which prescribes a certain averaging operation.
 The first cumulant of a set of random variables $\{X_i(t)\}_i$ is simply the expectation value, $\ev*{X_i(t)}_\mr{c} = \ev*{X_i(t)}$, whereas the second cumulant corresponds to the covariance, $\ev*{X_i(t)X_j(t)}_\mr{c} = \ev*{X_i(t)X_j(t)} - \ev*{X_i(t)}\ev*{X_j(t)}$.
-Remarkably, third and higher-order cumulants vanish for commuting Gaussian processes~\cite{Kubo1963,Szankowski2017},\sidenote{
+Remarkably, third and higher-order cumulants vanish for commuting\sidenote{
     By \emph{commuting} noise we mean that $\comm{\Hc(t)}{\Hn(t)} = 0\forall t$.
     The prototypical example of this is the pure-dephasing Hamiltonian $H(t) = \left[\Omega(t) + \delta\omega(t)\right]\flatfrac{\sz}{2}$.
 }
-making \cref{eq:ff:cumulant} exact by truncating the sums already at $k = 2$ and $n = 2$.
+Gaussian processes~\cite{Kubo1963,Szankowski2017}, making \cref{eq:ff:cumulant} exact by truncating the sums already at $k = 2$ and $n = 2$.
 In this case, the convergence radius of the \gls{me} becomes infinite.
 In the following, we assume this truncation to be a good approximation of the exact dynamics.
 We investigate this assumption in more detail in \cref{ch:ff:validation} for non-commuting Gaussian noise.
@@ -196,7 +196,7 @@ Finally, we insert the expanded noise operators given by \cref{eq:ff:noise_opera
     \right). \label{eq:ff:cumulant:truncated:liouville}
 \end{equation}
 Here, we captured the ordering of the noise operators due to the commutators in \cref{eq:ff:cumulant:truncated:substituted} in the coefficients $f_{ijkl}$ and $g_{ijkl}$.
-These are trivial functions of the fourth order trace tensor\sidenote{
+These are trivial functions of the fourth order trace tensor\sidenote[][*-4]{
     Note the similarity to the relationship of a transfer matrix with the $\chi$--matrix, $\qp_{ij} = \sum_{kl}\chi_{kl} T_{i k j l}$, with $\chi_{kl}$ defined by $\qp(\rho) = \sum_{kl}\chi_{kl} C_k\rho C_l$ or, in terms of the Kraus operators $K_i$ of the quantum operation, $\chi_{kl} = \sum_i \tr(K_i C_k) \mr{tr}(K_i\adjoint C_l)  = \left[\sum_i\dop{K_i}{K_i}\right]_{kl}$~\cite{Greenbaum2015}.
 }
 \begin{equation}\label{eq:ff:trace_tensor}
@@ -318,7 +318,7 @@ The Fourier transform of \cref{eq:ff:control_matrix:sequence:time} can then be o
 \end{gather}
 with $\Delta t_g = t_g - t_{g-1}$ the duration of gate $g$.
 Hence, calculating the control matrix of the full sequence requires only the knowledge of the temporal positions, encoded in the phase factors $\e^{\i\omega t_{g-1}}$, and the total intended action $\liouvQ\gth{g-1}$ of the individual pulses if their control matrices have been precomputed or obtained otherwise.\sidenote{
-    Such as analytically.
+    In particular, one can make use of analytical expressions for the control matrix.
 }
 The sequence structure can thus be exploited to one's benefit.
 If the same gates appear multiple times during the sequence one can reuse control matrices for equal pulses to facilitate calculating filter functions for complex sequences with modest computational effort.
@@ -439,7 +439,7 @@ From this, several quantities of interest for the characterization of a given co
 We explicitly review the average gate and state fidelities as well as expressions to quantify leakage here, but emphasize that this is not exhaustive.
 Because for many applications the noise is weak and hence the parameter $\xi\ll 1$, we will in the following expand the exponential in \cref{eq:ff:cumulant_expansion} to leading order in $\xi$.
 That is, we approximate\sidenote{
-    Remember that $\cumulantfun(\tau)\in\order{\xi^2}$.
+    Remember that $\norm{\cumulantfun(\tau)}\in\order{\xi^2}$, \ie, second order in the noise strength.
 }
 \begin{equation}\label{eq:ff:error_transfer_matrix:approx}
     \liouvUetavg\approx\eye + \cumulantfun(\tau).
@@ -481,11 +481,7 @@ In the context of quantum information processing we are often interested in the 
 We can extract this projective readout probability from the transfer matrix in \cref{eq:ff:error_propagator} by inspecting the transition probability, or state fidelity, between a pure state $\rho = \op{\psi}$ and an arbitrary state $\sigma$ that evolves according to the quantum operation $\qp: \sigma\rightarrow\qp(\sigma)$.
 Using the double braket notation introduced at the beginning of \cref{ch:ff:theory} we then define the state fidelity as
 \begin{equation}\label{eq:ff:fidelity:state}
-    \begin{split}
-        \fid(\kpsi, \qp(\sigma)) &= \tr(\rho\qp(\sigma)) \\
-                                 &= \dip{\rho}{\qp(\sigma)} \\
-                                 & =  \dmel{\rho}{\qp}{\sigma},
-    \end{split}
+        \fid(\kpsi, \qp(\sigma)) = \tr(\rho\qp(\sigma)) = \dip{\rho}{\qp(\sigma)} = \dmel{\rho}{\qp}{\sigma},
 \end{equation}
 where we have expressed the density matrices by vectors and \qp as a transfer matrix on the Liouville space \Lspace.
 We can thus calculate arbitrary pure state fidelities by simple matrix-vector multiplications of the transfer matrices $\qp = \liouvQ\liouvUe$ and the vectorized density matrices $\dket{\rho}$ and $\dket{\sigma}$.
@@ -519,8 +515,8 @@ While the former is due to systematic errors of the applied pulse and could thus
 Alternatively, the leakage from both contributions can also be determined collectively by substituting \liouvU for \qp.
 
 \section{Performance analysis and efficiency improvements}\label{sec:ff:performance}
-In this section we focus on computational aspects of the formalism, remarking first on several mathematical simplifications that make the calculation of control matrices and decay amplitudes more economical.
-Following this, we investigate the computational complexity of the method in comparison with \gls{mc} techniques and show that our software implementation surpasses the latter's performance in relevant parameter regimes.
+In this section, we focus on computational aspects of the formalism, remarking first on several mathematical simplifications that make the calculation of control matrices and decay amplitudes more economical.
+Following this, we investigate the computational complexity of the method and compare it with that of \gls{mc} techniques, showing that our software implementation surpasses the latter's performance over a broad range of parameter regimes.
 
 \section{Periodic Hamiltonians}\label{sec:ff:performance:periodic_hamiltonians}
 If the control Hamiltonian is periodic, that is $\Hc(t) = \Hc(t + T)$, we can reduce the computational effort of calculating the control matrix by potentially orders of magnitude (see \cref{sec:ff:examples:rabi_driving} for an application in Rabi driving).
