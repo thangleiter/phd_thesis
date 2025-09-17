@@ -1,0 +1,110 @@
+% mainfile: ../main.tex
+
+\newcommand{\thesisTitle}{Millikelvin Confocal Microscopy of Electrostatic Exciton Traps and Filter-Function Description of Noisy Quantum Dynamics}
+\newcommand{\thesisDate}{\today}
+\newcommand{\authorName}{Tobias Hangleiter}
+\newcommand{\firstExaminer}{Prof.~Dr.~Hendrik Bluhm}
+\newcommand{\secondExaminer}{Prof.~Dr.~Christoph Stampfer}
+
+% For PDF
+\author{\authorName}
+\title{\thesisTitle}
+\date{\thesisDate}
+
+% We override the kaobook title page with RWTH's demands
+\makeatletter
+\renewcommand*{\maketitle}{%
+    \begin{titlepage}
+        \pdfbookmark[0]{Cover}{Cover}
+        \sffamily
+        \flushright
+        \hfill
+        \vfill
+        \centering
+        %\rule[5pt]{\textwidth}{.4pt} \par
+        {\huge\thesisTitle\par}
+        %\rule[5pt]{\textwidth}{.4pt} \par
+        \vfill
+
+        \begin{german}
+            %Von der Fakultät für Mathematik, Informatik und Naturwissenschaften der RWTH Aachen University zur Erlangung des akademischen Grades eines Doktors der Naturwissenschaften genehmigte Dissertation \\ % not yet
+            Der Fakultät für Mathematik, Informatik und Naturwissenschaften der RWTH Aachen University vorgelegte Dissertation zur Erlangung des akademischen Grades eines Doktors der Naturwissenschaften \\
+            %\bigskip vorgelegt von \\
+            \bigskip von \\
+            \bigskip \authorName,~M.Sc. \\
+            \smallskip aus \\
+            \smallskip Filderstadt
+
+            %\begin{flushleft}
+            %    \vspace{2\bigskipamount}
+            %    {
+            %        \small
+            %        Berichter:~\firstExaminer \\
+            %        \hphantom{Berichter:}~\secondExaminer    \\
+            %        \medskip Tag der mündlichen Prüfung: TBD \\
+            %        \medskip Diese Dissertation ist auf den Internetseiten der Universitätsbibliothek
+            %        verfügbar.
+            %    }
+            %\end{flushleft}
+        \end{german}
+    \end{titlepage}
+    \ifx
+        \@lowertitleback\@empty\else
+        \clearpage
+        \thispagestyle{empty}%
+        \begingroup
+        \setlength{\parindent}{0pt}%
+        \ifx\@uppertitleback\@empty\else \@uppertitleback \par\bigskip\fi
+        \vspace*{\fill}%
+        \@lowertitleback
+        \endgroup
+        \clearpage
+    \fi
+}
+\makeatother
+
+%\uppertitleback{} % Header
+\lowertitleback{
+    {
+        \small
+        \begin{center}
+            \noindent\includegraphics[width=0.2\textwidth]{img/pdf/logos/IQI_logo}
+            \bigskip\\
+            \textbf{JARA-Institute for Quantum Information}\\
+            \bigskip
+            an initiative of\\
+            \bigskip
+            \begin{tabular}{ m{.45\textwidth} m{.45\textwidth}}
+                \textbf{RWTH Aachen University}                                                 & \textbf{Forschungszentrum Jülich GmbH} \\
+                \textit{Quantum Technology Group}                                               & \textit{JARA-Institute for Quantum Information} \\
+                Department of Physics                                                           & Peter-Grünberg-Institute (PGI-11) \\
+                Otto-Blumenthal-Straße                                                          & Wilhelm-Johnen-Straße \\
+                52070~Aachen                                                                    & 52428~Jülich \\
+                \bigskip\noindent\includegraphics[height=1cm]{img/pdf/logos/rwth_qutech_en_rgb} & \bigskip\noindent\includegraphics[height=1cm]{img/pdf/logos/Logo_FZ_Juelich_cmyk}
+            \end{tabular}
+        \end{center}
+    }
+
+    \bigskip
+
+    \textbf{Colophon} \\
+    This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.luatex.org/}{Lua\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class. \\
+    The source code of this thesis is available at: \url{https://github.com/thangleiter/phd_thesis}.
+
+    \medskip
+
+    \textbf{\authorName} \\
+    \textit{\thesisTitle} \\
+    \thesisDate \\
+
+    \smallskip
+}
+
+%----------------------------------------------------------------------------------------
+%	OUTPUT TITLE PAGE AND PREVIOUS
+%----------------------------------------------------------------------------------------
+
+% Note that \maketitle outputs the pages before here
+
+\frontmatter % Denotes the start of the pre-document content, uses roman numerals
+\maketitle

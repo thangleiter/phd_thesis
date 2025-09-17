@@ -1,0 +1,106 @@
+% mainfile: ../../main.tex
+\chapter{Introduction}\label{ch:exp:introduction}
+
+\begin{partcontribs}
+    An overview of wafers measured in \thispart is given in \cref{tab:app:exp:samples}.
+    Nikolai Spitzer\sidenote[a]{\RUB} grew wafer \textsc{\#15460 (\enquote{Honey})}.
+    Julian Ritzmann\sidenotemark[a] grew wafer \textsc{\#15271 (\enquote{Fig})}.
+    Chao Zhao\sidenote[b]{Then at Forschungzentrum Jülich.} grew wafer \textsc{\#M1\_05\_49}.
+    Thomas Descamps\sidenote[c]{Then at \RWTHFZJ} fabricated the sample \textsc{Doped M1\_05\_49-2}.
+    Sebastian Kindel\sidenote[d]{\RWTHFZJ} fabricated the samples \textsc{Honey H13} and \textsc{Fig F10}.
+\end{partcontribs}
+
+\AutoLettrine{Just} as quantum computers are conceived as the quantum analogon of classical computers with bits and logic operations switched out by quantum counterparts, so can one devise \emph{networks} of such objects, where quantum information generated or processed at a quantum \emph{node} is distributed across long distances through the quantum counterparts of classical information channels~\cite{Nielsen2011,Simon2017}.
+Famously envisioned by \citet{Kimble2008}, the concept can be extended to the idea of a \emph{quantum internet}.
+A wide array of ideas has been put forth that make use of the theoretical capabilities of such quantum networks.
+
+Initially, quantum networks were studied in the context of quantum cryptography~\cite{Bennett1984,Ekert1991,Deutsch1996,Gisin2002}.
+There, the no-cloning theorem and clever use of entanglement ensure quantum-secured communication between distant parties that cannot be eavesdropped upon or tampered with by adversarial parties without detection.\sidenote{
+    As ever in cryptography, new protocols keep getting hacked and loop-holes are discovered~\cite{Huang2018,Pang2020}.
+    It will be interesting to see, therefore, if the security will faithfully transfer from theory to experiment.
+}
+Considerable attention has also been paid to the notion of distributed quantum computation~\cite{Cirac1999}.
+As quantum computers do not appear to be on the same course of miniaturization as classical computers have been, there might turn out to be a limit to the physical size of quantum computers and, hence, a limit to the processing power of a monolithic node.
+Distributed quantum computation resolves this bottleneck by allowing computations to be executed across separate nodes much like classical supercomputer clusters.
+Although a comprehensive resource assessment of the feasibility of such approaches is still outstanding, initial results are promising~\cite{Jacinto2025}, and experimental demonstrations of small computations have recently been shown~\cite{Main2025}.
+A concept combining distributed quantum computation with quantum cryptography is blind quantum computation~\cite{Childs2005,Giovannetti2013}, which promises a form of cloud-based quantum computation.
+Also here first experimental demonstrations have been achieved~\cite{Wei2025}.
+
+Next, quantum networks have garnered interest in the field of quantum sensing~\cite{Eldredge2018}.
+This term refers to the branch of quantum technology in which individual quantum systems are employed as highly sensitive sensors, for example of magnetic fields, or, more generally, to perform measurements of physical quantities~\cite{Giovannetti2004,Degen2017}.
+For example, there exist proposals to employ quantum networks for long-baseline telescopes that use optical interferometry to enhance the resolution of astronomical imaging~\cite{Gottesman2012,Khabiboulline2019}, akin to the techniques used to produce the first image of a supermassive black hole~\cite{TheEventHorizonTelescopeCollaboration2019}, or global networks of quantum clocks~\cite{Komar2014}.
+Going beyond technological applications, the capability to coherently transmit quantum states across large distances opens the pathway to tests of quantum theory itself, and where it might fail~\cite{Weinberg1989}.\sidenote{
+    This area of physics is termed \emph{foundations of physics}.
+}
+At least since the publication of the \gls{epr}--paradox~\cite{Einstein1935}, tests of the non-locality of quantum mechanics have been proposed~\cite{Bell1964,Clauser1969} and performed~\cite{Hensen2015,Storz2023}.
+More recently, for example, a small quantum network was used to rule out a -- certain~\cite{Hita2025} -- description of quantum theory by real numbers~\cite{Renou2021,Wu2022a,Li2022,Chen2022a} and we may expect more such experiments to come~\cite{Shadbolt2014}.
+Indeed, as the first small-scale experimental demonstrators arrive~\cite{Knaut2024,Liu2024,Kucera2024,Stolk2024}, research into complex quantum networks and their properties and possible applications is still in its beginnings~\cite{Nokkala2024}.\sidenote{
+    Take for example the recent interest in quantum causal order~\cite{Hardy2009,Goswami2020,Rozema2024}, originally envisioned to study gravitational effects on quantum coherence.
+}
+
+So how does such a quantum network work?
+In the \enquote{canonical quantization} picture we already adopted previously, we might simply replace classical, optical links by quantum versions thereof and similarly transmit \emph{flying} qubits instead of bits through those channels.
+However, even optical fibers, the backbone of the modern internet, are lossy, and since the photon loss scales exponentially with distance, there would be little hope to build networks larger than a few to a few tens of kilometers.\sidenote{
+    We can expect a survival probability of \qty{1}{\percent} over a distance of \qty{100}{\kilo\meter}~\cite{Azuma2023}.
+    There is therefore arguably no feasible alternative to optical transmission over long distances.
+}
+In classical networks, this problem is remedied by repeater stations that simply produce copies of incoming photons and thus amplify the signal.
+In quantum mechanics, however, this is forbidden by the no-cloning theorem, which states that one cannot achieve a perfect copy of a qubit prepared in an arbitrary and unknown quantum state~\cite{Wootters1982,Dieks1982}.
+To the rescue comes, then, entanglement.
+By letting two adjacent repeater stations share a bipartite maximally entangled state (often referred to as a \gls{epr} or Bell pair), a station, Charlie, positioned between two others, Alice and Bob, each of whom Charlie shares Bell pairs with can perform a Bell measurement on the two halves of the pairs in his possession und thereby project Alice and Bob's halves into a state that is maximally entangled between the two of them.
+This technique of entangling two states that have never interacted with each other is known as entanglement swapping~\cite{Zukowski1993,Pan1998}.
+\citet{Briegel1998,Dur1999} then proposed a quantum repeater protocol that uses entanglement swapping, enhanced by entanglement distillation,\sidenote{
+    Also known as entanglement purification.
+}
+to successively entangle neighboring pairs of entangled states whose resource requirements scale logarithmically with the length of the quantum channel between the ends of which entanglement needs to be established.
+What is more, the protocol tolerates error and loss rates on the percent level and is thus much more benign than \gls{qec}.
+Following the initial proposal, more improved schemes were developed that tolerate higher errors~\cite{Dur2007} or employ entirely different techniques~\cite{Bayrakci2022}, see \citer{Azuma2023} for a review.
+\citet{Muralidharan2016} analyzed the resource requirements of three quantum repeater generations and identified optimal architectures for different parameter regimes.
+Recently, small-scale experimental realizations have demonstrated establishment of two-photon-entanglement across a \qty{50}{\kilo\meter} link by a quantum repeater node in the middle~\cite{Krutyanskiy2023}.
+
+A crucial detail of the protocol is that it requires storing Bell states until the heralding of successful entanglement in a quantum memory.\sidenote{
+    I note that there exist also protocols for memoryless, all-optical quantum repeaters~\cite{Li2019,Azuma2023}.
+}
+In practice, this means that quantum repeaters require a coherent light-matter interface between photonic flying qubits and stationary quantum memory since storing photons is not feasible.
+Such an interface has been the subject of intense research and there exist a large number of competing approaches that differ in choice of material platform for the memory and choice of encoding for the photon~\cite{Awschalom2018,Beukers2024}.
+Among the most advanced are atomic and defect-based systems.
+Atomic (and ionic) systems are a natural choice as the energy scales of atomic transitions are compatible with photons in the telecom range ($\sim\qty{1550}{\nano\meter}$)~\cite{Sangouard2011,Covey2023,Krutyanskiy2023,Liu2024,Kucera2024}.
+Nuclear spins coupled to defects in crystal lattices have long spin lifetimes at the same time as optical transitions~\cite{Togan2010,Nguyen2019,Bergeron2020,Stolk2024,Knaut2024}.
+Optically interfacing semiconductor spin qubits\sidenote{
+    By semiconductor spin qubits, I refer to qubits encoded in the spin of one or more electrons or holes confined in \glspl{qd}, in contrast to spins attached to charged defect centers or nuclear spins.
+}
+or superconducting qubits, on the other hand, is arguably more challenging because of a separation of energy scales.
+While qubits in these systems have energy splittings in the \unit{\giga\hertz} regime, telecom photons have energies of hundreds of \unit{\tera\hertz}, and so bridging this gap requires some sort of intermediary or \emph{transducer}.
+For superconducting qubits, approaches based on mechanical resonators~\cite{Mirhosseini2020} and electro-optic nonlinear materials~\cite{Wang2022} have been pursued among others.
+For spin qubits, excitons (or complexes thereof) confined in \glspl{oaqd} such as self-assembled \glspl{qd}~\cite{Stranski1937,Koguchi1991,Koguchi1993,NobuyukiKoguchi1993} appear to be most promising owing to their excellent optical properties.
+Due to the fast recombination speeds of excitons, their suitability as a qubit is limited.
+Single charge carriers confined to \glspl{saqd} have been explored instead~\cite{Warburton2013}, but still face the problem that the growth of \glspl{saqd} is random and as such coupling two or more qubits is extremely challenging.
+By contrast, spin qubits confined in \glspl{gdqd} have reached a high level of maturity~\cite{Burkard2023,Stano2025}, and the promise of scalability by leveraging the highly advanced industrial semiconductor fabrication technology still holds true.
+
+\citet{Jocker2019} thus proposed a protocol for transferring the quantum state of a photonic, polarization-encoded qubit to that of a spin qubit confined in a \gls{gdqd} by means of a \gls{oaqd} serving as intermediary in order to benefit from the benign optical properties of the latter and the long coherence times and processing capabilities of the former.
+In the protocol, an incident photon generates an exciton in the \gls{oaqd}, transferring the quantum state to the exciton.
+By application of a strong in-plane magnetic field, bright and dark states of the exciton are mixed and electron and hole remain in a product state with all information encoded in the electron spin.
+This allows discarding the hole and subsequently transferring the electron state to the \gls{gdqd}, the details of which depend on the encoding chosen, either single-spin (\gls{ld}) or two-spin (singlet-triplet) qubit.
+The protocol is agnostic to the precise realization of the \gls{oaqd}, although it adopts parameters from \glspl{saqd}.
+A crucial ingredient of the protocol is that the \gls{oaqd} be in tunnel-coupling distance to the \gls{gdqd} in order to enable exchange coupling or the adiabatic transfer of the photo-electron.
+For \glspl{saqd} this is a challenging endeavor since, as mentioned above, their growth is random and therefore requires one to first locate the dots and then align the gates during fabrication of the \gls{gdqd}.
+Because of the exponential dependence of tunnel coupling on the distance, this alignment needs to be very precise indeed.
+
+An alternative to an \gls{saqd} was proposed by \citet{Descamps2021} in form of an electrostatic exciton trap.
+Here, excitons are designed to be confined not by local modifications of the band structure during growth but by application of out-of-plane electric fields through gate electrodes.
+This tilts the band structure and lowers the exciton energy by the \gls{qcse}, where exciton dissociation is prevented by charge carrier confinement in a \gls{qw}.
+To avoid dissociation by lateral electric fields, \citet{Descamps2021} developed a fabrication process to thin down the semiconductor heterostructure to a thin membrane symmetric about the \gls{qw}, allowing lithographic patterning of laterally aligned, nanometer-scale gate electrodes on both sides of the membrane~\cite{Descamps2023}.
+Application of voltages of the same magnitude but opposite polarity to gates on the top and bottom side of the membrane then produces -- to leading order -- a local electric field without changing the chemical potential in the \gls{qw} itself, while voltages of the same polarity have just the opposite effect.
+Together with the out-of-plane confinement by the \gls{qw}, this should in theory provide 0D-confinement of exciton purely by electrostatic means and allow for the top-down, scalable fabrication of \glspl{oaqd} in close proximity to other, conventional \glspl{gdqd}.
+What is more, the confinement strength and potential relative to the neighboring \gls{gdqd} can be finely tuned by well-established techniques.
+
+In \citer{Descamps2023}, \citeauthor{Descamps2023} demonstrated the implementation of the membrane fabrication process as well as initial progress towards forming a \gls{gdqd} in transport and optical measurement of the lowering of the local exciton potential by the \gls{qcse}.
+Yet unobserved was the signature of \gls{qd}-behavior in an exciton trap as manifested by, for example, the resolution of orbital splittings or single-photon emission.
+In \thispart, I present optical measurements of exciton traps towards this goal.
+It is outlined as follows.
+In \cref{ch:exp:theory}, I give an introduction to the physics of \gls{pl} in semiconductors as well as the influence of electric fields.
+Following that, I introduce the \python measurement framework I wrote to control the experiment in \cref{ch:exp:mjolnir}.
+Then, in \cref{ch:exp:observations}, I present measurements of doped membranes.
+I show data of an exciton trap and discuss the voltage, power, and position dependence of the \gls{pl} emission as well as \gls{ple} measurements.
+Finally, I perform simulations of the membrane structure to explain the quenching of \gls{pl} intensity observed when focusing a gate and propose slight modifications to the heterostructure design to mitigate this effect.
+I conclude with an outlook in \cref{ch:exp:conclusion}.

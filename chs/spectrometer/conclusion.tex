@@ -22,7 +22,7 @@ There are several possible avenues for future development of the \pyspeck packag
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
-Another valuable addition would be to add support for generic instruments abstracted by \qumada~\cite{Huckemann2025a}.
+Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2025}.
 \qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
@@ -35,7 +35,7 @@ In a client-server architecture, which is inherently asynchronous, such as Zuric
 But of course the strength of the \pyspeck package stems from its capacity to be utilized in conjunction with any hardware instrument.
 
 \begin{marginlisting}
-    \begin{py}[
+    \begin{pycode}[
         fontsize=\footnotesize,%
         breaklines,%
         breakafter=.,%
@@ -60,7 +60,7 @@ But of course the strength of the \pyspeck package stems from its capacity to be
             def acquire(self, **_):
                 while not self.event.is_set():
                     yield self.queue.get(block=True)
-    \end{py}
+    \end{pycode}
     \caption[\code{TeeDAQ} template]{
         Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
         The \code{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
@@ -72,11 +72,13 @@ One way to implement such functionality would be to introduce a proxy \code{DAQ}
 This proxy class would serve as an interface to external measurement software and expose two attributes; first, a data queue, into which the external code could place arbitrary time series data that was obtained during some measurement, and second, a shared dictionary to hold acquisition parameters as these might change between measurements.
 Because the live view mode runs in the background, the external measurement framework could push data to the queue whenever new data was taken without obstructing the measurement workflow.
 
-\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.
+\Cref{lst:speck:conclusion:tee} shows a template design for such a \code{TeeDAQ} class.\sidenote{
+    The UNIX shell command \texttt{data = \$(measure(**settings) | tee daq)} should give an indication as to the naming.
+}
 The \code{setup()} method ignores the input parameters and instead obtains the current settings from the shared \code{settings} proxy.
 Similarly, instead of fetching data from an instrument itself, the \code{acquire()} method attempts to fetch data from the shared \code{queue} and blocks the thread if no data is present, thereby efficiently idling and consuming no resources unless triggered by the external caller.
 A measurement framework would then interact with the \code{TeeDAQ} object as exemplarized by the following code:
-\begin{py}
+\begin{pycode}
     daq = TeeDAQ(...)
     spect = Spectrometer(daq)
     view = spect.live_view()
@@ -84,7 +86,7 @@ A measurement framework would then interact with the \code{TeeDAQ} object as exe
     data = measure(fs, n_pts)
     daq.settings.update(fs=fs, n_pts=n_pts)
     daq.queue.put(data)
-\end{py}
+\end{pycode}
 Measurement frameworks integrating with this interface could thus provide experimentalists live feedback on current noise levels with negligible overhead and minimal code adaptation.
 
 Finally, it might be useful to not only allow estimating \glspl{psd} but also \glspl{csd} or \emph{cross-spectra}.
@@ -122,7 +124,7 @@ The internal workflow shown in \cref{lst:speck:daq:workflow} would then need to 
 The downside of this approach is that synchronization of different instruments or channels would need to be taken care of externally.
 
 \begin{listing}[htpb]
-    \begin{py}
+    \begin{pycode}
         daq_1 = MyDAQ(driver_handle, channel=1)
         # Or MyOtherDAQ(driver_handle_2) if another instrument
         daq_2 = MyDAQ(driver_handle, channel=2)
@@ -135,7 +137,7 @@ The downside of this approach is that synchronization of different instruments o
                                   for daq in daqs]
         for data_buffers in zip(*acquisition_generators):
             estimate_csd(*data_buffers)
-    \end{py}
+    \end{pycode}
     \caption[Proposed \code{DAQ} workflow for cross-spectra]{
         Proposed \code{DAQ} workflow for estimating cross-spectra.
         Each hardware channel (same or different instruments) is assigned to a \code{DAQ} object.
@@ -146,14 +148,14 @@ The downside of this approach is that synchronization of different instruments o
     \label{lst:speck:conclusion:cross_workflow}
 \end{listing}
 
-Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\sidecite{CSDScipy} for \gls{csd} estimation\sidenote{
+Further code adaptations would involve minor changes such as replacing the spectrum estimator with \code{scipy.signal.csd()}~\cite{CSDScipy} for \gls{csd} estimation\sidenote{
     In practice, working with the normalized \gls{csd}, or correlation coefficient~\cite{Rojas-Arias2023,Yoneda2023}
     \begin{align}
         r_{ij}(\omega) = \frac{S_{ij}(\omega)}{\sqrt{S_{ii}(\omega)S_{jj}(\omega)}}
     \end{align}
     with $S_{ii}(\omega)$ the \gls{psd} of process $x_i$ would likely be more favorable.
 }
-and make the plotting conform to complex data.\sidenote{
+and making the plotting conform to complex data.\sidenote{
     It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
 }
 % TODO:

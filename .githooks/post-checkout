@@ -7,20 +7,33 @@ is_branch_checkout=$3
 # Only run for branch checkouts (not file checkouts)
 if [ "$is_branch_checkout" = "1" ]; then
     echo "Switched branches, updating submodules..."
-    git submodule update
+    git submodule update --remote
 
     # Copy to ~/texmf on windows only (on linux the soft link works
     case "$(uname -s)" in
       *MINGW*|*MSYS*)
-        mkdir -p "$USERPROFILE"/texmf/tex/latex
-        mkdir -p "$USERPROFILE"/texmf/fonts/truetype/LiberationMono
-
-        cp --recursive --update ./lib/kaobook "$USERPROFILE"/texmf/tex/latex
-        cp --recursive --update ./lib/fonts/LiberationMono/*.ttf "$USERPROFILE"/texmf/fonts/truetype/LiberationMono
-      ;;
-        *)
+        TEXMF_HOME="$USERPROFILE"
+        COMMAND="cp --recursive --update"
+      ;; Linux)
+        TEXMF_HOME="$HOME"
+        COMMAND="ln --symbolic --force --backup"
+      ;; Darwin)
+        TEXMF_HOME="$HOME/Library"
+        COMMAND="ln --symbolic --force --backup"
+      ;; *)
       ;;
     esac
+
+    TEX_DIR="$TEXMF_HOME/texmf/tex/latex"
+    FONT_DIR="$TEXMF_HOME/texmf/fonts/truetype/LiberationMono"
+    ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+    mkdir -p "$TEX_DIR"
+    mkdir -p "$FONT_DIR"
+
+    $COMMAND "$ROOT_DIR"/lib/kaobook "$TEX_DIR"
+    $COMMAND "$ROOT_DIR"/lib/polyglossia.sty "$TEX_DIR"
+    $COMMAND "$ROOT_DIR"/lib/fonts/LiberationMono/*.ttf "$FONT_DIR"
 fi
 
 exit $?
