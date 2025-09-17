@@ -33,20 +33,20 @@
 - [ ] Acknowledgements
 
 ## Feedback
-- [ ] HB
+- [x] HB
   - [x] Part I
-  - [ ] Part III
-- [ ] DH
-  - [ ] Part I
-  - [ ] Part III
+  - [x] Part III
+- [x] DH
+  - [x] Part I
+  - [x] Part III
 - [x] EK
   - [x] Part II
   - [x] Part III
 
 ### pyspeck
-- [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
-- [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
-- [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
+- [x] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
+- [x] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
+- [x] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
 - [x] More representative cumulative spectra
 - [ ] ~~Discuss cumulative with dB scale?~~
 
@@ -95,7 +95,7 @@
     - [x] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
-- [ ] Part title page design?
+- [ ] ~~Part title page design?~~
 - [ ] ~~`\margintoc`?~~
 - [x] Move LOF to end of document.
 
