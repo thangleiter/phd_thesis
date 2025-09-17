@@ -74,9 +74,15 @@ matlabengine = ">=25.1.2, <26"
 
 [feature.band_structure.pypi-dependencies]
 poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "2aa23aaa8bc0a698b1558a83145c3a87e982e2db" }
+qutech-util = { version = ">=2025.8.1, <2026", extras = ["fancy-progressbar"] }
+
+[feature.band_structure.dependencies]
+python = ">=3.13.7,<3.14"
+matplotlib = ">=3.10.6,<4"
+numpy = ">=2.3.3,<3"
 
 [environments]
 default = ["core", "logm_frechet"]
 no-matlab = ["core"]
-band-structure = ["core", "band_structure"]
+band-structure = ["band_structure"]
 
