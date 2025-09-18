@@ -429,6 +429,7 @@ spect_accel.processed_unit = 'μm'
 spect_accel.reprocess_data(*spect_accel.keys(), detrend='constant')
 
 spect_optic.procfn = cps_calib
+spect_optic.processed_unit = 'μm'
 spect_optic.reprocess_data(*spect_optic.keys(), pos_vs_cps_calibration=linear_output.beta,
                            detrend='constant')
 
