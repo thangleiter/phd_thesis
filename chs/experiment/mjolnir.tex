@@ -65,6 +65,7 @@ three logical instruments implemented as subclasses of the \qcodes \code{Instrum
 \Cref{fig:exp:mjolnir:tree} shows the repository structure.
 In the following, I give a brief overview of the functionalities comprised by these logical instruments.
 
+\clearpage
 \subsection{Excitation path}\label{subsec:exp:mjolnir:logical_instruments:exc}
 \begin{marginfigure}
     \input{img/tikz/experiment/mjolnir_tree}
@@ -79,7 +80,6 @@ In the following, I give a brief overview of the functionalities comprised by th
     }
     \label{fig:exp:mjolnir:tree}
 \end{marginfigure}
-
 As already outlined above, the \code{ExcitationPath} object controls everything related to the illumination of the sample.
 The \code{active_light_source} parameter switches between laser, white light, and no illumination.
 Turning on the laser comprises enabling the chiller, switching on the pump laser, waiting for it to ramp up, and asserting the wavelength lock is acquired.
@@ -102,7 +102,7 @@ As the samples we are concerned with in \thethesis, I discuss the main implement
 On a single sample, there are any number of traps consisting of one or both sets of top and bottom \enquote{central} and \enquote{guard} gates.
 Each trap is implemented as a \qcodes \code{InstrumentModule}, \code{Trap}, that is part of a \code{ChannelList}.
 The currently active trap (\ie, the one currently in focus by the microscope) is selected by the \code{active_trap} parameter and accessible through the \code{trap} property of the \code{TrapSample} object.
-A \code{Trap} exposes the virtual gate parameters\sidenote[][*4]{
+A \code{Trap} exposes the virtual gate parameters\sidenote{
     Using the \qdac's built-in \hidelinkhref{https://qcodes.github.io/Qcodes_contrib_drivers/api/generated/qcodes_contrib_drivers.drivers.QDevil.html\#qcodes_contrib_drivers.drivers.QDevil.QDAC2.Arrangement_Context}{\code{Arrangement_Context}} virtual gate functionality.
 }
 \code{difference_mode} and \code{common_mode} (see \cref{subsec:exp:observations:pl:qcse}) as the difference and sum of top and bottom gate voltages, respectively, as well as the unmodified top and bottom gate voltage and corresponding leakage current parameters.
@@ -195,6 +195,14 @@ The state of external parameters, that is, parameters that are not varied or mea
 This uses the \code{Parameter.set_to()} context manager to set the parameters to the given values before the measurement starts and restore their original values upon exit in a controlled manner, allowing users to ensure their device is in a well-defined state.
 Custom setup and teardown tasks can furthermore be specified through the \code{add_before_run} and \code{add_after_run} arguments, respectively.
 
+A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketched in \cref{lst:exp:mjolnir:workflow}.
+The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
+Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
+Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
+More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
+Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
+I leave this option for future work.
+
 \begin{listing}[htpb]
     \begin{pycode}
         from mjolnir.measurement.handler import LaserCcdMeasurementHandler
@@ -227,7 +235,7 @@ Custom setup and teardown tasks can furthermore be specified through the \code{a
         )
     \end{pycode}
     \caption[\mjolnir measurement workflow]{
-    Setup and measurement workflow using the \mjolnir package.
+        Setup and measurement workflow using the \mjolnir package.
         \code{station} is a \qcodes \code{Station} object managing the instruments.
         The \code{sweeps} object describes a nested loop on whose inner iteration the difference mode parameter of the trap's central gate is swept over a linear grid and on whose outer iteration the laser power, adjusted for the \acrlong{bs} ratio, is swept over a logarithmically spaced grid.
         No dependent parameters (\code{Measure} objects) need to be explicitly specified as the \code{LaserCcdMeasurementHandler} measures the \gls{ccd} spectrum as well as laser power and leakage currents of the swept gates by default.
@@ -236,14 +244,6 @@ Custom setup and teardown tasks can furthermore be specified through the \code{a
     }
     \label{lst:exp:mjolnir:workflow}
 \end{listing}
-
-A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketched in \cref{lst:exp:mjolnir:workflow}.
-The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
-Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
-Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
-More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
-Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
-I leave this option for future work.
 
 \section{Plotting}\label{sec:exp:mjolnir:plotting}
 \begin{figure*}
