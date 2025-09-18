@@ -28,6 +28,9 @@ If fonts are not found, download and install them in your system:
 
 Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
 
+- For a [bugfix concerning spacing](https://github.com/reutenauer/polyglossia/issues/686) in the list of figures, `polyglossia>=2.7` is required. 
+  A patched file is included at `lib/polyglossia.sty`, but not automatically copied to `$TEXMFHOME`.
+
 ## XeTeX
 
 ### `luaotfload-tool`
