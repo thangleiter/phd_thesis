@@ -1,6 +1,6 @@
 [submodule "lib/kaobook"]
 	path = lib/kaobook
-	url = git@git.rwth-aachen.de:tobias.hangleiter/kaobook.git
+	url = https://github.com/thangleiter/kaobook.git
 	branch = tectonic
 [submodule "lib/fonts"]
 	path = lib/fonts
