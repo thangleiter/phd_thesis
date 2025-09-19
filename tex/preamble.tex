@@ -16,7 +16,7 @@
     natbib=true,
     url=false,
     datamodel=software,
-    maxbibnames=5,
+    maxbibnames=15,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
 
@@ -58,10 +58,7 @@
 %\usepackage{Rothdn}
 % Use these like so:
 % \Zallmanfamily
-\renewcommand{\LettrineFontHook}{%
-    \fontspec{Libertinus Serif Initials}%
-    %\color{RWTHblue100}%
-}
+\renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
 
 \usepackage{tabularx} % better tables with given width
 \usepackage{threeparttable} % tablenotes env
