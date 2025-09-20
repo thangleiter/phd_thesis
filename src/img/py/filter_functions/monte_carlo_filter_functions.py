@@ -182,12 +182,15 @@ def plot_separate(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=
 
     axes[1, 0].set_ylabel(r'$\mathcal{F}_{\Gamma,\Delta}(\omega;\tau)$')
     axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
+
+    return fig, axes
+
+
+def hide_zero_label(axes):
     for ax in axes.flat:
         for loc, txt in zip(ax.get_yticks(), ax.get_yticklabels()):
             if loc == 0.0:
                 txt.set_visible(False)
-
-    return fig, axes
 
 
 def plot_complete(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=None,
@@ -222,16 +225,11 @@ def plot_complete(pulse, omega, FF_inc, FF_coh, MC_mean, MC_conf, cix=None, rix=
             ax.fill_between(omega, *MC_conf[:, i, j], facecolor=RWTH_COLORS_50['blue'], alpha=0.33)
             ax.semilogx(omega, (FF_inc + FF_coh)[0, 0, i, j], color=RWTH_COLORS['magenta'],
                         linewidth=0.5)
-
             ax.annotate(P[r] + P[c], (0.965, 0.925), xycoords='axes fraction',
                         verticalalignment='top', horizontalalignment='right')
 
     axes[1, 0].set_ylabel(r'$\mathcal{F}_{kl}(\omega;\tau)$')
     axes[-1, 1].set_xlabel(r'$\omega$' + pernanosecond)
-    for ax in axes.flat:
-        for loc, txt in zip(ax.get_yticks(), ax.get_yticklabels()):
-            if loc == 0.0:
-                txt.set_visible(False)
 
     return fig, axes
 
@@ -295,6 +293,7 @@ axes[0, 1].set_ylim(-5e-1, 5e-1)
 axes[0, 0].set_ylim(1e-7, 1e-0)
 axes[1, 0].set_ylabel(None)
 axes[1, 1].set_xlabel(None)
+hide_zero_label(axes)
 fig.supylabel(r'$\mathcal{F}_{kl}(\omega;\tau)$', fontsize='medium')
 fig.supxlabel(r'$\omega$' + pernanosecond, fontsize='medium')
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
@@ -312,6 +311,7 @@ fig, axes = plot_complete(pulse, **results)
 axes[0, 1].set_yscale('asinh', linear_width=2e-2)
 axes[0, 1].set_ylim(-5e-1, 5e-1)
 axes[0, 0].set_ylim(1e-7, 1e-0)
+hide_zero_label(axes)
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_X.pdf')
 # %% Spin echo
@@ -324,7 +324,9 @@ else:
         results = dict(arch)
 # %%% Plot
 fig, axes = plot_complete(pulse, **results)
-axes[0, 1].set_ylim(-10, 10)
+axes[0, 1].set_yscale('asinh', linear_width=0.1)
+axes[0, 1].set_ylim(-9.9, 9.9)
+hide_zero_label(axes)  # XXX: manipulate labels only at the very end; they are persistent!
 fig.get_layout_engine().set(h_pad=1/72, w_pad=1/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'monte_carlo_FF_spin_echo.pdf')
 # %% Random pulse (unused)

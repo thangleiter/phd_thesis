@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{The \texttt{filter\_functions} software package}\label{ch:ff:software}
-\AutoLettrine{In} this section we give a brief overview over the \filterfunctions software package implementing the main features of the formalism derived above.\sidenote{
+\AutoLettrine{In} this chapter, we give a brief overview over the \filterfunctions software package implementing the main features of the formalism derived above.\sidenote{
     For more details we refer the reader to the \href{https://filter-functions.readthedocs.io/en/latest/}{documentation}.
 }
 This includes the calculation of the decay amplitudes \decayamps, frequency shifts \freqshifts, and fidelities as well as the calculation of the control matrices for single gates and both generic and periodic sequences of gates.
@@ -66,7 +66,6 @@ In the software, we first define a \pulsesequence object representing the \gls{s
 As was already mentioned, the control and noise Hamiltonians are given as a list containing lists for every control or noise operator that is considered.
 These sublists consist of the respective operator as a \numpy array or \qutip \qobj and the amplitudes ($a_i\gth{g}$ or $s_\alpha\gth{g}$) in an iterable data structure such as a list.
 We can hence instantiate the \pulsesequence with the following code:
-
 \begin{minted}{python}
 import filter_functions as ff
 import qutip as qt
@@ -80,7 +79,6 @@ H_n = [[qt.sigmaz()/2, [1, 1, 1]]]
 dt = [tau, t_pi, tau]
 ECHO = ff.PulseSequence(H_c, H_n, dt)
 \end{minted}
-
 where a basis is automatically chosen since we did not specify it in the constructor in the last line.
 Calculating the filter function of the pulse for a given frequency vector \code{omega} can then be achieved by calling
 

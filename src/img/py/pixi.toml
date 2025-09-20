@@ -17,7 +17,7 @@ spyder-kernels = ">=3.0.5,<4"
 qutip = ">=5.2.1,<6"
 xarray = ">=2025.9.0,<2026"
 sympy = ">=1.14.0,<2"
-numpy = ">=2.2.6,<3"
+numpy = ">=2.2.6,<2.3"  # in 2.3 linalg.eigh sometimes does not converge for some reason
 numba = ">=0.61.2,<0.62"
 matplotlib = ">=3.10.6,<4"
 opt_einsum = ">=3.4.0,<4"
@@ -59,9 +59,8 @@ opencv = ">=4.12.0,<5"
 filter-functions = ">=1.2.0, <2"
 qutech-util = { version = ">=2025.8.1, <2026", extras = ["gl", "colormaps"] }
 python-spectrometer = { version = ">=2025.9.1, <2026", extras = ["simulator"] }
-lindblad-mc-tools = { git = "https://git.rwth-aachen.de/tobias.hangleiter/lindblad_mc_tools", rev = "d6f0d97a4607888a2ed6863d559e2d5a914b5215" }
-poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "34dad33bac59e9ae2a2096c6720ee784dbfa6c0e" }
-mjolnir = { git = "https://git-ce.rwth-aachen.de/qutech/lab_software/python-mjolnir", rev = "b8dc7fe777e8b90c24575283b0a94fefab8c3726" }
+lindblad-mc-tools = { git = "https://git.rwth-aachen.de/qutech/lindblad_mc_tools", rev = "52c70715efffca051a980c26de5856398e5bc242" }
+mjolnir = { git = "https://git.rwth-aachen.de/qutech/mjolnir", rev = "86f3963122e73a44a91189d735f75cceba0c8ed3" }
 pymoosh = ">=3.92, <4"
 numpy-quaternion = ">=2024.0.12, <2025"
 qutip-qtrl = ">=0.1.4"
@@ -73,7 +72,17 @@ python = ">=3.9,<=3.12"
 [feature.logm_frechet.pypi-dependencies]
 matlabengine = ">=25.1.2, <26"
 
+[feature.band_structure.pypi-dependencies]
+poisson-schroedinger = { git = "https://git-ce.rwth-aachen.de/qutech/simulation/poisson_schroedinger_1d", rev = "2aa23aaa8bc0a698b1558a83145c3a87e982e2db" }
+qutech-util = { version = ">=2025.8.1, <2026", extras = ["fancy-progressbar"] }
+
+[feature.band_structure.dependencies]
+python = ">=3.13.7,<3.14"
+matplotlib = ">=3.10.6,<4"
+numpy = ">=2.3.3,<3"
+
 [environments]
 default = ["core", "logm_frechet"]
 no-matlab = ["core"]
+band-structure = ["band_structure"]
 

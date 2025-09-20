@@ -1,11 +1,21 @@
 import sys
 
+if __name__ == '__main__':
+    # don't run this script in batched mode. there's nothing to plot
+    sys.exit(0)
+
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
-from poisson_schroedinger import PoissonSchroedingerSolver
 
 from qutil import ui
+
+try:
+    from poisson_schroedinger import PoissonSchroedingerSolver
+except ImportError:
+    print("Could not import poission_schroedinger. Exiting")
+    sys.exit(1)
+
 # %% Functions
 
 
@@ -69,14 +79,9 @@ def extract_params(structure, z_qw_ix):
     return E, V, psi, n_tot, n_2DEG
 
 
-# %%
-if __name__ == '__main__':
-    # don't run this script in batched mode. there's nothing to plot
-    sys.exit(0)
-
 # %% Simulate single-gate bias
 V_FP = 0.76
-structure, z_qw, z_qw_ix = setup_structure(doping=1.8e18, cap=10, qw=20+5.65e-1, qw_ix=(2, 6))
+structure, z_qw, z_qw_ix = setup_structure(doping=1.8e18, cap=10, qw=20, qw_ix=(2, 6))
 cooldown_structure(structure, V_FP=V_FP)
 
 npts = 51
@@ -86,14 +91,14 @@ psi = np.empty((npts, structure.quantum_region_width_nm, structure.number_eigenv
 n_2DEG = np.empty((npts,))
 n_tot = np.empty((npts,))
 
+for i, v in enumerate(ui.progressbar(voltage := np.linspace(0, -1.5, npts))):
+    apply_voltage(structure, v, 0)
+    E[i], V[i], psi[i], n_tot[i], n_2DEG[i] = extract_params(structure, z_qw_ix)
+# %% Simulate diference mode sweep
 V_CM = -0.5
 for i, v in enumerate(ui.progressbar(voltage := np.linspace(0, -1.5, npts))):
     apply_voltage(structure, V_TG(v, V_CM), V_BG(v, V_CM))
     E[i], V[i], psi[i], n_tot[i], n_2DEG[i] = extract_params(structure, z_qw_ix)
-
-    # if i % 10:
-    #     structure.print_results()
-    #     structure.plot_density()
 # %%%%
 fig, ax = plt.subplots(2, sharex=True, layout='constrained')
 ax[0].plot(voltage, n_tot)
@@ -117,9 +122,10 @@ ax.set_xlabel('$V$ (V)')
 fig, axs = plt.subplots(structure.number_eigenvectors, sharex=True, sharey=True,
                         layout='constrained')
 for i, ax in enumerate(axs):
-    ax.pcolormesh(z := structure.z_nm[slice(*z_qw_ix)], V, abs(psi[:, slice(*z_qw_ix - 10), i]))
+    ax.pcolormesh(z := structure.z_nm[slice(*z_qw_ix)], voltage,
+                  abs(psi[:, slice(*z_qw_ix - 10), i]))
     ax.plot(z.mean() + np.trapezoid((z-z.mean()) * abs(psi[:, slice(*z_qw_ix - 10), i]) ** 2, z),
-            V, 'k')
+            voltage, 'k')
 
 # %%%
 npts = 101

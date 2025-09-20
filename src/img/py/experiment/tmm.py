@@ -26,7 +26,7 @@ SAVE_PATH = PATH / 'pdf/experiment'
 SAVE_PATH.mkdir(exist_ok=True)
 with np.errstate(divide='ignore', invalid='ignore'):
     SEQUENTIAL_CMAP = make_sequential_colormap('magenta', endpoint='blackwhite').reversed()
-    DIVERGING_CMAP = make_diverging_colormap(('green', 'magenta'), endpoint='white')
+    DIVERGING_CMAP = make_diverging_colormap(('magenta', 'green'), endpoint='white')
 
 # Lengths are in units of nm
 WAV = 825
@@ -34,6 +34,7 @@ w_0 = 624
 INC = 0.
 POL = 0
 
+INCLUDE_MIRROR = False
 INCLUDE_SI = True
 
 init(MAINSTYLE, backend := 'pgf')
@@ -119,7 +120,7 @@ def setup_bg_structure(which: Literal['optical', 'ebeam'] = 'ebeam', barrier_thi
 
 
 def setup_tgbg_structure(barrier_thickness=90., air_thickness=1., epoxy_thickness=None,
-                         verbose=False):
+                         mirror=False, verbose=False):
     bare_structure = setup_bare_structure(barrier_thickness, air_thickness, epoxy_thickness,
                                           verbose)
 
@@ -129,12 +130,19 @@ def setup_tgbg_structure(barrier_thickness=90., air_thickness=1., epoxy_thicknes
     tgbg_stack.insert(2, materials.index(ti))
     tgbg_stack.insert(-1 - offset, materials.index(au_med))
     tgbg_stack.insert(-2 - offset, materials.index(ti))
+    if mirror:
+        tgbg_stack.insert(-1 - offset, materials.index(sio2))
+        tgbg_stack.insert(-1 - offset, materials.index(au_thick))
 
     tgbg_thickness = bare_structure.thickness.copy()
     tgbg_thickness.insert(1, 7)
     tgbg_thickness.insert(2, 2)
     tgbg_thickness.insert(-1 - offset, 25)
     tgbg_thickness.insert(-2 - offset, 5)
+    if mirror:
+        tgbg_thickness.insert(-1 - offset, 195)
+        tgbg_thickness.insert(-1 - offset, 200)
+
     return pm.Structure(materials, tgbg_stack, tgbg_thickness, verbose=verbose)
 
 
@@ -343,9 +351,10 @@ materials.append(epoxy)
 # %%% Si
 si = pm.Material(['main', 'Si', 'Franta-10K'], specialType='RII')
 materials.append(si)
+# %%% SiO2
+sio2 = pm.Material(['main', 'SiO2', 'Gao'], specialType='RII')
+materials.append(sio2)
 # %% Simulate
-materials = [air, gaas, algaas, au_thin, au_med, au_thick, ti, epoxy, si]
-
 tbl = {'A': {}, 'R': {}}
 # ebeam buried gate: 5/25
 # ebeam etched gate: 2/7
@@ -419,6 +428,11 @@ tgbg_structure = setup_tgbg_structure(barrier_thickness=90, verbose=False)
 A, r, t, R, T = analyze_absorptance(tgbg_structure)
 tbl['A']['TG+BG'] = extract_absorptance(tgbg_structure, A)
 tbl['R']['TG+BG'] = R
+# %%% Top and Bottom ebeam with gold mirror (Wu 2024)
+# Not used
+print('Ebeam top and bot gate w/ Au mirror:\n --> 7/2/10/90/20/90/10/5/25/195/200')
+tgbg_mirror_structure = setup_tgbg_structure(barrier_thickness=90, mirror=True, verbose=False)
+A, r, t, R, T = analyze_absorptance(tgbg_mirror_structure)
 # %%%% Save to latex
 df = pd.DataFrame.from_dict(tbl)
 with (DATA_PATH / 'absorptance_reflectance.tex').open('w') as file:
@@ -433,7 +447,7 @@ with (DATA_PATH / 'absorptance_reflectance.tex').open('w') as file:
 
 
 def objective_function(barrier_thickness, wavelength=WAV, incidence=INC, polarization=POL):
-    structure = setup_tgbg_structure(barrier_thickness[0])
+    structure = setup_tgbg_structure(barrier_thickness[0], mirror=INCLUDE_MIRROR)
     source_interface = get_source_interface(structure)
     A, *_ = pm.absorption(structure, wavelength, incidence, polarization)
     return 1 - sum(A[source_interface-1:source_interface+1]).real
@@ -445,7 +459,8 @@ best, convergence = pm.differential_evolution(objective_function, budget,
 best = round(best.item())
 
 print(f'Ebeam top and bot gate (opt @ {WAV} nm):\n -> 7/2/10/{best}/20/{best}/10/5/25')
-tgbg_structure_opt = setup_tgbg_structure(barrier_thickness=best, verbose=False)
+tgbg_structure_opt = setup_tgbg_structure(barrier_thickness=best, mirror=INCLUDE_MIRROR,
+                                          verbose=False)
 A_opt, *_ = analyze_absorptance(tgbg_structure_opt)
 # %%% Plot absorptance as function of wavelengths
 PLOT_R = False
@@ -477,15 +492,16 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
         ax2.plot(wavelengths, Rs, ls='--')
         ax2.plot(wavelengths, Rs_opt, ls='--')
         ax2.set_ylim(0, 1)
-        ax2.set_ylabel('$R$')
+        ax2.set_ylabel(r'$\mathscr{R}$')
     else:
         ax.grid()
 
     fig.savefig(SAVE_PATH / 'tmm_absorptance.pdf')
 
 # %%% Gaussian illumination
-structure = setup_tgbg_structure(barrier_thickness=90, air_thickness=1)
-structure_opt = setup_tgbg_structure(barrier_thickness=best, air_thickness=1)
+structure = setup_tgbg_structure(barrier_thickness=90, air_thickness=1, mirror=INCLUDE_MIRROR)
+structure_opt = setup_tgbg_structure(barrier_thickness=best, air_thickness=1,
+                                     mirror=INCLUDE_MIRROR)
 
 beam = pm.Beam(wavelength=WAV, incidence=INC, polarization=POL, horizontal_waist=2*w_0)
 window = pm.Window(width=8*w_0, beam_relative_position=0.5, horizontal_pixel_size=25,

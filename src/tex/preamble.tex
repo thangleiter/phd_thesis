@@ -116,7 +116,7 @@
 \usepackage{physics}
 \usepackage{siunitx}
 \sisetup{%
-    per-mode = symbol,%
+    per-mode = single-symbol,%
     list-final-separator = {\text{, and }},%
     print-unity-mantissa = false,%
 }
@@ -140,25 +140,24 @@
 % Add sidenotes to the exceptions for xspace so that macros that end on \xspace don't get a space if followed by \sidenote
 \xspaceaddexceptions{\sidenote}
 
-% Set pdf version, but tectonic still thinks it's 1.5
-% https://tex.stackexchange.com/a/618019
-\ExplSyntaxOn
-\pdf_version_gset:n{2.0}
-\pdf_uncompress: % to check the pdf
-\ExplSyntaxOff
-
 % Make "Figure X.Y" link back to the list of figures
 \DeclareCaptionLabelFormat{linked}{\hyperref[lof]{#1~#2}}
 \captionsetup[figure]{labelformat=linked}
 
 % Hyphenation rules
 \begin{hyphenrules}{english}
-    \hyphenation{Lo-rentz-ian}
-    \hyphenation{Gauss-ian}
-    \hyphenation{Cou-lomb}
+    \hyphenation{
+        Lo-rentz-ian
+        Gauss-ian
+        Cou-lomb
+        equi-dis-tant
+        mount-ed
+        tool-kit
+    }
 \end{hyphenrules}
 %----------------------------------------------------------------------------------------
 % Load mathematical packages for theorems and related environments
+% Required somehow even if not used.
 \usepackage[framed=true]{kaotheorems}
 
 % Load the package for hyperreferences
@@ -191,18 +190,19 @@
 % Use:
 % \thefontsize\footnotesize
 %----------------------------------------------------------------------------------------
-\includeonly{
-    chs/titlepage,
-    chs/summary,
-    chs/acknowledgements,
-    chs/preface,
-    chs/howto,
-    chs/publications,
-    chs/software,
-    chs/spectrometer/introduction,
-    chs/spectrometer/theory,
-    chs/spectrometer/software,
-    chs/spectrometer/conclusion,
+% Comment this out if you want to compile individual pieces only
+
+%\includeonly{
+%    chs/titlepage,
+%    chs/summary,
+%    chs/acknowledgements,
+%    chs/preface,
+%    chs/publications,
+%    chs/software,
+%    chs/spectrometer/introduction,
+%    chs/spectrometer/theory,
+%    chs/spectrometer/software,
+%    chs/spectrometer/conclusion,
 %    chs/setup/introduction,
 %    chs/setup/cooling,
 %    chs/setup/optics,
@@ -213,13 +213,13 @@
 %    chs/experiment/mjolnir,
 %    chs/experiment/observations,
 %    chs/experiment/conclusion,
-    chs/filter_functions/introduction,
-    chs/filter_functions/formalism,
-    chs/filter_functions/validation,
-    chs/filter_functions/software,
-    chs/filter_functions/applications,
-    chs/filter_functions/conclusion,
-    chs/appendices/setup,
+%    chs/filter_functions/introduction,
+%    chs/filter_functions/formalism,
+%    chs/filter_functions/validation,
+%    chs/filter_functions/software,
+%    chs/filter_functions/applications,
+%    chs/filter_functions/conclusion,
+%    chs/appendices/setup,
 %    chs/appendices/experiment,
-    chs/appendices/filter_functions,
-}
+%    chs/appendices/filter_functions,
+%}

@@ -15,6 +15,7 @@
 \newcommand{\thewavelength}[1]{\ensuremath{\lambda_{\mr{exc}} = \qty{#1}{\nano m}}.\xspace} % XXX: \meter somehow causes an error
 
 \newcommand{\thethesis}{the present thesis\xspace}
+\newcommand{\Thethesis}{The present thesis\xspace}
 \newcommand{\thispart}{this part of \thethesis}
 \newcommand{\Thispart}{This part of \thethesis}
 % Instruments
@@ -306,8 +307,8 @@
 \DeclareMathOperator{\Bi}{Bi}
 
 % Affiliations
-\newcommand{\RUB}{Ruhr-Universität Bochum\@.}
-\newcommand{\RWTH}{RWTH Aachen University\@.}
+\newcommand{\RUB}{Ruhr-Universität Bochum.}
+\newcommand{\RWTH}{RWTH Aachen University.}
 \newcommand{\FZJ}{Forschungszentrum Jülich GmbH\@.}
 \newcommand{\RWTHFZJ}{RWTH Aachen University and Forschungszentrum Jülich GmbH\@.}
 
@@ -334,15 +335,16 @@
 \DeclareRobustCommand{\repolink}[1]{%
     % https://genai.rwth-aachen.de/app/conversations/68094898cd677dccf7756dab
     \texorpdfstring{%
-        \hidelinkhref{https://git.rwth-aachen.de/tobias.hangleiter/phd_thesis/-/tree/main/#1}{\texttt{\detokenize{#1}}}%
+        \hidelinkhref{https://github.com/thangleiter/phd_thesis/blob/main/#1}{\texttt{\detokenize{#1}}}%
     }{%
         % Fallback for PDF bookmarks and list entries
-        \href{https://git.rwth-aachen.de/tobias.hangleiter/phd_thesis/-/tree/main/#1}{\texttt{\detokenize{#1}}}%
+        \href{https://github.com/thangleiter/phd_thesis/blob/main/#1}{\texttt{\detokenize{#1}}}%
     }%
 }
 \newcommand{\pyspeckpath}[2]{\hidelinkhref{https://git.rwth-aachen.de/qutech/python-spectrometer/-/tree/v2025.9.1/#1}{#2}}
 \newcommand{\mjolnirpath}[2]{\hidelinkhref{https://git.rwth-aachen.de/qutech/mjolnir/-/tree/v0.2.0/#1}{#2}}
 \newcommand{\mjolnirapidoc}[2]{\texorpdfstring{\hidelinkhref{https://qutech.pages.rwth-aachen.de/mjolnir/_autogen/#1}{#2}}{#2}}
+\newcommand{\driversource}[2]{\texorpdfstring{\hidelinkhref{#1}{#2}}{#2}}
 
 % Fancy lettrines
 \newcommand{\mylettrine}[2]{

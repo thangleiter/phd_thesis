@@ -10,6 +10,7 @@ import scipy as sp
 from lindblad_mc_tools.noise import FFTSpectralSampler
 from lindblad_mc_tools.noise.real_space import MultithreadedRNG
 from qutil import functools, const
+from qutil.plotting.colors import RWTH_COLORS_50
 from qutil.signal_processing.real_space import rms
 
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1]))
@@ -89,6 +90,8 @@ with mpl.style.context([MARGINSTYLE], after_reset=True):
         ax = axes[1]
         τ = np.insert(np.geomspace(1e-3, L, L), 0, 0)
         ln, = ax.plot(τ / τ_cs[1], corr(τ, σ, τ_c) / σs[1] ** 2, '-')
+        # 1/e value
+        ax.axhline((σ/σs[1])**2/np.e, ls=':', color=RWTH_COLORS_50['black'], zorder=1)
 
         C = np.array([sp.signal.correlate(*[x]*2) for x in X])
         τ = sp.signal.correlation_lags(L, L)

@@ -4,6 +4,9 @@
 
 # Compiling
 - There are two concurrent branches, `main` and `tectonic`, which use different project layouts for different TeX engines, `latexmk/LuaLaTeX` and `tectonic/XeLaTeX`, respectively.
+- The thesis is known to compile with TexLive 2025. 
+  Tectonic based on TL2022 unfortunately seems to run out of memory when compiling the entire thing.
+  Individual parts compile fine.
 - Dependencies are included as git submodules
     - The TeX style is at `lib/kaobook`.
     - Fonts not available from CTAN are at `lib/fonts`.
@@ -13,39 +16,71 @@
 - `minted` needs to be installed and Python on `PATH`. If Python is installed as part of the miniforge3 distribution at either `$HOME/miniforge3` or `$LOCALAPPDATA/miniforge3`, this is automatically taken care of when compiling with `latexmk -r windows.latexmkrc`.
 - Once you started the compilation, lay back and relax. Make some tea. Chat with a colleague. It will take a while, and might also not succeed on the first run. If it did not, clean auxiliary files using `latexmk -r [windows,linux].latexmkrc -C` and try again.
 
+# Fonts
+If fonts are not found, download and install them in your system:
+
+- Libertinus [here](https://github.com/alerque/libertinus).
+- ~~Liberation Mono [here](https://git.nsa.his.se/latex/fonts/-/tree/master)~~. This font is included as a submodule at `lib/fonts`. Initialize manually or run `shell/init.sh`.
+- NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
+
+# TeXLive Integration
+**IMPORTANT**
+
+Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
+
+- For a [bugfix concerning spacing](https://github.com/reutenauer/polyglossia/issues/686) in the list of figures, `polyglossia>=2.7` is required. 
+  A patched file is included at `lib/polyglossia.sty`, but not automatically copied to `$TEXMFHOME`.
+
+## XeTeX
+
+### `luaotfload-tool`
+- Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
+
+# Tectonic
+- Build from source using `cargo install --path .`
+  - Repo at `https://github.com/thangleiter/tectonic @ phd_thesis`
+- Biber and BibLaTeX versions need to be compatible. Download [matching binary](https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries) and replace TeXlive's.
+- Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
+- The `autogobble` option of `minted` does not seem to work.
+- The font size in `minted` also does not seem to adjust.
+
+# Kaobook
+The LaTeX style is at `lib/kaobook`. You might need to initialize the submodule, or just run `shell/init.sh` to set up.
+
 # To Dos
 
 - [x] Is "behavior" proper use of English in the context of "optical behavior" etc?
 - [x] Use `\subequations{}` where appropriate
-- [ ] Instrument citations?
-- [ ] migrate repo to github
+- [ ] ~~Instrument citations?~~
+- [x] migrate repo to github
 - [x] migrate `lindblad_mc_tools` repo
 - [ ] Read II.3 and II.4 once again.
 
 ## Content
 - [ ] Zusammenfassung
 - [ ] Preface
-- [ ] How to read this thesis
-    - [ ] PDF viewer
-    - [ ] Image sources & parameters
     - [ ] Disjunct parts
-    - [ ] $\mathrm{asinh}$ scale
+- [ ] How to read this thesis
+    - [x] PDF viewer
+    - [x] Image sources & parameters
+    - [x] $\mathrm{asinh}$ scale
 - [ ] Acknowledgements
 
 ## Feedback
-- [ ] HB
-  - [ ] Part III
-- [ ] DH
-  - [ ] Part I
-  - [ ] Part III
-- [ ] EK
+- [x] HB
+  - [x] Part I
+  - [x] Part III
+- [x] DH
+  - [x] Part I
+  - [x] Part III
+- [x] EK
   - [x] Part II
-  - [ ] Part III
+  - [x] Part III
 
 ### pyspeck
-- [ ] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
-- [ ] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
-- [ ] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
+- [x] Take $f_\mathrm{S}$ and normalization [into account](https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density) in discrete case.
+- [x] Introduce fact that $\sigma^2 = \int d\omega S(\omega)$, either with Parseval's theorem or in discussion of properties.
+- [x] Explain away the limit $\lim_{T\rightarrow\infty}$ after Eq. (2.13).
 - [x] More representative cumulative spectra
 - [ ] ~~Discuss cumulative with dB scale?~~
 
@@ -59,8 +94,10 @@
 
 ### Experiment
 - [x] author contributions
+- [x] Device image early on
 
 ### FF
+- [ ] QFT pulses
 - [x] I/we
 - [ ] ~~Hilbert space calculations in appendix~~
 - [x] Parse text for "second order not implemented"
@@ -92,7 +129,7 @@
     - [x] urls in mjolnir/lmt
 - [ ] ~~Chapters instead of parts?~~
 - [x] Else numbered parts
-- [ ] Part title page design?
+- [ ] ~~Part title page design?~~
 - [ ] ~~`\margintoc`?~~
 - [x] Move LOF to end of document.
 
@@ -212,52 +249,3 @@ Set the "Use single dictionary for saving words" setting to "project level" to s
   - Finally, it replaces `_` underscores.
 - Alternatively, import BBT settings from `lib/bbt_settings.json`.
 
-# Fonts
-If fonts are not found, download and install them in your system:
-
-- Libertinus [here](https://github.com/alerque/libertinus).
-- Liberation Mono [here](https://git.nsa.his.se/latex/fonts/-/tree/master).
-- NewComputerModernMath [here](https://ctan.org/pkg/newcomputermodern?lang=en).
-
-# TeXLive Integration
-**IMPORTANT**
-
-Delete the `build/` directories in the `examples/` subdirectories of `lib/kaobook`. Otherwise latexmk breaks!
-
-## XeTeX
-
-### `luaotfload-tool`
-- Apply [this](https://github.com/latex3/luaotfload/commit/12521e87463d78e2cbf0bd94a09381bf97ee29be) patch (TexLive 2024)
-
-
-# Tectonic
-- Build from source using `cargo install --path .`
-  - Repo at `git@git.rwth-aachen.de:tobias.hangleiter/tectonic @ main`
-- Biber and BibLaTeX versions need to be compatible. Download [matching binary](https://sourceforge.net/projects/biblatex-biber/files/biblatex-biber/2.17/binaries) and replace TeXlive's.
-- Warnings from `algorithm2e.sty` are due to non-UTF-8 formatting of that file while including UTF-8 characters. Ignore.
-- The `autogobble` option of `minted` does not seem to work.
-- The font size in `minted` also does not seem to adjust.
-
-# Kaobook
-
-## Diffs
-These diffs should already be applied in the submodule shipped with this repository.
-
-- `kaorefs.sty`
-
-   - `cleveref`
-     ```diff
-     - \RequirePackage{hyperref}
-     - \RequirePackage{varioref}
-     - \RequirePackage{cleveref} % Don't use cleveref! It breaks everything
-     + \RequirePackage{varioref}
-     + \RequirePackage{hyperref}
-     + \RequirePackage{cleveref} % Use cleveref! It works perfectly fine
-     ```
-See [here](https://tex.stackexchange.com/questions/83037/difference-between-ref-varioref-and-cleveref-decision-for-a-thesis).
-
-   - Commented out the line
-     ```latex
-     \newcommand{\refeq}[1]{\hyperref[eq:#1]\eqname\xspace\ref{eq:#1}}
-     ```
-     because `\refeq` is already defined by `mathtools`.

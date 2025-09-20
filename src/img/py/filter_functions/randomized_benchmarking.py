@@ -49,7 +49,7 @@ def MC_state_fidelity(gates, psi: ndarray = None):
     return fidelity
 
 
-def run_simulation():
+def run_simulation(append_date=True, run_MC: bool = False, seed: int = 42, threads: int = 1):
     def FF_state_infidelity(pulse: PulseSequence, S: ndarray, omega: ndarray,
                             ind: int = 3) -> float:
         R = pulse.get_control_matrix(omega)
@@ -158,9 +158,9 @@ def run_simulation():
         print(f'Finished simulation in {time.perf_counter() - t_start:2f} s')
 
         if run_MC:
-            return MC_gates, FF_infid_tot
+            return MC_gates, FF_infid_tot, lengths
         else:
-            return FF_infid_tot
+            return FF_infid_tot, lengths
 
     def find_inverse(U: ndarray, gate_type) -> ndarray:
         """
@@ -214,7 +214,7 @@ def run_simulation():
         ], dtype=object)
         return cliffords
 
-    # %% Load data
+    # Load data
     gates = ['X2', 'Y2']
     # Set up Hamiltonian for X2, Y2 gate
     struct = {'X2': loadmat(DATA_PATH / 'X2ID.mat'),
@@ -234,7 +234,7 @@ def run_simulation():
     H[1] = 1/2*Py
     H[2] = 1/2*Pz
 
-    # %% Parameters
+    # Parameters
     m_min = 1
     m_max = 101
 
@@ -243,7 +243,7 @@ def run_simulation():
     T = dt['X2'].sum()
     omega = np.geomspace(1e-2/(7*m_max*T), 1e2/T, 500)*2*np.pi
     # omega = np.geomspace(1e-2, 1e2/T.mean(), 250)*2*np.pi
-    # %% Optimized gates
+    # Optimized gates
     opers = list(H)
 
     c_opers = opers.copy()
@@ -266,7 +266,7 @@ def run_simulation():
     H_c['optimized']['Y2'][0] = list(H_c['optimized']['Y2'][0])
     H_c['optimized']['Y2'][0][1] = H_c['optimized']['Y2'][0][1][::-1]
     # #######################
-    # %% naive gates
+    # naive gates
     sens = 1
     H_c['naive'] = {'X2': [[H[0], [np.pi/2/T], 'X'],
                            [H[1], [0], 'Y'],
@@ -278,7 +278,7 @@ def run_simulation():
                     'Y2': list(zip(H, [[sens]]*3, identifiers))}
     dt['naive'] = {'X2': [T],
                    'Y2': [T]}
-    # %% PulseSequences
+    # PulseSequences
     gate_types = ['naive', 'optimized']
     X2 = {gate_type: ff.PulseSequence(H_c[gate_type]['X2'],
                                       H_n[gate_type]['X2'],
@@ -307,14 +307,14 @@ def run_simulation():
             dt[gate_type]['Y2']
         ) for gate_type in gate_types
     }
-    # %% Diagonalize and cache control matrices
+    # Diagonalize and cache control matrices
     for gate_type in gate_types:
         X2[gate_type].cache_control_matrix(omega)
         X2_perfect[gate_type].cache_control_matrix(omega)
         Y2[gate_type].cache_control_matrix(omega)
         Y2_perfect[gate_type].cache_control_matrix(omega)
 
-    # %% Clifford group
+    # Clifford group
     cliffords = {
         k: construct_clifford_group((X2[k], Y2[k]))
         for k in gate_types
@@ -327,7 +327,7 @@ def run_simulation():
     Id = {gate_type: cliffords[gate_type][0] for gate_type in gate_types}
     Id_perfect = {gate_type: cliffords_perfect[gate_type][0]
                   for gate_type in gate_types}
-    # %% Find ZYZ Euler angles for Clifford group
+    # Find ZYZ Euler angles for Clifford group
     cliffords['zyz'] = []
     cliffords_perfect['zyz'] = []
     cliffords['single'] = []
@@ -401,7 +401,7 @@ def run_simulation():
     Id_perfect['zyz'] = cliffords_perfect['zyz'][0]
     Id_perfect['single'] = cliffords_perfect['single'][0]
 
-    # %% Scale noise
+    # Scale noise
     # Scale noise of unoptimized gates so that the average fidelity per clifford is
     # the same for all gate types
 
@@ -422,7 +422,7 @@ def run_simulation():
 
             noise_scaling_factor[gate_type][a] = optimized_correl_infids / infids
 
-    # %% Run RB
+    # Run RB
     now = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     print('================================================')
     print(f'Start time:\t\t{now}')
@@ -432,7 +432,6 @@ def run_simulation():
     N_m = 11  # Number of sequence m
     N_G = 100  # Number of RB sequences per length
     N_MC = 100  # Number of Monte Carlo runs per RB sequence
-    run_MC = False
 
     MC_gates = defaultdict(dict)
     FF_infid_tot = defaultdict(dict)
@@ -448,43 +447,50 @@ def run_simulation():
         S = np.einsum('an,oa->ano', S0, np.power.outer(1/omega, alpha))
 
         result = run_randomized_benchmarking(
-            N_G, N_m, N_MC, m_min, m_max, S0, alpha, omega,
-            gate_type, run_MC
+            N_G, N_m, N_MC, m_min, m_max, S0, alpha, omega, gate_type,
+            run_MC, seed, threads
         )
 
         for i, a in enumerate(alpha):
             single_clifford_infids[gate_type][a] = np.array([ff.infidelity(c, S[i], omega)
                                                              for c in cliffords[gate_type]])
 
+        ext = f'_{now}' if append_date else ''
+
         if run_MC:
-            MC_gates[gate_type], FF_infid_tot[gate_type] = result
+            MC_gates[gate_type], FF_infid_tot[gate_type], lengths = result
             np.savez_compressed(
-                DATA_PATH / f'RB_normalized_XYZ_noise_MC_{gate_type}_gates_{now}',
-                white=MC_gates[gate_type][0.0]
+                DATA_PATH / (f'RB_normalized_XYZ_noise_MC_{gate_type}_gates' + ext),
+                white=MC_gates[gate_type][alpha[1]],
+                correlated=MC_gates[gate_type][alpha[0]],
+                lengths=lengths,
             )
         else:
-            FF_infid_tot[gate_type] = result
+            FF_infid_tot[gate_type], lengths = result
 
         np.savez(
-            DATA_PATH / f'RB_normalized_XYZ_noise_FF_{gate_type}_gates_{now}',
+            DATA_PATH / (f'RB_normalized_XYZ_noise_FF_{gate_type}_gates' + ext),
             white=FF_infid_tot[gate_type][alpha[1]],
-            correlated=FF_infid_tot[gate_type][alpha[0]]
+            correlated=FF_infid_tot[gate_type][alpha[0]],
+            lengths=lengths,
+            omega=omega,
+            S=S
         )
         np.savez(
-            DATA_PATH / f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates_{now}',
+            DATA_PATH / (f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates' + ext),
             white=single_clifford_infids[gate_type][alpha[1]],
-            correlated=single_clifford_infids[gate_type][alpha[0]]
+            correlated=single_clifford_infids[gate_type][alpha[0]],
+            lengths=lengths,
+            omega=omega,
+            S=S
         )
 
 
 # %% Run benchmark
 if RUN_SIMULATION:
-    run_simulation()
+    run_simulation(append_date=False, run_MC=False, threads=None)
 
 # %% Load pickled files
-date = '20250823-122351'
-m_min, m_max = 1, 101
-
 gate_types = ['naive', 'optimized', 'single']
 noise_types = ['white', 'correlated']
 infid_types = ['tot']
@@ -494,31 +500,39 @@ MC_gates = defaultdict(dict)
 data = defaultdict(dict)
 for gate_type in gate_types:
     data['FF'][gate_type] = defaultdict(dict)
-    data['MC'][gate_type] = defaultdict(dict)
     data['single_cliffords'][gate_type] = defaultdict(dict)
     MC_gates[gate_type] = defaultdict(dict)
-    with np.load(DATA_PATH / f'RB_normalized_XYZ_noise_FF_{gate_type}_gates_{date}.npz') as arch:
+    with np.load(DATA_PATH / f'RB_normalized_XYZ_noise_FF_{gate_type}_gates.npz') as arch:
         for file in arch.files:
             data['FF'][gate_type][file] = arch[file]
 
     with np.load(
-            DATA_PATH / f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates_{date}.npz'
+            DATA_PATH / f'single_cliffords_normalized_XYZ_noise_FF_{gate_type}_gates.npz'
     ) as arch:
         for file in arch.files:
             data['single_cliffords'][gate_type][file] = arch[file]
 
+    if 'MC' not in calc_types:
+        continue
+
+    data['MC'][gate_type] = defaultdict(dict)
     try:
         with np.load(
-                DATA_PATH / f'RB_normalized_XYZ_noise_MC_{gate_type}_gates_{date}.npz'
+                DATA_PATH / f'RB_normalized_XYZ_noise_MC_{gate_type}_gates.npz'
         ) as arch:
             for file in arch.files:
                 MC_gates[gate_type][file] = arch[file]
 
-        data['MC'][gate_type]['white'] = 1 - MC_state_fidelity(MC_gates[gate_type]['white']).mean(
-            axis=-1, keepdims=True
-        )
+        data['MC'][gate_type]['white'] = 1 - MC_state_fidelity(
+            MC_gates[gate_type]['white']
+        ).mean(axis=-1, keepdims=True)
+        data['MC'][gate_type]['correlated'] = 1 - MC_state_fidelity(
+            MC_gates[gate_type]['correlated']
+        ).mean(axis=-1, keepdims=True)
+        data['MC'][gate_type]['lengths'] = MC_gates[gate_type]['lengths']
     except FileNotFoundError:
-        pass
+        calc_types.remove('MC')
+        data.pop('MC')
 
 # %% Fit
 
@@ -544,16 +558,17 @@ for calc_type, c in data.items():
     fit[calc_type] = dict()
     for gate_type, g in c.items():
         fit[calc_type][gate_type] = dict()
-        for noise_type, n in g.items():
+        for noise_type in ['white', 'correlated']:
             fit[calc_type][gate_type][noise_type] = dict()
             fit[calc_type][gate_type][noise_type]['sep'] = defaultdict(dict)
             fit[calc_type][gate_type][noise_type]['tot'] = defaultdict(dict)
-            m = np.round(np.linspace(m_min, m_max, n.shape[0])).astype(int)
             if calc_type == 'MC':
                 model = exponential
             else:
                 model = linear
 
+            m = g['lengths']
+            n = g[noise_type]
             r, sr = fitit(m,
                           1 - n.sum(-1).mean(axis=1),
                           n.sum(-1).std(axis=1)/np.sqrt(n.shape[1]),
@@ -586,14 +601,14 @@ fig, axes = plt.subplots(1, 2, sharex=True, sharey=True, layout='constrained',
 for i, (ax, noise_type, subfig) in enumerate(zip(axes, noise_types, ('(a)', '(b)'))):
     means = []
     for gate_type, sty in zip(gate_types, cycle):
-        N_m, N_G, n_nops = data['FF'][gate_type][noise_type].shape
         means.append(ax.errorbar(
-            np.arange(m_min, m_max+1, (m_max-m_min)//(N_m-1)),
+            data['FF'][gate_type]['lengths'],
             *quantile_error(data['FF'][gate_type][noise_type].sum(-1)),
             **markerprops(**sty),
         ))
 
-        m = np.linspace(m_min, m_max*1.1, 2)
+        m = np.linspace(data['FF'][gate_type]['lengths'][0],
+                        data['FF'][gate_type]['lengths'][-1]*1.1, 2)
         fit_tot = ax.plot(m, linear(m, fit['FF'][gate_type][noise_type]['tot']['r']),
                           color=sty['color'], alpha=0.6)
 
@@ -620,14 +635,14 @@ ins_ax = axes[1].inset_axes([0.1, 0.125, 0.4, 0.4])
 k = 2
 identifier = 'Z'
 for gate_type, sty in zip(gate_types, cycle):
-    N_m, N_G, n_nops = data['FF'][gate_type][noise_type].shape
     mean_tot = ins_ax.errorbar(
-        np.arange(m_min, m_max+1, (m_max-m_min)//(N_m-1)),
+        data['FF'][gate_type]['lengths'],
         *quantile_error(data['FF'][gate_type][noise_type][..., k]),
         **markerprops(**sty, markersize=2.5),
     )
 
-    m = np.linspace(m_min, m_max*1.1, 2)
+    m = np.linspace(data['FF'][gate_type]['lengths'][0],
+                    data['FF'][gate_type]['lengths'][-1]*1.1, 2)
     fit_tot = ins_ax.plot(
         m, linear(m, fit['FF'][gate_type][noise_type]['sep'][k]['r']),
         linewidth=0.75, color=sty['color'], alpha=0.6

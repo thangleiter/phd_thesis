@@ -55,7 +55,6 @@ def monte_carlo_gate(N_MC: int, S0: float, f_min: float, f_max: float,
                      dt: ndarray, T: float, alpha: float, c_opers: ndarray,
                      c_coeffs: ndarray, n_opers: ndarray, n_coeffs: ndarray,
                      loop: bool = True, seed: int | None = None, threads: int = 1):
-    import lindblad_mc_tools as lmt
 
     def evolution(H, dt):
         # np.linalg.eigh (2.2.6) sometimes does not converge
@@ -94,7 +93,7 @@ def monte_carlo_gate(N_MC: int, S0: float, f_min: float, f_max: float,
 
 
 def run_simulation(d_max=120, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42, threads=1,
-                   alpha=0):
+                   alpha=0, append_date=True):
     dims = np.arange(2, d_max+1, 2)
     rng = np.random.default_rng(seed)
 
@@ -166,10 +165,12 @@ def run_simulation(d_max=120, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42,
     dt_FF_H = np.array(toc_FF_H) - np.array(tic_FF_H)
     dt_FF_L = np.array(toc_FF_L) - np.array(tic_FF_L)
 
-    now = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    fname = f'benchmark_MC_vs_FF_{now}.npz'
+    fname = 'benchmark_MC_vs_FF'
+    if append_date:
+        now = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        fname = '_'.join([fname, now])
 
-    np.savez(p := DATA_PATH / fname, dims=dims,
+    np.savez(p := (DATA_PATH / fname).with_suffix('.npz'), dims=dims,
              dt_FF_H=dt_FF_H, dt_FF_L=dt_FF_L, dt_MC=dt_MC,
              infids_FF_H=infids_FF_H, infids_FF_L=infids_FF_L,
              infids_MC=infids_MC)
@@ -178,10 +179,11 @@ def run_simulation(d_max=120, n_alpha=3, n_dt=1, n_MC=100, n_omega=500, seed=42,
 
 # %% Run benchmark
 if RUN_SIMULATION:
-    run_simulation()
+    import lindblad_mc_tools as lmt
+    run_simulation(threads=None, append_date=False)
 
 # %% Load data
-with np.load(DATA_PATH / 'benchmark_MC_vs_FF_20200526-153408.npz') as arch:
+with np.load(DATA_PATH / 'benchmark_MC_vs_FF.npz') as arch:
     dims = arch['dims']
     dt_MC = arch['dt_MC']
     dt_FF_H = arch['dt_FF_H']

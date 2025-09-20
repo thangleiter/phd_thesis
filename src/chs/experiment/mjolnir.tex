@@ -56,16 +56,18 @@ three logical instruments implemented as subclasses of the \qcodes \code{Instrum
         Controls all physical instruments related to illumination of the sample, including the white light source.
     \item \label{itm:logical_instruments:det}
         \code{DetectionPath}.
-        Controls instruments related to the detection of radiation emitted by the sample, \ie, the spectrometer, \gls{ccd}, and photon counting card.
+        Controls instruments related to the detection of radiation emitted by the sample, \ie, the spectrometer, \acrshort{ccd}, and photon counting card.
     \item \label{itm:logical_instruments:sam}
         \code{Sample}.
         Controls the \qdac voltage source, cryostat, and magnet, and implements a software representation of the \gls{dut}.
 \end{enumerate}
 \Cref{fig:exp:mjolnir:layout} shows a graph outlining the relationship between physical and logical instruments.
+\Cref{fig:exp:mjolnir:tree} shows the repository structure.
 In the following, I give a brief overview of the functionalities comprised by these logical instruments.
 
+\clearpage
 \subsection{Excitation path}\label{subsec:exp:mjolnir:logical_instruments:exc}
-\begin{marginfigure}[*-6]
+\begin{marginfigure}
     \input{img/tikz/experiment/mjolnir_tree}
     \caption[\imgsource{img/tikz/experiment/mjolnir_tree.tex}]{
         Source tree structure of the \mjolnir package.
@@ -78,7 +80,6 @@ In the following, I give a brief overview of the functionalities comprised by th
     }
     \label{fig:exp:mjolnir:tree}
 \end{marginfigure}
-
 As already outlined above, the \code{ExcitationPath} object controls everything related to the illumination of the sample.
 The \code{active_light_source} parameter switches between laser, white light, and no illumination.
 Turning on the laser comprises enabling the chiller, switching on the pump laser, waiting for it to ramp up, and asserting the wavelength lock is acquired.
@@ -101,7 +102,7 @@ As the samples we are concerned with in \thethesis, I discuss the main implement
 On a single sample, there are any number of traps consisting of one or both sets of top and bottom \enquote{central} and \enquote{guard} gates.
 Each trap is implemented as a \qcodes \code{InstrumentModule}, \code{Trap}, that is part of a \code{ChannelList}.
 The currently active trap (\ie, the one currently in focus by the microscope) is selected by the \code{active_trap} parameter and accessible through the \code{trap} property of the \code{TrapSample} object.
-A \code{Trap} exposes the virtual gate parameters\sidenote[][*4]{
+A \code{Trap} exposes the virtual gate parameters\sidenote{
     Using the \qdac's built-in \hidelinkhref{https://qcodes.github.io/Qcodes_contrib_drivers/api/generated/qcodes_contrib_drivers.drivers.QDevil.html\#qcodes_contrib_drivers.drivers.QDevil.QDAC2.Arrangement_Context}{\code{Arrangement_Context}} virtual gate functionality.
 }
 \code{difference_mode} and \code{common_mode} (see \cref{subsec:exp:observations:pl:qcse}) as the difference and sum of top and bottom gate voltages, respectively, as well as the unmodified top and bottom gate voltage and corresponding leakage current parameters.
@@ -119,7 +120,7 @@ In practice, the deviation from an established calibration function is usually s
 The \code{CcdCalibrationHandler} implements three different calibration schemes specified as the \code{ccd_calibration_update_mode} parameter of the \code{DetectionPath} instrument:
 \begin{enumerate}
     \item \code{"full"}.
-        The pixel position of the maximum intensity of nine equidistant wavelengths centered around the grating central wavelength and spread out over the entire range of the \gls{ccd} screen ($\sim\qty{45}{\nano\meter}$ for the \qty{600}{gr\per\milli\meter} grating and $\sim\qty{9}{\nano\meter}$ for the \qty{1800}{gr\per\milli\meter} grating) is measured sequentially and fitted to a third-degree polynomial.
+        The pixel position of the maximum intensity of nine equidistant wavelengths centered around the grating central wavelength and spread out over the entire range of the \gls{ccd} screen (\qty{45}{\nano\meter} for the \qty{600}{gr\per\milli\meter} grating and \qty{9}{\nano\meter} for the \qty{1800}{gr\per\milli\meter} grating) is measured sequentially and fitted to a third-degree polynomial.
     \item \code{"fast"}.
         The laser is set to the grating central wavelength and the zeroth-order coefficient of the previous calibration polynomial is shifted by the pixel distance between the peak and the horizontal center of the \gls{ccd} screen.
     \item \code{"dirty"}.
@@ -160,7 +161,7 @@ Then, the residual sum of squares between the target power and the power meter r
 
 \subsection{Rejection feedback}\label{subsec:sec:exp:mjolnir:calibration:rejection}
 The excitation rejection by means of cross-polarization extinction has already been discussed in \cref{subsec:setup:optics:coupling:rejection}.
-As shown there, the \gls{od} achieved by cross-polarizing the excitation beam with the analyzer mounted in the detection path reaches a maximum close to \num{6} and is extremely sensitive to small variations in the angles of the \quarterwave- and \halfwave-plates controlling polarization state.
+As demonstrated there, the \gls{od} achieved by cross-polarizing the excitation beam with the analyzer mounted in the detection path reaches a maximum close to \num{6} and is extremely sensitive to small variations in the angles of the \quarterwave- and \halfwave-plates controlling polarization state.
 Close to the optimum, the \gls{od} is well-described by a parabola as function of those angles, with a second-order polynomial coefficient on the order of \qty[per-mode = symbol]{-0.15}{\per\square\milli\txtdegree}.
 Since the optics including the waveplates display chromatic dispersion, the excitation rejection needs to be re-optimized whenever the laser wavelength is changed, and the exponential angular dependence of the transmitted intensity places high demands on the dynamic range of the photo-detector used for measurement.
 Therefore, the reflected laser intensity is measured with the \gls{apd} signal digitized by the \tagger on the side exit port of the spectrometer.\sidenote{
@@ -194,6 +195,14 @@ The state of external parameters, that is, parameters that are not varied or mea
 This uses the \code{Parameter.set_to()} context manager to set the parameters to the given values before the measurement starts and restore their original values upon exit in a controlled manner, allowing users to ensure their device is in a well-defined state.
 Custom setup and teardown tasks can furthermore be specified through the \code{add_before_run} and \code{add_after_run} arguments, respectively.
 
+A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketched in \cref{lst:exp:mjolnir:workflow}.
+The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
+Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
+Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
+More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
+Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
+I leave this option for future work.
+
 \begin{listing}[htpb]
     \begin{minted}{python}
 from mjolnir.measurement.handler import LaserCcdMeasurementHandler
@@ -205,10 +214,10 @@ handler = LaserCcdMeasurementHandler(station)
 # excitation_path, sample are instances of the ExcitationPath and
 # TrapSample classes, respectively
 power_sweep = GridSweep(excitation_path.power_at_sample,
-			rng=(5e-9, 5e-7), num_points=11,
-			spacing='geom')
+                        rng=(5e-9, 5e-7), num_points=11,
+                        spacing='geom')
 gate_sweep = GridSweep(sample.trap.central_difference_mode,
-		       rng=(-2, -1), num_points=51))
+                       rng=(-2, -1), num_points=51))
 
 # two-dimensional sweep over power and gate voltage
 sweeps = power_sweep | gate_sweep
@@ -226,7 +235,7 @@ dataset = handler.measure(
 )
     \end{minted}
     \caption[\mjolnir measurement workflow]{
-    Setup and measurement workflow using the \mjolnir package.
+        Setup and measurement workflow using the \mjolnir package.
         \code{station} is a \qcodes \code{Station} object managing the instruments.
         The \code{sweeps} object describes a nested loop on whose inner iteration the difference mode parameter of the trap's central gate is swept over a linear grid and on whose outer iteration the laser power, adjusted for the \acrlong{bs} ratio, is swept over a logarithmically spaced grid.
         No dependent parameters (\code{Measure} objects) need to be explicitly specified as the \code{LaserCcdMeasurementHandler} measures the \gls{ccd} spectrum as well as laser power and leakage currents of the swept gates by default.
@@ -235,14 +244,6 @@ dataset = handler.measure(
     }
     \label{lst:exp:mjolnir:workflow}
 \end{listing}
-
-A typical workflow for a \gls{pl} measurement using laser and \gls{ccd} is sketched in \cref{lst:exp:mjolnir:workflow}.
-The \code{MeasurementHandler} object automatically takes care of, among other things, arming the \gls{ccd}, acquiring a background image in the dark, and opening the laser shutter for the duration of the measurement.
-Acquired data is saved to the \qcodes database, but a helper function exporting to the \xarray \code{Dataset} format is available.
-Saved together with the data are a snapshot of the \qcodes \code{Station} as well as arbitrary custom metadata.
-More details and examples on the measurement functionality can be found in the \sidehref{https://qutech.pages.rwth-aachen.de/mjolnir/}{documentation.}
-Lastly, I note that the measurement functionality in \mjolnir is independent of the instrument abstraction and calibration logic and as such could be replaced or augmented with minimal effort by that of other \qcodes-based frameworks such as \package{quantify} or \package{labcore} to make use of their infrastructure.
-I leave this option for future work.
 
 \section{Plotting}\label{sec:exp:mjolnir:plotting}
 \begin{figure*}
@@ -263,7 +264,7 @@ To visualize such datasets with more than two dimensions, \mjolnir provides the 
 This facilitates interactively exploring large datasets and recognizing trends present in the data beyond two dimensions.
 \Cref{fig:exp:mjolnir:plot_nd} shows an exemplary plot window for a four-dimensional data set obtained from a \gls{ccd} measurement sweeping laser wavelength, power, and a gate voltage, with \cref{lst:exp:mjolnir:plot_nd} showing the code necessary to produce the plot.
 
-\begin{listing}
+\begin{listing}[htpb]
     \begin{minted}{python}
 import matplotlib as mpl
 from mjolnir.plotting import plot_nd

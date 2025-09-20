@@ -1,0 +1,15 @@
+\documentclass{article} 
+\usepackage[backend=biber,style=numeric]{biblatex} 
+
+\addbibresource{../src/bib/00_own_publications.bib}
+
+\defbibheading{bibliography}{%
+  \section*{Publications} % Change this line to set your desired title
+}
+
+\begin{document}
+
+\nocite{*}
+\printbibliography
+
+\end{document}

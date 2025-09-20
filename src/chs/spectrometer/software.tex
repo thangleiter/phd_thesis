@@ -23,10 +23,10 @@ Do we want to inspect the time traces as well?
 The \pyspeck package addresses these questions by allowing users to interactively change features of the main plot window to adapt it to the form best suited to the situation at hand.
 
 Moreover, when concerned with noise spectrum estimation, we are typically more interested in specifying parameters of the resulting \gls{psd} rather than parameters of the underlying time series data.
-The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather than inferring the spectrum properties from the time series data, users specify the properties they would like the resulting spectrum to have and the package chooses the correct parameters for \acrlong{daq} accordingly.
+The package approaches \acrlong{daq} from the inverse direction: rather than inferring the spectrum properties from the time series data, users specify the properties they would like the resulting spectrum to have and the package chooses the correct parameters for \acrlong{daq} accordingly.
 
 \section{Package design and implementation}\label{sec:speck:software:design}
-\begin{marginfigure}[*-10]
+\begin{marginfigure}[*-11]
     \input{img/tikz/spectrometer/speck_tree}
     \caption[\imgsource{img/tikz/spectrometer/speck_tree.tex}]{
         Source tree structure of the \pyspeck package.
@@ -35,8 +35,8 @@ The \pyspeck package approaches \acrlong{daq} from the inverse direction: rather
     }
     \label{fig:speck:software:tree}
 \end{marginfigure}
-The \pyspeck package provides a central class, \code[breakanywhere]{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
-It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.\sidenote[][*10]{
+The \pyspeck package provides a central class, \pyinline[breakanywhere]{Spectrometer}, that users interact with to perform data acquisition, spectrum estimation, and plotting.
+It is instantiated with an instance of a child class of the \code{DAQ} base class that implements an interface to various \gls{daq} hardware devices.\sidenote[][*9]{
     Actually \emph{drivers} to be more precise.
 }
 New spectra are obtained by calling the \code{Spectrometer.take()} method with all acquisition and metadata settings.
@@ -57,7 +57,7 @@ This class is used in the background to validate data acquisition settings both 
     \label{tab:speck:software:parameters}
     \begin{tabular}{ c C }
         \toprule
-        \textsc{Variable} & \multicolumn{1}{c}{\textsc{Parameter}} \\ % multicolumn to override column type \\
+        \textsc{Variable} & \multicolumn{1}{c}{\textsc{Parameter}} \\ % multicolumn to override column type
         \midrule
         $L$ & n_pts \\
         $N$ & nperseg \\
@@ -119,17 +119,17 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings}
 \end{listing}
 
-\begin{marginlisting}[*-5]
+\begin{marginlisting}[*-8]
     \begin{minted}[fontsize=\footnotesize]{python}
-    {'f_min': 14.30511474609375,
-     'f_max': 72000.0,
-     'fs': 234375.0,
-     'df': 14.30511474609375,
-     'nperseg': 16384,
-     'noverlap': 0,
-     'n_seg': 1,
-     'n_pts': 16384,
-     'n_avg': 1}
+{'f_min': 14.30511474609375,
+ 'f_max': 72000.0,
+ 'fs': 234375.0,
+ 'df': 14.30511474609375,
+ 'nperseg': 16384,
+ 'noverlap': 0,
+ 'n_seg': 1,
+ 'n_pts': 16384,
+ 'n_avg': 1}
     \end{minted}
     \caption[Resolved \code{DAQSettings} for MFLI Scope]{
         Resolved settings for the same input parameters as in \cref{lst:speck:daq:settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}.
@@ -137,10 +137,10 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings:mfli_scope}
 \end{marginlisting}
 
-If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][*7]{
+If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][*6]{
     \url{https://docs.zhinst.com/labone_api_user_manual/modules/scope/index.html}
 }
-the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][*9]{
+the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][*8]{
     And issued a warning to inform the user their requested settings could not be matched.
 }
 This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
@@ -175,10 +175,7 @@ for data_buffer in acquisition_generator:
 \end{listing}
 
 When acquiring a new spectrum, all settings supplied by the user are first fed into the \code{setup()} method where instrument configuration takes place.
-The method returns the actual device settings,\sidenote{
-    Which might differ from the requested settings as outlined above.
-}
-which are then forwarded to the \code{acquire()} generator function.
+The method returns the actual device settings which are then forwarded to the \code{acquire()} generator function.
 Here, the instrument is armed (if necessary), and subsequently data is fetched from the device and yielded to the caller \code{n_avg} times, where \code{n_avg} is the number of outer averages.\sidenote{
     \Ie, the number of time series data batches acquired, as opposed to the number of Welch averages \code{n_seg} within one batch.
 }
@@ -236,10 +233,7 @@ class MyDAQ(DAQ):
 \subsection{Data processing}\label{subsec:speck:software:design:processing}
 Once time series data has been acquired using a given \code{DAQ} backend, it could in principle immediately be used to estimate the \gls{psd} following \cref{eq:speck:psd:bartlett}.
 However, it is often desirable to transform, or process, the data in some fashion.
-This can include simple transformations such as accounting for the gain of a \gls{tia} and convert the voltage back to a current,\sidenote{
-    Although it is of course less than trivial to discriminate between current and voltage noise in a \gls{tia}.
-}
-or more complex ones such as applying calibrations.
+This can include simple transformations such as accounting for the gain of a \gls{tia} and convert the voltage back to a current, or more complex ones such as applying calibrations.
 In particular, since the process of computing the \gls{psd} already involves Fourier transformation, the processing can also be performed in frequency space.
 In \pyspeck, this can be done using a \code{procfn} (in the time domain) or \code{fourier_procfn} (in the Fourier domain).
 The former is specified as an argument directly to the \code{Spectrometer} constructor.
@@ -267,8 +261,8 @@ def comp_gain(x, gain=1.0, **_):
 \end{marginlisting}
 \begin{marginlisting}
     \begin{minted}[fontsize=\footnotesize]{python}
-        def derivative(xf, f, n=0, **_):
-            return xf / (2j * pi * f)**n
+def derivative(xf, f, n=0, **_):
+    return xf / (2j * pi * f)**n
     \end{minted}
     \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
@@ -342,7 +336,7 @@ spect.take('baseline', daq='grounded', **settings)
 \end{figure}
 
 The noise spectrum he obtains is white up until approximately \qty{20}{\kilo\hertz} where it starts falling off $\propto f^{-n}$.
-This is because the \gls{lia} low-pass filters the signal to suppress aliasing.\sidenote[][*-4]{
+This is because the \gls{lia} low-pass filters the signal to suppress aliasing, and hence $n$ is the filter order.\sidenote[][*-6]{
     Aliasing effects arise from finite sampling according to the Nyquist-Shannon sampling theorem~\cite{Whittaker1915,Nyquist1928,Shannon1949}.
     It states that for a given physical bandwidth, the sampling rate \fs must be at least twice as large to faithfully reconstruct the signal in order to avoid aliasing, \ie, the reverse of the argument we have made for the largest resolvable frequency \fmax.
     Some \gls{daq} devices perform internal aliasing rejection while others do not, and it is up to the user to ensure sufficient anti-aliasing.
@@ -417,7 +411,7 @@ On the other hand, the \code{"lifted cable"} state somehow removed the peak at \
 \end{figure}
 
 While the cumulative \gls{rms} plot already helps, Bob would like a more quantitative comparison of relative spectral powers.
-Therefore, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote{
+Thus, he rescales the spectra in terms of their relative powers expressed in \unit{\decibel}\sidenote{
     Recall that the decibel is defined by the ratio $L_P$ of two powers $P_1, P_2$ as~\cite{Pozar2012}
     \begin{align*}
         L_P = 10\log_{10}\left(\frac{P_1}{P_2}\right)\,\unit{\decibel}.
@@ -502,6 +496,17 @@ While they cannot acquire new spectra in this state,\sidenote{
 they can still use all the plotting features like showing or hiding spectra, or changing plot types as discussed above.
 
 \subsection{Live spectrum acquisition}\label{subsec:speck:software:features:live_view}
+\begin{figure}
+    \centering
+    \includegraphics{img/pdf/spectrometer/live_view}
+    \caption[\imgsource{img/py/spectrometer/pyspeck_live_view.py}]{
+        Spectrometer live view.
+        The bottom plot shows the most recently acquired spectrum, while the top plot shows a waterfall plot of the most recent ones.
+        Data acquisition runs in a background thread, keeping the interpreter responsive and available to interact with instruments, for example.
+        The icons in the bottom left and right corners allow interacting with the live view.
+    }
+    \label{fig:speck:software:live_view}
+\end{figure}
 Manually recording spectra in the workflow outlined in \cref{subsec:speck:software:features:serial} becomes tedious at some point, and experimenters tend to become negligent with keeping metadata and comments up to date as they continue to change settings.
 Once a certain number of spectra has been obtained, the spectrometer plot also becomes crowded, and hiding old spectra manually is cumbersome.
 Moreover, each time a spectrum is captured, data is saved to disk, potentially accruing large amounts of storage space.
@@ -533,15 +538,3 @@ Similar to \code{take()}, the data acquisition parameters are passed to \code{li
 The \code{in_process} argument specifies if multiprocessing (\code{True}) or multithreading (\code{False}) is used.
 Dictionaries with customization parameters for the \code{live_view} object can further be passed to the method.
 Functionality to take snapshots to retain live data is currently not implemented but would be a valuable addition to the noise-hunting workflow.
-
-\begin{figure}
-    \centering
-    \includegraphics{img/pdf/spectrometer/live_view}
-    \caption[\imgsource{img/py/spectrometer/pyspeck_live_view.py}]{
-        Spectrometer live view.
-        The bottom plot shows the most recently acquired spectrum, while the top plot shows a waterfall plot of the most recent ones.
-        Data acquisition runs in a background thread, keeping the interpreter responsive and available to interact with instruments, for example.
-        The icons in the bottom left and right corners allow interacting with the live view.
-    }
-    \label{fig:speck:software:live_view}
-\end{figure}
