@@ -46,7 +46,7 @@ For example, it is generally considered hard\sidenote{
 }
 to -- deliberately -- excite vibrations of a specific frequency in a cryostat, yet we might still be interested in the displacement spectrum inside of it.
 A related method is available if one has access to a frequency-tunable probe, that is, a physical system whose behavior -- typically its time evolution or some measurable property after letting the system evolve -- under noise is well understood within a given noise model, and that can be controlled to be sensitive to a certain frequency.
-One example for such methods is \gls{dd}-based noise spectroscopy using a qubit~\cite{Alvarez2011,Szankowski2017,Dial2013,Connors2022}, a protocol based on insights gained from the filter-function formalism---see \cref{part:ff}.
+One example for such methods is \gls{dd}-based noise spectroscopy using a qubit~\cite{Alvarez2011,Szankowski2017,Dial2013,Connors2022}, a protocol based on insights gained from the filter-function formalism.
 These protocols are especially well-suited for high but less so for low frequencies as they rely on observing the coherence of a qubit and hence the visibility on long time scales.
 
 In a sense the most straight-forward way of measuring the noise spectrum presents itself as a consequence of the Wiener-Khinchin theorem~\cite{Wiener1930,Khintchine1934} that relates the noise spectrum to the Fourier transform of a time-dependent signal.
@@ -133,7 +133,7 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
     \caption[\imgsource{img/py/spectrometer/lorentz.py}]{
         Ornstein-Uhlenbeck process.
         Simulated time traces, autocorrelation function, and \gls{psd} of the Ornstein-Uhlenbeck process.
-        Top: Simulated time traces using the algorithm presented in \cref{sec:app:ff:time_domain_methods}.
+        Top: Simulated time traces.
         The data are normalized to the computed \gls{rms} (equal to $\sigma$ in the continuous case).
         Middle: Theoretical autocorrelation function (\cref{eq:speck:ou:autocorrelation}, solid lines) computed from the simulated data averaged over \num{e3} traces (circles, subset of points).
         Error bars indicate the standard error of the mean, axes are scaled with respect to the parameters of the magenta data, and data are plotted on an $\asinh$-scale.

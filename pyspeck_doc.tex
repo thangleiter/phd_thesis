@@ -1,0 +1,120 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% kaobook
+% LaTeX Class
+% Version 0.9.8 (2021/08/23)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% For the latest template development version and to make contributions:
+% https://github.com/fmarotta/kaobook
+%
+% Authors:
+% Federico Marotta (federicomarotta@mail.com)
+% Based on the doctoral thesis of Ken Arroyo Ohori (https://3d.bk.tudelft.nl/ken/en)
+% and on the Tufte-LaTeX class.
+% Modified for LaTeX Templates by Vel (vel@latextemplates.com)
+%
+% License:
+% LPPL (see included MANIFEST.md file)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{tex/predoc}
+
+\documentclass[
+	a4paper, % Page size
+	fontsize=10pt, % Base font size
+	twoside=false, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
+	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
+	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
+	fontmethod=modern, % Can also use "modern" with XeLaTeX or LuaTex; "tex" is the default for PdfLaTex, and "modern" is the default for those two.
+	listing=minted
+]{kaobook}
+
+\input{tex/preamble}
+\input{tex/commands}
+\input{tex/colors}
+
+% Override references to the thesis
+\renewcommand{\thethesis}{this document\xspace}
+\renewcommand{\Thethesis}{This document\xspace}
+\renewcommand{\thispart}{this document\xspace}
+\renewcommand{\Thispart}{This document\xspace}
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGES
+%----------------------------------------------------------------------------------------
+
+\author{Tobias Hangleiter}
+\title{A Flexible \python Tool For Fourier-Transform Noise Spectroscopy\thanks{This document has been extracted from Tobias Hangleiter's PhD. thesis, available at: \url{https://github.com/thangleiter/phd_thesis}.}}
+\date{\today}
+
+\frontmatter
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
+%----------------------------------------------------------------------------------------
+
+\begingroup % Local scope for the following commands
+
+% Define the style for the TOC, LOF, and LOT
+%\setstretch{1} % Uncomment to modify line spacing in the ToC
+%\hypersetup{linkcolor=blue} % Uncomment to set the colour of links in the ToC
+\setlength{\textheight}{230\hscale} % Manually adjust the height of the ToC pages
+
+% Turn on compatibility mode for the etoc package
+\etocclasstocstyle % "toc display" as if etoc was not loaded
+\etocstandardlines % "toc lines as if etoc was not loaded
+
+\tableofcontents % Output the table of contents
+
+\endgroup
+
+%----------------------------------------------------------------------------------------
+%	MAIN BODY
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
+\setchapterstyle{kao} % Choose the default chapter heading style
+
+\pagelayout{margin} % Restore margins
+\glsresetall % Reset all gls counters to have acronyms printed in full the first time they occur in each part
+
+\include{chs/spectrometer/introduction}
+\include{chs/spectrometer/theory}
+\include{chs/spectrometer/software}
+\include{chs/spectrometer/conclusion}
+
+%----------------------------------------------------------------------------------------
+
+\backmatter % Denotes the end of the main document content
+\setchapterstyle{plain} % Output plain chapters from this point onwards
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+% The bibliography needs to be compiled with biber using your LaTeX editor, or on the command line with 'biber main' from the template directory
+
+%\defbibnote{bibnote}{Here are the references in citation order.\par\bigskip} % Prepend this text to the bibliography
+\printbibliography[
+	heading=bibintoc,%
+	title=Bibliography,
+	%prenote=bibnote
+] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
+
+%----------------------------------------------------------------------------------------
+%	GLOSSARY
+%----------------------------------------------------------------------------------------
+
+% The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
+
+\setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
+\printglossary[title=Glossary, toctitle=Glossary] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+\label{glo}
+
+\end{document}
