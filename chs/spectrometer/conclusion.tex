@@ -61,7 +61,7 @@ But of course the strength of the \pyspeck package stems from its capacity to be
                 while not self.event.is_set():
                     yield self.queue.get(block=True)
     \end{pycode}
-    \caption[\code{TeeDAQ} template]{
+    \caption{
         Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
         The \code{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
     }
@@ -138,7 +138,7 @@ The downside of this approach is that synchronization of different instruments o
         for data_buffers in zip(*acquisition_generators):
             estimate_csd(*data_buffers)
     \end{pycode}
-    \caption[Proposed \code{DAQ} workflow for cross-spectra]{
+    \caption{
         Proposed \code{DAQ} workflow for estimating cross-spectra.
         Each hardware channel (same or different instruments) is assigned to a \code{DAQ} object.
         After instrument configuration, it is asserted that the parameters match.
