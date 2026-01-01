@@ -9,7 +9,7 @@
 
 % Text macros
 \newcommand{\code}[1]{\pyinline{#1}}
-\newcommand{\codev}[1]{\texttt{#1}}
+\newcommand{\codev}[1]{\texttt{#1}}  % for where minted/verbatim makes trouble, like inside captions etc
 \newcommand{\thepower}[2]{\ensuremath{P = \qty{#1}{#2\watt}}.\xspace}
 \newcommand{\thevoltage}[2]{\ensuremath{V_{\mr{#2}} = \qty{#1}{\volt}}.\xspace}
 \newcommand{\thewavelength}[1]{\ensuremath{\lambda_{\mr{exc}} = \qty{#1}{\nano m}}.\xspace} % XXX: \meter somehow causes an error
@@ -55,12 +55,13 @@
 
 % Software
 \newcommand{\python}{Python\xspace}
-\newcommand{\package}[1]{\nohyphens{\code{#1}}\xspace}
-\newcommand{\pyspeck}{\package{python_spectrometer}}
+\newcommand{\package}[1]{\nohyphens{\codev{#1}}\xspace}
+\newcommand{\pyspeck}{\package{python\_spectrometer}}
 \newcommand{\mjolnir}{\package{mjolnir}}
 \newcommand{\qutil}{\package{qutil}}
 \newcommand{\xarray}{\package{xarray}}
-\newcommand{\filterfunctions}{\package{filter_functions}}
+\newcommand{\filterfunctions}{\package{filter\_functions}}
+\newcommand{\lmt}{\package{lindblad\_mc\_tools}}
 \newcommand{\qupulse}{\package{qupulse}}
 \newcommand{\qopt}{\package{qopt}}
 \newcommand{\qumada}{\package{QuMADA}}
@@ -69,7 +70,7 @@
 \newcommand{\matplotlib}{\package{matplotlib}}
 \newcommand{\qutip}{\package{QuTiP}}
 \newcommand{\sparse}{\package{sparse}}
-\newcommand{\opteinsum}{\package{opt_einsum}}
+\newcommand{\opteinsum}{\package{opt\_einsum}}
 \newcommand{\jupyter}{\package{Jupyter}}
 \newcommand{\qcodes}{\package{QCoDeS}}
 \newcommand{\pymoosh}{\package{PyMoosh}}
@@ -83,7 +84,7 @@
 \DeclareSIUnit{\gaccel}{\mathit{g}}
 \DeclareSIUnit{\cts}{cts}
 \DeclareSIUnit{\cps}{cps}
-\DeclareSIUnit{\sample}{S}
+\DeclareSIUnit{\sample}{Sa}
 \DeclareSIUnit{\pixel}{px}
 \DeclareSIUnit{\bar}{bar}
 \DeclareSIUnit{\txtdegree}{deg}
@@ -378,7 +379,7 @@
   \medskip
 }
 
-\newminted[py]{python}{
+\newminted[pycode]{python}{
     autogobble=true,%
     frame=leftline,% none | leftline | topline | bottomline | lines | single
     fontsize=\small,% normalsize, small, footnotesize
@@ -388,14 +389,4 @@
 \newmintinline[pyinline]{python}{
     breaklines,%
     breakafter=._,%
-}
-
-% Minted and (presumably) sidenotes do NOT like each other at all.
-% This tries to wrap py to always start in vertical mode, but it does  not always appear
-% to work. Try tuning the \vspace if it does not, that usually does the trick. If not,
-% may Don Knuth be with you.
-\newenvironment{pycode}{%
-  \par\vspace{\baselineskip}\VerbatimEnvironment\begin{py}  % \par ensures vertical mode; optional spacing
-}{%
-  \end{py}\par\vspace{\baselineskip} % end with vertical mode + optional spacing
 }

@@ -62,8 +62,8 @@ But of course the strength of the \pyspeck package stems from its capacity to be
                     yield self.queue.get(block=True)
     \end{pycode}
     \caption{
-        Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
-        The \code{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
+        Template design for a proxy \codev{DAQ} implementation to stream noise spectra from an external measurement framework.
+        The \codev{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
     }
     \label{lst:speck:conclusion:tee}
 \end{marginlisting}
@@ -139,8 +139,8 @@ The downside of this approach is that synchronization of different instruments o
             estimate_csd(*data_buffers)
     \end{pycode}
     \caption{
-        Proposed \code{DAQ} workflow for estimating cross-spectra.
-        Each hardware channel (same or different instruments) is assigned to a \code{DAQ} object.
+        Proposed \codev{DAQ} workflow for estimating cross-spectra.
+        Each hardware channel (same or different instruments) is assigned to a \codev{DAQ} object.
         After instrument configuration, it is asserted that the parameters match.
         Finally, data is fetched from both channels and fed into a \gls{csd} estimator.
         Note that triggering would need to be implemented externally.

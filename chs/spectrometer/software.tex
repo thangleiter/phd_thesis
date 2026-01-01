@@ -30,8 +30,8 @@ The package approaches \acrlong{daq} from the inverse direction: rather than inf
     \input{img/tikz/spectrometer/speck_tree}
     \caption[\imgsource{img/tikz/spectrometer/speck_tree.tex}]{
         Source tree structure of the \pyspeck package.
-        Driver wrappers are placed in the \code{daq} subpackage.
-        \code{core.py} exports the \code{Spectrometer} class.
+        Driver wrappers are placed in the \codev{daq} subpackage.
+        \codev{core.py} exports the \codev{Spectrometer} class.
     }
     \label{fig:speck:software:tree}
 \end{marginfigure}
@@ -51,8 +51,8 @@ This class is used in the background to validate data acquisition settings both 
     \footnotesize
     \centering
     \setmintedinline[Python]{fontsize=\footnotesize}
-    \caption[Overview of spectrum estimation parameters]{
-        Variable names used in \cref{ch:speck:theory} and their corresponding parameter names as used in \pyspeck and \code{scipy.signal.welch()}~\cite{WelchScipy}.
+    \caption{
+        Variable names used in \cref{ch:speck:theory} and their corresponding parameter names as used in \pyspeck and \codev{scipy.signal.welch()}~\cite{WelchScipy}.
     }
     \label{tab:speck:software:parameters}
     \begin{tabular}{ c C }
@@ -113,8 +113,8 @@ she could inspect the parameters after resolution using the code shown in \cref{
          'n_avg': 1}
     \end{pycode}
     \caption{
-        \code{DAQSettings} example showcasing automatic parameter resolution.
-        \code{n_avg} determines the number of outer averages, \ie, the number of data buffers acquired and processed individually.
+        \codev{DAQSettings} example showcasing automatic parameter resolution.
+        \codev{n\_avg} determines the number of outer averages, \ie, the number of data buffers acquired and processed individually.
     }
     \label{lst:speck:daq:settings}
 \end{listing}
@@ -131,8 +131,8 @@ she could inspect the parameters after resolution using the code shown in \cref{
      'n_pts': 16384,
      'n_avg': 1}
     \end{pycode}
-    \caption[Resolved \code{DAQSettings} for MFLI Scope]{
-        Resolved settings for the same input parameters as in \cref{lst:speck:daq:settings} but for the \code{ZurichInstrumentsMFLIScope} backend with hardware constraints on \code{n_pts} and \code{fs}.
+    \caption{
+        Resolved settings for the same input parameters as in \cref{lst:speck:daq:settings} but for the \codev{ZurichInstrumentsMFLIScope} backend with hardware constraints on \codev{n\_pts} and \codev{fs}.
     }
     \label{lst:speck:daq:settings:mfli_scope}
 \end{marginlisting}
@@ -164,11 +164,11 @@ Their functionality is best illustrated by the internal workflow as representati
         # Finalize, clean up, return to user code
         ...
     \end{pycode}
-    \caption[\gls{daq} workflow pseudocode]{
+    \caption{
         \gls{daq} workflow pseudocode.
-        A \code{MyDAQ} object (representing the instrument \code{My}) is instantiated with a driver object (for instance a \href{https://github.com/microsoft/qcodes}{\qcodes} \code{Instrument}).
-        The instrument is configured with the given \code{user_settings}.
-        Calling the generator function \code{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
+        A \codev{MyDAQ} object (representing the instrument \codev{My}) is instantiated with a driver object (for instance a \href{https://github.com/microsoft/qcodes}{\qcodes} \codev{Instrument}).
+        The instrument is configured with the given \codev{user\_settings}.
+        Calling the generator function \codev{daq.acquire()} with the actual device settings returns a generator, iterating over which yields one data buffer per iteration.
         The data buffers can then be passed to further processing functions (the \gls{psd} estimator in our example).
     }
     \label{lst:speck:daq:workflow}
@@ -217,15 +217,15 @@ can be specified.
                     yield self.handle.fetch()
                 return self.handle.metadata
     \end{pycode}
-    \caption[\code{DAQ} pseudocode]{
-        Exemplary code for a \code{DAQ} implementation of some instrument with given driver class \code{DeviceHandle} in the package \code{mydriver}.
-        The \code{MyDAQ} class is instantiated with a \code{DeviceHandle} instance.
-        Optionally, the \code{DAQSettings} property can be overridden to implement hardware constraints or default values for data acquisition parameters.
-        For this, the \code{qutil.domains} module provides several classes that represent bounded domains and sets.
-        The \code{setup()} method parses the given acquisition settings and configures the instrument through the external driver interface \code{handle.configure()}.
-        The \code{acquire()} method arms the instrument (if necessary) and loops over the number of outer averages, \code{n_avg}.
+    \caption{
+        Exemplary code for a \codev{DAQ} implementation of some instrument with given driver class \codev{DeviceHandle} in the package \codev{mydriver}.
+        The \code{MyDAQ} class is instantiated with a \codev{DeviceHandle} instance.
+        Optionally, the \codev{DAQSettings} property can be overridden to implement hardware constraints or default values for data acquisition parameters.
+        For this, the \codev{qutil.domains} module provides several classes that represent bounded domains and sets.
+        The \codev{setup()} method parses the given acquisition settings and configures the instrument through the external driver interface \codev{handle.configure()}.
+        The \codev{acquire()} method arms the instrument (if necessary) and loops over the number of outer averages, \codev{n\_avg}.
         In the body of the loop, it can wait for external triggers (or send software triggers) before yielding a batch of data fetched from the external driver interface.
-        Once acquisition is done, the method can return arbitrary metadata to the \code{Spectrometer} object to attach to the stored data.
+        Once acquisition is done, the method can return arbitrary metadata to the \codev{Spectrometer} object to attach to the stored data.
     }
     \label{lst:speck:daq:pseudocode}
 \end{listing}
@@ -252,10 +252,10 @@ That is, it should take the frequency-space data, the corresponding frequencies,
         def comp_gain(x, gain=1.0, **_):
             return x / gain
     \end{pycode}
-    \caption[Simple \code{procfn} example]{
-        A simple \code{procfn}, which converts amplified data back to the level before amplification.
-        Note the token \code{**_} variable keyword argument that ensures no errors arise from other parameters being passed to the function.
-        More complex processing chains can concisely be defined with \code{qutil.functools.FunctionChain} that pipes the output of one function into the input of the next.
+    \caption{
+        A simple \codev{procfn}, which converts amplified data back to the level before amplification.
+        Note the token \codev{**\_} variable keyword argument that ensures no errors arise from other parameters being passed to the function.
+        More complex processing chains can concisely be defined with \codev{qutil.functools.FunctionChain} that pipes the output of one function into the input of the next.
     }
     \label{lst:speck:procfn}
 \end{marginlisting}
@@ -264,7 +264,7 @@ That is, it should take the frequency-space data, the corresponding frequencies,
         def derivative(xf, f, n=0, **_):
             return xf / (2j * pi * f)**n
     \end{pycode}
-    \caption[Simple \code{fourier_procfn} example]{A simple \code{fourier_procfn}, which calculates the \mbox{(anti-)}derivative.}
+    \caption{A simple \codev{fourier\_procfn}, which calculates the \mbox{(anti-)}derivative.}
     \label{lst:speck:fourier_procfn}
 \end{marginlisting}
 
@@ -316,11 +316,11 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
         settings = {'f_min': 1e1, 'f_max': 1e5, 'freq': 0}
         spect.take('baseline', daq='grounded', **settings)
     \end{pycode}
-    \caption[\pyspeck serial workflow]{
+    \caption{
         Setup and serial workflow using the \pyspeck package.
-        \code{session} and \code{device} are \gls{api} objects of the \code{zhinst.toolkit} driver package.
+        \codev{session} and \codev{device} are \gls{api} objects of the \codev{zhinst.toolkit} driver package.
         It is therefore possible to simply use the driver objects that are already in use in the measurement setup.
-        The \code{procfn} and \code{processed_unit} arguments help converting raw data into a more human-friendly unit.
+        The \codev{procfn} and \codev{processed\_unit} arguments help converting raw data into a more human-friendly unit.
     }
     \label{lst:speck:workflow:serial}
 \end{listing}
@@ -365,9 +365,9 @@ Since his \gls{daq} returns complex data, the absolute value $R = \abs{X + \i Y}
         spect.take('lifted cable', cable='lifted', **settings)
         spect.take('jumped', **settings)
     \end{pycode}
-    \caption[]{
+    \caption{
         Code to acquire additional spectra.
-        Arbitrary key-value pairs can be passed to the \code{take()} method, which are stored as metadata if they do not apply to any functions downstream in the data processing chain.
+        Arbitrary key-value pairs can be passed to the \codev{take()} method, which are stored as metadata if they do not apply to any functions downstream in the data processing chain.
     }
     \label{lst:speck:workflow:spectra}
 \end{listing}
@@ -375,7 +375,7 @@ Since his \gls{daq} returns complex data, the absolute value $R = \abs{X + \i Y}
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_timetrace}
     \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
-        The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_timetrace = True}.
+        The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \codev{spect.plot\_timetrace = True}.
         This adds a subplot that shows the time series data from which the \gls{psd} was computed akin to what an oscilloscope would show.
         For complex time series, the absolute value $R = X + \i Y$ is plotted.
         Note that this is the entire time series, \ie, the data of length $L$, which is (by default, using Welch's method) segmented for spectrum estimation.
@@ -403,7 +403,7 @@ On the other hand, the \code{"lifted cable"} state somehow removed the peak at \
     \centering
     \includegraphics{img/pdf/spectrometer/workflow_cumulative}
     \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
-        The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \code{spect.plot_cumulative = True}.
+        The \pyspeck plot shown in \cref{fig:speck:software:workflow:spectra} when setting \codev{spect.plot\_cumulative = True}.
         This adds a subplot that shows the \gls{rms} (see \cref{eq:speck:psd:bandpower}) which can be helpful in evaluating the contribution of individual peaks in the spectrum to the total noise power.
         Both the oscilloscope subplot (\cref{fig:speck:software:workflow:timetrace}) and the \gls{rms} subplot can also be shown at the same time.
     }
@@ -447,7 +447,7 @@ In his case, Bob can tell that the \oneoverf noise is close to \qty{20}{\decibel
     \includegraphics{img/pdf/spectrometer/workflow_db}
     \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot in relative mode.
-        Starting from the state in \cref{fig:speck:software:workflow:spectra}, we set \code{spect.plot_dB_scale = True} as well as \code{spect.plot_amplitude = False} and \code{spect.plot_density = False} to compare the relative noise powers with respect to the connected baseline.
+        Starting from the state in \cref{fig:speck:software:workflow:spectra}, we set \codev{spect.plot\_dB\_scale = True} as well as \codev{spect.plot\_amplitude = False} and \codev{spect.plot\_density = False} to compare the relative noise powers with respect to the connected baseline.
     }
     \label{fig:speck:software:workflow:db}
 \end{figure}
@@ -467,9 +467,9 @@ to hide the eight spectra of unsuccessful debugging, leaving him with a plot as 
     \includegraphics{img/pdf/spectrometer/workflow_success}
     \caption[\imgsource{img/py/spectrometer/pyspeck_workflow.py}]{
         The \pyspeck plot after multiple additional spectra were acquired and hidden.
-        Hiding spectra that one is not interested in anymore is achieved through \code{spect.hide(*range(2, 10))}.
-        This is reversed by \code{spect.show(*range(2, 10))}.
-        Data can also be dropped (\code{spect.drop(key)}) or deleted (\code{spect.delete(key)}) from the internal cache and disk, respectively.
+        Hiding spectra that one is not interested in anymore is achieved through \codev{spect.hide(*range(2, 10))}.
+        This is reversed by \codev{spect.show(*range(2, 10))}.
+        Data can also be dropped (\codev{spect.drop(key)}) or deleted (\codev{spect.delete(key)}) from the internal cache and disk, respectively.
     }
     \label{fig:speck:software:workflow:success}
 \end{figure}
