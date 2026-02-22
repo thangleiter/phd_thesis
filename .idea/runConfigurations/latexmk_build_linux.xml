@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="latexmk build linux" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+    <texify>
+      <compiler>LATEXMK</compiler>
+      <compiler-path />
+      <sumatra-path />
+      <pdf-viewer>NONE</pdf-viewer>
+      <viewer-command />
+      <compiler-arguments>-r $PROJECT_DIR$/linux.latexmkrc -pv</compiler-arguments>
+      <envs />
+      <expand-macros-in-environment-variables>false</expand-macros-in-environment-variables>
+      <before-run-command />
+      <main-file>$PROJECT_DIR$/main.tex</main-file>
+      <output-path>$PROJECT_DIR$/build</output-path>
+      <auxil-path>{projectDir}/auxil</auxil-path>
+      <compile-twice>false</compile-twice>
+      <output-format>DEFAULT</output-format>
+      <latex-distribution>PROJECT_SDK</latex-distribution>
+      <has-been-run>true</has-been-run>
+      <bib-run-config>[]</bib-run-config>
+      <makeindex-run-config>[]</makeindex-run-config>
+    </texify>
+    <method v="2" />
+  </configuration>
+</component>

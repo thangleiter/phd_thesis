@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="py313" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="TeX Live 2025 SDK" project-jdk-type="TeX Live SDK" />
+</project>

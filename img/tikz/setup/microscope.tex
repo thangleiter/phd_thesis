@@ -1,0 +1,85 @@
+\begin{tikzpicture}[scale=1]
+
+% Parameters
+\def\f{2}           % focal length
+\def\beamHalf{0.5}  % half-width (or half-thickness) of the beam envelope
+\def\xLeftLens{-4}  % x-position of the left horizontal lens (Lens 1)
+\def\xRightLens{4}  % x-position of the right horizontal lens (Lens 2)
+\def\yVerticalLens{4} % y-position of the vertical lens (Lens 3)
+\def\bsx{0}         % beamsplitter x
+\def\bsy{0}         % beamsplitter y
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. Draw the collimated (parallel) beam inside the T
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Draw beam envelope for the horizontal branch (inside the T)
+\draw[green,dashed] ($(\xLeftLens,0) + (0,\beamHalf)$) -- ($(\xRightLens,0) + (0,\beamHalf)$);
+\draw[green,dashed] ($(\xLeftLens,0) + (0,-\beamHalf)$) -- ($(\xRightLens,0) + (0,-\beamHalf)$);
+
+% Draw collimated horizontal beam path (blue, solid line)
+\draw[blue,thick,->] (-8,0) -- (\xLeftLens,0) node[midway,below] {Collimated beam};
+\draw[blue,thick] (\xLeftLens,0) -- (\bsx,0);
+\draw[blue,thick] (\bsx,0) -- (\xRightLens,0);
+
+% Draw beam envelope for the vertical branch (inside the T)
+\draw[green,dashed] ($(\bsx,0)+(-\beamHalf,0)$) -- ($(\bsx,\yVerticalLens)+(-\beamHalf,0)$);
+\draw[green,dashed] ($(\bsx,0)+( \beamHalf,0)$) -- ($(\bsx,\yVerticalLens)+( \beamHalf,0)$);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. Draw the optical components: lenses and beamsplitter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Left horizontal lens (Lens 1)
+\draw[thick] (\xLeftLens,-1) -- (\xLeftLens,1);
+\node[above] at (\xLeftLens,1) {Lens 1};
+
+% Right horizontal lens (Lens 2)
+\draw[thick] (\xRightLens,-1) -- (\xRightLens,1);
+\node[above] at (\xRightLens,1) {Lens 2};
+
+% Vertical lens (Lens 3)
+\draw[thick] (-1,\yVerticalLens) -- (1,\yVerticalLens);
+\node[right] at (1,\yVerticalLens) {Lens 3};
+
+% Beamsplitter drawn at the intersection of the T (center)
+\draw[line width=2pt] ($(\bsx,\bsy)+(-0.7,-0.7)$) -- ($(\bsx,\bsy)+(0.7,0.7)$);
+\node[above right] at (0.4,0.4) {BS};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. Draw the converging beams AFTER the lenses (outside the T)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For the horizontal branch:
+% The right lens takes the collimated beam and makes it converging toward its focus,
+% assumed to lie at a distance f to the right of the lens.
+\coordinate (focusH) at ($(\xRightLens+\f,0)$);
+
+% Draw two dashed rays (from the top and bottom of the beam envelope at the lens) converging toward the focus.
+\draw[blue,->,dashed] (\xRightLens, \beamHalf) -- (focusH);
+\draw[blue,->,dashed] (\xRightLens, -\beamHalf) -- (focusH);
+% Extend the fiber envelope in the converging region:
+\draw[green,dashed] (\xRightLens, \beamHalf) -- (focusH);
+\draw[green,dashed] (\xRightLens, -\beamHalf) -- (focusH);
+
+% Mark the focus point
+\filldraw[black] (focusH) circle (2pt);
+\node[above] at (focusH) {Focus};
+
+% For the vertical branch:
+% The vertical lens makes the upward collimated beam converge toward its focus,
+% assumed to lie at a distance f above the lens.
+\coordinate (focusV) at ($(0,\yVerticalLens+\f)$);
+
+% Draw dashed rays from the left and right edges of the beam envelope (at the vertical lens) converging toward the focus.
+\draw[red,->,dashed] ($( \bsx-\beamHalf,\yVerticalLens)$) -- (focusV);
+\draw[red,->,dashed] ($( \bsx+\beamHalf,\yVerticalLens)$) -- (focusV);
+% Extend the envelope for the vertical converging beam:
+\draw[green,dashed] ($( \bsx-\beamHalf,\yVerticalLens)$) -- (focusV);
+\draw[green,dashed] ($( \bsx+\beamHalf,\yVerticalLens)$) -- (focusV);
+
+% Mark the focus point for the vertical branch
+\filldraw[black] (focusV) circle (2pt);
+\node[right] at (focusV) {Focus};
+
+\end{tikzpicture}

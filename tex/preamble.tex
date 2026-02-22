@@ -1,0 +1,215 @@
+%----------------------------------------------------------------------------------------
+%    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+% Choose the language
+\ifxetexorluatex
+    \usepackage{polyglossia}
+    \setmainlanguage[variant=american]{english}
+    \setotherlanguage{german}
+\else
+    \usepackage[english]{babel} % Load characters and hyphenation
+\fi
+\usepackage[autostyle=true,english=american]{csquotes}    % English quotes
+
+% Load the bibliography package
+\PassOptionsToPackage{
+    natbib=true,
+    url=false,
+    datamodel=software,
+    maxbibnames=15,
+}{biblatex}
+\usepackage[addspace=false]{kaobiblio}
+
+\usepackage{software-biblatex}
+\ExecuteBibliographyOptions{
+    halid=false,
+    swhid=false,
+    swlabels=false,
+    vcs=true,
+    license=true
+}
+
+\addbibresource[label=ownpubs]{bib/00_own_publications.bib}
+\addbibresource[label=ownsoft]{bib/01_own_software.bib}
+\addbibresource[label=main]{bib/02_phd_thesis.bib}
+\addbibresource[label=thesispubs]{bib/03_thesis_publications.bib}
+%\addbibresource[label=ownpubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9DZH4WT9/00_own_publications.biblatex}
+%\addbibresource[label=ownsoft,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:9JGLAL7M/01_own_software.biblatex}
+%\addbibresource[label=main,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:EHEBFZ3Q/02_phd_thesis.biblatex}
+%\addbibresource[label=thesispubs,location=remote]{http://127.0.0.1:23119/better-bibtex/export?/library;id:1/collection;key:CTNSY4GR/03_thesis_publications.biblatex}
+
+%----------------------------------------------------------------------------------------
+% Custom packages
+%----------------------------------------------------------------------------------------
+\PassOptionsToPackage{
+    chapter,%
+    cache=true,%
+}{minted}
+    \usepackage{minted}
+
+\setminted[python]{
+    fontfamily=tt,% tt,courier,helvetica
+    style=gruvbox-light,%gruvbox-light,github-light,default
+}
+
+\usepackage{lettrine}
+%\usepackage{Zallman}
+%\usepackage{Starburst}
+%\usepackage{Rothdn}
+% Use these like so:
+% \Zallmanfamily
+\renewcommand{\LettrineFontHook}{\fontspec{Libertinus Serif Initials}\color{RWTHblue100}}
+
+\usepackage{tabularx} % better tables with given width
+\usepackage{threeparttable} % tablenotes env
+%\setlength{\extrarowheight}{3pt} % increase table row height
+\usepackage{collcell} % for verb columns
+
+\usepackage{fontawesome5} % fancy icons
+
+%! begin preamble = tikz
+% graphs
+\usetikzlibrary{
+    arrows,
+    positioning,
+    calc,
+    angles,
+    shadows,
+    decorations.markings
+}
+% tree structures
+\usepackage[edges]{forest}
+% electric circuits
+\usepackage{circuitikz}
+
+%\usepackage{pgfplots}
+%\pgfplotsset{compat=1.18}
+
+% Fix for matplotlib's PGF backend
+% https://github.com/matplotlib/matplotlib/issues/27907
+\newcommand{\mathdefault}[1]{\displaystyle #1}
+
+%\usetikzlibrary{math}
+% quantum circuits
+\usetikzlibrary{quantikz2}
+
+% cache pdfs, needs shell-escape. does not work on linux 18/04
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=img/pdf/]
+%! end preamble = tikz
+
+%! begin preamble = math
+\usepackage{dsfont}
+\usepackage{wasysym} % \permil
+\RequirePackage{mathtools}
+\usepackage{chemformula}
+\usepackage{physics}
+\usepackage{siunitx}
+\sisetup{%
+    per-mode = single-symbol,%
+    list-final-separator = {\text{, and }},%
+    print-unity-mantissa = false,%
+}
+\AtBeginDocument{\RenewCommandCopy\qty\SI}
+%! end preamble = math
+%----------------------------------------------------------------------------------------
+% Config
+%----------------------------------------------------------------------------------------
+% Margin TOC
+\setcounter{margintocdepth}{\sectiontocdepth}
+% Use like so:
+% \setchapterpreamble[u]{\margintoc}
+% \chapter{foo}
+% This would be nice to have for parts, but those don't have margins atm.
+%\counterwithin*{chapter}{part}
+
+% Make cleveref use "Appendix" instead of "Chapter" after \appendix
+% https://github.com/latex3/hyperref/issues/362
+\AddToHook{cmd/appendix/before}{\crefalias{chapter}{appendix}}
+
+% Add sidenotes to the exceptions for xspace so that macros that end on \xspace don't get a space if followed by \sidenote
+\xspaceaddexceptions{\sidenote}
+
+% Make "Figure X.Y" link back to the list of figures
+\DeclareCaptionLabelFormat{linked}{\hyperref[lof]{#1~#2}}
+\captionsetup[figure]{labelformat=linked}
+
+% Hyphenation rules
+\begin{hyphenrules}{english}
+    \hyphenation{
+        Lo-rentz-ian
+        Gauss-ian
+        Cou-lomb
+        equi-dis-tant
+        mount-ed
+        tool-kit
+    }
+\end{hyphenrules}
+%----------------------------------------------------------------------------------------
+% Load mathematical packages for theorems and related environments
+% Required somehow even if not used.
+\usepackage[framed=true]{kaotheorems}
+
+% Load the package for hyperreferences
+\usepackage{kaorefs}
+
+\graphicspath{ {./img/}{./} } % Paths in which to look for images
+
+% \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
+
+\makeglossaries % Make LaTeX produce the files required to compile the glossary
+\input{tex/glossary} % Include the glossary definitions
+
+% \makenomenclature % Make LaTeX produce the files required to compile the nomenclature
+%----------------------------------------------------------------------------------------
+% DEBUG
+%----------------------------------------------------------------------------------------
+%\usepackage{blindtext} % Print text without any meaning for testing purposes
+%\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
+%\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
+%\usepackage{lipsum}
+
+%\usepackage{printlen}
+%\uselengthunit{in}
+% Use:
+% \printlength{\marginparsep}
+
+%\ExplSyntaxOn
+%\NewDocumentCommand{\thefontsize}{O{}}{#1 The current font size is:  \f@size \pt\par}
+%\ExplSyntaxOff
+% Use:
+% \thefontsize\footnotesize
+%----------------------------------------------------------------------------------------
+% Comment this out if you want to compile individual pieces only
+
+%\includeonly{
+%    chs/titlepage,
+%    chs/summary,
+%    chs/acknowledgements,
+%    chs/preface,
+%    chs/publications,
+%    chs/software,
+%    chs/spectrometer/introduction,
+%    chs/spectrometer/theory,
+%    chs/spectrometer/software,
+%    chs/spectrometer/conclusion,
+%    chs/setup/introduction,
+%    chs/setup/cooling,
+%    chs/setup/optics,
+%    chs/setup/vibrations,
+%    chs/setup/conclusion,
+%    chs/experiment/introduction,
+%    chs/experiment/theory,
+%    chs/experiment/mjolnir,
+%    chs/experiment/observations,
+%    chs/experiment/conclusion,
+%    chs/filter_functions/introduction,
+%    chs/filter_functions/formalism,
+%    chs/filter_functions/validation,
+%    chs/filter_functions/software,
+%    chs/filter_functions/applications,
+%    chs/filter_functions/conclusion,
+%    chs/appendices/setup,
+%    chs/appendices/experiment,
+%    chs/appendices/filter_functions,
+%}

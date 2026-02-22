@@ -1,0 +1,28 @@
+#!/bin/sh
+# pre-commit hook: Copy a file from one location to another
+
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ]; then
+  # Skip this hook if we're not on main
+  exit 0
+fi
+
+SRC_FILE="build/main.pdf"
+DEST_FILE="review/main.pdf"
+
+# Check if the source file exists
+if [ ! -f "$SRC_FILE" ]; then
+    echo "Warning: Source file '$SRC_FILE' not found. Not copying '$SRC_FILE'."
+    exit 0
+fi
+
+# Perform the copy operation
+if ! cp "$SRC_FILE" "$DEST_FILE"; then
+    echo "Error: Failed to copy '$SRC_FILE' to '$DEST_FILE'. Aborting commit."
+    exit 1
+else
+  git add "$DEST_FILE"
+fi
+
+echo "Successfully copied '$SRC_FILE' to '$DEST_FILE'."
+
+exit 0

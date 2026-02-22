@@ -1,0 +1,50 @@
+\forestset{
+    dir tree/.style={
+        for tree={
+            parent anchor=south west,
+            child anchor=west,
+            anchor=mid west,
+            inner ysep=0pt,
+            grow'=0,
+            align=left,
+            s sep=1ex,
+            edge path={
+                \noexpand\path [draw, \forestoption{edge}] (!u.parent anchor) ++(0.75em,0) |- (.child anchor)\forestoption{edge label};
+            },
+            font=\footnotesize\ttfamily,
+            if n children=0{}{
+                delay={
+                    prepend={[,phantom, calign with current]}
+                }
+            },
+            fit=band,
+            before computing xy={
+                l=1.5em
+            }
+        },
+    }
+}
+\begin{forest}
+    dir tree
+    [
+        [{\faIcon[regular]{folder} \pyspeckpath{doc}{doc}}]
+        [{\faIcon[regular]{folder-open} \pyspeckpath{src}{src}}
+            [{\faIcon[regular]{folder-open} \pyspeckpath{src/python_spectrometer}{python\_spectrometer}}
+                [{\faIcon[regular]{folder-open} \pyspeckpath{src/python_spectrometer/daq}{daq}}
+                    [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/daq/__init__.py}{\_\_init\_\_.py}}]
+                    [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/daq/base.py}{base.py}}]
+                    [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/daq/qcodes.py}{qcodes.py}}]
+                    [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/daq/settings.py}{settings.py}}]
+                    [{\faIcon[regular]{file-code} \ldots}]
+                ]
+                [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/__init__.py}{\_\_init\_\_.py}}]
+                [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/_audio_manager.py}{\_audio\_manager.py}}]
+                [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/_plot_manager.py}{\_plot\_manager.py}}]
+                [{\faIcon[regular]{file-code} \pyspeckpath{src/python_spectrometer/core.py}{core.py}}]
+            ]
+        ]
+        [{\faIcon[regular]{folder} \pyspeckpath{tests}{tests}}]
+        [{\faIcon[regular]{file-code} \pyspeckpath{pyproject.toml}{pyproject.toml}}]
+        [{\faIcon[regular]{file-code} \ldots}]
+    ]
+\end{forest}

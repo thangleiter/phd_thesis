@@ -1,0 +1,6 @@
+# Lockin enabled
+Voltage (mV)	MXC Temperature (mK)
+0				7.9
+100				9.1
+200				12.2
+300				17.9

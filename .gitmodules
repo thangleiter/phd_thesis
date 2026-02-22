@@ -1,0 +1,7 @@
+[submodule "lib/kaobook"]
+	path = lib/kaobook
+	url = https://github.com/thangleiter/kaobook.git
+	branch = main
+[submodule "lib/fonts"]
+	path = lib/fonts
+	url = https://git.nsa.his.se/latex/fonts
