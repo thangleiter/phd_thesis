@@ -1,8 +1,8 @@
 #!/bin/sh
 # pre-commit hook: Copy a file from one location to another
 
-if ! git diff-index --quiet HEAD --; then
-    echo "Not copying build/main.pdf due to uncommitted changes."
+if ! git diff --quiet; then
+    echo "Not copying build/main.pdf due to unstaged changes."
     exit 0
 fi
 
