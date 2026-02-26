@@ -3,8 +3,8 @@
     <texify>
       <compiler>LATEXMK</compiler>
       <compiler-path />
-      <sumatra-path />
-      <pdf-viewer>SUMATRA</pdf-viewer>
+      <pdf-viewer>SumatraPDF</pdf-viewer>
+      <require-focus>true</require-focus>
       <viewer-command />
       <compiler-arguments>-r $PROJECT_DIR$/windows.latexmkrc -pv</compiler-arguments>
       <envs />

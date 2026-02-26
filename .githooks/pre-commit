@@ -6,6 +6,11 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ]; then
   exit 0
 fi
 
+if ! git diff-index --quiet HEAD --; then
+    echo "Not copying build/main.pdf due to uncommitted changes."
+    exit 0
+fi
+
 SRC_FILE="build/main.pdf"
 DEST_FILE="review/main.pdf"
 
