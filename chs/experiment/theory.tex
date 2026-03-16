@@ -125,7 +125,7 @@ while the first excited state lies \qty{42}{\milli\electronvolt} higher than the
 The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wave functions of electrons and holes in a band structure diagram.
 Due to the symmetry of the confining potential, the wave functions are symmetric around the center of the well.
 
-\begin{marginfigure}[*-2]
+\begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/qw_undoped_0V}
     \includegraphics{img/pdf/experiment/qw_undoped_1V}
@@ -221,7 +221,7 @@ At vanishing field, there should be no in-plane potential, $\omega=0$.
 Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
 
 How does this in-plane confinement modify the wave function?
-Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than both the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
+Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
 Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3}=2a_{\mr{B}}\gth{2}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi:tot}
     \Psi_{nmp\ell}(z_{\mr{e}},z_{\mr{h}},\rho,\phi,\bvec{\varrho}) = \psi_n(z_{\mr{e}})\psi_m(z_{\mr{h}})\zeta_{p\ell}(\rho,\phi) F(\bvec{\varrho}),
@@ -297,7 +297,7 @@ From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator streng
 This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
 Of course, the radial symmetry will most likely be broken in a realistic experimental scenario, and it would be interesting to investigate if indeed those states are optically inactive.
 
-\begin{marginfigure}[*-23]
+\begin{marginfigure}[*-24]
     \centering
     \includegraphics{img/pdf/experiment/qcse_field_dependence}
     \caption[\imgsource{img/py/experiment/qcse.py}]{

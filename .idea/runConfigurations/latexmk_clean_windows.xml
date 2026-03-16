@@ -13,10 +13,10 @@
       <main-file>$PROJECT_DIR$/main.tex</main-file>
       <output-path>$PROJECT_DIR$/build</output-path>
       <auxil-path>{projectDir}/auxil</auxil-path>
-      <working-directory>projectDir</working-directory>
+      <working-directory>{mainFileParent}</working-directory>
       <compile-twice>false</compile-twice>
       <output-format>DEFAULT</output-format>
-      <latex-distribution>PROJECT_SDK</latex-distribution>
+      <latex-distribution>TEXLIVE</latex-distribution>
       <has-been-run>true</has-been-run>
       <bib-run-config>[]</bib-run-config>
       <makeindex-run-config>[]</makeindex-run-config>
