@@ -9,3 +9,6 @@ img/py/.idea/
 
 build/
 
+# pixi environments
+.pixi/*
+!.pixi/config.toml
