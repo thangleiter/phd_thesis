@@ -94,7 +94,7 @@ where $\eps_{\mr{r}} = \num{13.3}$ is the relative permittivity of \ch{GaAs} at 
 \Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wave function sketched in black.
 The electron-hole separation $r$ is shown in units of the exciton Bohr radius in two dimensions~\cite{Olsen2016}
 \begin{equation}\label{eq:exp:theory:qcse:bohr_radius_2d}
-    a_{\mr{B}}\gth{2} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
+    a_{\mr{B}}\gth{2D} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
 \end{equation}
 with $\mu$ the reduced effective mass of conduction and heavy-hole valence bands.
 
@@ -221,8 +221,8 @@ At vanishing field, there should be no in-plane potential, $\omega=0$.
 Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
 
 How does this in-plane confinement modify the wave function?
-Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
-Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3}=2a_{\mr{B}}\gth{2}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
+Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2D}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than both the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
+Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3D}=2a_{\mr{B}}\gth{2D}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi:tot}
     \Psi_{nmp\ell}(z_{\mr{e}},z_{\mr{h}},\rho,\phi,\bvec{\varrho}) = \psi_n(z_{\mr{e}})\psi_m(z_{\mr{h}})\zeta_{p\ell}(\rho,\phi) F(\bvec{\varrho}),
 \end{equation}
