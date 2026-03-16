@@ -336,7 +336,7 @@ Thus far, his code would hence look something like that shown in \cref{lst:speck
 \end{figure}
 
 The noise spectrum he obtains is white up until approximately \qty{20}{\kilo\hertz} where it starts falling off $\propto f^{-n}$.
-This is because the \gls{lia} low-pass filters the signal to suppress aliasing, and hence $n$ is the filter order.\sidenote[][*-6]{
+This is because the \gls{lia} low-pass filters the signal to suppress aliasing, and hence $n$ is the filter order.\sidenote[][*-4]{
     Aliasing effects arise from finite sampling according to the Nyquist-Shannon sampling theorem~\cite{Whittaker1915,Nyquist1928,Shannon1949}.
     It states that for a given physical bandwidth, the sampling rate \fs must be at least twice as large to faithfully reconstruct the signal in order to avoid aliasing, \ie, the reverse of the argument we have made for the largest resolvable frequency \fmax.
     Some \gls{daq} devices perform internal aliasing rejection while others do not, and it is up to the user to ensure sufficient anti-aliasing.
@@ -513,7 +513,7 @@ Moreover, each time a spectrum is captured, data is saved to disk, potentially a
 For these reasons, the \pyspeck package also offers a non-persistent live mode for displaying spectra continuously.
 
 This mode is facilitated by the \code{qutil.plotting.live_view} module~\cite{Hangleiter_qutil} that provides asynchronous plotting functionality based on \matplotlib.
-The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote{
+The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote[][*-1]{
     Note that technically, data is also recorded in a background thread in serial mode by default.
 }
 In the former case, the window hosting the figure runs in the main thread and is kept responsive using \matplotlib's \gls{gui} event loop mechanisms.

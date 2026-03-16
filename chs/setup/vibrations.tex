@@ -299,7 +299,7 @@ where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
     s = \frac{\Phi_0}{w_0}(1 - \reflectance_0).
 \end{equation}
-Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote[][*-1]{
+Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
     Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
 In our case, the former two are fixed by the sample and the setup, respectively , whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
@@ -311,7 +311,7 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
-\begin{marginfigure}[*-13]
+\begin{marginfigure}[*-12]
     \centering
     \includegraphics{img/pdf/setup/knife_edge}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -342,7 +342,7 @@ Of course it is also possible to fit the full knife-edge function, \cref{eq:setu
 From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectance $\reflectance_0$ can be extracted.
 Here we are content with the linear approximation; refer to \cref{subsec:app:setup:vibrations:knife_edge} for the full fits.
 
-\begin{marginfigure}[*-15]
+\begin{marginfigure}[*-14]
     \centering
     \includegraphics{img/pdf/setup/knife_edge_fits}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{

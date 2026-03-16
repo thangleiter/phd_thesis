@@ -285,7 +285,7 @@ This facilitates interactively exploring large datasets and recognizing trends p
 
 The plotting functionality is implemented using \matplotlib.
 While not the most performant library, its flexibility in decorating and customizing plots as well as scaling data, such as the $\asinh$-scale normalization used in \cref{fig:exp:mjolnir:plot_nd}, made it the preferred choice.
-To nonetheless improve the responsivity of the interactive elements, the plotted artists are \emph{blitted}\sidenote{
+To nonetheless improve the responsivity of the interactive elements, the plotted artists are \emph{blitted}\sidenote[][*-1]{
     Blitting refers to storing constant backgrounds of raster graphics and only redrawing changing elements.
     See the \matplotlib \href{https://matplotlib.org/stable/users/explain/animations/blitting.html}{documentation}.
 }
