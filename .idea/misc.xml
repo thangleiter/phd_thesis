@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="py313" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" project-jdk-name="TeX Live SDK" project-jdk-type="TeX Live SDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" project-jdk-name="TeX Live 2025 SDK" project-jdk-type="TeX Live SDK" />
 </project>

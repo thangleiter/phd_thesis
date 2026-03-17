@@ -119,7 +119,7 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings}
 \end{listing}
 
-\begin{marginlisting}[*-8]
+\begin{marginlisting}[*-7]
     \begin{pycode}[fontsize=\footnotesize]
     {'f_min': 14.30511474609375,
      'f_max': 72000.0,
@@ -137,10 +137,10 @@ she could inspect the parameters after resolution using the code shown in \cref{
     \label{lst:speck:daq:settings:mfli_scope}
 \end{marginlisting}
 
-If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][*6]{
+If the instrument she'd chosen for data acquisition had been a Zurich Instruments MFLI's Scope module,\sidenote[][*5]{
     \url{https://docs.zhinst.com/labone_api_user_manual/modules/scope/index.html}
 }
-the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][*8]{
+the same requested settings would have resolved to those shown in \cref{lst:speck:daq:settings:mfli_scope}.\sidenote[][*7]{
     And issued a warning to inform the user their requested settings could not be matched.
 }
 This is because the Scope module constrains $L\in[2^{12},2^{14}]$ and $\fs\in\qty{60}{\mega\hertz}\times 2^{[-16, 0]} \approx \allowbreak \lbrace \qty{915.5}{\hertz}, \allowbreak \dotsc, \allowbreak \qty{30}{\mega\hertz}, \qty{60}{\mega\hertz}\rbrace$.
