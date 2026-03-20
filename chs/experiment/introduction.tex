@@ -11,7 +11,7 @@
 \end{partcontribs}
 
 \AutoLettrine{Just} as quantum computers are conceived as the quantum analogon of classical computers with bits and logic operations switched out by quantum counterparts, so can one devise \emph{networks} of such objects, where quantum information generated or processed at a quantum \emph{node} is distributed across long distances through the quantum counterparts of classical information channels~\cite{Nielsen2011,Simon2017}.
-Famously envisioned by \citet{Kimble2008}, the concept can be extended to the idea of a \emph{quantum internet}~\cite{Wehner2018}.
+Famously envisioned by \textcite{Kimble2008}, the concept can be extended to the idea of a \emph{quantum internet}~\cite{Wehner2018}.
 
 A wide array of ideas has since been put forth that make use of the theoretical capabilities of such quantum networks.
 Initially, quantum networks were studied in the context of quantum cryptography~\cite{Bennett1984,Ekert1991,Deutsch1996,Gisin2002}.
@@ -50,13 +50,13 @@ In order to transmit quantum information between two parties, Alice and Bob, one
 Charlie shares bipartite maximally entangled states (often referred to as a \gls{epr} or Bell pair) with both Alice and Bob and performs a Bell measurement on the two halves of the pairs in his possession.
 This projects Alice and Bob's halves of the Bell pairs into a state that is maximally entangled between the two of them.
 This technique of entangling two states that have never interacted with each other is known as entanglement swapping~\cite{Zukowski1993,Pan1998}.
-\citet{Briegel1998,Dur1999} then proposed a quantum repeater protocol that uses entanglement swapping, enhanced by entanglement distillation,\sidenote{
+\textcite{Briegel1998,Dur1999} then proposed a quantum repeater protocol that uses entanglement swapping, enhanced by entanglement distillation,\sidenote{
     Also known as entanglement purification.
 }
 to successively entangle neighboring pairs of entangled states whose resource requirements scale logarithmically with the length of the quantum channel between the ends of which entanglement needs to be established.
 What is more, the protocol tolerates error and loss rates on the percent level and is thus much more benign than \gls{qec}~\cite{Terhal2015}.
 Following the initial proposal, more improved schemes were developed that tolerate higher errors~\cite{Dur2007} or employ entirely different techniques~\cite{Bayrakci2022}, see \citer{Azuma2023} for a review.
-\citet{Muralidharan2016} analyzed the resource requirements of three quantum repeater generations and identified optimal architectures for different parameter regimes.
+\textcite{Muralidharan2016} analyzed the resource requirements of three quantum repeater generations and identified optimal architectures for different parameter regimes.
 Recently, small-scale experimental realizations have demonstrated establishment of two-photon-entanglement across a \qty{50}{\kilo\meter} link by a quantum repeater node in the middle~\cite{Krutyanskiy2023}.
 
 A crucial detail of the quantum repeater protocol is that it requires storing Bell states in a quantum memory until the heralding of successful entanglement.\sidenote{
@@ -82,7 +82,7 @@ Due to the fast recombination speeds of excitons, their suitability as a qubit i
 Single charge carriers confined to \glspl{saqd} have been explored instead~\cite{Warburton2013}, but still face the problem that the growth of \glspl{saqd} is random and as such coupling two or more qubits is extremely challenging.
 By contrast, spin qubits confined in \glspl{gdqd} have reached a high level of maturity~\cite{Burkard2023,Stano2025}, and the promise of scalability by leveraging the highly advanced industrial semiconductor fabrication technology still holds true.
 
-\citet{Jocker2019} thus proposed a protocol for transferring the quantum state of a photonic, polarization-encoded qubit to that of a spin qubit confined in a \gls{gdqd} by means of a \gls{oaqd} serving as intermediary in order to benefit from the benign optical properties of the latter and the long coherence times and processing capabilities of the former.
+\textcite{Jocker2019} thus proposed a protocol for transferring the quantum state of a photonic, polarization-encoded qubit to that of a spin qubit confined in a \gls{gdqd} by means of a \gls{oaqd} serving as intermediary in order to benefit from the benign optical properties of the latter and the long coherence times and processing capabilities of the former.
 In the protocol, an incident photon generates an exciton in the \gls{oaqd}, transferring the quantum state to the exciton.
 By application of a strong in-plane magnetic field, bright and dark states of the exciton are mixed and electron and hole remain in a product state with all information encoded in the electron spin.
 This allows discarding the hole and subsequently transferring the electron state to the \gls{gdqd}, the details of which depend on the encoding chosen, either single-spin (\gls{ld}) or two-spin (singlet-triplet) qubit.
@@ -91,10 +91,10 @@ A crucial ingredient of the protocol is that the \gls{oaqd} be in tunnel-couplin
 For \glspl{saqd} this is a challenging endeavor since, as mentioned above, their growth is random and therefore requires one to first locate the dots and then align the gates during fabrication of the \gls{gdqd}.
 Because of the exponential dependence of tunnel coupling on the distance, this alignment needs to be very precise indeed.
 
-An alternative to a \gls{saqd} was proposed by \citet{Descamps2021} in the form of an electrostatic exciton trap.
+An alternative to a \gls{saqd} was proposed by \textcite{Descamps2021} in the form of an electrostatic exciton trap.
 Here, excitons are designed to be confined not by local modifications of the band structure during growth but by application of out-of-plane electric fields through gate electrodes.
 This tilts the band structure and lowers the exciton energy by the \gls{qcse}, where exciton dissociation is prevented by charge carrier confinement in a \gls{qw}.
-To avoid dissociation by lateral electric fields, \citet{Descamps2021} developed a fabrication process to etch down the semiconductor heterostructure to a \qty{200}{\nano\meter} thin membrane symmetric about the \gls{qw}, allowing lithographic patterning of laterally aligned, nanometer-scale gate electrodes on both sides of the membrane~\cite{Descamps2023}.
+To avoid dissociation by lateral electric fields, \textcite{Descamps2021} developed a fabrication process to etch down the semiconductor heterostructure to a \qty{200}{\nano\meter} thin membrane symmetric about the \gls{qw}, allowing lithographic patterning of laterally aligned, nanometer-scale gate electrodes on both sides of the membrane~\cite{Descamps2023}.
 Application of voltages of the same magnitude but opposite polarity to gates on the top and bottom side of the membrane then produces -- to leading order -- a local electric field without changing the chemical potential in the \gls{qw} itself, while voltages of the same polarity have just the opposite effect.
 Together with the out-of-plane confinement by the \gls{qw}, this should in theory provide zero-dimensional confinement of excitons purely by electrostatic means and allow for the top-down, scalable fabrication of \glspl{oaqd} in close proximity to other, conventional \glspl{gdqd}.
 What is more, the confinement strength and potential relative to the neighboring \gls{gdqd} can be finely tuned by well-established techniques.

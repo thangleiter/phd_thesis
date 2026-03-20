@@ -14,7 +14,7 @@
 
 \begin{authornote}
     In Reference~\cite{Hangleiter2021}, extensive use was made of \citeauthor{Kubo1962}'s cumulant expansion~\cite{Kubo1962}.
-    Due to an error in \citeauthor{Kubo1962}'s paper which was only pointed out several years later by \citet{Fox1976} and we were not aware of, those results turned out to be not exact as claimed but approximate~\sidecite{Hangleiter2024}.\sidenote{
+    Due to an error in \citeauthor{Kubo1962}'s paper which was only pointed out several years later by \textcite{Fox1976} and we were not aware of, those results turned out to be not exact as claimed but approximate~\sidecite{Hangleiter2024}.\sidenote{
         Unfortunately, the error has proliferated through the literature and proves quite pervasive despite the significant amount of time that has passed since it was first discovered.
         Recent examples include~\citer{Norris2016}.
         One may only speculate if this is because of the 14 years that passed between the original publication and the correction, the lack of an erratum once the mistake had been discovered, or simply because of \citeauthor{Kubo1962}'s fame.
@@ -50,7 +50,7 @@ This work generalizes and extends these results.
 \Glspl{ff} were originally introduced to describe the decay of phase coherence under \gls{dd} sequences~\cite{Kofman2001,Martinis2003,Uhrig2007,Cywinski2008} consisting of wait times and perfect $\pi$-pulses.
 The formalism facilitated recognizing these sequences as band-pass filters that allow for probing the environmental noise characteristics of a quantum system through noise spectroscopy~\cite{Alvarez2011,Bylander2011,Paz-Silva2017,Malinowski2017} or optimizing sequences to suppress specific noise bands~\cite{Biercuk2009,Uys2009,Soare2014,Malinowski2016}.
 It can also be extended to fidelities of gate operations for single~\cite{Green2012,Green2013} or multiple~\cite{Gungordu2018,Ball2020} qubits using the \gls{me}~\cite{Magnus1954,Blanes2009} as well as more general \gls{dd} protocols~\cite{Paz-Silva2014}.
-The works by~\citet{Green2013} and~\citet{Clausen2010} also introduced the notion of the control matrix as a quantity closely related to the canonical filter function that is convenient for calculations.
+The works by~\textcite{Green2013} and~\textcite{Clausen2010} also introduced the notion of the control matrix as a quantity closely related to the canonical filter function that is convenient for calculations.
 In this context, the formalism's capability to predict fidelities of gate implementations has been identified and experimentally tested~\cite{Green2013,Kabytayev2014,Soare2014,Ball2016}.
 More recently, it has also proved useful in assessing the performance requirements for classical control electronics~\cite{VanDijk2019}.
 
@@ -76,7 +76,7 @@ To highlight the main software features, we show example applications below.
 We provide this package in the expectation that it will be a useful tool for the community.
 Besides recasting and expanding on our earlier introduction of the formalism in~\citer{Cerfontaine2021}, the present work is intended to provide an overview of the software and its capabilities.
 It is structured as follows: In \cref{ch:ff:theory} we derive a closed-form expression for unital quantum operations in the presence of non-Markovian Gaussian noise and lay out how it may be evaluated using the filter-function formalism.
-We review the concatenation of quantum operations shown in~\citer{Cerfontaine2021} and furthermore adapt the method by~\citet{Green2013} to calculate the filter function of an arbitrary control sequence numerically.
+We review the concatenation of quantum operations shown in~\citer{Cerfontaine2021} and furthermore adapt the method by~\textcite{Green2013} to calculate the filter function of an arbitrary control sequence numerically.
 We will specifically focus on computational aspects of the formalism and lay out how to compute various quantities of interest.
 Moreover, we classify its computational complexity for calculating average gate fidelities and remark on simplifications that allow for drastic improvements in performance in certain applications.
 In \cref{ch:ff:validation}, we validate the truncation of the cumulant expansion after the second order using a random sampling approach to compute the exact filter functions of the noisy quantum process for Gaussian noise.

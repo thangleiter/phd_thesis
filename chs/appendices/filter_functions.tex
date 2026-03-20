@@ -158,14 +158,14 @@ Since also $I_{\alpha}=\int\dd{\omega}/2\pi d\,S(\omega)\FF_\alpha(\omega)$ with
 \begin{equation}\label{eq:app:ff:sum_rule}
     \int\ddf{\omega}\FF_{\alpha}(\omega) = \tau\norm{\Bat}^2,
 \end{equation}
-a result previously obtained by \citet{Cywinski2008}.
+a result previously obtained by \textcite{Cywinski2008}.
 This means that pulse shaping and similar techniques never yield a leading-order fidelity enhancement if the noise is white in the relevant regime of frequencies as the fidelity only depends on the total duration of the pulse.
 
 % ==================================================
 %           CONVERGENCE SECTION
 % ==================================================
 \section{Convergence Bounds}\label{sec:app:ff:convergence}
-In this section we give bounds for the convergence of the expansions employed in the main text for the case of purely autocorrelated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\citet{Green2013}.
+In this section we give bounds for the convergence of the expansions employed in the main text for the case of purely autocorrelated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\textcite{Green2013}.
 For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms.
 Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
 For non-Gaussian noise, the following considerations apply.
@@ -483,9 +483,9 @@ The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigm
 \section{Fidelity validation}\label{sec:app:ff:fidelity}
 In this section, we lay out in more detail how the fidelity of the optimized \sts qubit gates from~\citer{Cerfontaine2020} was calculated using filter functions, as well as validate the fidelities computed for the \gls{qft} algorithm in \cref{sec:ff:examples:qft} using the methods presented in \cref{sec:app:ff:time_domain_methods}.
 \subsection{Singlet-Triplet Gate Fidelity}\label{subsec:app:ff:fidelity:singlet-triplet}
-In two singlet-triplet qubits, angular momentum conservation suppresses occupancy of states with non-vanishing magnetic spin quantum number $m_s$ so that the total accessible state space of dimension $d=6$ is spanned by $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu,\ketuudd,\ketdduu\rbrace$.
-A straightforward method to single out the \gls{cs} dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the \gls{cs} as proposed by~\citet{Wood2018}, that is calculate the fidelity as $\entfid = d_c^{-2}\mr{tr}\bigl(\Pi_c\liouvUe\bigr)$ where $\Pi_c$ is the Liouville representation of the projector onto the \gls{cs} and $d_c = 4$ the dimension of the \gls{cs}.
-However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\citet{Cerfontaine2020}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ \gls{cs} during their Monte Carlo simulation.
+In two singlet-triplet qubits, angular momentum conservation suppresses occupancy of states with non\hyp{}vanishing magnetic spin quantum number $m_s$ so that the total accessible state space of dimension $d=6$ is spanned by $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu,\ketuudd,\ketdduu\rbrace$.
+A straightforward method to single out the \gls{cs} dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the \gls{cs} as proposed by~\textcite{Wood2018}, that is calculate the fidelity as $\entfid = d_c^{-2}\mr{tr}\bigl(\Pi_c\liouvUe\bigr)$ where $\Pi_c$ is the Liouville representation of the projector onto the \gls{cs} and $d_c = 4$ the dimension of the \gls{cs}.
+However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\textcite{Cerfontaine2020}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ \gls{cs} during their Monte Carlo simulation.
 
 To calculate the fidelity of the target unitary on the $4\times 4$ \gls{cs}, we thus construct an orthonormal operator basis \basis of the full $6\times 6$ space that is partitioned into elements which are nontrivial only on the \gls{cs} on the one hand and elements which are nontrivial only on the remaining space on the other such that $\basis = \basis^c\cup\basis^\ell$.
 Using such a basis, we can then trace only over \gls{cs} elements of the error transfer matrix \liouvUe in \cref{eq:ff:fidelity:ent} to obtain the fidelity of the gate on the \gls{cs}.
@@ -509,7 +509,7 @@ We then compute an orthonormal vector basis $V$ (a matrix of size $36\times 20$)
 \begin{equation}
     C_i^\ell = \sum_j\Lambda_j V_{ji}\qcomma{i\in\lbrace 0,\dotsc,19\rbrace}.
 \end{equation}
-Finally, to account for the fact that \citet{Cerfontaine2020} map the total propagator to the closest unitary on the \gls{cs}, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
+Finally, to account for the fact that \textcite{Cerfontaine2020} map the total propagator to the closest unitary on the \gls{cs}, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
 \begin{equation}
     \entfid = \frac{1}{16}\sum_{i=1}^{15}\liouvUe_{ii},
 \end{equation}

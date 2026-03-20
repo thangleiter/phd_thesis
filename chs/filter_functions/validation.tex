@@ -1,9 +1,9 @@
 % mainfile: ../../main.tex
 \chapter{Filter functions from random sampling}\label{ch:ff:validation}
-\AutoLettrine{In} our derivation of the average error map \liouvUeavg, \cref{eq:ff:cumulant_expansion}, we employed the cumulant expansion due to \citet{Kubo1962,Kubo1963}.
+\AutoLettrine{In} our derivation of the average error map \liouvUeavg, \cref{eq:ff:cumulant_expansion}, we employed the cumulant expansion due to \textcite{Kubo1962,Kubo1963}.
 In his papers, \citeauthor{Kubo1962} makes the claim that this expansion is exact for Gaussian noise when truncating after the second order, even for \emph{$q$-numbers}, \ie, linear operators.
 For \emph{$c$-numbers} -- scalars -- this is a well-known result in statistics; the Gaussian probability distribution is fully described by its first two cumulants, the mean $\mu$ and variance $\sigma^2$.
-However, \citet{Fox1976} showed many years later that \citeauthor{Kubo1962}'s claim for $q$-numbers does not hold, and that non-commutativity in the Gaussian variables can cause higher-order cumulants to not vanish.
+However, \textcite{Fox1976} showed many years later that \citeauthor{Kubo1962}'s claim for $q$-numbers does not hold, and that non-commutativity in the Gaussian variables can cause higher-order cumulants to not vanish.
 There are two limiting cases in which the expansion remains exact; first, for white noise, whose auto-correlation function is singular at $t=0$, and thus \enquote{decouples} higher-order cumulants, and second, commuting noise, for which $\comm{\Hc(t)}{\Hn(t)} = 0\forall t$.
 Beyond these two cases, we must therefore assume that the map given by \cref{eq:ff:cumulant_expansion} is merely approximate when including only up to second-order terms from the Magnus expansion.\sidenote{
     Note that the cluster property still holds in all cases, and hence for Gaussian noise only even-order cumulants do not vanish~\cite{VanKampen1974,VanKampen1974a,Fox1976,Bianucci2020}.
@@ -55,7 +55,7 @@ and
     \end{split}
 \end{equation}
 respectively.
-In the filter-function formalism presented in \cref{ch:ff:theory}, \cref{eq:ff:filter_function:monte_carlo:coherent,eq:ff:filter_function:monte_carlo:incoherent} correspond -- up to corrections from non-vanishing higher cumulants -- to linear combinations of the generalized filter functions from second- and first-order Magnus expansion, respectively.
+In the filter-function formalism presented in \cref{ch:ff:theory}, \cref{eq:ff:filter_function:monte_carlo:coherent,eq:ff:filter_function:monte_carlo:incoherent} correspond -- up to corrections from non\hyp{}vanishing higher cumulants -- to linear combinations of the generalized filter functions from second- and first-order Magnus expansion, respectively.
 To be more precise, let us again consider \cref{eq:ff:cumulant:truncated:liouville}.
 Rather than first performing the integrations of \cref{eq:ff:frequency_shifts:time,eq:ff:decay_amplitudes:time} to obtain the decay amplitudes \decayamps and frequency shifts \freqshifts, and then the contractions with the trace tensor functions $g_{ijkl}$ and $f_{ijkl}$, first contract the latter with the control matrices to obtain the time-domain filter functions\sidenote{
     We consider a single noise operator and drop the index for brevity.
@@ -171,7 +171,7 @@ The opposite extreme to the pure-dephasing Hamiltonian is obtained when changing
 In this case, control and noise Hamiltonian maximally do not commute at any time ($\Hnt(t)=\sz\cos\Omega t + \sy\sin\Omega t$) and we should expect the largest deviations from the exact filter functions in the approximation by truncating the cumulant function after the second order.
 \Cref{fig:ff:monte_carlo:X} shows the \gls{ff} for a $\pi$-rotation around the $x$-axis of the Bloch sphere (\ie, $\tau = \pi/\Omega$ once again).
 This time, all diagonal elements are nonzero, and the YY-term ($\FF_{22}(\omega;\tau)$ with $\sigma_2\equiv\sy$) displays a deviation between cumulant expansion and \gls{mc} simulation towards low frequencies!
-This is exactly what we would expect according to \citet{Fox1976}, namely that the more correlated the noise is, the larger contributions from higher orders will be.\sidenote{
+This is exactly what we would expect according to \textcite{Fox1976}, namely that the more correlated the noise is, the larger contributions from higher orders will be.\sidenote{
     Quasistatic noise is perfectly correlated---it assumes a single value for all times.
 }
 Also deviating is the ZZ-term, although not towards DC but where the filter function computed from the approximated cumulant function drops to zero.
@@ -209,7 +209,7 @@ We may speculate that the higher-order contributions not captured by the cumulan
 In conclusion, we have developed a method to numerically compute the exact filter functions of the quantum process description of arbitrary Gaussian noise, and compared the thus obtained filter functions with those from the second-order truncation of the \gls{me} and cumulant expansions given in \cref{ch:ff:theory}.
 The approach samples the Liouville-space filter function at discrete frequencies $\omega_i$ by simulating the unitary dynamics under monochromatic noise at that frequency and averaging over the outcomes.
 We found excellent agreement between the nominally exact and approximate methods in the case of commuting noise as well as the \gls{se} \gls{dd} sequence.
-For non-commuting noise, we observed the expected deviation at very low frequencies that arises from non-vanishing higher order cumulants.
+For non-commuting noise, we observed the expected deviation at very low frequencies that arises from non\hyp{}vanishing higher order cumulants.
 
 Rather than random sampling using \gls{mc}, this average could also be performed deterministically as the expectation value over the probability distributions governing $A_i$ and $\phi$,
 \begin{equation}

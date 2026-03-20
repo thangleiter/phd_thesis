@@ -181,7 +181,7 @@ The ground state transition energy at this field is \qty{10}{\milli\electronvolt
 
 For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
 The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wave functions is reduced when applying an electric field, pulling the wave functions to opposite interfaces~\cite{Miller1984}.
-For the latter, \citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
+For the latter, \textcite{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 
 As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n} < eFd$ with $d$ the width of the barrier and $\Delta E_{\mr{c}(\mr{hh})}$ is the height of the conduction (valence) band discontinuity.
 This allows confined carriers to escape the \gls{qw} with a finite probability by tunneling through the barrier, an effect known as Fowler-Nordheim tunneling.
@@ -214,7 +214,7 @@ So far, we have considered the \gls{qcse} in a single dimension, as if we were t
 However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
 In order to understand the energy level structure and optical properties of excitons confined in such an electrostatic trap, we now go beyond the 1D case and add a lateral confinement potential.
 
-\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 = -\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 + V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
+\textcite{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 = -\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 + V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
 To obtain a qualitative picture, let us interpolate this result for different fields.
 The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
 At vanishing field, there should be no in-plane potential, $\omega=0$.
@@ -231,7 +231,7 @@ where $\psi_n(z)$ are the out-of-plane wave functions derived above, $F(\bvec{\v
     \zeta_{p\ell}(\rho,\phi) = \chi_{p\ell}(\rho)\exp(\i\ell\phi)
 \end{equation}
 with\sidenote{
-    Note that \citet{Karimi2014} miss a factor $\flatfrac{1}{\sqrt{2\pi}}$ in the normalization.
+    Note that \textcite{Karimi2014} miss a factor $\flatfrac{1}{\sqrt{2\pi}}$ in the normalization.
 }~\cite{Karimi2014}
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi:radial}
     \chi_{p\ell}(\tilde{\rho}) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right),
@@ -274,7 +274,7 @@ For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be writt
     f_{ji} = \frac{2m\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2.
 \end{equation}
 The states $\ket{i}$ and $\ket{j}$ are the full Bloch wave functions of valence and conduction band.
-Adapting the expression given by \citet{Andreani1990a} to account for the in-plane confinement, we posit $\Psi_{np\ell}$ as the envelope function overlap of the Bloch states $\ket{i}$ and $\ket{j}$ so that the matrix element in \cref{eq:exp:theory:qcse:oscillator_strength:general} factorizes into a matrix element of the lattice-periodic part and an integral over the envelope function overlap,
+Adapting the expression given by \textcite{Andreani1990a} to account for the in-plane confinement, we posit $\Psi_{np\ell}$ as the envelope function overlap of the Bloch states $\ket{i}$ and $\ket{j}$ so that the matrix element in \cref{eq:exp:theory:qcse:oscillator_strength:general} factorizes into a matrix element of the lattice-periodic part and an integral over the envelope function overlap,
 \begin{subequations}\label{eq:exp:qcse:oscillator_strength:exciton}
 \begin{align}
     f_{np\ell} &= \frac{2m\Delta E_{np\ell}}{\hbar^2} \abs{\int\dd{\bvec{r}}\Psi_{np\ell}(\bvec{r})}^2\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2\notag \\
@@ -294,7 +294,7 @@ Since these are not readily available, we will use the reduced oscillator streng
     \tilde{f}_{np\ell} = \frac{f_{np\ell}}{\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2}.
 \end{equation}
 From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$, meaning that states with $\ell\neq 0$ are not optically active!
-This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \textcite{Descamps2021}.
 Of course, the radial symmetry will most likely be broken in a realistic experimental scenario, and it would be interesting to investigate if indeed those states are optically inactive.
 
 \begin{marginfigure}[*-24]

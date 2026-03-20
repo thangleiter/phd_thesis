@@ -25,9 +25,9 @@ the entire cold head assembly rests with rubber feet on the cryostat top plate i
 Thus, our microscope does not only encounter passive environmental vibrations but also the active perturbation from the \gls{ptr}.
 
 Several authors have addressed vibration decoupling in \glspl{ptr}.
-\citet{Caparrelli2006} employed active control of a sample stage at \qty{3}{\kelvin} to attenuate vibrations.
-\citet{Pelliccione2013,Oh2021,Esser2024} constructed scanning gate microscopes in \gls{ptr}-cooled systems, demonstrating excellent displacement noise.
-\citet{Kalra2016} investigated the impact of \gls{ptr}-vibrations on electrical noise while \citet{Riabzev2009,Olivieri2017,Schmoranzer2019} investigated the generation and decoupling of vibrations.
+\textcite{Caparrelli2006} employed active control of a sample stage at \qty{3}{\kelvin} to attenuate vibrations.
+\textcite{Pelliccione2013,Oh2021,Esser2024} constructed scanning gate microscopes in \gls{ptr}-cooled systems, demonstrating excellent displacement noise.
+\textcite{Kalra2016} investigated the impact of \gls{ptr}-vibrations on electrical noise while \textcite{Riabzev2009,Olivieri2017,Schmoranzer2019} investigated the generation and decoupling of vibrations.
 Due to space constraints, the complexity of decoupling solutions we can apply to our microscope is limited.
 Nonetheless, I show in the following chapter that the rigid-body construction of the optics together with passive air spring damping reduces the vibration noise to an adequate level for our purposes.
 
@@ -448,7 +448,7 @@ Hence,\sidenote{
 \end{equation}
 with $\delta y = y - \expval{y}$.
 This type of noise is known as \emph{shot noise}.
-It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
+It was first studied in the context of electron transport by \textcite{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
 For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a gray dashed line.
 
 Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:knife_edge:sensitivity}, into \cref{eq:setup:shot_noise:noise_floor}, we find that
@@ -503,7 +503,7 @@ Increasing the length of the hose should reduce its relative rigidity and thereb
 
 Next, the cold head should be mounted firmly to a secondary reference frame, for instance the ceiling or the lower cryostat frame on which the springs rest.
 An intuitively obvious step, it has also been shown in the literature that decoupling the \gls{ptr} from the cryostat in this fashion leads to significant improvements in vibration isolation~\cite{Olivieri2017}.\sidenote{
-    The former option was attempted, but showed no clear improvements in the measurements for reasons unclear.
+    The former option was attempted, but showed no clear improvements in the measurements for reasons unclear, see \cref{sec:app:setup:vibrations} for additional data.
     It did emphatically deteriorate the inter-departmental atmosphere.
     Apologies to the institute on the floor above.
 }
