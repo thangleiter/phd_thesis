@@ -471,12 +471,13 @@ spect_optic.ax[1].set_yticks([0.0, 0.1, 0.2])
 spect_accel.ax[1].set_yticks([0, 5, 10])
 
 # %% Plot
-data = spect_optic[0]
+key = (0, 'PTR on, susp. off')
+data = spect_optic[key]
 cts = data['timetrace_raw']
 fs = data['settings']['fs']
-conversion_factor = fs / (s * 1e6)  # a has units Mcps/μm, so convert to cps/μm
+conversion_factor = fs / (s * 1e6)  # s has units Mcps/μm, so convert to cps/μm
 shot_noise_floor = 2 * cts.mean() / fs * conversion_factor ** 2  # factor two for one-sided
-# print(f'shot noise floor for {key} is {unp.sqrt(shot_noise_floor)}')
+print(f'shot noise floor for {key} is {unp.sqrt(shot_noise_floor)} μm/√Hz')
 
 spect_optic.ax[0].axhline(np.sqrt(shot_noise_floor.nominal_value), ls='--',
                           color=RWTH_COLORS_50['black'], zorder=5)
