@@ -53,7 +53,7 @@ that manifests as a damping force to the spring chamber oscillations.
     \centering
     \includegraphics{img/pdf/setup/spring_tf}
     \caption[\imgsource{img/pdf/setup/springs.py}]{
-        Force transmission function of a damped harmonic oscillator with $\gamma=\omega_0/100$ (solid black line) and $\gamma=\omega_0/2$ (dashed black line).
+        Force transmission function of a damped harmonic oscillator with $\gamma=\omega_0/200$ (solid black line) and $\gamma=\omega_0/2$ (dashed black line).
         Below the break frequency $\omega=\sqrt{2}\omega_0$ (dotted vertical line), external excitations are amplified (shaded red area).
         For larger damping $\gamma$, the amplification at resonance becomes smaller.
         Above $\omega=\sqrt{2}\omega_0$, excitations are attenuated (shaded green area).
@@ -88,7 +88,7 @@ Consequently, this approach makes most sense if it is known that low-frequency e
 
 A widely used metric for the isolation demand of vibration-sensitive equipment are the so-called \gls{vc}~\cite{Gordon1992,Gordon1999}.
 These are design standard specifications for buildings housing, for example, lithography tools.
-The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what we have employed in \cref{part:speck} (\cf \cref{eq:setup:vibrations:rms,eq:speck:psd:bandpower}).
+The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what we have employed in \cref{part:speck} (\cf \cref{eq:speck:psd:bandpower}).
 However, instead of computing the band-limited \gls{rms} with a fixed lower band edge, one uses bands of a fixed width, typically over one-third of an octave.
 To be specific, the one-third octave is defined in terms of its midband frequency $f_{\mr{m}}$ as the interval
 \begin{equation}\label{eq:setup:vibrations:third_octave}
@@ -255,7 +255,7 @@ Focusing the laser (indicated by a dashed circle) onto the edge of the optical g
 This gradient in reflected intensity can be inverted to obtain the vibration noise along $y$ by monitoring the intensity as a function of time.
 
 Let us take a closer look at the reflected intensity when the laser spot has a finite overlap with the edge of the gate.
-Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the Gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
+Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
 \begin{equation}\label{eq:setup:reflectance_step}
     \reflectance(y) = \begin{dcases}
         1, & y \leq 0 \\
