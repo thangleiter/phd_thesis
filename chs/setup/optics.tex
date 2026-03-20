@@ -123,7 +123,7 @@ Further neglecting beam divergence, we must then choose the focal length of the 
 Taking the beam to have a flattop profile, an assumption that I test more closely in \cref{subsec:setup:optics:coupling:efficiency}, the radius of the first Airy disk is given by \cref{eq:setup:optics:coupling:flattop:diffraction_limit}.
 For the objective lens chosen in the previous paragraph, inverting that equation leads to $f\approx\qty{12.8}{\milli\meter}$.
 However, the first Airy disk includes slightly less of the total power than the $1/e^2$ diameter of a Gaussian beam (\cf \cref{eq:setup:optics:coupling:efield:tem00}) corresponding to the \gls{smf}'s \gls{mfd}.
-I therefore chose a slightly larger focal length, leading to the same lens as used for the excitation ocular, \ocularlens with $\foc = \qty{18.4}{\milli\meter}$ and resulting in a mode matching efficiency for a hypothetical flattop beam of $\eta_{\mr{m}} = \qty{78}{\percent}$.\sidenote{
+I therefore chose a slightly larger focal length, leading to the same lens as used for the excitation ocular, \ocularlens, with $\foc = \qty{18.4}{\milli\meter}$ and resulting in a mode matching efficiency for a hypothetical flattop beam of $\eta_{\mr{m}} = \qty{78}{\percent}$.\sidenote{
     Numerical optimization of the mode overlap given by \cref{eq:setup:optics:coupling:efficiency:mode_matching} for \cref{eq:setup:optics:coupling:efield:tem00,eq:setup:optics:coupling:flattop:diffraction_pattern} results in $\foc=\qty{21.6}{\milli\meter}$ and $\eta_{\mr{m}}=\qty{82}{\percent}$, indicating the choice fits quite well.
 }
 Again comparing the lens chosen here with that by \citer{Descamps2021} with $\foc = \qty{6.2}{\milli\meter}$, we find that we expect only $\eta_{\mr{m}} = \qty{13}{\percent}$ of a flattop beam's intensity focused onto the fiber end face to couple into the fiber's \TEM{00} mode.
@@ -230,7 +230,7 @@ with $\NA=\num{0.7}$ for the chosen objective lens (\cf \cref{subsec:setup:optic
 
 In order to estimate the fiber coupling efficiency of the light escaping the sample and collected by the objective lens focused by the ocular lens \enquote{D}, we need to consider refraction and transmission of the electric field at the surface, collimation by the objective lens, as well as diffraction at the ocular lens aperture.
 A detailed accounting of these effects is beyond the scope of this thesis.
-However, let us at least gain an intuition for the degree of these effects.
+However, let us at least gain an intuition for the magnitude of these effects.
 Since we observe the dipole, oriented in-plane inside the \gls{qw}, from the side, it is useful to rotate the spherical coordinate system so that it is embedded in the coordinate system $(x, y, z)$ as defined in \cref{fig:setup:optics:coupling:emission} with coordinates $(r, \theta, \phi)$.
 
 The magnitude of the electric field vector in the surface plane, which I derive in more detail in \cref{subsec:app:setup:optics:modes}, is shown in the upper panel of \cref{fig:setup:optics:coupling:modes_2d}.
@@ -429,7 +429,7 @@ The \gls{od} is defined as
 \begin{equation}\label{eq:setup:optics:od}
     \OD = \log_{10}\left(\frac{P_{\mr{i}}}{P_{\mr{t}}}\right) = \log_{10}\left(\frac{1}{\transmittance}\right),
 \end{equation}
-where $P_{\mr{t}}$ is the transmitted power after, $P_{\mr{i}}$ the incident power before the analyzer, and \transmittance the transmittance of the analyzer.
+where $P_{\mr{t}}$ is the transmitted power after, $P_{\mr{i}}$ the incident power before, and \transmittance the transmittance of the analyzer.
 To evaluate this expression, I measured the photon flux $\dot{\Phi}_{\mr{t}}$ after the spectrometer using the \glspl{spcm} when irradiating a sample with the laser and compared it to the power $P$ measured at the optical head.
 Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subsec:setup:optics:coupling:efficiency}, the \gls{spcm}'s \gls{pde} $\eta_{\QE}$, and the beam splitter ratio $\transmittance\div\reflectance$ (\cf \cref{sidenote:setup:optics:bs}), \cref{eq:setup:optics:od} then becomes
 \begin{equation}\label{eq:setup:optics:od:eval}
@@ -447,21 +447,21 @@ Together with the optical efficiency $\eta_{\mr{o,tot}}$ measured in \cref{subse
 \end{figure}
 
 \Cref{fig:setup:optics:rejection} shows a measurement for which the laser was focused on an exciton trap (\cf \cref{part:exp}) in the left panel.
-The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate changes the plane of polarization, so the \quarterwave plate should need to be rotated by the same amount to retain a constant angle between plane of polarization and fast axis of the waveplate).
+The dashed gray line indicates the axis along which the \gls{od} should theoretically be constant (rotating the \halfwave plate by $\Delta\phi$ changes the plane of polarization by $2\Delta\phi$, so the \quarterwave plate should need to be rotated by the same amount $2\Delta\phi$ to retain a constant angle between plane of polarization and fast axis of the waveplate).
 The \gls{od} reaches maximum values around \num{6.4} -- corresponding to an extinction ratio of \num{2.5e6} -- but quickly falls off by more than an order of magnitude even for small angular displacements.\sidenote{
-    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016}.
+    The maximum achievable \gls{od} depends strongly on the sample surface off which the laser is reflected, see also \citer{Kumar2016a}.
 }
 Qualitatively, one finds that close to the extinction maximum (maximal \gls{od}), the count rate $\dot{\Phi}_{\mr{t}}$ is a rotated paraboloid of the form
 \begin{equation}
     \dot{\Phi}_{\mr{t}} = \bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0
 \end{equation}
-with $\bvec{\Delta\tilde{\phi}} = R(\pi/4+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$ and $R(\theta)$ a rotation matrix.
+with $\bvec{\Delta\tilde{\phi}} = R(\pi/8+\theta)\bvec{\Delta\phi}$, $\bvec{\Delta\phi} = (\Delta\phi_{\quarterwave},\Delta\phi_{\halfwave})\transpose$ and $R(\theta)$ a rotation matrix.
 Inserting into \cref{eq:setup:optics:od:eval} yields
 \begin{equation}\label{eq:setup:optics:od:fit}
-    \OD = \log_{10}\left(\frac{P \reflectance\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
+    \OD = \log_{10}\left(\frac{P \reflectance\lambda\eta_{\mr{o,tot}}\eta_{\QE}}{\transmittance h c}\right) - \log_{10}(\bvec{a}\transpose\bvec{\Delta\tilde{\phi}}^2 + \dot{\Phi}_0),
 \end{equation}
 a fit to which is shown in the right panel of \cref{fig:setup:optics:rejection}, displaying good agreement with the data.
-From the fit, we extract $\theta=\qty{-17}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-0.16}{\per\milli\txtdegree\squared}$ and \qty[per-mode=symbol]{-0.02}{\per\milli\txtdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{4}+\theta$, respectively.
+From the fit, we extract $\theta=\qty{5.6}{\degree}$, indicating a non-negligible polarization dependence, as well as quadratic dispersion coefficients $\partial^2\OD/\bvec{\Delta\tilde{\phi}}^2=\qty[per-mode=symbol]{-47.7}{\per\milli\txtdegree\squared}$ and \qty[per-mode=symbol]{-6.85}{\per\milli\txtdegree\squared} perpendicular (parallel) to the axis along $\flatfrac{\pi}{8}+\theta$, respectively.
 
 The optics between polarizer and analyzer furthermore display chromatic dispersion.
 When changing the excitation wavelength, the angles of \halfwave and \quarterwave plate therefore need to be re-optimized.

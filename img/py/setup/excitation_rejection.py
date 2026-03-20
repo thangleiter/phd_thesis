@@ -85,8 +85,8 @@ def rotated_vertex_paraboloid(coords, a_1, a_2, h_1, h_2, Phi_0, theta):
         Rotation angle in radians
     """
     x, y = coords
-    cos_theta = np.cos(np.pi/4 + theta)
-    sin_theta = np.sin(np.pi/4 + theta)
+    cos_theta = np.cos(np.pi/8 + theta)
+    sin_theta = np.sin(np.pi/8 + theta)
 
     x_shift = x - h_1
     y_shift = y - h_2
@@ -95,6 +95,10 @@ def rotated_vertex_paraboloid(coords, a_1, a_2, h_1, h_2, Phi_0, theta):
     y_rot = x_shift * sin_theta + y_shift * cos_theta
 
     return a_1 * x_rot**2 + a_2 * y_rot**2 + Phi_0
+
+
+def to_dispersion_coeff(popt, i):
+    return -popt.sel(param=f'a_{i}')/(popt.sel(param='Phi_0')*np.log(10))*(np.pi/180)**2
 
 
 # %% Load data
@@ -130,8 +134,8 @@ ds_fit = ds.extinction_ratio.curvefit(
 
 popt = ds_fit.curvefit_coefficients
 pcov = ds_fit.curvefit_covariance
-print(f"Dispersion vertical = {popt.sel(param='a_1')/popt.sel(param='Phi_0')/np.log(10):.3g}")
-print(f"Dispersion parallel = {popt.sel(param='a_2')/popt.sel(param='Phi_0')/np.log(10):.3g}")
+print(f"Dispersion vertical = {to_dispersion_coeff(popt, 1)*1e3:.3g} / mdeg^2")
+print(f"Dispersion parallel = {to_dispersion_coeff(popt, 2)*1e3:.3g} / mdeg^2")
 print(f"θ = {np.rad2deg(popt.sel(param='theta')):.2g}º")
 # %% Plot
 levels = np.log10(np.geomspace(ds.extinction_ratio.min(), ds.extinction_ratio.max(), 9))
@@ -142,9 +146,10 @@ fig = plt.figure()
 grid = ImageGrid(fig, 111, (1, 2), axes_pad=0.225)
 
 ax = grid.axes_all[0]
-ax.axline(*zip(*[lims]*2), ls='--', color=colors.RWTH_COLORS_25['black'])
 cs = np.log10(ds.extinction_ratio).plot.contour(ax=ax, levels=levels, add_colorbar=False,
                                                 cmap=SEQUENTIAL_CMAP)
+ax.axline((lims[0], lims[0]/2), (lims[1], lims[1]/2), ls='--', zorder=0,
+          color=colors.RWTH_COLORS_25['black'])
 ax.set_xlabel(xlabel := ax.get_xlabel().replace('[', '(').replace(']', ')'))
 ax.set_ylabel(ylabel := ax.get_ylabel().replace('[', '(').replace(']', ')'))
 ax.set_xticks([-0.5, 0, 0.5])
@@ -152,7 +157,6 @@ ax.set_yticks([-0.5, 0, 0.5])
 ax.clabel(cs)
 
 ax = grid.axes_all[1]
-ax.axline(*zip(*[lims]*2), ls='--', color=colors.RWTH_COLORS_25['black'])
 x, y = map(xr.DataArray, np.meshgrid(*[np.linspace(*lims, 1001)]*2))
 cs = ax.contour(
     x, y,
@@ -163,6 +167,8 @@ cs = ax.contour(
     levels=levels,
     cmap=SEQUENTIAL_CMAP
 )
+ax.axline((lims[0], lims[0]/2), (lims[1], lims[1]/2), ls='--', zorder=0,
+          color=colors.RWTH_COLORS_25['black'])
 ax.set_xlabel(xlabel)
 ax.set_ylabel(None)
 ax.set_xticks([-0.5, 0, 0.5])
