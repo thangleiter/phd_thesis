@@ -4,6 +4,7 @@ channels = ["conda-forge"]
 name = "thesis"
 platforms = ["linux-64", "win-64"]
 version = "0.1.0"
+requires-pixi = ">=0.43"
 
 [tasks]
 clean_all = "rm -rf build/"

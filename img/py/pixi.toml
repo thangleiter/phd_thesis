@@ -1,10 +1,11 @@
-[project]
+[workspace]
 authors = ["Tobias Hangleiter <tobias.hangleiter@rwth-aachen.de>"]
 channels = ["conda-forge"]
 description = "Code to generate figures and simulation results in Tobias Hangleiter's PhD thesis"
 name = "hangleiter_phd_thesis"
 platforms = ["win-64", "linux-64"]
 version = "0.1.0"
+requires-pixi = ">=0.43"
 
 [tasks]
 
