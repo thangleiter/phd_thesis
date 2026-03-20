@@ -134,8 +134,8 @@ ds_fit = ds.extinction_ratio.curvefit(
 
 popt = ds_fit.curvefit_coefficients
 pcov = ds_fit.curvefit_covariance
-print(f"Dispersion vertical = {to_dispersion_coeff(popt, 1)*1e3:.3g} / mdeg^2")
-print(f"Dispersion parallel = {to_dispersion_coeff(popt, 2)*1e3:.3g} / mdeg^2")
+print(f"Dispersion vertical = {to_dispersion_coeff(popt, 1):.3f} / deg^2")
+print(f"Dispersion parallel = {to_dispersion_coeff(popt, 2):.3f} / deg^2")
 print(f"θ = {np.rad2deg(popt.sel(param='theta')):.2g}º")
 # %% Plot
 levels = np.log10(np.geomspace(ds.extinction_ratio.min(), ds.extinction_ratio.max(), 9))
