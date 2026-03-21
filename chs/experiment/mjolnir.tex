@@ -98,7 +98,7 @@ From the \gls{ccd} calibration and its pixel size, the dispersion at the imaging
 The \code{Sample} class initializes the \qdac \gls{dac} and magnet power supply.
 Mainly, though, it serves as an abstraction of the actual \gls{dut} and its \enquote{control knobs} such as gates.
 Users implement subclasses for different sample designs.
-As the samples we are concerned with in \thethesis, I discuss the main implementation, \code{TrapSample}, representing samples with exciton traps.
+As the samples we are concerned with in \thethesis are all of the same type, I discuss the main implementation, \code{TrapSample}, that represents membrane samples with exciton traps.
 On a single sample, there are any number of traps consisting of one or both sets of top and bottom \enquote{central} and \enquote{guard} gates.
 Each trap is implemented as a \qcodes \code{InstrumentModule}, \code{Trap}, that is part of a \code{ChannelList}.
 The currently active trap (\ie, the one currently in focus by the microscope) is selected by the \code{active_trap} parameter and accessible through the \code{trap} property of the \code{TrapSample} object.
