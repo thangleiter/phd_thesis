@@ -22,7 +22,7 @@ The software thus does not need to prioritize sophisticated triggering and pulsi
 Because the requirements are rather specific, \mjolnir is therefore single-minded.
 It does not aspire to be suitable for applications other than the ones it is designed for.
 The implementation is extremely biased towards the particular set of instruments in use in the lab and does not attempt to generalize to allow for different instruments to be used.
-At the same time, it is designed to be modular, and different functionalities should be able to easily be replaced by other solutions.
+At the same time, it is designed with modularity in mind, allowing individual components to be readily swapped out for alternative solutions.
 
 \section{Instrument abstraction}\label{sec:exp:mjolnir:instruments}
 \begin{figure*}
@@ -41,7 +41,7 @@ At the same time, it is designed to be modular, and different functionalities sh
 
 Central to the \mjolnir package is the abstraction of physical instruments into logical ones, thereby grouping logical functionality provided by different physical devices.
 Take for instance the tunable \gls{cw} \tisalaser laser.
-It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser diode-pumped solid state laser.
+It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser \gls{dpss} laser.
 Behind its exit aperture, a \thorlabsflipper acts as a shutter, a \gls{nd} filter mounted on a \thorlabsrotator controls the output power, while a \thorlabspowermeter monitors the power at the optical head and an \rotatorcontroller controls the polarization state of the optical head.
 Thus, seven different instruments from five different manufacturers are required to control the illumination state of the sample.
 As a user, however, one would simply like to en- or disable the laser and set wavelength, power, and polarization configuration of the optical head.
