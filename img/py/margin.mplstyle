@@ -16,6 +16,10 @@ font.monospace      : Liberation Mono
 
 #### FIGURE
 #figure.dpi       : 600
+figure.constrained_layout.h_pad : 0.0277777778
+figure.constrained_layout.w_pad : 0.0277777778
+figure.constrained_layout.hspace : 0
+figure.constrained_layout.wspace : 0
 figure.figsize   : 1.87831, 1.1608594214088148
 
 #### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
@@ -81,12 +85,15 @@ xtick.major.pad:     2.0     # distance to major tick label in points, default: 
 xtick.minor.pad:     1.9     # distance to the minor tick label in points, default: 3.4
 ytick.major.pad:     2.0     # distance to major tick label in points
 ytick.minor.pad:     1.9     # distance to the minor tick label in points
+xtick.direction:     in    ## direction: in, out, or inout
+ytick.direction:     in    ## direction: in, out, or inout
 
 #### SAVING FIGURES
 savefig.dpi:         1200  # figure dots per inch or 'figure'
 savefig.bbox:        tight # {tight, standard}
                            # 'tight' is incompatible with generating frames
                            # for animation
+savefig.pad_inches:  0.05
 savefig.transparent: True  # setting that controls whether figures are saved with a
 
 ### pgf parameter
