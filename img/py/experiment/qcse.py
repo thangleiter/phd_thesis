@@ -10,7 +10,7 @@ from scipy.optimize import elementwise
 from mpl_toolkits.axes_grid1 import ImageGrid
 
 import PyMoosh as pm
-from qutil import const, functools, math
+from qutil import const, functools, math, itertools
 from qutil.plotting.colors import (make_sequential_colormap, make_diverging_colormap,
                                    RWTH_COLORS, RWTH_COLORS_75, RWTH_COLORS_50, RWTH_COLORS_25)
 
@@ -446,7 +446,7 @@ match backend:
 
 fig.savefig(SAVE_PATH / 'wavefunction.pdf')
 
-# %%% Energy shift & oscillator strength
+# %% Energy shift & oscillator strength
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, ax1 = plt.subplots(2, sharex=True,
                             layout='constrained',
@@ -489,6 +489,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
             ax1[1].set_xlabel('$F$ (V/μm)')
             ax1[0].set_ylabel(r'$\Delta E_{n} - E_\mathrm{g}$ (meV)')
             ax2[0].set_ylabel(r'$\partial\Delta E/\partial F$ ($e$nm)')
+
+    for ax in itertools.chain(ax1, ax2):
+        ax.tick_params(which='both', direction='in')
 
     fig.get_layout_engine().set(h_pad=1/72)
     fig.savefig(SAVE_PATH / 'qcse_field_dependence.pdf')
