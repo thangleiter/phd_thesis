@@ -318,10 +318,9 @@ with mpl.style.context(MARGINSTYLE, after_reset=True):
         ax.set_xlabel(ax.get_xlabel() + pernanosecond)
         ax.set_ylabel(r'$\mathcal{F}_{\epsilon_{ij}}(\omega)$')
         ax.label_outer()
-        ax.tick_params(direction='out', which='both')
         ax.text(0.04, 0.1, lab, transform=ax.transAxes)
 
-fig.savefig(SAVE_PATH / 'CNOT_FF_unitary_v_complete.pdf')
+    fig.savefig(SAVE_PATH / 'CNOT_FF_unitary_v_complete.pdf')
 
 # %% Fidelities table
 infidelities_ff_etm = np.empty((2, 3, 3))
