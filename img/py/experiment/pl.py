@@ -621,7 +621,7 @@ for i, (ax, wav) in enumerate(zip(axs, wavs)):
 
 fig.text(0.5, -0.03, r'$E_{\mathrm{det}}$ (eV)', fontsize='medium')
 fig.supxlabel(r'$\lambda_{\mathrm{det}}$ (nm)', y=1.05, va='top', fontsize='medium')
-fig.supylabel(r'$P_{\mathrm{det}}$ (nW)', x=-0.04, fontsize='medium')
+fig.supylabel(r'$P_{\mathrm{exc}}$ (nW)', x=-0.04, fontsize='medium')
 fig.get_layout_engine().set(w_pad=2/72, h_pad=0/72, hspace=0, wspace=0)
 fig.savefig(SAVE_PATH / 'doped_M1_05_49-2_multiplets.pdf')
 
