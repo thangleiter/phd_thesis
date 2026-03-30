@@ -87,6 +87,10 @@ ytick.major.pad:     2.0     # distance to major tick label in points
 ytick.minor.pad:     1.9     # distance to the minor tick label in points
 xtick.direction:     in    ## direction: in, out, or inout
 ytick.direction:     in    ## direction: in, out, or inout
+xtick.major.size:    2.5
+ytick.major.size:    2.5
+xtick.minor.size:    1.5
+ytick.minor.size:    1.5
 
 #### SAVING FIGURES
 savefig.dpi:         1200  # figure dots per inch or 'figure'
