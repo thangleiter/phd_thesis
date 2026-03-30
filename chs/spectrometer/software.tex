@@ -513,7 +513,7 @@ Moreover, each time a spectrum is captured, data is saved to disk, potentially a
 For these reasons, the \pyspeck package also offers a non-persistent live mode for displaying spectra continuously.
 
 This mode is facilitated by the \code{qutil.plotting.live_view} module~\cite{Hangleiter_qutil} that provides asynchronous plotting functionality based on \matplotlib.
-The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote[][*-1]{
+The \code{live_view} module supports both the multithreading and multiprocessing paradigms for concurrency in order to keep the interpreter responsive.\sidenote[][*-2]{
     Note that technically, data is also recorded in a background thread in serial mode by default.
 }
 In the former case, the window hosting the figure runs in the main thread and is kept responsive using \matplotlib's \gls{gui} event loop mechanisms.
