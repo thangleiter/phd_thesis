@@ -164,36 +164,39 @@ This means that pulse shaping and similar techniques never yield a leading-order
 % ==================================================
 %           CONVERGENCE SECTION
 % ==================================================
-\section{Convergence Bounds}\label{sec:app:ff:convergence}
+\section{Convergence bounds}\label{sec:app:ff:convergence}
 In this section we give bounds for the convergence of the expansions employed in the main text for the case of purely autocorrelated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\textcite{Green2013}.
-For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms.
-Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
-For non-Gaussian noise, the following considerations apply.
-\subsection{Magnus Expansion}\label{subsec:app:ff:convergence:magnus_expansion}
-The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\lvert A_{ij}\rvert^2$ the Frobenius norm~\cite{Moan1999}.
-We assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
+For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms in the special cases of commuting and uncorrelated noise (corresponding to $\comm{\Hc}{\Hn} = 0$ and $S(\omega)=\mr{const.}$, respectively).
+Hence, the convergence radius of the \gls{me} becomes infinite in these cases and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
+For the general case the following considerations apply.
+
+\subsection{Magnus expansion}\label{subsec:app:ff:convergence:magnus_expansion}
+The \gls{me} of the error propagator (\cref{eq:ff:magnus_expansion}) converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\lvert A_{ij}\rvert^2$ the Frobenius norm~\cite{Moan1999}.
+If we take the noise to have some characteristic and finite correlation time $\tau_\mr{c}$ after which the autocorrelation function $\expval*{b_\alpha(t)b_\alpha(s)}$ decays by a fraction (to $\flatfrac{1}{e}$, say), $\tau_\mr{c}$ rather than the total duration of the operation $\tau$ becomes the relevant timescale and we can hence replace the upper limit of integration by $\bar{\tau}\coloneqq\min\{\tau, \tau_\mr{c}\}$.
+
+To derive bounds for the convergence of the \gls{me}, we assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
 By the Cauchy-Schwarz inequality we then have
 \begin{equation}
     \begin{split}
         \bigl\lVert\Hnt(t)\bigr\rVert^2 &= \norm{\Hn(t)}^2 \\
-                          &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
-                          &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
-                             \norm*{B_\alpha}\norm*{B_{\beta}} \\
-                          &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
-                             s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
+                                        &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
+                                        &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
+                                           \norm*{B_\alpha}\norm*{B_{\beta}} \\
+                                        &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
+                                           s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
     \end{split}
 \end{equation}
-where $b_{\alpha}\gth{m}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$th time interval and zero else, and where we approximated the time evolution as piecewise constant.
+where $b_{\alpha}\gth{m}$ ($s_{\alpha}\gth{m}$) is the maximum value that the noise (coupling strength) assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$th time interval and zero else, and where we approximated the time evolution as piecewise constant.
 Then, in order to guarantee convergence of the \gls{me},
 \begin{equation}
     \begin{split}
-        \int_0^{\tau}\dd{t}\norm*{\Hnt(t)} &\leq\int_0^\tau\dd{t}\abs\bigg{\sum_{\alpha}\sum_{g=1}^{G}
-                                              \vartheta\gth{m}(t) s_\alpha\gth{m} b_\alpha\gth{m}\norm{B_\alpha}} \\
-                                           &= \sum_{\alpha} b_\alpha\gth{m}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha\gth{m}
-                                              \int_{t_{g-1}}^{t_{g}}\dd{t} \\
-                                           &= \sum_{\alpha} C_m\delta b_\alpha\norm{B_\alpha}\sum_{g=1}^{G}
-                                              s_\alpha\gth{m}\Delta t_g \\
-                                           &\eqqcolon N
+        \int_0^{\bar{\tau}}\dd{t}\norm*{\Hnt(t)} &\leq\int_0^{\bar{\tau}}\dd{t}\abs\bigg{\sum_{\alpha}\sum_{g=1}^{G}
+                                                    \vartheta\gth{m}(t) s_\alpha\gth{m} b_\alpha\gth{m}\norm{B_\alpha}} \\
+                                                 &= \sum_{\alpha} b_\alpha\gth{m}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha\gth{m}
+                                                    \int_{t_{g-1}}^{t_{g}}\dd{t} \\
+                                                 &= \sum_{\alpha} C_m\delta b_\alpha\norm{B_\alpha}\sum_{g=1}^{G}
+                                                    s_\alpha\gth{m}\Delta t_g \\
+                                                 &\eqqcolon N
     \end{split}
 \end{equation}
 where we have expressed the in principle unknown maximum noise amplitude $b_\alpha\gth{m}$ in terms of the root mean square value $\delta b_\alpha$.
@@ -215,9 +218,9 @@ However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will
 \subsection{Infidelity}\label{subsec:app:ff:convergence:infidelity}
 Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise-constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
 \begin{align}
-    \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+    \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^{\bar{\tau}}\dd{t_2}\int_0^{\bar{\tau}}\dd{t_1}
                              \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \notag\\
-                          &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+                          &\leq\abs\Bigg{\sum_{\alpha}\int_0^{\bar{\tau}}\dd{t_2}\int_0^{\bar{\tau}}\dd{t_1}
                              \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g^\prime=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g^\prime)}(t_2)
                              s_\alpha\gth{m} s_\alpha^{(g^\prime)} \norm{B_\alpha}^2} \notag\\
                           &\leq\sum_{\alpha}\norm{B_\alpha}^2

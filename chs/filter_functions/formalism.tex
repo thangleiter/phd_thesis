@@ -96,6 +96,10 @@ Next, we transform the noise Liouvillian \Ln to the interaction picture with res
 \end{equation}
 with $\Li_\mr{eff}(\tau) = \sum_{n=1}^\infty\Li_{\mr{eff},n}(\tau)$.
 A sufficient criterion for the convergence of the expansion is given by~\textcite{Moan1999} as $\int_0^\tau\dd{t}\norm*{\Lnt(t)} < \pi$ where $\norm{\placeholder} = \sqrt{\dotHS{\placeholder}{\placeholder}}$ is the Frobenius (Hilbert-Schmidt) norm.
+We may tighten this bound if we assume the noise to have some characteristic correlation time $\tau_\mr{c}$ after which its correlation function has decayed by a certain amount by replacing the upper limit of integration by $\min\{\tau,\tau_\mr{c}\}$.\sidenote{
+    For $\tau_\mr{c}\to 0$ the noise becomes white, \ie, uncorrelated and hence the \gls{me} always exists and converges.
+    For $\tau_\mr{c}\to\infty$ the noise becomes perfectly (DC) correlated and the convergence is only guaranteed for special cases.
+}
 The first and second terms of the \gls{me} are given by~\cite{Magnus1954,Blanes2009}
 \begin{subequations}\label{eq:ff:magnus_expansion}
 \begin{align}
@@ -114,7 +118,7 @@ In order to obtain the \emph{ensemble}-averaged evolution of many realizations o
 \begin{equation}\label{eq:ff:cumulant_expansion}
     \liouvUetavg = \ev{\exp\lbrace -\i\tau\Li_\mr{eff}(\tau)\rbrace} \eqqcolon \exp\cumulantfun(\tau)
 \end{equation}
-with $\ev{\placeholder}$ denoting the ensemble average\sidenote[][*-1]{
+with $\ev{\placeholder}$ denoting the ensemble average\sidenote{
     The ensemble average represents the expectation value over identical repetitions of an operation in an experiment.
     It can be taken to be a spatial ensemble of many identical systems, \eg an NMR system, or, for ergodic systems, a time ensemble of a single system under stationary noise as would be the case for a single spin measured repeatedly, for instance.
 }
