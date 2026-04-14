@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{Conclusion and outlook}\label{ch:speck:conclusion}
-\AutoLettrine{In} \thispart, I introduced the \pyspeck software package for interactive and backend\hyp{}agnostic noise spectroscopy.
+\AutoLettrine{In} \thispart, I introduced the \mintinline[breaklines,breakanywhere]{python}{python_spectrometer} software package for interactive and backend\hyp{}agnostic noise spectroscopy.
 I first presented the theory behind spectral noise estimation based on time series analysis in \cref{ch:speck:theory}.
 There, I showed how, by the Wiener-Khinchin theorem, the \gls{psd} $S(\omega)$ is related to a time-dependent signal by the Fourier transform of its autocorrelation function $C(\tau)$.
 After discretizing the problem, I discussed how the arising spectral windowing introduces distortions in the estimated \gls{psd} through effects such as spectral leakage and scalloping loss.

@@ -516,7 +516,7 @@ For a weakly excited artificial atom and in the absence of dephasing, one expect
 where $\gamma$ is the Einstein $A$ coefficient, \ie, the spontaneous emission rate or inverse lifetime $T_1\inverse$ of the excited state.
 Because $T_1$ is on the order of \qty{1}{\nano\second} for these dots, the detector response time (dominated by the timing resolution of the \gls{spcm}, $\sigma_{\mr{SPCM}} = \qty{350}{\pico\second}$) plays a significant role in the measurement, and one typically fits a convolution of \cref{eq:setup:optics:g2:explicit} with the \gls{irf} of the optical setup to the data instead.
 Ideally, the \gls{irf} would be measured using a pulsed laser source.
-In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote[][*-5]{
+In the absence of this data, we instead make due with the assumption that the \gls{irf} is dominated by Gaussian timing jitter with $\sigma = \sqrt{2}\sigma_{\mr{SPCM}} \approx \qty{500}{\pico\second}$, where $\sigma_{\mr{SPCM}}$ is the timing resolution quoted in the \gls{spcm} data sheet and the factor of $\sqrt{2}$ is due to the fact that the variance from both \glspl{spcm} adds quadratically.\sidenote[][*-7]{
     Realistically, the true \gls{irf} of the \glspl{spcm} will be some asymmetric rather than a symmetric normal distribution.
     This was also observed in the pulsed Stark-shift experiment in \citer{Descamps2023}.
 }
@@ -534,7 +534,7 @@ with
 \end{align}
 where $\Phi(z) = (\flatfrac{1}{2})\left[1 + \erf\left(z/\sqrt{2}\right)\right]$ is the the Gaussian cumulative distribution function.
 
-\begin{marginfigure}[*-13]
+\begin{marginfigure}[*-14]
     \centering
     \includegraphics{img/pdf/setup/ingaas_g2}
     \caption[\imgsource{img/py/setup/g2.py}]{
