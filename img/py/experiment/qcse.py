@@ -446,7 +446,7 @@ match backend:
 
 fig.savefig(SAVE_PATH / 'wavefunction.pdf')
 
-# %%% Energy shift & oscillator strength
+# %% Energy shift & oscillator strength
 with mpl.style.context(MARGINSTYLE, after_reset=True):
     fig, ax1 = plt.subplots(2, sharex=True,
                             layout='constrained',

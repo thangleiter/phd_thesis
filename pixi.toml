@@ -1,0 +1,26 @@
+[workspace]
+authors = ["Tobias Hangleiter <tobias.hangleiter@rwth-aachen.de>"]
+channels = ["conda-forge"]
+name = "thesis"
+platforms = ["linux-64", "win-64"]
+version = "0.1.0"
+requires-pixi = ">=0.43"
+
+[tasks]
+clean_all = "rm -rf build/"
+
+[target.linux-64.tasks]
+clean = "latexmk -r linux.latexmkrc -C"
+build = "latexmk -r linux.latexmkrc -pv"
+watch = "latexmk -r linux.latexmkrc -pvc"
+
+[target.win-64.tasks]
+clean = "latexmk -r windows.latexmkrc -C"
+build = "latexmk -r windows.latexmkrc -pv"
+watch = "latexmk -r windows.latexmkrc -pvc"
+
+[dependencies]
+python = ">=3.14.3,<3.15"
+
+[pypi-dependencies]
+latexminted = ">=0.7.1, <0.8"

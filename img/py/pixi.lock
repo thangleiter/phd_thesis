@@ -5,6 +5,8 @@ environments:
     - url: https://conda.anaconda.org/conda-forge/
     indexes:
     - https://pypi.org/simple
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -255,6 +257,8 @@ environments:
     - url: https://conda.anaconda.org/conda-forge/
     indexes:
     - https://pypi.org/simple
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -593,7 +597,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyvisa-1.14.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyvisa-py-0.7.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyviz_comms-3.0.6-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/pyxdg-0.28-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pyyaml-6.0.2-py312h178313f_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pyzmq-27.1.0-py312hfb55c3c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/qhull-2020.2-h434a139_5.conda
@@ -621,7 +624,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/sortedcontainers-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/spirv-tools-2025.1-h84d6215_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-unix_pyh707e725_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/stack_data-0.6.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/svt-av1-3.1.2-hecca717_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sympy-1.14.0-pyh2585a3b_105.conda
@@ -650,7 +652,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/websockets-15.0.1-py312h5253ce2_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/widgetsnbextension-4.0.14-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/wrapt-1.17.3-py312h4c3975b_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/wurlitzer-3.1.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/x264-1!164.3095-h166bdaf_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/x265-3.5-h924138e_3.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/xarray-2025.9.0-pyhd8ed1ab_0.conda
@@ -704,8 +705,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c0/db/bdc43f11c5269670482d5bdda1bd5220c8f5f64e7ff95fc622323693f58c/numpy_quaternion-2024.0.12-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git?rev=optics%2Fmain#7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git?rev=optics%2Fmain#192871bb5cb353cc563fbd4513c2d3358ce5bbda
+      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1003,7 +1004,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/sortedcontainers-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/spirv-tools-2025.1-hc790b64_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-win_pyh7428d3b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/stack_data-0.6.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/svt-av1-3.1.2-hac47afa_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sympy-1.14.0-pyh04b8f61_5.conda
@@ -1066,8 +1066,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/51/aa/a24a5958066ee9174d0d01d7219500d71dd9d5b8e4b66e23abb68a739d68/numpy_quaternion-2024.0.12-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git?rev=optics%2Fmain#7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git?rev=optics%2Fmain#192871bb5cb353cc563fbd4513c2d3358ce5bbda
+      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1079,6 +1079,8 @@ environments:
     - url: https://conda.anaconda.org/conda-forge/
     indexes:
     - https://pypi.org/simple
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -1416,7 +1418,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyvisa-1.14.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyvisa-py-0.7.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyviz_comms-3.0.6-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/pyxdg-0.28-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pyyaml-6.0.2-py312h178313f_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pyzmq-27.1.0-py312hfb55c3c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/qhull-2020.2-h434a139_5.conda
@@ -1444,7 +1445,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/sortedcontainers-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/spirv-tools-2025.1-h84d6215_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-unix_pyh707e725_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/stack_data-0.6.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/svt-av1-3.1.2-hecca717_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sympy-1.14.0-pyh2585a3b_105.conda
@@ -1473,7 +1473,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/websockets-15.0.1-py312h5253ce2_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/widgetsnbextension-4.0.14-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/wrapt-1.17.3-py312h4c3975b_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/wurlitzer-3.1.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/x264-1!164.3095-h166bdaf_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/x265-3.5-h924138e_3.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/xarray-2025.9.0-pyhd8ed1ab_0.conda
@@ -1523,8 +1522,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c0/db/bdc43f11c5269670482d5bdda1bd5220c8f5f64e7ff95fc622323693f58c/numpy_quaternion-2024.0.12-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git?rev=optics%2Fmain#7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git?rev=optics%2Fmain#192871bb5cb353cc563fbd4513c2d3358ce5bbda
+      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1821,7 +1820,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/sortedcontainers-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/spirv-tools-2025.1-hc790b64_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-win_pyh7428d3b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/stack_data-0.6.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/svt-av1-3.1.2-hac47afa_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sympy-1.14.0-pyh04b8f61_5.conda
@@ -1881,8 +1879,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/51/aa/a24a5958066ee9174d0d01d7219500d71dd9d5b8e4b66e23abb68a739d68/numpy_quaternion-2024.0.12-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git?rev=optics%2Fmain#7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git?rev=optics%2Fmain#192871bb5cb353cc563fbd4513c2d3358ce5bbda
+      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -8229,8 +8227,8 @@ packages:
   - numpy>=1.24.0
   - packaging>=20.0
   - pyvisa-py>=0.7.1
-  - qcodes-contrib-drivers @ git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@optics/main
   - qcodes @ git+https://github.com/qutech/qcodes.git@optics/main
+  - qcodes-contrib-drivers @ git+https://github.com/qutech-lab/qcodes_contrib_drivers.git@optics/main
   - qutech-util>=2025.2.1
   - tqdm>=4.59.0
   - versioningit>=2.0.1
@@ -10214,17 +10212,6 @@ packages:
   - pkg:pypi/pywin32?source=hash-mapping
   size: 6684490
   timestamp: 1756487136116
-- conda: https://conda.anaconda.org/conda-forge/noarch/pyxdg-0.28-pyhd8ed1ab_0.tar.bz2
-  sha256: 1a4d7924fccdb6385713dc6fc2de37476dea928a61aa7e2d21c6b58290e4b140
-  md5: c1c05cc9dfdaee224e49c59fc7e47530
-  depends:
-  - python >=3
-  license: LGPL-2.0-only
-  license_family: LGPL
-  purls:
-  - pkg:pypi/pyxdg?source=hash-mapping
-  size: 47505
-  timestamp: 1654536879770
 - conda: https://conda.anaconda.org/conda-forge/linux-64/pyyaml-6.0.2-py312h178313f_2.conda
   sha256: 159cba13a93b3fe084a1eb9bda0a07afc9148147647f0d437c3c3da60980503b
   md5: cf2485f39740de96e2a7f2bb18ed2fee
@@ -10295,9 +10282,9 @@ packages:
   - pkg:pypi/pyzmq?source=hash-mapping
   size: 185711
   timestamp: 1757387025899
-- pypi: git+https://github.com/qutech/qcodes.git?rev=optics%2Fmain#7f5c71f316c1a2c4b009f6ff2f46ba15c286afbc
+- pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
   name: qcodes
-  version: 0.46.0.dev3380+main.g7f5c71f31
+  version: 0.46.0.dev4151+main.gd376833b4
   requires_dist:
   - broadbean>=0.11.0
   - h5netcdf>=0.14.1
@@ -10319,15 +10306,15 @@ packages:
   - uncertainties>=3.2.0
   - versioningit>=2.2.1
   - websockets>=11.0
-  - xarray>=2022.6.0
+  - xarray>=2023.8.0
   - cf-xarray>=0.8.4
   - opentelemetry-api>=1.17.0
   - pillow>=9.2.0
   - dask>=2022.1.0
   - zhinst-qcodes>=0.3 ; extra == 'zurichinstruments'
   - qcodes-loop>=0.1.2 ; extra == 'loop'
-  - coverage[toml]>=7.6.9 ; extra == 'test'
-  - deepdiff>=5.0.2 ; extra == 'test'
+  - coverage[toml]>=7.10.5 ; extra == 'test'
+  - deepdiff>=8.6.1 ; extra == 'test'
   - hypothesis>=6.130.0 ; extra == 'test'
   - lxml>=4.9.4 ; extra == 'test'
   - lxml-stubs>=0.4.0 ; extra == 'test'
@@ -10359,14 +10346,14 @@ packages:
   - sphinx-jsonschema>=1.19.1 ; extra == 'docs'
   - furo>=2024.8.6 ; extra == 'docs'
   - sphinxcontrib-towncrier>=0.5.0a0 ; extra == 'docs'
-  - towncrier>=24.8.0,<25.0.0 ; extra == 'docs'
+  - towncrier>=24.8.0,<26.0.0 ; extra == 'docs'
   - scipy>=1.10.0 ; extra == 'docs'
   - qcodes-loop>=0.1.1 ; extra == 'docs'
   - libcst>=1.2.0 ; extra == 'refactor'
   requires_python: '>=3.11'
-- pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git?rev=optics%2Fmain#192871bb5cb353cc563fbd4513c2d3358ce5bbda
+- pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
   name: qcodes-contrib-drivers
-  version: 0.22.0.dev1005+main.g192871b
+  version: 0.22.0.dev1183+main.g4a30fb63
   requires_dist:
   - qcodes>=0.42.0
   - versioningit>=2.2.1
@@ -10385,9 +10372,10 @@ packages:
   - pandas-stubs>=1.2.0.1 ; extra == 'test'
   - pyserial ; extra == 'test'
   - windfreak>=0.3.0 ; extra == 'test'
-  - sphinx>=8.1.3,<8.3.0 ; extra == 'docs'
+  - sphinx>=8.1.3,<9.2.0 ; extra == 'docs'
   - furo>=2024.8.6 ; extra == 'docs'
   - nbsphinx>=0.8.9 ; extra == 'docs'
+  - pyvisa-sim>=0.6.0 ; extra == 'docs'
   requires_python: '>=3.11'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/qhull-2020.2-h434a139_5.conda
   sha256: 776363493bad83308ba30bcb88c2552632581b143e8ee25b1982c8c743e73abc
@@ -11214,44 +11202,6 @@ packages:
   purls: []
   size: 13375641
   timestamp: 1745359850677
-- conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-unix_pyh707e725_0.conda
-  sha256: f44703c6afeee682ea5af06c2f246d028f71c61ce32a987a38e7b8d9af577ab7
-  md5: 960dfa2eb2c1a7f600ef8e14d69d967f
-  depends:
-  - __unix
-  - cloudpickle
-  - ipykernel >=6.29.3,<7.0.0
-  - ipython >=8.12.2,<9.0.0,!=8.17.1
-  - jupyter_client >=7.4.9,<9.0.0
-  - python >=3.8
-  - pyxdg >=0.26
-  - pyzmq >=24.0.0
-  - traitlets >=5.14.3
-  - wurlitzer >=1.0.3
-  license: MIT
-  license_family: MIT
-  purls:
-  - pkg:pypi/spyder-kernels?source=hash-mapping
-  size: 68800
-  timestamp: 1747849614651
-- conda: https://conda.anaconda.org/conda-forge/noarch/spyder-kernels-3.0.5-win_pyh7428d3b_0.conda
-  sha256: af8a969a35a501f0679d45a60ba2a4fa071d58138162bbcb8fe18fbe8a7e738d
-  md5: e26c7ec781f90c799aec0c405430bf1a
-  depends:
-  - __win
-  - cloudpickle
-  - ipykernel >=6.29.3,<7.0.0
-  - ipython >=8.12.2,<9.0.0,!=8.17.1
-  - jupyter_client >=7.4.9,<9.0.0
-  - python >=3.8
-  - pyzmq >=24.0.0
-  - traitlets >=5.14.3
-  license: MIT
-  license_family: MIT
-  purls:
-  - pkg:pypi/spyder-kernels?source=hash-mapping
-  size: 69220
-  timestamp: 1747849673423
 - conda: https://conda.anaconda.org/conda-forge/noarch/stack_data-0.6.3-pyhd8ed1ab_1.conda
   sha256: 570da295d421661af487f1595045760526964f41471021056e993e73089e9c41
   md5: b1b505328da7a6b246787df4b5a49fbc
@@ -11837,17 +11787,6 @@ packages:
   - pkg:pypi/wrapt?source=compressed-mapping
   size: 63012
   timestamp: 1756852490793
-- conda: https://conda.anaconda.org/conda-forge/noarch/wurlitzer-3.1.1-pyhd8ed1ab_1.conda
-  sha256: 7061059b63e81dfe55b9760277f3f925b610ca5012f358df16d43bf351e67ac5
-  md5: 374d238825beaf61bb707e5f93dafbe2
-  depends:
-  - python >=3.9
-  license: MIT
-  license_family: MIT
-  purls:
-  - pkg:pypi/wurlitzer?source=hash-mapping
-  size: 14194
-  timestamp: 1736089258836
 - conda: https://conda.anaconda.org/conda-forge/linux-64/x264-1!164.3095-h166bdaf_2.tar.bz2
   sha256: 175315eb3d6ea1f64a6ce470be00fa2ee59980108f246d3072ab8b977cb048a5
   md5: 6c99772d483f566d59e25037fea2c4b1

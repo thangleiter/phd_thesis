@@ -2,7 +2,7 @@
 \chapter{Photoluminescence and excitons in semiconductors}\label{ch:exp:theory}
 \AutoLettrine{Semiconductors} are the foundation of the modern age of technology.
 In large parts, this is due to their favorable optical properties, determined chiefly by their band gap on the order of \qty{1}{\electronvolt}, that enable wide-ranging applications from semiconductor lasers over photo-detectors to optical communication technology.
-Semiconductors can be classified into \emph{direct} and \emph{indirect} categories, where the terminology refers to the location of the band gap, that is, the smallest energy difference between valence and conduction band in the Brillouin zone.
+Semiconductors can be classified into \emph{direct} and \emph{indirect} categories, where the terminology refers to the location of the band gap, that is, the smallest energy difference between valence and conduction band, in the Brillouin zone.
 A direct semiconductor's band gap features a valence band maximum at the same point in $k$-space as a conduction band minimum.
 Such materials, a prime example of which is the compound \ch{GaAs} with a band gap of $E_{\mr{g}}=\qty{1.519}{\electronvolt}$ at $T=\qty{0}{\kelvin}$ in the \gls{nir} spectrum~\cite{Vurgaftman2001}, emit electromagnetic radiation with energy $h\nu = E_{\mr{g}}$ when electrons excited from the valence into the conduction band recombine with a hole.
 When the excitation occurs through optical absorption, this effect is known as \acrlong{pl}.
@@ -16,10 +16,10 @@ This reduces Coulomb scattering in the \gls{2deg} induced by the doping and prod
 
 It is hence not at all surprising that early quantum dot experiments also took place in this well-understood material system.
 While undoped approaches to electron and hole spin qubits in \ch{GaAs} exist~\cite{Harrell1999,Chen2012,Li2014,Tracy2014}, they introduce added complications because of the need to electrostatically induce a \gls{2deg} and reliably contacting it~\cite{Rossler2016}.
-What is more, these issues are exacerbated when the structures need to be thinned down to a membrane~\cite{Descamps2021,Kindel2025}.
+What is more, these issues are exacerbated when the structures need to be thinned down to a membrane~\cite{Descamps2021,Kindel2026}.
 Therefore, to accommodate \acrfullpl{gdqd} next to the \acrfull{oaqd} in the membrane, the devices measured in \thispart are fabricated on doped heterostructures hosting a \gls{2deg}.
 In the following, I discuss the optical behavior of these structures under illumination to develop an intuition for the measurements presented later on.\sidenote{
-    The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2025}.
+    The \emph{electrical} behavior is another matter; there, illumination can lead to the creation, trapping, and de-trapping of free charge carriers that alter the transport properties of the device, leading to electrical hysteresis and instability~\cite{Fujita2021,Shetty2022,Wang2023,Reznikov2024,Kindel2026}.
 }
 I take a simple analytical approach in order to capture the most relevant physics and obtain a qualitative understanding.
 For quantitative results, a more detailed method incorporating electrostatics would be required; I refer the reader to \citer{Descamps2021} for such simulations.
@@ -32,7 +32,7 @@ The third valence band\sidenote{
     The valence bands are $p$-like and hence contain contributions from three twofold degenerate atomic orbitals.
 }
 is split off by the spin-orbit interaction and lies \qty{0.34}{\electronvolt} below the other valence bands~\cite{Davies2009}.
-Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \acrfull{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under usual conditions -- the latter as the valence band ground state.
+Introducing confinement in one direction, for example by doping a \GaAsAlGaAs heterojunction or growing a \ch{GaAs} \acrfull{qw} sandwiched between two layers of \ch{AlGaAs}, lifts the fourfold degeneracy of light and heavy holes and leaves -- under typical conditions -- the latter as the valence band ground state.
 
 \begin{marginfigure}
     \centering
@@ -94,7 +94,7 @@ where $\eps_{\mr{r}} = \num{13.3}$ is the relative permittivity of \ch{GaAs} at 
 \Cref{fig:exp:theory:in_plane_field} depicts the Coulomb potential in magenta and the bound electron's wave function sketched in black.
 The electron-hole separation $r$ is shown in units of the exciton Bohr radius in two dimensions~\cite{Olsen2016}
 \begin{equation}\label{eq:exp:theory:qcse:bohr_radius_2d}
-    a_{\mr{B}}\gth{2} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
+    a_{\mr{B}}\gth{2D} = \frac{2\pi\eps_0\eps_{\mr{r}}\hbar^2}{\mu e^2} = \qty{6}{\nano\meter}
 \end{equation}
 with $\mu$ the reduced effective mass of conduction and heavy-hole valence bands.
 
@@ -117,7 +117,7 @@ and the eigenstates are
 \begin{equation}\label{eq:exp:theory:square_well:psi}
     \psi_n(z) = \sqrt{\frac{2}{L}}\sin(\frac{n\pi z}{L}).
 \end{equation}
-The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above (below) the conduction (valence) band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote{
+The ground state energy is then \qty{14}{\milli\electronvolt} (\qty{3}{\milli\electronvolt}) above (below) the conduction (valence) band edge, corresponding to \qty{6}{\percent} (\qty{2}{\percent}) of the respective band offsets and implying that the infinite-well approximation is acceptable,\sidenote[][*-1]{
     In a finite well, the wave functions decay exponentially into the barriers and result in slightly lower eigenenergies.
     However, the qualitative behavior remains the same.
 }
@@ -125,7 +125,7 @@ while the first excited state lies \qty{42}{\milli\electronvolt} higher than the
 The upper panel of \cref{fig:exp:theory:qcse:bandstructure} depicts the first two wave functions of electrons and holes in a band structure diagram.
 Due to the symmetry of the confining potential, the wave functions are symmetric around the center of the well.
 
-\begin{marginfigure}[*-2]
+\begin{marginfigure}
     \centering
     \includegraphics{img/pdf/experiment/qw_undoped_0V}
     \includegraphics{img/pdf/experiment/qw_undoped_1V}
@@ -181,7 +181,7 @@ The ground state transition energy at this field is \qty{10}{\milli\electronvolt
 
 For a full quantitative accounting of the transition energies, the exciton binding energy as well as finite barrier heights would need to be included.
 The former is on the order of \qtyrange{6}{9}{\milli\electronvolt} in \ch{GaAs} and becomes smaller as the overlap of the electron and hole wave functions is reduced when applying an electric field, pulling the wave functions to opposite interfaces~\cite{Miller1984}.
-For the latter, \citet{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
+For the latter, \textcite{Miller1985} found that finite-well properties could be reproduced by using effective well widths with infinite-well models.
 
 As we tilt the bands, energy levels below the \gls{qw} become available in the barrier once $\Delta E_{\mr{c}(\mr{hh})} - \eps_{n} < eFd$ with $d$ the width of the barrier and $\Delta E_{\mr{c}(\mr{hh})}$ is the height of the conduction (valence) band discontinuity.
 This allows confined carriers to escape the \gls{qw} with a finite probability by tunneling through the barrier, an effect known as Fowler-Nordheim tunneling.
@@ -214,15 +214,15 @@ So far, we have considered the \gls{qcse} in a single dimension, as if we were t
 However, as we saw before, the field lowers the exciton energy below the \gls{qw} confinement and hence, if applied locally, results in an effective confinement potential in the plane of the \gls{qw}.
 In order to understand the energy level structure and optical properties of excitons confined in such an electrostatic trap, we now go beyond the 1D case and add a lateral confinement potential.
 
-\citet{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 =\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 - V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
+\textcite{Descamps2021} performed numerical simulations for a geometry with circular gate electrodes with \qty{200}{\nano\meter} diameter on both sides of a membrane, finding a confinement depth of $V_0 = -\qty{20}{\milli\electronvolt}$ at $F=\qty{5}{\volt\per\micro\meter}$ that is well approximated by a single-particle harmonic potential for the center-of-mass wave function of the exciton, $V(\rho) = M\omega^{2}\rho^{2}/2 + V_0$, with mass $M = m^\ast_{\mr{c}} + m^\ast_{\mr{hh}}$ and confinement strength $\omega/2\pi = \qty{738}{\giga\hertz}$ corresponding to an oscillator length $\xi=\sqrt{\hbar/M\omega}=\qty{20}{\nano\meter}$.
 To obtain a qualitative picture, let us interpolate this result for different fields.
 The depth of confinement corresponds to the energy shift induced by the \gls{qcse} and is quadratic in $F$, $V_0 = -\alpha F^2$.
 At vanishing field, there should be no in-plane potential, $\omega=0$.
 Hence, we can assume that $\omega\propto F$ to leading order and thus $V(\rho) = \beta M F^{2} \rho^{2}/2 - \alpha F^{2}$.
 
 How does this in-plane confinement modify the wave function?
-Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than both the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
-Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3}=2a_{\mr{B}}\gth{2}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
+Because the exciton Bohr radius in the plane, $a_{\mr{B}}\gth{2D}$ (\cref{eq:exp:theory:qcse:bohr_radius_2d}), is much smaller than the oscillator length $\xi$, we separate the exciton's center-of-mass motion from the relative electron-hole motion in the plane~\cite{Kavokin1994}.
+Since furthermore the \gls{qw} well width $L$ is not much larger than the bulk Bohr radius $a_{\mr{B}}\gth{3D}=2a_{\mr{B}}\gth{2D}$, we initially also separate electron and hole motions normal to the plane from the in-plane motion, allowing us to make the product ansatz
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi:tot}
     \Psi_{nmp\ell}(z_{\mr{e}},z_{\mr{h}},\rho,\phi,\bvec{\varrho}) = \psi_n(z_{\mr{e}})\psi_m(z_{\mr{h}})\zeta_{p\ell}(\rho,\phi) F(\bvec{\varrho}),
 \end{equation}
@@ -231,7 +231,7 @@ where $\psi_n(z)$ are the out-of-plane wave functions derived above, $F(\bvec{\v
     \zeta_{p\ell}(\rho,\phi) = \chi_{p\ell}(\rho)\exp(\i\ell\phi)
 \end{equation}
 with\sidenote{
-    Note that \citet{Karimi2014} miss a factor $\flatfrac{1}{\sqrt{2\pi}}$ in the normalization.
+    Note that \textcite{Karimi2014} miss a factor $\flatfrac{1}{\sqrt{2\pi}}$ in the normalization.
 }~\cite{Karimi2014}
 \begin{equation}\label{eq:exp:theory:qcse:trap:psi:radial}
     \chi_{p\ell}(\tilde{\rho}) = \sqrt{\frac{2p!}{2\pi\xi^2(p + \abs{\ell})!}}\exp(-\tilde{\rho}^2/2)\tilde{\rho}^{\abs{\ell}}L_p^{\abs{\ell}}\left(\tilde{\rho}\right),
@@ -274,7 +274,7 @@ For a dipole transition from state $\ket{i}$ to state $\ket{j}$, it may be writt
     f_{ji} = \frac{2m\Delta E_{ji}}{\hbar^2} \abs{\!\matrixelement{j}{\bvec{r}}{i}}^2.
 \end{equation}
 The states $\ket{i}$ and $\ket{j}$ are the full Bloch wave functions of valence and conduction band.
-Adapting the expression given by \citet{Andreani1990a} to account for the in-plane confinement, we posit $\Psi_{np\ell}$ as the envelope function overlap of the Bloch states $\ket{i}$ and $\ket{j}$ so that the matrix element in \cref{eq:exp:theory:qcse:oscillator_strength:general} factorizes into a matrix element of the lattice-periodic part and an integral over the envelope function overlap,
+Adapting the expression given by \textcite{Andreani1990a} to account for the in-plane confinement, we posit $\Psi_{np\ell}$ as the envelope function overlap of the Bloch states $\ket{i}$ and $\ket{j}$ so that the matrix element in \cref{eq:exp:theory:qcse:oscillator_strength:general} factorizes into a matrix element of the lattice-periodic part and an integral over the envelope function overlap,
 \begin{subequations}\label{eq:exp:qcse:oscillator_strength:exciton}
 \begin{align}
     f_{np\ell} &= \frac{2m\Delta E_{np\ell}}{\hbar^2} \abs{\int\dd{\bvec{r}}\Psi_{np\ell}(\bvec{r})}^2\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2\notag \\
@@ -284,20 +284,20 @@ with~\cite{Andreani1990a,Kavokin1994}
 \begin{align}
     J_{r} &= \int_{0}^{L}\dd{z}\int_0^{\infty}\dd{\rho}\rho\psi_n\gth{\mr{e}}(z)\psi_n\gth{\mr{h}}(z)\chi_{p\ell}(\sqrt{\rho^2 + z^2}), \label{eq:exp:theory:osc:rz} \\
     J_{\phi} &= \int_0^{2\pi}\dd{\phi}\exp(\i\ell\phi), \label{eq:exp:theory:osc:phi} \\
-    F(0) &= \frac{1}{a_{\mr{B}}\gth{2}}\sqrt{\frac{2}{\pi}}, \label{eq:exp:theory:osc:relative}
+    F(0) &= \frac{1}{a_{\mr{B}}\gth{2D}}\sqrt{\frac{2}{\pi}}, \label{eq:exp:theory:osc:relative}
 \end{align}
 \end{subequations}
 and where $m$ is the free electron mass.
-\Cref{eq:exp:theory:osc:relative} holds exactly only for strict two-dimensional excitons~\cite{Andreani1990a} and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the lattice-periodic parts of the Bloch functions of the conduction and valence bands, respectively.
+\Cref{eq:exp:theory:osc:relative} holds exactly only for strictly two-dimensional excitons~\cite{Andreani1990a} and $\ket*{u_{\mr{c}(\mr{hh})}}$ are the lattice-periodic parts of the Bloch functions of the conduction and valence bands, respectively.
 Since these are not readily available, we will use the reduced oscillator strengths in the following, assuming that the lattice-periodic matrix element is independent of the electric field,
 \begin{equation}\label{eq:exp:qcse:oscillator_strength:reduced}
     \tilde{f}_{np\ell} = \frac{f_{np\ell}}{\abs{\!\mel*{u_{\mr{c}}}{\bvec{r}}{u_{\mr{hh}}}}^2}.
 \end{equation}
 From \cref{eq:exp:theory:osc:phi}, we immediately see that the oscillator strength of states with nonzero orbital momentum ($\ell\neq 0$) vanishes, $f_{np0}=0$, meaning that states with $\ell\neq 0$ are not optically active!
-This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \citet{Descamps2021}.
+This in turn implies from \cref{eq:exp:theory:qcse:trap:ho:eps} that the optically resolvable exciton level spacing in a radially symmetric trap is given by $\Delta E = 2\hbar\omega=\qty{1}{\milli\electronvolt}$, a factor of two larger than assumed by \textcite{Descamps2021}.
 Of course, the radial symmetry will most likely be broken in a realistic experimental scenario, and it would be interesting to investigate if indeed those states are optically inactive.
 
-\begin{marginfigure}[*-23]
+\begin{marginfigure}[*-27]
     \centering
     \includegraphics{img/pdf/experiment/qcse_field_dependence}
     \caption[\imgsource{img/py/experiment/qcse.py}]{
@@ -314,7 +314,7 @@ Of course, the radial symmetry will most likely be broken in a realistic experim
 \end{marginfigure}
 
 \Cref{fig:exp:theory:qcse:field} summarizes the \gls{qcse} in a \gls{qw} additionally confined in the plane by local electric fields.
-The top panel shows the exciton transition energy $\Delta E_{np0}$ for the optically active $\ell = 0$ states in solid lines.\sidenote{
+The top panel shows the exciton transition energy $\Delta E_{np0}$ for the optically active $\ell = 0$ states in solid lines.\sidenote[][*-2]{
     Note again that we neglected the exciton binding energy, which decreases with increasing field and hence slightly reduces the red shift~\cite{Miller1984}.
 }
 The first three in-plane sublevels due to the harmonic potential are drawn in less saturated colors but hard to see because the level spacing is much smaller than the out-of-plane \gls{qw} subband spacing, $\sim\qty{1}{\milli\electronvolt}/\qty{50}{\milli\electronvolt}$.

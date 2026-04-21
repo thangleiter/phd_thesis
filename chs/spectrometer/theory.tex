@@ -144,7 +144,7 @@ These relations are helpful when analyzing noise \glspl{psd} to gauge the relati
     \label{fig:speck:psdcorr}
 \end{marginfigure}
 
-To become familiar with the quantities $C(\tau)$ and $S(\omega)$, consider the Ornstein-Uhlenbeck process~\cite{Uhlenbeck1930}, the only stationary Gaussian Markovian stochastic process~\cite{VanKampen1976}.
+To become familiar with the quantities $C(\tau)$ and $S(\omega)$, consider the Ornstein\hyp{}Uhlenbeck process~\cite{Uhlenbeck1930}, the only stationary Gaussian Markovian stochastic process~\cite{VanKampen1976}.
 The autocorrelation function of the Ornstein-Uhlenbeck process is given by
 \begin{align}\label{eq:speck:ou:autocorrelation}
     C(\tau) = \sigma^2\e^{-\tau/\tau_c},
@@ -274,7 +274,7 @@ with the Fourier representation of the unshifted window ($2\pi f_n = \omega_n$),
 shown in \cref{fig:speck:hann_fourier}.
 The favorable properties of the Hann window are apparent when compared to the rectangular window in \cref{eq:speck:window:boxcar:fourier:unshifted} and \cref{fig:speck:boxcar_fourier}; the sidelobes are quadratically suppressed while the center lobe is broadened by a factor of two.
 
-\begin{marginfigure}[*-3]
+\begin{marginfigure}[*-4]
     \centering
     \includegraphics{img/pdf/spectrometer/hann}
     \caption[\imgsource{img/py/spectrometer/pyspeck.py}]{
@@ -285,7 +285,7 @@ The favorable properties of the Hann window are apparent when compared to the re
 \end{marginfigure}
 
 Another favorable property of the Hann window is that $w_0\gth{0} = w_{N-1}\gth{0} = 0$.
-This suppresses detrimental effects arising from a possible discontinuity ($x_0\gth{0}\neq x_{N-1}\gth{0}$) at the edge of a data segment related to the discrete Fourier transform, which assumes periodic data.\sidenote[][*8]{
+This suppresses detrimental effects arising from a possible discontinuity ($x_0\gth{0}\neq x_{N-1}\gth{0}$) at the edge of a data segment related to the discrete Fourier transform, which assumes periodic data.\sidenote[][*7]{
     This can usually also be achieved approximately by detrending the data before performing the Fourier transform, which is a good idea in any case.
 }
 
@@ -336,7 +336,7 @@ To acquire data using some form of (digital) \gls{daq}, one usually needs to spe
 This results in a measurement of duration $T = L\dt$ where $\dt = \fs\inverse$ as previously mentioned.
 The choice of \fs already induces an upper bound on the first parameter characterizing the \gls{psd} estimate: the largest resolvable frequency $\fmax\leq\flatfrac{\fs}{2}$ (\cf \cref{eq:speck:f_max}, but note that we allow \fmax to be smaller than half the sample rate in anticipation of hardware constraints).
 Next, we choose a number of Welch averages, $M$, \ie, data partitions, and their overlap, $K$.
-In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote[][*-2]{
+In doing so, one fixes the number of samples per partition $N$ and thereby induces the lower bound on the second parameter characterizing the \gls{psd} estimate: the frequency spacing $\df = \flatfrac{1}{N} \leq \fmin$ (\cf \cref{eq:speck:f_min}).\sidenote[][*-3]{
     Technically, the smallest resolvable frequency in a \gls{fft} is zero, of course. But as data is typically detrended (a constant or linear trend subtracted) before computation of the periodogram, the smallest \emph{meaningful} frequency is given by \fmin.
 }
 Finally, we can introduce a number of \emph{outer} averages $O$, that is, the number of data batches that are acquired.
@@ -344,7 +344,7 @@ While not directly related to Welch's method, choosing $O > 1$ can, for instance
 \Cref{fig:speck:theory:parameters} shows the relationships of the various parameters among each other.
 In \cref{subsec:speck:software:design:daq}, I lay out how these inter-dependencies are implemented in software.
 
-\begin{margintable}[*-5]
+\begin{margintable}[*-6]
     \centering
     \footnotesize
     \caption[Overview of spectrum estimation parameters]{
@@ -389,7 +389,7 @@ Consider again the process $x(t)$.
 We say $x(t)$ is \emph{Gaussian} if $x(t)\sim\mathcal{N}(\mu, \sigma^2)\,\forall t$, meaning that the value of $x(t)$ at a given point in time follows a normal distribution with some mean $\mu = \expectation[x]$ and variance $\sigma^2=\variance[x]$ over multiple realizations of the process.
 In this case, its statistical properties are fully described by the autocorrelation function $C(\tau)$ and \gls{psd} $S(\omega)$.
 This is because only the first two cumulants of a Gaussian distribution are nonzero~\cite{Fox1978}.
-For the purpose of noise estimation, the assumption of Gaussianity is a rather weak one as the noise typically arises from a large ensemble of individual fluctuators and is therefore well approximated by a Gaussian distribution by the central limit theorem~\cite{Krzywda2020}.\sidenote[][*4]{
+For the purpose of noise estimation, the assumption of Gaussianity is a rather weak one as the noise typically arises from a large ensemble of individual fluctuators and is therefore well approximated by a Gaussian distribution by the central limit theorem~\cite{Krzywda2020}.\sidenote[][*3]{
     As an example, consider electronic devices, where voltage noise is thought to arise from a large number of defects and other charge traps in oxides being populated and depopulated at certain rates $\gamma$. The ensemble average over these so-called \glspl{tlf} then yields the well-known \oneoverf-like noise spectra~\cite{Schriefl2006,Beaudoin2015} (at least for a large density~\cite{Mehmandoost2024}).
 }
 Even if $x(t)$ is not perfectly Gaussian, non-Gaussian contributions can be seen as higher-order contributions if viewed from the perspective of perturbation theory, and therefore the \gls{psd} still captures a significant part of the statistical properties.

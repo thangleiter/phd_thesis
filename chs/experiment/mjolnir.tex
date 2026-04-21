@@ -22,7 +22,7 @@ The software thus does not need to prioritize sophisticated triggering and pulsi
 Because the requirements are rather specific, \mjolnir is therefore single-minded.
 It does not aspire to be suitable for applications other than the ones it is designed for.
 The implementation is extremely biased towards the particular set of instruments in use in the lab and does not attempt to generalize to allow for different instruments to be used.
-At the same time, it is designed to be modular, and different functionalities should be able to easily be replaced by other solutions.
+At the same time, it is designed with modularity in mind, allowing individual components to be readily swapped out for alternative solutions.
 
 \section{Instrument abstraction}\label{sec:exp:mjolnir:instruments}
 \begin{figure*}
@@ -41,7 +41,7 @@ At the same time, it is designed to be modular, and different functionalities sh
 
 Central to the \mjolnir package is the abstraction of physical instruments into logical ones, thereby grouping logical functionality provided by different physical devices.
 Take for instance the tunable \gls{cw} \tisalaser laser.
-It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser diode-pumped solid state laser.
+It is cooled by a Thermotek T225p chiller and pumped by a \pumplaser \gls{dpss} laser.
 Behind its exit aperture, a \thorlabsflipper acts as a shutter, a \gls{nd} filter mounted on a \thorlabsrotator controls the output power, while a \thorlabspowermeter monitors the power at the optical head and an \rotatorcontroller controls the polarization state of the optical head.
 Thus, seven different instruments from five different manufacturers are required to control the illumination state of the sample.
 As a user, however, one would simply like to en- or disable the laser and set wavelength, power, and polarization configuration of the optical head.
@@ -98,7 +98,7 @@ From the \gls{ccd} calibration and its pixel size, the dispersion at the imaging
 The \code{Sample} class initializes the \qdac \gls{dac} and magnet power supply.
 Mainly, though, it serves as an abstraction of the actual \gls{dut} and its \enquote{control knobs} such as gates.
 Users implement subclasses for different sample designs.
-As the samples we are concerned with in \thethesis, I discuss the main implementation, \code{TrapSample}, representing samples with exciton traps.
+As the samples we are concerned with in \thethesis are all of the same type, I discuss the main implementation, \code{TrapSample}, that represents membrane samples with exciton traps.
 On a single sample, there are any number of traps consisting of one or both sets of top and bottom \enquote{central} and \enquote{guard} gates.
 Each trap is implemented as a \qcodes \code{InstrumentModule}, \code{Trap}, that is part of a \code{ChannelList}.
 The currently active trap (\ie, the one currently in focus by the microscope) is selected by the \code{active_trap} parameter and accessible through the \code{trap} property of the \code{TrapSample} object.
@@ -109,7 +109,7 @@ A \code{Trap} exposes the virtual gate parameters\sidenote{
 \Gls{dac} channels are mapped to their corresponding \code{Trap} parameters using \code{yaml} configuration files specific to each sample and hosted in a separate repository.
 
 \section{Calibrations}\label{sec:exp:mjolnir:calibration}
-\mjolnir implements three automatic calibration procedures in the classes \code{CcdCalibrationHandler}, \code{PowerCalibrationHandler}, and \mintinline[breaklines,breakbefore=FH]{python}{RejectionFeedbackHandler} (see \cref{fig:exp:mjolnir:layout}).
+\mjolnir implements three automatic calibration procedures in the classes \code{CcdCalibrationHandler}, \code{PowerCalibrationHandler}, and \mintinline[breaklines,breakanywhere]{python}{RejectionFeedbackHandler} (see \cref{fig:exp:mjolnir:layout}).
 As their names suggest, these handle calibration of the \gls{ccd} pixel-to-wavelength conversion, the power transmission through the rotatable \gls{nd} filter, and the waveplate and polarizer angles for optimal laser rejection, respectively.
 
 \subsection{CCD calibration}\label{subsec:sec:exp:mjolnir:calibration:ccd}
@@ -162,7 +162,7 @@ Then, the residual sum of squares between the target power and the power meter r
 \subsection{Rejection feedback}\label{subsec:sec:exp:mjolnir:calibration:rejection}
 The excitation rejection by means of cross-polarization extinction has already been discussed in \cref{subsec:setup:optics:coupling:rejection}.
 As demonstrated there, the \gls{od} achieved by cross-polarizing the excitation beam with the analyzer mounted in the detection path reaches a maximum close to \num{6} and is extremely sensitive to small variations in the angles of the \quarterwave- and \halfwave-plates controlling polarization state.
-Close to the optimum, the \gls{od} is well-described by a parabola as function of those angles, with a second-order polynomial coefficient on the order of \qty[per-mode = symbol]{-0.15}{\per\square\milli\txtdegree}.
+Close to the optimum, the \gls{od} is well-described by a paraboloid as function of those angles, with a second-order polynomial coefficient on the order of \qty[per-mode = symbol]{-1e-2}{\per\square\txtdegree}.
 Since the optics including the waveplates display chromatic dispersion, the excitation rejection needs to be re-optimized whenever the laser wavelength is changed, and the exponential angular dependence of the transmitted intensity places high demands on the dynamic range of the photo-detector used for measurement.
 Therefore, the reflected laser intensity is measured with the \gls{apd} signal digitized by the \tagger on the side exit port of the spectrometer.\sidenote{
     The signals from both \glspl{apd} are combined to achieve the best \gls{snr}, see \cref{part:setup}.
@@ -285,7 +285,7 @@ This facilitates interactively exploring large datasets and recognizing trends p
 
 The plotting functionality is implemented using \matplotlib.
 While not the most performant library, its flexibility in decorating and customizing plots as well as scaling data, such as the $\asinh$-scale normalization used in \cref{fig:exp:mjolnir:plot_nd}, made it the preferred choice.
-To nonetheless improve the responsivity of the interactive elements, the plotted artists are \emph{blitted}\sidenote{
+To nonetheless improve the responsivity of the interactive elements, the plotted artists are \emph{blitted}\sidenote[][*-1]{
     Blitting refers to storing constant backgrounds of raster graphics and only redrawing changing elements.
     See the \matplotlib \href{https://matplotlib.org/stable/users/explain/animations/blitting.html}{documentation}.
 }

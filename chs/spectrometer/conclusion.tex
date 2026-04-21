@@ -1,6 +1,6 @@
 % mainfile: ../../main.tex
 \chapter{Conclusion and outlook}\label{ch:speck:conclusion}
-\AutoLettrine{In} \thispart, I introduced the \pyspeck \python package for interactive, backend-agnostic noise spectroscopy.
+\AutoLettrine{In} \thispart, I introduced the \mintinline[breaklines,breakanywhere]{python}{python_spectrometer} software package for interactive and backend\hyp{}agnostic noise spectroscopy.
 I first presented the theory behind spectral noise estimation based on time series analysis in \cref{ch:speck:theory}.
 There, I showed how, by the Wiener-Khinchin theorem, the \gls{psd} $S(\omega)$ is related to a time-dependent signal by the Fourier transform of its autocorrelation function $C(\tau)$.
 After discretizing the problem, I discussed how the arising spectral windowing introduces distortions in the estimated \gls{psd} through effects such as spectral leakage and scalloping loss.
@@ -22,7 +22,7 @@ There are several possible avenues for future development of the \pyspeck packag
 An obvious case is adding support for more \gls{daq} hardware instruments by implementing \code{DAQ} interfaces.
 Modular devices such as those offered by \sidehref{https://www.qblox.com/research}{QBLOX} and \sidehref{https://www.quantum-machines.co/}{Quantum Machines} are on track to become the new standard in quantum technology labs.
 Implementing drivers for these instruments would benefit the adoption of both the instruments and the \pyspeck package.
-Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2025}.
+Another valuable addition would be supporting generic instruments abstracted by \qumada~\cite{Huckemann2026}.
 \qumada is a \qcodes-based measurement framework that provides a unified interface to instruments in order to -- in a similar spirit to \pyspeck's \code{DAQ} interface -- abstract away internals of individual instruments and provide users with a standardized way to interact with them.
 This approach should naturally lend itself to a single implementation of the \code{DAQ} class supporting various instruments through the unified \qumada interface.
 
@@ -61,9 +61,9 @@ But of course the strength of the \pyspeck package stems from its capacity to be
                 while not self.event.is_set():
                     yield self.queue.get(block=True)
     \end{pycode}
-    \caption[\code{TeeDAQ} template]{
-        Template design for a proxy \code{DAQ} implementation to stream noise spectra from an external measurement framework.
-        The \code{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
+    \caption{
+        Template design for a proxy \codev{DAQ} implementation to stream noise spectra from an external measurement framework.
+        The \codev{settings} attribute is a dictionary proxy shared between processes and used to pass acquisition parameters from the measurement framework to \pyspeck.
     }
     \label{lst:speck:conclusion:tee}
 \end{marginlisting}
@@ -138,9 +138,9 @@ The downside of this approach is that synchronization of different instruments o
         for data_buffers in zip(*acquisition_generators):
             estimate_csd(*data_buffers)
     \end{pycode}
-    \caption[Proposed \code{DAQ} workflow for cross-spectra]{
-        Proposed \code{DAQ} workflow for estimating cross-spectra.
-        Each hardware channel (same or different instruments) is assigned to a \code{DAQ} object.
+    \caption{
+        Proposed \codev{DAQ} workflow for estimating cross-spectra.
+        Each hardware channel (same or different instruments) is assigned to a \codev{DAQ} object.
         After instrument configuration, it is asserted that the parameters match.
         Finally, data is fetched from both channels and fed into a \gls{csd} estimator.
         Note that triggering would need to be implemented externally.
@@ -158,7 +158,3 @@ Further code adaptations would involve minor changes such as replacing the spect
 and making the plotting conform to complex data.\sidenote{
     It could be worthwile to add a subplot to display both the magnitude and phase of the complex quantity $S_{ij}(\omega)$.
 }
-% TODO:
-%  - improve this part?
-%  - spectrogram?
-%  - rms plot in live view?

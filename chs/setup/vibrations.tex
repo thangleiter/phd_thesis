@@ -25,9 +25,9 @@ the entire cold head assembly rests with rubber feet on the cryostat top plate i
 Thus, our microscope does not only encounter passive environmental vibrations but also the active perturbation from the \gls{ptr}.
 
 Several authors have addressed vibration decoupling in \glspl{ptr}.
-\citet{Caparrelli2006} employed active control of a sample stage at \qty{3}{\kelvin} to attenuate vibrations.
-\citet{Pelliccione2013,Oh2021,Esser2024} constructed scanning gate microscopes in \gls{ptr}-cooled systems, demonstrating excellent displacement noise.
-\citet{Kalra2016} investigated the impact of \gls{ptr}-vibrations on electrical noise while \citet{Riabzev2009,Olivieri2017,Schmoranzer2019} investigated the generation and decoupling of vibrations.
+\textcite{Caparrelli2006} employed active control of a sample stage at \qty{3}{\kelvin} to attenuate vibrations.
+\textcite{Pelliccione2013,Oh2021,Esser2024} constructed scanning gate microscopes in \gls{ptr}-cooled systems, demonstrating excellent displacement noise.
+\textcite{Kalra2016} investigated the impact of \gls{ptr}-vibrations on electrical noise while \textcite{Riabzev2009,Olivieri2017,Schmoranzer2019} investigated the generation and decoupling of vibrations.
 Due to space constraints, the complexity of decoupling solutions we can apply to our microscope is limited.
 Nonetheless, I show in the following chapter that the rigid-body construction of the optics together with passive air spring damping reduces the vibration noise to an adequate level for our purposes.
 
@@ -53,7 +53,7 @@ that manifests as a damping force to the spring chamber oscillations.
     \centering
     \includegraphics{img/pdf/setup/spring_tf}
     \caption[\imgsource{img/pdf/setup/springs.py}]{
-        Force transmission function of a damped harmonic oscillator with $\gamma=\omega_0/100$ (solid black line) and $\gamma=\omega_0/2$ (dashed black line).
+        Force transmission function of a damped harmonic oscillator with $\gamma=\omega_0/200$ (solid black line) and $\gamma=\omega_0/2$ (dashed black line).
         Below the break frequency $\omega=\sqrt{2}\omega_0$ (dotted vertical line), external excitations are amplified (shaded red area).
         For larger damping $\gamma$, the amplification at resonance becomes smaller.
         Above $\omega=\sqrt{2}\omega_0$, excitations are attenuated (shaded green area).
@@ -88,7 +88,7 @@ Consequently, this approach makes most sense if it is known that low-frequency e
 
 A widely used metric for the isolation demand of vibration-sensitive equipment are the so-called \gls{vc}~\cite{Gordon1992,Gordon1999}.
 These are design standard specifications for buildings housing, for example, lithography tools.
-The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what we have employed in \cref{part:speck} (\cf \cref{eq:setup:vibrations:rms,eq:speck:psd:bandpower}).
+The \glspl{vc} are defined in terms of band-limited \gls{rms} values similar to what we have employed in \cref{part:speck} (\cf \cref{eq:speck:psd:bandpower}).
 However, instead of computing the band-limited \gls{rms} with a fixed lower band edge, one uses bands of a fixed width, typically over one-third of an octave.
 To be specific, the one-third octave is defined in terms of its midband frequency $f_{\mr{m}}$ as the interval
 \begin{equation}\label{eq:setup:vibrations:third_octave}
@@ -135,7 +135,7 @@ Hence, the initial isolation concept for the cryostat envisaged mounting the rot
 
 However, prompted by a sudden increase in visually observed vibrations in the microscope image, I modified the cryostat frame to house three air springs~\sidecite{CFMSchiller} in the hopes of isolating the microscope from external disturbances.\sidenote{
     As it turned out, the cause was a damaged nanopositioner bearing rather than environmental.
-    Fortuitiously, the endeavour still proved successful and resulted in an improved vibration performance as I show below.
+    Fortuitiously, the endeavor still proved successful and resulted in an improved vibration performance as I show below.
 }
 To this end, I decoupled the frame from which the cryostat itself is suspended from the support frame resting on the lab ground as sketched in \cref{fig:setup:vibrations:suspension}.
 Extruding from the square footprint of the support frame at two adjacent corners and the center of the diametrically opposite side, the three air springs are mounted with the base on angle brackets connected to the support frame while their plunger is mounted to a second angle bracket connected to the cryostat frame.
@@ -255,7 +255,7 @@ Focusing the laser (indicated by a dashed circle) onto the edge of the optical g
 This gradient in reflected intensity can be inverted to obtain the vibration noise along $y$ by monitoring the intensity as a function of time.
 
 Let us take a closer look at the reflected intensity when the laser spot has a finite overlap with the edge of the gate.
-Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the Gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
+Under the simplifying assumption of a perfectly sharp drop-off and taking the reflectance of the gold gate to be unity, we can write the reflectance as function of the coordinate perpendicular to the gate edge at $y=0$ as
 \begin{equation}\label{eq:setup:reflectance_step}
     \reflectance(y) = \begin{dcases}
         1, & y \leq 0 \\
@@ -299,7 +299,7 @@ where we defined the \emph{sensitivity}
 \begin{equation}\label{eq:setup:knife_edge:sensitivity}
     s = \frac{\Phi_0}{w_0}(1 - \reflectance_0).
 \end{equation}
-Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote[][*-1]{
+Hence, to obtain a more sensitive probe for vibrations, meaning that small variations in $y$ lead to large variations in $\Phi_{\mr{r}}$, one could either improve the reflectance contrast $1-\reflectance_0$, decrease the spot size $w_0$, or increase the incident photon flux $\Phi_0$.\sidenote{
     Note that the smaller $w_0$, the smaller also the maximum displacement amplitude that can be resolved as the derivative goes to zero as $y\to\pm\infty$.
 }
 In our case, the former two are fixed by the sample and the setup, respectively , whereas the latter is limited by the maximum data transfer rate of the \tagger counting card, \qty{9}{\mega\sample\per\second}.
@@ -311,7 +311,7 @@ Starting from \cref{eq:setup:knife_edge:linearized}, it is straightforward to ob
 To summarize, we can position the laser spot on the edge of an optical gate and record a time trace of the photon flux by using the \taggershort to count the photons detected by the \glspl{apd} mounted on the side exit of the spectrometer.
 Using \cref{eq:setup:knife_edge:procfn} we can then convert the flux into a displacement and proceed with the usual spectral noise estimation as explained in \cref{part:speck}.
 
-\begin{marginfigure}[*-13]
+\begin{marginfigure}[*-12]
     \centering
     \includegraphics{img/pdf/setup/knife_edge}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -342,7 +342,7 @@ Of course it is also possible to fit the full knife-edge function, \cref{eq:setu
 From this, the spot size $w_0$ and the actual bare \ch{GaAs} surface reflectance $\reflectance_0$ can be extracted.
 Here we are content with the linear approximation; refer to \cref{subsec:app:setup:vibrations:knife_edge} for the full fits.
 
-\begin{marginfigure}[*-15]
+\begin{marginfigure}[*-14]
     \centering
     \includegraphics{img/pdf/setup/knife_edge_fits}
     \caption[\imgsource{img/py/setup/vibration_spectroscopy.py}]{
@@ -448,7 +448,7 @@ Hence,\sidenote{
 \end{equation}
 with $\delta y = y - \expval{y}$.
 This type of noise is known as \emph{shot noise}.
-It was first studied in the context of electron transport by \citet{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
+It was first studied in the context of electron transport by \textcite{Schottky1918} and results from the discrete nature of, in our case, photons and their stochastic emission times~\cite{Blanter2000}.
 For the parameters in the present measurements, $\bar{\Phi}\approx\qty{3}{\mega\cps}$ and $s\approx\qty{2.36}{\mega\cps\per\micro\meter}$ (\cf \cref{fig:setup:vibrations:calibration:pos_vs_cps}), we obtain a shot noise floor of $S_{\delta y(\dt)}\approx\qty{1}{\nano\meter\per\sqrt{\hertz}}$ in excellent agreement with the data shown in \cref{fig:setup:vibrations:optic} where the theoretical value is indicated by a gray dashed line.
 
 Inserting the theoretical expectation for the sensitivity $s$, \cref{eq:setup:knife_edge:sensitivity}, into \cref{eq:setup:shot_noise:noise_floor}, we find that
@@ -509,5 +509,3 @@ An intuitively obvious step, it has also been shown in the literature that decou
 }
 Acoustic insulation of the room and \gls{ptr} flex hoses could further improve the low-frequency response of the system~\cite{Schmoranzer2019,Oh2021}.
 Lastly, let me note that there also exist cryocoolers with variable operating frequency that can thus be tuned away from problematic resonances in the system~\cite{TransMitPTR}.
-
-In \cref{sec:app:setup:vibrations} I show additional spectroscopy data, including data measured along the gravitational axis in the puck and on the floor of different rooms, which suggests moving to a different laboratory could also benefit the vibration stability, as well as data for different configurations of the \gls{ptr} motor.

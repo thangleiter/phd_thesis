@@ -13,10 +13,10 @@
 
 % Load the bibliography package
 \PassOptionsToPackage{
-    natbib=true,
     url=false,
     datamodel=software,
-    maxbibnames=15,
+    maxbibnames=99,
+    giveninits=true,
 }{biblatex}
 \usepackage[addspace=false]{kaobiblio}
 
@@ -115,6 +115,8 @@
 %----------------------------------------------------------------------------------------
 % Config
 %----------------------------------------------------------------------------------------
+% Slightly relax tex's layout to help line breaks
+\setlength{\emergencystretch}{1em}
 % Margin TOC
 \setcounter{margintocdepth}{\sectiontocdepth}
 % Use like so:
@@ -137,12 +139,8 @@
 % Hyphenation rules
 \begin{hyphenrules}{english}
     \hyphenation{
-        Lo-rentz-ian
-        Gauss-ian
         Cou-lomb
-        equi-dis-tant
-        mount-ed
-        tool-kit
+        spec‑tro‑sco‑py
     }
 \end{hyphenrules}
 %----------------------------------------------------------------------------------------

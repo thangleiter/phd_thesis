@@ -26,7 +26,7 @@ Because treating colored (correlated) noise using Monte Carlo methods is computa
 
 Two-qubit interactions are mediated via the exchange $J_{23}$ that makes the states \ketuudd and \ketdduu accessible.
 They constitute levels outside of the computational subspace that ideally should only be occupied during an entangling gate operation.
-A non-vanishing population of these states after the operation has ended is therefore unwanted and considered leakage, the magnitude of which we could quantify following \cref{subsec:ff:theory:derived_quantities:leakage}.
+A non\hyp{}vanishing population of these states after the operation has ended is therefore unwanted and considered leakage, the magnitude of which we could quantify following \cref{subsec:ff:theory:derived_quantities:leakage}.
 However, here we limit ourselves to determine the infidelity contribution from fast, \viz non-quasistatic, charge noise entering the system through $\epsilon_{ij}$.
 That is, we consider noise sources $\alpha\in\lbrace\epsilon_{12},\epsilon_{23},\epsilon_{34}\rbrace$.
 We take the non-linear dependence of the Hamiltonian on the detunings $\epsilon_{ij}$ into account by setting $s_{\epsilon_{ij}}(t) = \pdv*{J_{ij}(\epsilon_{ij}(t))}{\epsilon_{ij}(t)}\propto J_{ij}(\epsilon_{ij}(t))$.
@@ -134,7 +134,7 @@ Both display sharp peaks at their Rabi frequencies and the resonance frequency f
 We expect these features as they correspond to perturbations of the qubit Hamiltonian that are resonant with the qubit dynamics about an axis orthogonal to them.
 For weak driving, $\FF_{x}$ is constant up to the resonance frequency where it peaks sharply and then aligns with $\FF_{z}$.
 The latter has a peak at the Rabi frequency before rolling off with $\omega^{-2}$ and a DC level that is almost ten orders of magnitude larger than that of the transverse filter function.
-This behavior is consistent with the results by~\citet{Yan2013}, who show that the noise sources dominating decoherence during driven evolution are $S_{x}(\omega_0)$ and $S_{z}(\Omega_\mr{R})$.
+This behavior is consistent with the results by~\textcite{Yan2013}, who show that the noise sources dominating decoherence during driven evolution are $S_{x}(\omega_0)$ and $S_{z}(\Omega_\mr{R})$.
 Note that the piecewise-constant control approximation causes the weak driving filter functions to level off towards low frequencies after an initial roll-off (here at $\omega\sim\qty{1}{\per\milli\second}$).
 By decreasing the discretization time step $\Delta t$, one can shift the frequency at which this effect occurs to lower frequencies and thus attribute the feature to a numerical artefact of the approximation.
 However, the decoupling properties depend quite sensitively on the pulse duration.
@@ -168,7 +168,7 @@ By shaping the pulse envelope of the strong driving gate the decoupling properti
 The basic protocol consists of constructing $K$ random sequences of varying length $m$ of gates drawn from the Clifford group,\sidenote{
     The Clifford group is a subgroup of the special unitary group with the advantage that compositions are easy to compute and that averaging over all unitaries can under reasonable assumptions be replaced by averaging over all Cliffords.
     This makes the Clifford gates a convenient choice for benchmarking.
-    For a nice, short introduction as well as further references, see~\cite{Ozols2008}
+    For a nice, short introduction as well as further references, see~\cite{Ozols2008}.
 }
 and appending a final inversion gate so that the identity operation should be performed in total.
 Each of these pulse sequences is applied to an initial state $\kpsi$ in order to measure the survival probability $p(\kpsi)$ after the sequence.

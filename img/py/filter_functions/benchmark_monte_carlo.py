@@ -208,7 +208,7 @@ dims_plot = np.linspace(dims[0], dims[-1], 1001)
 cycle = cycler(color=LINE_COLORS[:3], marker=['s', 'd', 'v'])
 
 fig, ax = plt.subplots(layout='constrained')
-ins_ax = ax.inset_axes((0.46, 0.1, 0.45, 0.44))
+ins_ax = ax.inset_axes((0.44, 0.08, 0.49, 0.49))
 
 for dt, popt, space, sty in zip([dt_MC, dt_FF_H, dt_FF_L],
                                 [popt_MC, popt_FF_H, popt_FF_L],
@@ -227,7 +227,7 @@ ax.set_ylabel('$t$ (s)')
 ax.set_ylim(bottom=1e-3)
 
 ins_ax.set_xlim(0)
-ins_ax.tick_params(direction='out', which='both', labelsize='small')
+ins_ax.tick_params(direction='in', which='both', labelsize='small')
 ins_ax.spines['left'].set_visible(False)
 ins_ax.spines['top'].set_visible(False)
 ins_ax.yaxis.tick_right()

@@ -1,9 +1,9 @@
 #!/bin/sh
 # pre-commit hook: Copy a file from one location to another
 
-if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ]; then
-  # Skip this hook if we're not on main
-  exit 0
+if ! git diff --quiet; then
+    echo "Not copying build/main.pdf due to unstaged changes."
+    exit 0
 fi
 
 SRC_FILE="build/main.pdf"

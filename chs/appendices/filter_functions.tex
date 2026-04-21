@@ -158,42 +158,45 @@ Since also $I_{\alpha}=\int\dd{\omega}/2\pi d\,S(\omega)\FF_\alpha(\omega)$ with
 \begin{equation}\label{eq:app:ff:sum_rule}
     \int\ddf{\omega}\FF_{\alpha}(\omega) = \tau\norm{\Bat}^2,
 \end{equation}
-a result previously obtained by \citet{Cywinski2008}.
+a result previously obtained by \textcite{Cywinski2008}.
 This means that pulse shaping and similar techniques never yield a leading-order fidelity enhancement if the noise is white in the relevant regime of frequencies as the fidelity only depends on the total duration of the pulse.
 
 % ==================================================
 %           CONVERGENCE SECTION
 % ==================================================
-\section{Convergence Bounds}\label{sec:app:ff:convergence}
-In this section we give bounds for the convergence of the expansions employed in the main text for the case of purely autocorrelated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\citet{Green2013}.
-For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms.
-Hence, the convergence radius of the \gls{me} becomes infinite and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
-For non-Gaussian noise, the following considerations apply.
-\subsection{Magnus Expansion}\label{subsec:app:ff:convergence:magnus_expansion}
-The \gls{me} of the error propagator \cref{eq:ff:magnus_expansion:1} converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\lvert A_{ij}\rvert^2$ the Frobenius norm~\cite{Moan1999}.
-We assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
+\section{Convergence bounds}\label{sec:app:ff:convergence}
+In this section we give bounds for the convergence of the expansions employed in the main text for the case of purely autocorrelated noise, $S_{\alpha\beta}(\omega) = \delta_{\alpha\beta}S_{\alpha\beta}(\omega) =  S_\alpha(\omega)$, following the approach by~\textcite{Green2013}.
+For Gaussian noise, our expansion is exact when including first and second order \acrfull{me} terms in the special cases of commuting and uncorrelated noise (corresponding to $\comm{\Hc}{\Hn} = 0$ and $S(\omega)=\mr{const.}$, respectively).
+Hence, the convergence radius of the \gls{me} becomes infinite in these cases and the fidelity can be computed exactly by evaluating the matrix exponential \cref{eq:ff:cumulant}.
+For the general case the following considerations apply.
+
+\subsection{Magnus expansion}\label{subsec:app:ff:convergence:magnus_expansion}
+The \gls{me} of the error propagator (\cref{eq:ff:magnus_expansion}) converges if $\int_0^\tau\dd{t}\norm*{\Hnt(t)} < \pi$ with $\norm{A}^2 = \dotHS{A}{A} = \sum_{ij}\lvert A_{ij}\rvert^2$ the Frobenius norm~\cite{Moan1999}.
+If we take the noise to have some characteristic and finite correlation time $\tau_\mr{c}$ after which the autocorrelation function $\expval*{b_\alpha(t)b_\alpha(s)}$ decays by a fraction (to $\flatfrac{1}{e}$, say), $\tau_\mr{c}$ rather than the total duration of the operation $\tau$ becomes the relevant timescale and we can hence replace the upper limit of integration by $\bar{\tau}\coloneqq\min\{\tau, \tau_\mr{c}\}$.
+
+To derive bounds for the convergence of the \gls{me}, we assume a time dependence of the noise operators of the form $\Ba(t) = s_\alpha(t)\Ba$.
 By the Cauchy-Schwarz inequality we then have
 \begin{equation}
     \begin{split}
         \bigl\lVert\Hnt(t)\bigr\rVert^2 &= \norm{\Hn(t)}^2 \\
-                          &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
-                          &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
-                             \norm*{B_\alpha}\norm*{B_{\beta}} \\
-                          &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
-                             s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
+                                        &= \sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)\dotHS{B_\alpha}{B_{\beta}} \\
+                                        &\leq\sum_{\alpha\beta} s_\alpha(t) s_{\beta}(t) b_\alpha(t) b_{\beta}(t)
+                                           \norm*{B_\alpha}\norm*{B_{\beta}} \\
+                                        &\leq\biggl[\sum_{\alpha}\sum_{g=1}^{G}\vartheta\gth{m}(t)
+                                           s_\alpha\gth{m}b_\alpha\gth{m}\norm{B_\alpha}\biggr]^2
     \end{split}
 \end{equation}
-where $b_{\alpha}\gth{m}$ is the maximum value that the noise assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$th time interval and zero else, and where we approximated the time evolution as piecewise constant.
+where $b_{\alpha}\gth{m}$ ($s_{\alpha}\gth{m}$) is the maximum value that the noise (coupling strength) assumes during the pulse, $\vartheta\gth{g}(t) = \theta(t - t_{g-1}) - \theta(t - t_g)$ is one during the $g$th time interval and zero else, and where we approximated the time evolution as piecewise constant.
 Then, in order to guarantee convergence of the \gls{me},
 \begin{equation}
     \begin{split}
-        \int_0^{\tau}\dd{t}\norm*{\Hnt(t)} &\leq\int_0^\tau\dd{t}\abs\bigg{\sum_{\alpha}\sum_{g=1}^{G}
-                                              \vartheta\gth{m}(t) s_\alpha\gth{m} b_\alpha\gth{m}\norm{B_\alpha}} \\
-                                           &= \sum_{\alpha} b_\alpha\gth{m}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha\gth{m}
-                                              \int_{t_{g-1}}^{t_{g}}\dd{t} \\
-                                           &= \sum_{\alpha} C_m\delta b_\alpha\norm{B_\alpha}\sum_{g=1}^{G}
-                                              s_\alpha\gth{m}\Delta t_g \\
-                                           &\eqqcolon N
+        \int_0^{\bar{\tau}}\dd{t}\norm*{\Hnt(t)} &\leq\int_0^{\bar{\tau}}\dd{t}\abs\bigg{\sum_{\alpha}\sum_{g=1}^{G}
+                                                    \vartheta\gth{m}(t) s_\alpha\gth{m} b_\alpha\gth{m}\norm{B_\alpha}} \\
+                                                 &= \sum_{\alpha} b_\alpha\gth{m}\norm{B_\alpha}\sum_{g=1}^{G}s_\alpha\gth{m}
+                                                    \int_{t_{g-1}}^{t_{g}}\dd{t} \\
+                                                 &= \sum_{\alpha} C_m\delta b_\alpha\norm{B_\alpha}\sum_{g=1}^{G}
+                                                    s_\alpha\gth{m}\Delta t_g \\
+                                                 &\eqqcolon N
     \end{split}
 \end{equation}
 where we have expressed the in principle unknown maximum noise amplitude $b_\alpha\gth{m}$ in terms of the root mean square value $\delta b_\alpha$.
@@ -215,9 +218,9 @@ However, we note that in practice the rms noise amplitude $\delta b_\alpha$ will
 \subsection{Infidelity}\label{subsec:app:ff:convergence:infidelity}
 Again assuming a time dependence $\Ba(t) = s_\alpha(t)\Ba$ as well as piecewise-constant control, we note that for the infidelity we have (\cf \cref{eq:ff:fidelity:ent})
 \begin{align}
-    \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+    \abs{\tr(\decayamps)} &= \abs\Bigg{\sum_{\alpha}\int_0^{\bar{\tau}}\dd{t_2}\int_0^{\bar{\tau}}\dd{t_1}
                              \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{k}\ctrlmat_{\alpha k}(t_1)\ctrlmat_{\alpha k}(t_2)} \notag\\
-                          &\leq\abs\Bigg{\sum_{\alpha}\int_0^\tau\dd{t_2}\int_0^\tau\dd{t_1}
+                          &\leq\abs\Bigg{\sum_{\alpha}\int_0^{\bar{\tau}}\dd{t_2}\int_0^{\bar{\tau}}\dd{t_1}
                              \expval{b_\alpha(t_1)b_\alpha(t_2)}\sum_{g,g^\prime=1}^{G}\vartheta\gth{m}(t_1)\vartheta^{(g^\prime)}(t_2)
                              s_\alpha\gth{m} s_\alpha^{(g^\prime)} \norm{B_\alpha}^2} \notag\\
                           &\leq\sum_{\alpha}\norm{B_\alpha}^2
@@ -375,7 +378,7 @@ If we now pull in the sum over the time steps $h$, we can identify in the first 
         &= \e^{-\i\omega\tau_{(1)}}\liouvQ_{(1)}\transpose\dop*{\Bt_{(2)}(\omega)}{\Bt_{(1\to 1)}(\omega)}
             + \liouvQ_{(1)}\transpose\mc{N}_{(2)}(\omega)\liouvQ_{(1)}.
 \end{align}
-As a last step, we recognize that the bra in the first term is nothing else but \cref{eq:app:ff:ctrlmat_step} so that we can write the filter function succinctly as
+As a last step, we recognize that the ket in the first term is nothing else but the transpose of \cref{eq:app:ff:ctrlmat_step} so that we can write the filter function succinctly as
 \begin{align}
     \FF_{(2|1)}(\omega) &= \dop*{\Bt_{(2|1)}(\omega)}{\Bt_{(1\to 1)}(\omega)}
                             + \liouvQ_{(1)}\transpose\mc{N}_{(2)}(\omega)\liouvQ_{(1)}
@@ -427,7 +430,7 @@ In total, this requires $\order{G + H}$ computations, where $H=\sum_{g=1}^{G}\et
 \section{Monte Carlo and \texorpdfstring{\acrshort{gksl}}{GKSL} master equation simulations}\label{sec:app:ff:time_domain_methods}
 In this section, we lay out two common time-domain simulation methods of noisy quantum dynamics for completeness; direct simulation of the \gls{gksl} master equation as well as stochastic \gls{mc} simulation of the Schrödinger equation.
 These can serve as alternative and complementary approaches to the filter-function formalism presented in \cref{part:ff}.
-All simulations were performed using the \package{lindblad_mc_tools} software package written during the course of \thethesis~\cite{Hangleiter_lmt}.
+All simulations were performed using the \lmt software package written during the course of \thethesis~\cite{Hangleiter_lmt}.
 
 \subsection{Simulation methods}\label{subsec:app:ff:time_domain_methods:methods}
 To simulate a quantum system under the influence of Markovian (white) noise, a common approach is the \gls{gksl} master equation~\cite{Lindblad1976,Gorini1976}.
@@ -483,9 +486,9 @@ The standard error of the mean can be obtained as $\sigma_{\ev{\avgfid}} = \sigm
 \section{Fidelity validation}\label{sec:app:ff:fidelity}
 In this section, we lay out in more detail how the fidelity of the optimized \sts qubit gates from~\citer{Cerfontaine2020} was calculated using filter functions, as well as validate the fidelities computed for the \gls{qft} algorithm in \cref{sec:ff:examples:qft} using the methods presented in \cref{sec:app:ff:time_domain_methods}.
 \subsection{Singlet-Triplet Gate Fidelity}\label{subsec:app:ff:fidelity:singlet-triplet}
-In two singlet-triplet qubits, angular momentum conservation suppresses occupancy of states with non-vanishing magnetic spin quantum number $m_s$ so that the total accessible state space of dimension $d=6$ is spanned by $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu,\ketuudd,\ketdduu\rbrace$.
-A straightforward method to single out the \gls{cs} dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the \gls{cs} as proposed by~\citet{Wood2018}, that is calculate the fidelity as $\entfid = d_c^{-2}\mr{tr}\bigl(\Pi_c\liouvUe\bigr)$ where $\Pi_c$ is the Liouville representation of the projector onto the \gls{cs} and $d_c = 4$ the dimension of the \gls{cs}.
-However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\citet{Cerfontaine2020}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ \gls{cs} during their Monte Carlo simulation.
+In two singlet-triplet qubits, angular momentum conservation suppresses occupancy of states with non\hyp{}vanishing magnetic spin quantum number $m_s$ so that the total accessible state space of dimension $d=6$ is spanned by $\lbrace\ketudud,\ketuddu,\ketduud,\ketdudu,\ketuudd,\ketdduu\rbrace$.
+A straightforward method to single out the \gls{cs} dynamics from those on the whole space would be to simply project the error transfer matrix $\liouvUe\approx\eye + \cumulantfun$ with \cumulantfun the cumulant function onto the \gls{cs} as proposed by~\textcite{Wood2018}, that is calculate the fidelity as $\entfid = d_c^{-2}\mr{tr}\bigl(\Pi_c\liouvUe\bigr)$ where $\Pi_c$ is the Liouville representation of the projector onto the \gls{cs} and $d_c = 4$ the dimension of the \gls{cs}.
+However, here we use a more involved procedure in order to gain more insight from the error transfer matrix as well as to obtain a better comparison to the fidelities computed by~\textcite{Cerfontaine2020}, who map the final $6\times 6$ propagator to the closest unitary on the $4\times 4$ \gls{cs} during their Monte Carlo simulation.
 
 To calculate the fidelity of the target unitary on the $4\times 4$ \gls{cs}, we thus construct an orthonormal operator basis \basis of the full $6\times 6$ space that is partitioned into elements which are nontrivial only on the \gls{cs} on the one hand and elements which are nontrivial only on the remaining space on the other such that $\basis = \basis^c\cup\basis^\ell$.
 Using such a basis, we can then trace only over \gls{cs} elements of the error transfer matrix \liouvUe in \cref{eq:ff:fidelity:ent} to obtain the fidelity of the gate on the \gls{cs}.
@@ -509,7 +512,7 @@ We then compute an orthonormal vector basis $V$ (a matrix of size $36\times 20$)
 \begin{equation}
     C_i^\ell = \sum_j\Lambda_j V_{ji}\qcomma{i\in\lbrace 0,\dotsc,19\rbrace}.
 \end{equation}
-Finally, to account for the fact that \citet{Cerfontaine2020} map the total propagator to the closest unitary on the \gls{cs}, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
+Finally, to account for the fact that \textcite{Cerfontaine2020} map the total propagator to the closest unitary on the \gls{cs}, we exclude the identity Pauli element $C_0^c\propto\text{diag}(1, 1, 1, 1, 0, 0)$ from the trace over the computational subspace part of \liouvUe represented in the basis $\basis = \basis^c\cup\basis^\ell$ when calculating the fidelity,
 \begin{equation}
     \entfid = \frac{1}{16}\sum_{i=1}^{15}\liouvUe_{ii},
 \end{equation}
@@ -517,7 +520,7 @@ since for unitary operations on the \gls{cs} we have $\cumulantfun_{00} \approx 
 Hence, excluding $\liouvUe_{00}$ from the trace corresponds to partially disregarding non-unitary components of the error channel on the computational subspace.
 Although not the only element that differs compared to the closest subspace unitary, $\cumulantfun_{00}$ contains the most obvious contribution, whereas those of other elements are more difficult to disentangle into unitary and non-unitary components.
 
-\begin{marginfigure}[*-3]
+\begin{marginfigure}[*-4]
     \centering
     \includegraphics{img/pdf/filter_functions/CNOT_FF_unitary_v_complete}
     \caption[\imgsource{img/py/filter_functions/cnot_FF.py}]{
