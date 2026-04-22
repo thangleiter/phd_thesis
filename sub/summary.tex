@@ -33,8 +33,8 @@ Using this technique, I determine a displacement noise RMS of \qty{100}{\nano\me
 I measure the electron temperature of a \ch{GaAs/AlGaAs} quantum dot in the microscope, finding \qty{76}{\milli\kelvin}, and demonstrate at hand of a second-order correlation measurement of a self-assembled quantum dot the setup's optical capabilities.
 In the experimental part of this thesis, I first provide an introduction to photoluminescence and the quantum-confined Stark effect in semiconductor quantum wells, appealing to simple analytical theory to develop an intuition for the relevant effects.
 I then describe the \texttt{mjolnir} measurement framework developed to conduct optical measurements of electrostatic exciton traps in semiconductor membranes, and present extensive measurements in search of signatures of single-photon emitters.
-Finally, I develop a comprehensive theoretical formalism for describing and analyzing the noisy quantum dynamics of quantum systems based on filter functions.
-I combine the Magnus and cumulant expansions to derive a quantum-operations formulation of the dynamics under arbitrary classical noise that can be expressed in terms of filter functions capturing the susceptibility of a quantum system in response to noise at a given frequency.
+Finally, I develop a comprehensive theoretical formalism for describing and analyzing the noisy dynamics of quantum systems based on filter functions.
+There, I combine the Magnus and cumulant expansions to derive a quantum-operations formulation of the dynamics under arbitrary classical noise that can be expressed in terms of filter functions capturing the susceptibility of a quantum system in response to noise at a given frequency.
 I present the \texttt{filter\_functions} software package that implements the formalism and demonstrate its efficacy using several examples.
 
 \clearpage
@@ -44,21 +44,22 @@ I present the \texttt{filter\_functions} software package that implements the fo
     Quantentechnologie verspricht einen Paradigmenwechsel in Bezug auf Präzision, Geschwindigkeit und Anwendungsvielfalt von Technologie.
     Die jüngsten Fortschritte in Quantencomputing, Quantennetzwerken und Quantensensorik waren rasant, doch eine großflächige Nutzung ist noch nicht in Sicht.
     Dies liegt hauptsächlich an der Fragilität der einzelnen Quantensysteme, die diese Technologie zu steuern versucht.
-    Während kleine Demonstratoren gezeigt haben, dass diese Maschinen im Prinzip funktionieren, besteht die Aufgabe darin, sie in großem Maßstab reproduzierbar zu machen.
+    Während kleine Demonstratoren gezeigt haben, dass diese Maschinen im Prinzip funktionieren, besteht die Aufgabe nun darin, sie in großem Maßstab reproduzierbar zu machen.
     Unter Nutzung fortgeschrittener Halbleiterfertigungstechnologie heutiger klassischer Computer soll diese Herausforderung mit Spin-Qubits in Halbleitern wie \ch{Si/SiGe} oder \ch{GaAs/AlGaAs} bewältigt werden.
     In dieser Arbeit stelle ich Beiträge in vier Bereichen in Richtung dieses Ziels vor.
-    Ich präsentiere ein Open-Source-Softwaretool für die Fourier-Transform-Rauschspektroskopie, Verbesserungen eines Millikelvin-Konfokalmikroskops, optische Messungen elektrostatischer Exzitonenfallen und einen allgemeinen Filterfunktionsformalismus zur Beschreibung rauschbehafteter Quantendynamik.
+    Ich präsentiere ein Open-Source-Softwaretool für die Fourier-Transformations-Rauschspektroskopie, Verbesserungen eines Millikelvin-Konfokalmikroskops, optische Messungen elektrostatischer Exzitonenfallen und einen allgemeinen Filterfunktionsformalismus zur Beschreibung rauschbehafteter Quantendynamik.
     Ich gebe einen Überblick über die Theorie der Rauschspektroskopie auf der Grundlage von Welchs Methode und stelle das Design des hardwareunabhängigen Open-Source-Pakets \texttt{python\_spectrometer} vor, das interaktive Rauschspektroskopie im täglichen Gebrauch erleichtert.
     Auf didaktische Weise untersuche ich die Funktionen des Tools und führe den Leser durch dessen Bedienung.
-    Anschließend charakterisiere ich ein konfokales Mikroskop, das in einen kryogenfreien Mischungskryostaten integriert ist, und wende das oben genannte Tool an, um die spektrale Leistungsdichte des Positionsrauschens zu messen.
+    Anschließend charakterisiere ich ein konfokales Mikroskop, das in einen kryogenfreien Mischkryostaten integriert ist, und wende das oben genannte Tool an, um die spektrale Leistungsdichte des Positionsrauschens zu messen.
     Ich entwickle eine Technik auf der Grundlage eines Messerkanten-Reflexionskontrasts, um das Positionsrauschen zu messen, das einen Schrotrauschuntergrund von $\qty{1}{\nano\meter\per\sqrt{\hertz}}$ erreicht.
     Mit dieser Technik bestimme ich ein Positionsrauschen (RMS) von \qty{100}{\nano\meter}.
-    Ich messe die Elektronentemperatur eines \ch{GaAs/AlGaAs}-Quantenpunkts im Mikroskop und erhalte einen Wert von \qty{76}{\milli\kelvin}.
-    Anhand einer Korrelationsmessung zweiter Ordnung eines selbstorganisierten Quantenpunkts demonstriere ich die optischen Fähigkeiten des Aufbaus.
+    Weiterhin bestimme ich die Elektronentemperatur eines \ch{GaAs/AlGaAs}-Quantenpunkts im Mikroskop zu \qty{76}{\milli\kelvin}.
+    Anhand einer Messung der Korrelationsfunktion zweiter Ordnung eines selbstorganisierten Quantenpunkts demonstriere ich die optischen Fähigkeiten des Aufbaus.
     Im experimentellen Teil gebe ich zunächst eine Einführung in Photolumineszenz und den quantenbegrenzten Stark-Effekt in Halbleiter-Quantentöpfen und stütze mich dabei auf einfache analytische Theorie.
-    Anschließend beschreibe ich den \texttt{mjolnir}-Messrahmen für optische Messungen von elektrostatischen Exzitonfallen in Halbleitermembranen und präsentiere umfangreiche Messungen auf der Suche nach Signaturen von Einzelphotonenemittern.
-    Schließlich entwickle ich einen theoretischen Formalismus zur Beschreibung der verrauschten Quantendynamik von Quantensystemen auf der Grundlage von Filterfunktionen.
-    Ich kombiniere Magnus- und Kumulanten-Entwicklungen zur Ableitung einer Quantenoperationsformulierung der Dynamik unter klassischem Rauschen, ausgedrückt durch Filterfunktionen.
+    Anschließend beschreibe ich das \texttt{mjolnir} Softwarepaket für optische Messungen von elektrostatischen Exzitonfallen in Halbleitermembranen und präsentiere umfangreiche Messungen auf der Suche nach Signaturen von Einzelphotonenemittern.
+    Schließlich entwickle ich einen theoretischen Formalismus zur Beschreibung der verrauschten Dynamik von Quantensystemen auf der Grundlage von Filterfunktionen.
+    Hierbei kombiniere ich Magnus- und Kumulanten-Entwicklungen zur Herleitung einer Quantenoperationsformulierung der Dynamik unter klassischem Rauschen, ausgedrückt durch Filterfunktionen.
+    Ich präsentiere schließlich das \texttt{filter\_functions} Softwarepaket, das die einfache Berechnung der Filterfunktionen ermöglicht, und diskutiere ausgewählte Anwendungsbeispiele.
 \end{german}
 
 \end{document}
