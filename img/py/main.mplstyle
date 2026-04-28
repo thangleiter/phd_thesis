@@ -18,6 +18,11 @@ font.cursive        : Libertinus Math
 #figure.dpi       : 600
 figure.figsize   : 4.2134, 2.604024408198807
 
+### PDF backend params
+#pdf.compression:    6  # integer from 0 to 9
+                        # 0 disables compression (good for debugging)
+pdf.fonttype:       42  # Output Type 3 (Type3) or Type 42 (TrueType)
+
 #### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
 text.usetex         : False # use latex for all text handling. The following fonts
                      # are supported through the usual rc parameter settings:

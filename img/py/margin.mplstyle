@@ -22,6 +22,11 @@ figure.constrained_layout.hspace : 0
 figure.constrained_layout.wspace : 0
 figure.figsize   : 1.87831, 1.1608594214088148
 
+### PDF backend params
+#pdf.compression:    6  # integer from 0 to 9
+                        # 0 disables compression (good for debugging)
+pdf.fonttype:       42  # Output Type 3 (Type3) or Type 42 (TrueType)
+
 #### LaTeX customizations. See http://wiki.scipy.org/Cookbook/Matplotlib/UsingTex
 text.usetex         : False # use latex for all text handling. The following fonts
                      # are supported through the usual rc parameter settings:

@@ -705,8 +705,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c0/db/bdc43f11c5269670482d5bdda1bd5220c8f5f64e7ff95fc622323693f58c/numpy_quaternion-2024.0.12-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
+      - pypi: git+https://github.com/qutech/qcodes.git#4efa356180ca0908f067ee54c7319865b39963e3
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#493568c581668f49b31a4c0dc1b91671b544ae0d
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1066,8 +1066,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/51/aa/a24a5958066ee9174d0d01d7219500d71dd9d5b8e4b66e23abb68a739d68/numpy_quaternion-2024.0.12-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
+      - pypi: git+https://github.com/qutech/qcodes.git#4efa356180ca0908f067ee54c7319865b39963e3
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#493568c581668f49b31a4c0dc1b91671b544ae0d
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1522,8 +1522,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c0/db/bdc43f11c5269670482d5bdda1bd5220c8f5f64e7ff95fc622323693f58c/numpy_quaternion-2024.0.12-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
+      - pypi: git+https://github.com/qutech/qcodes.git#4efa356180ca0908f067ee54c7319865b39963e3
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#493568c581668f49b31a4c0dc1b91671b544ae0d
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -1879,8 +1879,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/51/aa/a24a5958066ee9174d0d01d7219500d71dd9d5b8e4b66e23abb68a739d68/numpy_quaternion-2024.0.12-cp312-cp312-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ef/fabc3abb36848a01f62d10ad2a4cd2ba83a51af5653d0589c83ca30d0b61/PyMoosh-3.92-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/15/15/bae45d5d5fbdbf3c4216bc2fe6e4656867db73fcf543ecaa1c119abbe893/python_spectrometer-2025.9.1-py3-none-any.whl
-      - pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
-      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
+      - pypi: git+https://github.com/qutech/qcodes.git#4efa356180ca0908f067ee54c7319865b39963e3
+      - pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#493568c581668f49b31a4c0dc1b91671b544ae0d
       - pypi: https://files.pythonhosted.org/packages/bf/4e/8fe2ace22dd57725ab7cf14cb66a0bfa100c1a11480d4e6dc29a1d982f83/qopt-1.3.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7c/33/12e6444cdca5587ea677403a3c07e258adde2b57db20fa1a30b16e54bf0a/qutech_util-2025.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/99/85/50622645103786162a196e054f7875ce55f6ec3336797123286abc7eb472/qutip_qip-0.4.1-py3-none-any.whl
@@ -10282,9 +10282,9 @@ packages:
   - pkg:pypi/pyzmq?source=hash-mapping
   size: 185711
   timestamp: 1757387025899
-- pypi: git+https://github.com/qutech/qcodes.git#d376833b4e3637b3d44263fd1872d2ebc1954864
+- pypi: git+https://github.com/qutech/qcodes.git#4efa356180ca0908f067ee54c7319865b39963e3
   name: qcodes
-  version: 0.46.0.dev4151+main.gd376833b4
+  version: 0.46.0.dev5245+main.g4efa35618
   requires_dist:
   - broadbean>=0.11.0
   - h5netcdf>=0.14.1
@@ -10298,7 +10298,7 @@ packages:
   - packaging>=20.0
   - pandas>=1.5.0
   - pyarrow>=11.0.0
-  - pyvisa>=1.11.0,<1.16.0
+  - pyvisa>=1.12.0,<1.17.0
   - ruamel-yaml>=0.16.0,!=0.16.6
   - tabulate>=0.9.0
   - typing-extensions>=4.6.0
@@ -10312,13 +10312,14 @@ packages:
   - pillow>=9.2.0
   - dask>=2022.1.0
   - zhinst-qcodes>=0.3 ; extra == 'zurichinstruments'
+  - pythonnet>3.0.4 ; extra == 'minicircuits-usb-spdt'
   - qcodes-loop>=0.1.2 ; extra == 'loop'
   - coverage[toml]>=7.10.5 ; extra == 'test'
   - deepdiff>=8.6.1 ; extra == 'test'
   - hypothesis>=6.130.0 ; extra == 'test'
   - lxml>=4.9.4 ; extra == 'test'
   - lxml-stubs>=0.4.0 ; extra == 'test'
-  - mypy>=1.16.0 ; extra == 'test'
+  - mypy>=1.20.0 ; extra == 'test'
   - pandas-stubs>=1.2.0.1 ; extra == 'test'
   - pytest>=8.2.0 ; extra == 'test'
   - pytest-asyncio>=0.24.0 ; extra == 'test'
@@ -10329,7 +10330,7 @@ packages:
   - pyvisa-sim>=0.6.0 ; extra == 'test'
   - sphinx>=4.5.0 ; extra == 'test'
   - types-jsonschema>=4.16.0 ; extra == 'test'
-  - types-networkx>=3.1 ; extra == 'test'
+  - types-networkx>=3.6.1.20260303 ; extra == 'test'
   - types-requests>=0.1.8 ; extra == 'test'
   - types-tabulate>=0.1.0 ; extra == 'test'
   - types-tqdm>=4.64.6 ; extra == 'test'
@@ -10349,11 +10350,12 @@ packages:
   - towncrier>=24.8.0,<26.0.0 ; extra == 'docs'
   - scipy>=1.10.0 ; extra == 'docs'
   - qcodes-loop>=0.1.1 ; extra == 'docs'
+  - intersphinx-registry>=0.2603.16 ; extra == 'docs'
   - libcst>=1.2.0 ; extra == 'refactor'
   requires_python: '>=3.11'
-- pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#4a30fb633a4d5d4d6161b17645d040e304b04124
+- pypi: git+https://github.com/qutech-lab/qcodes_contrib_drivers.git#493568c581668f49b31a4c0dc1b91671b544ae0d
   name: qcodes-contrib-drivers
-  version: 0.22.0.dev1183+main.g4a30fb63
+  version: 0.22.0.dev1270+main.g493568c5
   requires_dist:
   - qcodes>=0.42.0
   - versioningit>=2.2.1
@@ -10376,6 +10378,7 @@ packages:
   - furo>=2024.8.6 ; extra == 'docs'
   - nbsphinx>=0.8.9 ; extra == 'docs'
   - pyvisa-sim>=0.6.0 ; extra == 'docs'
+  - intersphinx-registry>=0.2603.16 ; extra == 'docs'
   requires_python: '>=3.11'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/qhull-2020.2-h434a139_5.conda
   sha256: 776363493bad83308ba30bcb88c2552632581b143e8ee25b1982c8c743e73abc

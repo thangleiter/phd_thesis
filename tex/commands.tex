@@ -88,7 +88,7 @@
 \DeclareSIUnit{\pixel}{px}
 \DeclareSIUnit{\bar}{bar}
 \DeclareSIUnit{\txtdegree}{deg}
-\DeclareSIUnit{\permill}{\permil}
+\DeclareSIUnit{\permill}{\text{\textperthousand}}
 \DeclareSIUnit{\electron}{\ensuremath{e}}
 
 % Table macros
@@ -101,20 +101,9 @@
 \newcommand{\e}[0]{\ensuremath{e\xspace}}
 \renewcommand{\i}[0]{\ensuremath{i\xspace}}
 \newcommand{\eps}[0]{\ensuremath{\epsilon}\xspace}
-\newcommand{\del}[0]{\ensuremath{\partial}}
 \newcommand{\placeholder}[0]{\:\bullet\:}
-\newcommand{\st}[0]{\ensuremath{\mathrm{S\mbox{-}T_0}}\xspace}
-\newcommand{\diam}[0]{\ensuremath{\eta}\xspace}
-\newcommand{\plvec}[0]{\ensuremath{\vec{\sigma}}\xspace}
-\newcommand{\idop}[0]{\ensuremath{\mathbb{1}}\xspace}
-\newcommand{\la}[0]{\ensuremath{\leftarrow}\xspace}
-\newcommand{\x}[1]{\ensuremath{X_{\pi/2}^{(#1)}}\xspace}
-\newcommand{\y}[1]{\ensuremath{Y_{\pi/2}^{(#1)}}\xspace}
-\newcommand{\vc}[1]{\ensuremath{\vec{#1}}\xspace}
-\newcommand{\mat}[1]{\ensuremath{\symbf{#1}}\xspace}
 \newcommand{\bvec}[1]{\ensuremath{\symbf{#1}}\xspace}
 \newcommand{\ubvec}[1]{\ensuremath{\hat{\bvec{e}}_{#1}}\xspace}
-\newcommand{\pbvec}[1]{\ensuremath{\bvec{#1}}^{\prime}\xspace}
 % QI
 \newcommand{\fid}[0]{\ensuremath{F}\xspace}
 \newcommand{\avgfid}[0]{\ensuremath{\fid_\mr{avg}}\xspace}
@@ -128,8 +117,7 @@
 \newcommand{\sx}[0]{\ensuremath{\sigma_x}\xspace}
 \newcommand{\sy}[0]{\ensuremath{\sigma_y}\xspace}
 \newcommand{\sz}[0]{\ensuremath{\sigma_z}\xspace}
-%\newcommand{\eye}[0]{\ensuremath{\openone}\xspace}
-\newcommand{\eye}[0]{\ensuremath{\mathds{1}}\xspace}
+\newcommand{\eye}[0]{\ensuremath{\mathbb{1}}\xspace}
 \newcommand{\sts}[0]{\ensuremath{\mathrm{S\mbox{-}T_0}}\xspace}
 \newcommand{\kets}[0]{\mbox{\ensuremath{\ket{\mr{S}}}}\xspace}
 \newcommand{\kett}[0]{\mbox{\ensuremath{\ket{\mr{T_0}}}}\xspace}
