@@ -1,0 +1,157 @@
+\input{tex/predoc}
+
+\documentclass[
+    %cover=a5,
+    coverwidth=170mm,
+    coverheigth=240mm,
+    spinewidth=17mm,
+    bleedwidth=3mm,
+    marklength=0mm,
+    %trimmed
+]{bookcover}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage[variant=american]{english}
+\setotherlanguage{german}
+
+\usepackage{amssymb}
+\usepackage[force]{filehook}
+\usepackage{unicode-math}
+\usepackage{newcomputermodern}
+\usepackage[ScaleRM=1.04, mono=false]{libertinus}
+\setmonofont[
+    Scale=MatchLowercase, % a numeric value crashes minted!
+    SmallCapsFeatures={Renderer=Basic},
+    Extension=.ttf,
+    UprightFont=*-Regular,
+    ItalicFont=*-Italic,
+    BoldFont=*-Bold,
+    BoldItalicFont=*-BoldItalic
+]{LiberationMono}
+\setmathfont[range={"2A85}, Scale=MatchLowercase]{NewComputerModernMath} % \lessapprox
+\setmathfont[range=\mathcal]{NewComputerModernMath} % a slightly less curly calligraphic font
+
+\usepackage{ragged2e}
+\usepackage{glossaries}
+\usepackage{xspace}
+\usepackage{hyphenat}
+\usepackage{chemformula}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\sisetup{per-mode=single-symbol}
+
+\input{tex/colors}
+\input{tex/metadata}
+\input{tex/glossary}
+
+\newcommand{\codev}[1]{\texttt{#1}}
+\newcommand{\package}[1]{\nohyphens{\codev{#1}}\xspace}
+\newcommand{\pyspeck}{\package{python\_spectrometer}}
+\newcommand{\filterfunctions}{\package{filter\_functions}}
+\newcommand{\mjolnir}{\package{mjolnir}}
+
+\usepackage{hyperref}
+\hypersetup{
+    unicode,
+    pdfborder={0 0 0},
+    breaklinks=true,
+    colorlinks=false,
+    hidelinks,
+}
+
+\begin{document}
+
+\begin{bookcover}
+    \ifdefined\marginwidth
+    \else
+        \newlength\marginwidth
+    \fi
+    \setlength\marginwidth{8mm}
+
+    % ── FRONT COVER ──────────────────────────────────────────────────────────────
+    %\bookcovercomponent{color}{bg front}{white}
+    \bookcovercomponent{tikz}{front}{%
+        \node[
+            anchor=south west,
+            inner sep=0pt
+        ] at (0, 0 + \coverheight - \coverwidth) {
+            \includesvg[
+                scale=1.148648648648648648648648649,
+                inkscapearea=page,
+                inkscapelatex=false,
+                inkscapepath=build/svg-inkscape,
+            ]{img/svg/cover}
+        };
+        \node[
+            anchor=north west,
+            text width=\coverwidth - 2*\marginwidth,
+            align=flush left,
+        ] at (\marginwidth, -\marginwidth + \coverheight - \coverwidth) {%
+            {\Huge\sffamily\thesisTitle}\\
+            \vspace{16pt}
+            {\LARGE\sffamily \authorName}\\
+        };
+        % DEBUG
+        %\draw (0, 0) rectangle (\coverwidth, \coverheight);
+    }
+
+    % ── SPINE ──────────────────────────────────────────────────────────────
+    %\bookcovercomponent{color}{bg spine}{RWTHblue100}
+    \bookcovercomponent{tikz}{spine}[,\marginwidth,,\marginwidth]{%
+        \fill[color=RWTHgreen100] (0, \coverheight - \marginwidth) rectangle ++(\spinewidth, \bleedwidth);
+        \shade[bottom color=white, top color=RWTHgreen100] (0, \coverheight - \marginwidth) rectangle ++(\spinewidth, -25mm);
+        %\fill[white] (0, \coverheight - \marginwidth - 25mm) rectangle (\spinewidth, \coverheight - \coverwidth - \marginwidth + 25mm);
+        \shade[bottom color=RWTHmagenta100, top color=white] (0, \coverheight - \coverwidth - \marginwidth) rectangle ++(\spinewidth, 25mm);
+        \node[
+            rotate=90,
+            anchor=west,
+            text=black,
+            fill=none,
+            font=\sffamily\large,
+            text width=\coverwidth - 2*\marginwidth,
+            align=center
+        ] at (0.5*\spinewidth, \coverheight - \coverwidth) {
+            \thesisTitle
+        };
+        \fill[RWTHblue100] (0, 0 - \bleedwidth - \marginwidth) rectangle (\spinewidth, \coverheight - \coverwidth - \marginwidth);
+        \node[
+            rotate=90,
+            anchor=west,
+            text=white,
+            font=\sffamily\large,
+            text width=\coverheight - \coverwidth - 2*\marginwidth,
+            align=center,
+        ] at (0.5*\spinewidth, 0) {
+            \authorName
+        };
+        \draw[
+            color=white,
+            line width=.5mm
+        ] (0, \coverheight - \coverwidth - \marginwidth) -- ++(\spinewidth, 0);
+        % DEBUG
+        %\draw (0, -\marginwidth) -- ++(\spinewidth, 0);
+        %\draw (0, \coverheight - \marginwidth) -- ++(\spinewidth, 0);
+    }
+
+    % ── BACK COVER ──────────────────────────────────────────────────────────────
+    \bookcovercomponent{color}{bg back}{RWTHblue100}
+    \bookcovercomponent{normal}{back}[16mm,12mm,16mm,12mm]{
+        \sffamily
+        \large
+        \color{white}
+        \begin{justify}
+            \abstractEnglish
+        \end{justify}
+    }
+
+    % DEBUG
+    %\bookcovercomponent{tikz}{back}{
+    %    \draw (0, 0) rectangle (\coverwidth, \coverheight);
+    %}
+
+\end{bookcover}
+
+\end{document}

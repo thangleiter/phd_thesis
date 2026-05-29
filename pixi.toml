@@ -9,15 +9,37 @@ requires-pixi = ">=0.43"
 [tasks]
 clean_all = "rm -rf build/"
 
-[target.linux-64.tasks]
-clean = "latexmk -r linux.latexmkrc -C"
-build = "latexmk -r linux.latexmkrc -pv"
-watch = "latexmk -r linux.latexmkrc -pvc"
+[target.linux-64.tasks.clean]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r linux.latexmkrc -C {{ file }}"
+[target.linux-64.tasks.build]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r linux.latexmkrc -pv {{ file }}"
+[target.linux-64.tasks.watch]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r linux.latexmkrc -pvc {{ file }}"
 
-[target.win-64.tasks]
-clean = "latexmk -r windows.latexmkrc -C"
-build = "latexmk -r windows.latexmkrc -pv"
-watch = "latexmk -r windows.latexmkrc -pvc"
+[target.win-64.tasks.clean]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r windows.latexmkrc -C {{ file }}"
+[target.win-64.tasks.build]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r windows.latexmkrc -pv {{ file }}"
+[target.win-64.tasks.watch]
+args = [
+    { "arg" = "file", "default" = "main" }
+]
+cmd = "latexmk -r windows.latexmkrc -pvc {{ file }}"
 
 [dependencies]
 python = ">=3.14.3,<3.15"
